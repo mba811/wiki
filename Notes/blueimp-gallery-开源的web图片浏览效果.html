@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>blueimp Gallery 开源的Web图片浏览效果 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;blueimp Gallery 开源的Web图片浏览效果
+    <span class="updated">Page Updated&nbsp;
+      2015-06-02 20:07
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">blueimp Gallery 开源的Web图片浏览效果</div>
+
+  <p>对Markdown默认的图片显示效果不满意，尤其显示宽度小于高度的照片时，整个文章的排版显示不舒服；如果打算连续显示多张大小不一的图片，那效果更是糟糕的一塌糊涂。所以，加入一个第三方图片浏览是很有必要的！！</p>
+<p>Github搜索找到了blueimp Gallery，star,fork比较高搜索结果排名第一。简单测试后，发现非常容易使用，并且效果不错！支持手机浏览！</p>
+<p><img alt="blueimp Gallery" src="http://ghost3k.qiniudn.com/img/blueGallery_lightbox.png" /></p>
+<p>项目地址：<a href="https://github.com/blueimp/Gallery#requirements">https://github.com/blueimp/Gallery#requirements</a></p>
+<h2 id="_1">使用方法</h2>
+<p>非常简单，看项目README很快可以搞定，我使用的是Lightbox效果，配置步骤：</p>
+<ol>
+<li>把css,img,js目录copy到网站存储。</li>
+<li>
+<p>网页头引入样式：</p>
+<p><link rel="stylesheet" href="css/blueimp-gallery.min.css"></p>
+</li>
+<li>
+<p>将代码段落加入网页body中：</p>
+<p><!-- The Gallery as lightbox dialog, should be a child element of the document body --><br />
+<div id="blueimp-gallery" class="blueimp-gallery"><br />
+    <div class="slides"></div><br />
+    <h3 class="title"></h3><br />
+    <a class="prev">‹</a><br />
+    <a class="next">›</a><br />
+    <a class="close">×</a><br />
+    <a class="play-pause"></a><br />
+    <ol class="indicator"></ol><br />
+</div></p>
+</li>
+<li>
+<p>在body底部加入：</p>
+<p><script src="js/blueimp-gallery.min.js"></script></p>
+</li>
+<li>
+<p>上述代码后面加入script，处理点击事件：</p>
+<p><script><br />
+document.getElementById('links').onclick = function (event) {<br />
+    event = event || window.event;<br />
+    var target = event.target || event.srcElement,<br />
+        link = target.src ? target.parentNode : target,<br />
+        options = {index: link, event: event},<br />
+        links = this.getElementsByTagName('a');<br />
+    blueimp.Gallery(links, options);<br />
+};<br />
+</script></p>
+</li>
+<li>
+<p>最后，创建图片列表即可（注意，最好使用大小相同的缩略图）</p>
+<p><div id="links"><br />
+    <a href="images/banana.jpg" title="Banana"><br />
+        <img src="images/thumbnails/banana.jpg" alt="Banana"><br />
+    </a><br />
+    <a href="images/apple.jpg" title="Apple"><br />
+        <img src="images/thumbnails/apple.jpg" alt="Apple"><br />
+    </a><br />
+    <a href="images/orange.jpg" title="Orange"><br />
+        <img src="images/thumbnails/orange.jpg" alt="Orange"><br />
+    </a><br />
+</div></p>
+</li>
+</ol>
+<p>还有其它的样式和配置项可选，具体内容可参考项目README。</p>
+<h2 id="ghost">集成到Ghost</h2>
+<p>我采用了非常简单粗暴的方式，将2，3，4，5的代码直接加入到<code>post.hbs</code>、<code>default.hbs</code>等模版。在需要的地方添加图片列表代码即可。</p>
+<h3 id="mac">快速添加图片列表代码(Mac环境)</h3>
+<p>利用<code>ThisService</code>，写了一个简单的自动生成代码的脚本做为服务，之后在KeyBoard设置中为该服务绑定快捷键。</p>
+<p>只需要按一次快捷键，再修改图片链接即可。</p>
+<blockquote>
+<p>欢迎提出更便捷的方法</p>
+</blockquote>
+<h3 id="_2">缩略图</h3>
+<p>我使用七牛云存储做为图片空间，七牛的数据处理功能可以完美解决这一问题。只需创建一个图片样式，定义好剪裁方式、大小、图片质量、格式。最后，通过：</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//绑定域名/文件名称 + 分隔符 + 处理样式名</span>
+<span class="err">如：</span><span class="n">http</span><span class="o">:</span><span class="c1">//space.qiniudn.com/sample.jpg/style.com.jpg</span>
+</pre></div>
+
+
+<p>的方式，即可得到缩略图。</p>
+<h2 id="_3">效果展示</h2>
+<p><a href="http://ghost3k.qiniudn.com/matrix.jpg"><img alt="Matrix" src="http://ghost3k.qiniudn.com/matrix.jpg-test" /> </a><a href="http://ghost3k.qiniudn.com/img/rivertown.jpg"><img alt="River Town" src="http://ghost3k.qiniudn.com/img/rivertown.jpg-test" /> </a><a href="http://ghost3k.qiniudn.com/imgshangpala.jpg"><img alt="ShangPala" src="http://ghost3k.qiniudn.com/imgshangpala.jpg-test" /></a><a href="http://ghost3k.qiniudn.com/img/Yunnan.JPG"><img alt="YunNan" src="http://ghost3k.qiniudn.com/img/Yunnan.JPG-test" /> </a><a href="http://ghost3k.qiniudn.com/image/3/26/c252e66b67e3425950c2ee97b7a4a.jpg"><img alt="The Hobbit" src="http://ghost3k.qiniudn.com/image/3/26/c252e66b67e3425950c2ee97b7a4a.jpg-test" /></a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Apache, PHP, and MySQL on Yosemite - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;Apache, PHP, and MySQL on Yosemite
+    <span class="updated">Page Updated&nbsp;
+      2015-05-13 15:38
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Apache, PHP, and MySQL on Yosemite</div>
+
+  <p>I recently upgraded to Mac OS X Yosemite. It seems OS X Yosemite makes my original post on <a href="http://jason.pureconcepts.net/2012/10/install-apache-php-mysql-mac-os-x/">installing Apache, PHP, and MySQL on Mac OS X</a> obsolete. Specifically, Yosemite includes Apache 2.4. This post is a complete update for installing Apache, PHP, and MySQL on Mac OS X Yosemite. </p>
+<p>A reminder that Mac OS X runs atop UNIX. So most UNIX software installs easily on Mac OS X. Furthermore, Apache and PHP come packaged with OS X. To create a local web server, all you need to do is enable them and <em>install</em> MySQL. </p>
+<p>I am aware of the web server software available for Mac OS X, notably <a href="http://www.mamp.info/en/index.html" title="MAMP">MAMP</a>. These get you started quickly. But they forego the learning experience and, as most developers report, can become difficult to manage. </p>
+<h2 id="getting-started">Getting Started</h2>
+<p>First, open the <em>Terminal</em> app and switch to the <code>root</code> user to avoid permission issues while running these commands. </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span>
+</pre></div>
+
+
+<h2 id="enable-apache-on-mac-os-x">Enable Apache on Mac OS X</h2>
+<div class="hlcode"><pre><span class="n">apachectl</span> <span class="n">start</span>
+</pre></div>
+
+
+<p>Verify <em>It works!</em> by accessing <a href="http://localhost">http://localhost</a></p>
+<h2 id="enable-php-for-apache">Enable PHP for Apache</h2>
+<p>First, make a backup of the default Apache configuration. This is good practice and serves as a comparison against future versions of Mac OS X. </p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span>
+<span class="n">cp</span> <span class="n">httpd</span><span class="p">.</span><span class="n">conf</span> <span class="n">httpd</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">bak</span>
+</pre></div>
+
+
+<p>Now edit the Apache configuration. Feel free to use <em>TextEdit</em> if you are not familiar with <em>vi</em>. </p>
+<div class="hlcode"><pre><span class="n">vi</span> <span class="n">httpd</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Uncomment the following line (remove <code>#</code>): </p>
+<div class="hlcode"><pre><span class="n">LoadModule</span> <span class="n">php5_module</span> <span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">libphp5</span><span class="p">.</span><span class="n">so</span>
+</pre></div>
+
+
+<p>Restart Apache: </p>
+<div class="hlcode"><pre><span class="n">apachectl</span> <span class="n">restart</span>
+</pre></div>
+
+
+<p>You can verify PHP is enabled by creating a <a href="http://php.net/manual/en/function.phpinfo.php"><code>phpinfo()</code></a> page in your <code>DocumentRoot</code>. </p>
+<p>The default <code>DocumentRoot</code> for Mac OS X Yosemite is <code>/Library/WebServer/Documents</code>. You can verify this from your Apache configuration. </p>
+<div class="hlcode"><pre><span class="n">grep</span> <span class="n">DocumentRoot</span> <span class="n">httpd</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Now create the <code>phpinfo()</code> page in your <code>DocumentRoot</code>: </p>
+<div class="hlcode"><pre><span class="nx">echo</span> <span class="err">&#39;</span><span class="cp">&lt;?php</span> <span class="nb">phpinfo</span><span class="p">();</span><span class="err">&#39;</span> <span class="o">&gt;</span> <span class="o">/</span><span class="nx">Library</span><span class="o">/</span><span class="nx">WebServer</span><span class="o">/</span><span class="nx">Documents</span><span class="o">/</span><span class="nb">phpinfo</span><span class="o">.</span><span class="nx">php</span>
+</pre></div>
+
+
+<p>Verify PHP by accessing <a href="http://localhost/phpinfo.php">http://localhost/phpinfo.php</a></p>
+<h2 id="install-mysql-on-mac-os-x">Install MySQL on Mac OS X</h2>
+<p><strong>Note</strong>: If you are upgrading MySQL you should skip this section and instead <a href="http://coolestguidesontheplanet.com/upgrade-mysql-database-5-5-5-6-osx-10-8-mountan-lion/">read this</a>. </p>
+<ol>
+<li><a href="http://dev.mysql.com/downloads/mysql/">Download</a> the MySQL DMG for Mac OS X</li>
+<li>Install <em>MySQL</em></li>
+</ol>
+<p>The <strong>README</strong> suggests creating aliases for <code>mysql</code> and <code>mysqladmin</code>. However there are other commands that are helpful such as <code>mysqldump</code>. Instead, I [updated my path][8] to include <code>/usr/local/mysql/bin</code>. </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//superuser.com/questions/69130/where-does-path-get-set-in-os-x-10-6-snow-leopard</span>
+</pre></div>
+
+
+<p>export PATH=/usr/local/mysql/bin:$PATH</p>
+<p><strong>Note</strong>: You will need to open a new <em>Terminal</em> window or run the command above for your path to update. </p>
+<p>I also run <code>mysql_secure_installation</code>. While this isn’t necessary, it’s good practice. </p>
+<h2 id="connect-php-and-mysql">Connect PHP and MySQL</h2>
+<p>You need to ensure PHP and MySQL can communicate with one another. There are [several options][9] to do so. I do the following: </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//stackoverflow.com/questions/4219970/warning-mysql-connect-2002-no-such-file-or-directory-trying-to-connect-vi</span>
+</pre></div>
+
+
+<p>cd /var <br />
+    mkdir mysql<br />
+    cd mysql<br />
+    ln -s /tmp/mysql.sock mysql.sock</p>
+<h2 id="additional-configuration-optional">Additional Configuration (optional)</h2>
+<p>The default configuration for Apache 2.4 on OS X Yosemite seemed pretty lean. For example, common modules like <code>mod_rewrite</code> were disabled. You may consider enabling this now to avoid forgetting they are disabled in the future. </p>
+<p>I edited my Apache Configration: </p>
+<div class="hlcode"><pre><span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">httpd</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>I uncommented the following lines (remove <code>#</code>): </p>
+<div class="hlcode"><pre><span class="n">LoadModule</span> <span class="n">deflate_module</span> <span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">mod_deflate</span><span class="p">.</span><span class="n">so</span>
+<span class="n">LoadModule</span> <span class="n">expires_module</span> <span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">mod_expires</span><span class="p">.</span><span class="n">so</span>
+<span class="n">LoadModule</span> <span class="n">rewrite_module</span> <span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">mod_rewrite</span><span class="p">.</span><span class="n">so</span>
+</pre></div>
+
+
+<p><strong>Note</strong>: Previous version of Mac OS X ran Apache 2.2. If you upgraded OS X and previously configured Apache, you may want to read more about <a href="http://httpd.apache.org/docs/trunk/upgrading.html">upgrading to to Apache 2.4 from Apache 2.2</a>. </p>
+<p>If you develop multiple projects and would like each to have a unique url, you can <a href="http://jason.pureconcepts.net/2014/11/configure-apache-virtualhost-mac-os-x/">configure Apache <em>VirtualHosts</em> for Mac OS X</a>. </p>
+<p>If you would like to install <a href="http://www.phpmyadmin.net/" title="PHPMyAdmin">PHPMyAdmin</a>, return to my original post on <a href="http://jason.pureconcepts.net/2012/10/install-apache-php-mysql-mac-os-x/">installing Apache, PHP, and MySQL on Mac OS X</a>. </p>
+<hr />
+<p><a href="http://disqus.com">comments powered by Disqus</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

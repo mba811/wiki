@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>关于foobar2000的mp3解码器 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;关于foobar2000的mp3解码器
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:06
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">关于foobar2000的mp3解码器</div>
+
+  <p>首先，介绍一下 mpg123 （并非in_mpg123插件），mpg123是由Michael Hipp开发的一个Unix下的mp3解码器，解码速度快且质量好，有许多软体都使用mpg123来解码mp3，如大名鼎鼎的LAME。但mpg123在 1999年发布了mpg123 pre0.59s后就停止开发了，程式码中还有许多bug。 <br />
+<a href="http://unblocker.org/index.php?q=uggc%3A%2F%2Fjjj.zct123.qr%2F">http://www.mpg123.de/</a></p>
+<p>而Naoki Shibata将mpg123改写为winamp的插件 in_mpg123 ，除去了许多bug，并加入了一些插件必要的功能。</p>
+<p>至于foobar2k，它使用的解码器是 mpglib 的修改版，而mpglib是Martin Pesch在mpg123的基础上将其移植到Windows平台的产物。</p>
+<p><a href="http://unblocker.org/index.php?q=uggc%3A%2F%2Fjjj.ulqebtranhqvb.bet%2Fvaqrk.cuc%3Ffubjgbcvp%3D4739%26nzc%3Buy%3Dzct123%2Cnaq%2Czctyvo">http://www.hydrogenaudio.org/index.p…123,and,mpglib</a></p>
+<p>具体情况可看这里，zZzZzZz就是foobar2k的作者，当时他们在讨论foobar2k中要使用的mp3解码器，最后决定使用mpglib，这点可以从foobar2k的about中看出来。</p>
+<p><a href="http://unblocker.org/index.php?q=uggc%3A%2F%2Fjjj3.plcerff.ar.wc%2Fbgnpuna%2Fva_zct123.ugzy">http://www3.cypress.ne.jp/otachan/in_mpg123.html</a><br />
+其实，in_mpg123插件与foobar2k解码出mp3的资料并没有太多区别，它们都关于mpg123的核心，只是做了一些debug的工作，争论究竟哪个解码mp3较好实在无所谓。 <br />
+<a href="http://unblocker.org/index.php?q=uggc%3A%2F%2Fjjj.em.hav-senaxsheg.qr%2F%257Rcrfpu">http://www.rz.uni-frankfurt.de/%7Epesch</a><br />
+现在我们来谈谈ssrc，foobar2k中的ssrc和out_ds_ssrc都是Peter Pawlowski使用ssrc库实现的，而ssrc库的作者正是上面提到的Naoki Shibata。 <br />
+<a href="http://unblocker.org/index.php?q=uggc%3A%2F%2Ffuvongpu.fbheprsbetr.arg%2F">http://shibatch.sourceforge.net/</a></p>
+<p>BTW，关于MAD解码器，是Robert Leslie开发的一个只使用整数运算的解码器，而其他mp3解码器都使用了浮点单元来运算。<br />
+<a href="http://unblocker.org/index.php?q=uggc%3A%2F%2Fjjj.haqreovg.pbz%2Fcebqhpgf%2Fznq">http://www.underbit.com/products/mad</a></p>
+<p>这篇文章不是feicun原创，是转自<a href="http://forum.slime.com.tw/thread108559.html">这里</a>。这篇文章的意义就是告诉大家一些foobar的历史，别无其他。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

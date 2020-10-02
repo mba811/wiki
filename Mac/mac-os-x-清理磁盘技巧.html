@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac OS X 清理磁盘技巧 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac OS X 清理磁盘技巧
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 03:49
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac OS X 清理磁盘技巧</div>
+
+  <p>对于Mac的用户而言，磁盘空间总是一件让人灼基的事情，特别是对于Macbook Air的用户更是一个时不时的心头痛。</p>
+<p>为了保证空间够用，经常要清理自己的硬盘，删除一些资料。所以经常有人就问了：如何清理干净自己的磁盘？</p>
+<p>除去很多的Application之外，今天就说说我平时可能会用到的手动清理的方法吧。</p>
+<p>先说几个重要的注意事项，请仔细阅读后在继续下文：</p>
+<p>1:本文的内容是我个人长时间收集测试过的，经历了10.7.X-10.8.X，请确认你的版本。</p>
+<p>2:本文内容涉及大量 Terminal （终端）命令，所以新手小白请谨慎。</p>
+<p>3:请仔细看每一条的说明，终端执行命令不可逆，请注意！</p>
+<p>一：禁用SafeSleep休眠模式（可逆转操作）</p>
+<p>SafeSleep的大小基本等同于你设备的实际内存大小，例如你的Macbook Air是4GB的内存，那么SafeSleep的大小也是4GB左右。</p>
+<p>禁用SafeSleep的弊端：如果你的电脑断电了，（没电）你将无法恢复到断电前的状态。</p>
+<p>禁用SafeSleep后你需要：确保在电池将没电前保存好你需求存储的内容。</p>
+<p>操作：</p>
+<p>1：开启Terminal</p>
+<p>2：禁用SafeSleep，输入：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">pmset</span> <span class="o">-</span><span class="n">a</span> <span class="n">hibernatemode</span> <span class="mi">0</span>
+</pre></div>
+
+
+<p>3：然后定位到/private/var/vm/删除已经存在的sleepimage文件，输入：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">private</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">vm</span><span class="o">/</span>
+</pre></div>
+
+
+<p>4：删除该文件，输入：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">rm</span> <span class="n">sleepimage</span>
+</pre></div>
+
+
+<p>5：制作一个替身，阻止系统新建SafeSleep文件，输入：</p>
+<div class="hlcode"><pre><span class="n">touch</span> <span class="n">sleepimage</span>
+
+<span class="n">chmod</span> <span class="mo">000</span> <span class="o">/</span><span class="n">private</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">vm</span><span class="o">/</span><span class="n">sleepimage</span>
+</pre></div>
+
+
+<p>如果你想恢复SafeSleep服务，请输入：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">pmset</span> <span class="o">-</span><span class="n">a</span> <span class="n">hibernatemode</span> <span class="mi">3</span>
+
+<span class="n">sudo</span> <span class="n">rm</span> <span class="o">/</span><span class="n">private</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">vm</span><span class="o">/</span><span class="n">sleepimage</span>
+</pre></div>
+
+
+<p>二：清理系统噪音文件（不可逆转操作）</p>
+<p>Mac OS X内置了很多噪音文件，如果你日常并不使用文字转换语音这个功能，这些文件，你可以删除以获取更多的磁盘空间。</p>
+<p>具体操作：</p>
+<p>1:开启 Terminal</p>
+<p>2:定位到文件位置，输入：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">System</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Speech</span><span class="o">/</span>
+</pre></div>
+
+
+<p>3：执行删除命令，输入：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">Voices</span><span class="o">/*</span>
+</pre></div>
+
+
+<p>三：删除所有系统日志</p>
+<p>系统日志是用来调试和校验系统故障的，其文件会随着你的使用时间增长而增加，通常，此部分文件对于我们一般用户而言没有太多意义，可以删除。</p>
+<p>具体操作：</p>
+<p>1:开启Terminal</p>
+<p>2:输入删除命令：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">private</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/*</span>
+</pre></div>
+
+
+<p>请注意：系统日志文件是会不断的产生的，所以如果你想删除，请定期操作。</p>
+<p>四：删除QuickLook缓存文件</p>
+<p>Quicklook 这个内置预览功能非常的好用，但是随着使用的增多，对应的缓存文件也会不断的增多，所以定期清理，也可以让磁盘空间得到很好的释放。</p>
+<p>具体操作：</p>
+<p>1:开启Terminal</p>
+<p>2:输入删除命令：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">private</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">folders</span><span class="o">/</span>
+</pre></div>
+
+
+<p>五：删除Emacs</p>
+<p>什么是Emacs？你大概不知道吧？那你就删掉吧。。。。</p>
+<p>（其实Emacs是一个强大的文本编辑器。。。）</p>
+<p>具体操作：</p>
+<p>1:开启Terminal</p>
+<p>2:输入删除命令：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">emacs</span><span class="o">/</span>
+</pre></div>
+
+
+<p>六：删除临时文件</p>
+<p>你可以尝试在Finder下，按Command＋Option＋G，然后前往：/private/var/tmp/ 这个文件夹。</p>
+<p>看一看里面的文件是不是很多？</p>
+<p>其实， /private/var/tmp/ 这里面是用来存储临时文件的。</p>
+<p>对于这个路径下的内容，其实，系统在重启的时候一般都会做清理，但是鉴于现在很多用户都不怎么关机，导致这个里面的内容越来越多，所以，有时候，我们还是有必要手动清理一下的～</p>
+<p>1:开启Terminal</p>
+<p>2:定位到对应路径，请输入：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">private</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span>
+</pre></div>
+
+
+<p>3:清理，请输入：</p>
+<div class="hlcode"><pre><span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">TM</span><span class="o">*</span>
+</pre></div>
+
+
+<p>七：清除缓存文件</p>
+<p>缓存就不用多解释了吧。。。各种各种吧</p>
+<p>1:开启Terminal</p>
+<p>2:定位到对应路径，请输入：（聪明的朋友一定发现了，是当前用户的路径，哈哈，为什么你懂得，如果你不懂也没事，这个很安全）</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Caches</span><span class="o">/</span>
+</pre></div>
+
+
+<p>3:清理，请输入：</p>
+<div class="hlcode"><pre><span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Caches</span><span class="o">/*</span>
+</pre></div>
+
+
+<p>————————————————————————————————————</p>
+<p>最后说一句，如果您对于终端命令操作有点发怵的话，也可以无视这些。</p>
+<p>其实OSX 的管理机制是很先进的，上述的很多内容也完全可以忽视，至于您的磁盘空间这个问题，其实关键还是在于硬件本身。技巧的作用微乎其微。你说呢？</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>解决 DNS 污染 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;解决 DNS 污染
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:21
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">解决 DNS 污染</div>
+
+  <ul>
+<li><a href="http://laozhu.me/post/solve-dns-cache-pollution#toc_0">一、背景知识</a></li>
+<li><a href="http://laozhu.me/post/solve-dns-cache-pollution#toc_1">二、解决DNS污染</a><ul>
+<li><a href="http://laozhu.me/post/solve-dns-cache-pollution#toc_2">1. Install libsodium from source</a></li>
+<li><a href="http://laozhu.me/post/solve-dns-cache-pollution#toc_3">2. Install dnscrypt-proxy from source</a></li>
+<li><a href="http://laozhu.me/post/solve-dns-cache-pollution#toc_4">3. Configure dnscrypt-proxy as service</a></li>
+</ul>
+</li>
+<li><a href="http://laozhu.me/post/solve-dns-cache-pollution#toc_5">三、结束语</a></li>
+</ul>
+<h2 id="_1">一、背景知识</h2>
+<p><a href="https://zh.wikipedia.org/wiki/%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BC%93%E5%AD%98%E6%B1%A1%E6%9F%93">DNS污染</a> 作为防火长城两种主要屏蔽方式之一（另一种是 <a href="https://zh.wikipedia.org/wiki/IP%E5%B0%81%E9%94%81">IP封锁</a>），其主要工作原理是：</p>
+<blockquote>
+<p>防火长城对所有经过骨干出口路由的域名查询进行入侵检测，一经发现与黑名单关键词相匹配的域名查询请求，防火长城会马上伪装成目标域名的解析服务器给查询者返回虚假结果。由于通常的域名查询没有任何认证机制，而且域名查询通常基于的UDP协议是无连接不可靠的协议，查询者只能接受最先到达的格式正确结果，并丢弃之后的结果。</p>
+</blockquote>
+<p><img alt="DNS Query" src="http://laozhu.me/_image/dns-query.gif" /></p>
+<p>由此可知，防火长城进行入侵检测的基础是域名查询请求采用UDP协议，无任何认证机制。下文介绍的 <a href="https://github.com/opendns/dnscrypt-proxy">dnscrypt-proxy</a> 采用TCP协议发送域名查询请求，并对请求进行加密，避免了防火长城的入侵检测和投毒污染，从而可查询真实的IP地址。</p>
+<h2 id="dns">二、解决DNS污染</h2>
+<h3 id="1-install-libsodium-from-source">1. Install libsodium from source</h3>
+<p>官网下载 <a href="https://download.libsodium.org/libsodium/releases/">libsodium</a> 源码包，解压缩后编译安装:</p>
+<div class="hlcode"><pre><span class="p">.</span><span class="o">/</span><span class="n">configure</span>
+<span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">check</span>
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+<span class="n">sudo</span> <span class="n">ldconfig</span>
+</pre></div>
+
+
+<h3 id="2-install-dnscrypt-proxy-from-source">2. Install dnscrypt-proxy from source</h3>
+<p>官网下载 <a href="http://download.dnscrypt.org/dnscrypt-proxy/">dnscrypt-proxy</a> 源码包，解压缩后编译安装：</p>
+<div class="hlcode"><pre><span class="p">.</span><span class="o">/</span><span class="n">configure</span>
+<span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">check</span>
+<span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+
+
+<h3 id="3-configure-dnscrypt-proxy-as-service">3. Configure dnscrypt-proxy as service</h3>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">touch</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="o">/</span><span class="n">dnscrypt</span><span class="p">.</span><span class="n">conf</span>
+<span class="n">sudo</span> <span class="n">vim</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="o">/</span><span class="n">dnscrypt</span><span class="p">.</span><span class="n">conf</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">init</span><span class="o">/</span><span class="n">upstart</span><span class="o">-</span><span class="n">job</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">dnscrypt</span>
+<span class="n">sudo</span> <span class="n">adduser</span> <span class="o">--</span><span class="n">system</span> <span class="o">--</span><span class="n">quiet</span> <span class="o">--</span><span class="n">home</span> <span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">dnscrypt</span> <span class="o">--</span><span class="n">shell</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="nb">false</span> <span class="o">--</span><span class="n">group</span> <span class="o">--</span><span class="n">disabled</span><span class="o">-</span><span class="n">password</span> <span class="o">--</span><span class="n">disabled</span><span class="o">-</span><span class="n">login</span> <span class="n">dnscrypt</span>
+<span class="n">sudo</span> <span class="n">vim</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">rc</span><span class="p">.</span><span class="n">local</span>
+</pre></div>
+
+
+<p>按照以上步骤创建配置文件 <code>/etc/init/dnscrypt.conf</code> 并按照该 <a href="https://gist.github.com/laozhu/730c825c5826c66fbe88">gist</a> 内容编辑之。然后创建运行 <code>dnscrypt-proxy</code> 的用户，并在启动文件 <code>/etc/rc.local</code> 中加入以下两行，确保 <code>dnscrypt-proxy</code>能够开机正常启动。</p>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">dnscrypt</span>                                                             
+<span class="n">service</span> <span class="n">dnscrypt</span> <span class="n">start</span>
+</pre></div>
+
+
+<p>安装成功后重新启动 <code>dnscrypt-proxy</code> ，并确认其已正确安装。</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">killall</span> <span class="o">-</span><span class="n">KILL</span> <span class="n">dnscrypt</span><span class="o">-</span><span class="n">proxy</span>
+<span class="n">sudo</span> <span class="n">service</span> <span class="n">dnscrypt</span> <span class="n">start</span>
+<span class="n">dnscrypt</span> <span class="n">start</span><span class="o">/</span><span class="n">running</span><span class="p">,</span> <span class="n">process</span> <span class="mi">1337</span>
+</pre></div>
+
+
+<p><img alt="Network Manager Screenshot" src="http://laozhu.me/_image/network-manager-screenshot.png" /></p>
+<p>最后，还需要配置一下网络接口，Ubuntu用户可按照如上截图配置 NetworkManager ，然后重启之。其中 DNS Servers 那一栏和 <code>/etc/init/dnscrypt.conf</code> 中的 <code>local-address</code> 参数必须保持一致。本文选择 <a href="http://www.opendns.com/">OpenDNS</a> 作为DNS服务器，对应 <code>resolver-name</code> 参数为 <code>opendns</code> ，你也可以从 <a href="https://github.com/jedisct1/dnscrypt-proxy/blob/master/dnscrypt-resolvers.csv">dnscrypt-resolvers.csv</a> 中选择其他DNS服务器。完成以上配置后可访问 <a href="http://laozhu.me/welcome/">这个网站</a> 检查 <code>dnscrypt-proxy</code> 是否正常工作。</p>
+<h2 id="_2">三、结束语</h2>
+<p>随着防火长城的不断升级，其自动化、智能化程度不断提高。作为一名有节操有追求的挨踢从业者，只有不断去理解其工作原理，对症下药，才能更加轻松的翻越长城，融入世界。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

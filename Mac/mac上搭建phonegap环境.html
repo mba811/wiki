@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac上搭建Phonegap环境 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac上搭建Phonegap环境
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 06:20
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac上搭建Phonegap环境</div>
+
+  <p>近期要开始着力学习移动端的开发，简单粗暴的phonegap第一版已经发布了，我这边也需要尽快对安卓、iOS开发熟悉下。先从phonegap入手吧。</p>
+<h3 id="nodejs">Node.js</h3>
+<p>phonegap是一个node.s的程序，所以需要先安装node.js。 安法也很简单，到其官网首页，点’INSTALL’下载其预编译好的安装包，直接装就行。 装完会说明安装位置并提示需要<code>/usr/local/bin</code>在path里。可以用<code>echo $PATH</code>查看</p>
+<div class="hlcode"><pre><span class="n">Node</span> <span class="n">was</span> <span class="n">installed</span> <span class="n">at</span>
+
+   <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">node</span>
+
+<span class="n">npm</span> <span class="n">was</span> <span class="n">installed</span> <span class="n">at</span>
+
+   <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">npm</span>
+
+<span class="n">Make</span> <span class="n">sure</span> <span class="n">that</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span> <span class="n">is</span> <span class="n">in</span> <span class="n">your</span> <span class="err">$</span><span class="n">PATH</span><span class="p">.</span>
+</pre></div>
+
+
+<p>安装成的的话，在控制台键入<code>node -v</code>应该能看到版本信息</p>
+<h3 id="cordova-cli">Cordova CLI</h3>
+<p><code>sudo npm install -g cordova</code></p>
+<h3 id="build-android-platform">Build Android Platform</h3>
+<p><a href="http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html">下载安装jdk 8</a>，执行<code>java -version</code>会有相应版本信息</p>
+<div class="hlcode"><pre><span class="n">java</span> <span class="n">version</span> <span class="s">&quot;1.8.0_20&quot;</span>
+<span class="n">Java</span><span class="p">(</span><span class="n">TM</span><span class="p">)</span> <span class="n">SE</span> <span class="n">Runtime</span> <span class="n">Environment</span> <span class="p">(</span><span class="n">build</span> <span class="mf">1.8.0</span><span class="n">_20</span><span class="o">-</span><span class="n">b26</span><span class="p">)</span>
+<span class="n">Java</span> <span class="n">HotSpot</span><span class="p">(</span><span class="n">TM</span><span class="p">)</span> <span class="mi">64</span><span class="o">-</span><span class="n">Bit</span> <span class="n">Server</span> <span class="n">VM</span> <span class="p">(</span><span class="n">build</span> <span class="mf">25.20</span><span class="o">-</span><span class="n">b23</span><span class="p">,</span> <span class="n">mixed</span> <span class="n">mode</span><span class="p">)</span>
+</pre></div>
+
+
+<p>下载安装 Android SDK, <code>brew install android-sdk</code></p>
+<p><a href="http://www.eclipse.org/downloads/">下载 Eclipse</a>, 解压即可用。 启动eclipse，选择<code>Help &gt; Install New Software</code>，输入下面的URL: <code>https://dl-ssl.google.com/android/eclipse/</code>, 安装插件。之后会要求重启Eclipse，设定android-sdk位置,<code>/usr/local/opt/android-sdk</code>。</p>
+<p>为了使用 Android 模拟器，还需要安装 Ant。<code>brew install ant</code></p>
+<h3 id="build-ios-platform">Build iOS Platform</h3>
+<p>安装iOS模拟器，<code>sudo npm install -g ios-sim</code></p>
+<blockquote>
+<p>phonegap 退出程序的方法</p>
+</blockquote>
+<p>navigator.app.exitApp()</p>
+<p><strong>[Java]代码</strong></p>
+<div class="hlcode"><pre> <span class="n">navigator</span><span class="p">.</span><span class="n">app</span><span class="p">.</span><span class="n">exitApp</span><span class="p">()</span>
+</pre></div>
+
+
+<p><strong>[Java]代码</strong></p>
+<div class="hlcode"><pre> <span class="n">navigator</span><span class="p">.</span><span class="n">app</span><span class="p">.</span><span class="n">exitApp</span><span class="p">()</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

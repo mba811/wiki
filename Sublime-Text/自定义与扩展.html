@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>自定义与扩展 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Sublime-Text">Sublime-Text</a>&nbsp;&#187;&nbsp;自定义与扩展
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 59:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">自定义与扩展</div>
+
+  <h1 id="sublime-text">自定义Sublime Text</h1>
+<p>崇高的文本是高度可定制。在下面的内容中，我们将解释你如何使其适应您的需求和喜好。</p>
+<ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html">设置</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#format">格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#types-of-settings">设置的类型</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#how-to-access-and-edit-common-settings-files">如何访问和编辑通用设置文件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#order-of-precedence-of-sublime-settings-files">优先级顺序的_.sublime，设置_文件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#global-editor-settings-and-global-file-settings">全局编辑器设置和全局文件设置</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#file-type-settings">文件类型设置</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#the-settings-hierarchy">设置层次</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#where-to-store-user-settings-once-again">凡来存储用户设置（一旦再次）</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/indentation.html">缩进</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/key_bindings.html">键绑定</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/key_bindings.html#file-format">文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/key_bindings.html#defining-and-overriding-key-bindings">定义和压倒一切的键绑定</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/key_bindings.html#advanced-key-bindings">先进的键绑定</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/menus.html">Menus</a></li>
+</ul>
+<h1 id="sublime-text_1">扩展Sublime Text</h1>
+<p>因为它可以从下面的主题的长长的名单中可以看出，崇高文字是一个非常可扩展的编辑器。</p>
+<ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/commands.html">命令</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/commands.html#command-dispatching">指挥调度</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/commands.html#anatomy-of-a-command">命令剖析</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/macros.html">宏</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/macros.html#how-to-record-macros">如何录制宏</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/macros.html#how-to-edit-macros">如何编辑宏</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/macros.html#where-to-store-macros">在哪里存储宏</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/snippets.html">片段</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/snippets.html#snippets-file-format">片段文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/snippets.html#snippet-features">阅读功能</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/completions.html">落成</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/completions.html#file-format">文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/completions.html#sources-for-completions">来源完井</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/completions.html#how-to-use-completions">如何使用落成</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/command_palette.html">命令面板</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/command_palette.html#overview">概观</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/command_palette.html#file-format-commands-files">文件格式（命令文件）</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/command_palette.html#how-to-use-the-command-palette">如何使用命令面板</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html">语法定义</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html#prerequisites">先决条件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html#file-format">文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html#scopes">领域</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html#how-syntax-definitions-work">如何语法定义工作</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html#your-first-syntax-definition">你的第一个语法定义</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/syntaxdefs.html#analyzing-patterns">分析模式</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html">插件</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html#prerequisites">先决条件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html#where-to-store-plugins">在哪里存储插件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html#your-first-plugin">你的第一个插件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html#analyzing-your-first-plugin">分析你的第一个插件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html#types-of-commands">命令的类型</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/plugins.html#learning-the-api">学习API</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html">包</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html#types-of-packages">包的类型</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html#installation-of-packages">安装包的</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html#packages-and-magic">包和魔术</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html#restoring-packages">恢复软件包</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html#the-installed-packages-directory">在<code>已安装 的软件包</code>目录</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/extensibility/packages.html#the-pristine-packages-directory">在<code>质朴的 软件包</code>目录</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="_1">命令行用法</h1>
+<p>另请参见</p>
+<p><a href="http://www.sublimetext.com/docs/2/osx_command_line.html">OS X命令行</a><br />
+    官方崇高的文本文档</p>
+<h1 id="_2">参考</h1>
+<p>在本节中，你会发现约崇高文本的许多方面的简明信息。</p>
+<p>如果你正在寻找一个慢节奏的介绍了这些主题，尝试综合指数。</p>
+<ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/syntaxdefs.html">语法定义</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/syntaxdefs.html#compatibility-with-textmate">对TextMate兼容性</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/syntaxdefs.html#file-format">文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/syntaxdefs.html#the-patterns-array">该阵列模式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/syntaxdefs.html#repository">知识库</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/syntaxdefs.html#escape-sequences">转义序列</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html">构建系统</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html#file-format">文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html#options">选项</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html#build-system-variables">建立系统变量</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html#running-build-systems">运行系统构建</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html#troubleshooting-build-systems">故障诊断系统构建</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html">键绑定</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html#file-format">文件格式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html#command-mode">命令模式</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html#bindable-keys">可绑定钥匙</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html#keeping-key-maps-organized">保持主要有组织地图</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html#international-keyboards">国际键盘</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/key_bindings.html#troubleshooting">故障排除</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/settings.html">设置</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/settings.html#global-settings">全局设置</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/settings.html#file-settings">文件设置</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/command_palette.html">命令面板</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/command_palette.html#file-format-sublime-commands-files">文件格式（<code>.sublime-命令</code>文件）</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/command_palette.html#how-to-use-the-command-palette">如何使用命令面板</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html">插件</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#where-to-store-plugins">在哪里存储插件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#conventions-for-command-names">约定命令名称</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#types-of-commands">命令的类型</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#how-to-call-commands-from-the-api">如何从API调用命令</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#command-arguments">命令参数</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#text-commands-and-the-edit-object">文本命令和<code>编辑</code>对象</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#responding-to-events">响应事件</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#python-and-the-standard-library">Python和标准库</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#automatic-plugin-reload">自动插件刷新</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/plugins.html#multithreading">多线程</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/api.html">API的Python</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/api.html#missing-in-the-official-docs">缺少官方文档</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/commands.html">命令</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/commands.html#overview">概观</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/commands.html#about-paths-in-command-arguments">有关命令参数路径</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/commands.html#cmd-list">命令</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/commands.html#discovering-commands">情迷命令</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html">键盘快捷键 - 的Windows / Linux</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#editing">编辑</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#navigation-goto-anywhere">导航/转到任何地方</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#general">一般</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#find-replace">查找/替换</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#tabs">标签</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#split-window">拆分窗口</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#bookmarks">书签</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_win.html#text-manipulation">文本操作</a></li>
+</ul>
+</li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html">键盘快捷键 - OSX</a><ul>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#editing">编辑</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#navigation-goto-anywhere">导航/转到任何地方</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#general">一般</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#find-replace">查找/替换</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#tabs">标签</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#split-window">拆分窗口</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#bookmarks">书签</a></li>
+<li><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/keyboard_shortcuts_osx.html#text-manipulation">文本操作</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="_3">词汇表</h1>
+<ul>
+<li>缓冲buffer</li>
+</ul>
+<p>一个加载文件和附加元数据的数据，与一个或多个视图相关联。之间的区别_的缓冲区_和_观点_是技术性的。大部分时间，这两个术语可以互换使用。</p>
+<ul>
+<li>视图view</li>
+</ul>
+<p>一个缓冲器的图形显示。多个视图可以显示相同的缓冲液。</p>
+<ul>
+<li>插件plugin</li>
+</ul>
+<p>impemented Python中的功能，它可以由一个命令或多个命令。它可以被包含在一个_的.py_文件或许多 _的.py_文件。</p>
+<ul>
+<li>包package</li>
+</ul>
+<p>这个词是模糊的崇高文字的背景下，因为它可以指一个Python包（不太可能），一个文件夹里面的<code>包package</code> 或_.sublime包_文件。大部分的时候，它意味着内部的文件夹<code>包package</code>含属于共同的资源，其中建立一个新的功能或提供一种用于编程或标记语言支持。</p>
+<ul>
+<li>面板panel</li>
+</ul>
+<p>一个输入/输出部件，如搜索面板或输出面板。</p>
+<ul>
+<li>覆盖overlay</li>
+</ul>
+<p>一种特殊的输入小部件。例如，转到一切皆有覆盖。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>OSX本地化文件夹 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;OSX本地化文件夹
+    <span class="updated">Page Updated&nbsp;
+      2015-02-09 19:10
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">OSX本地化文件夹</div>
+
+  <h2 id="step-1">Step 1: 添加字符串至本地化配置文件</h2>
+<blockquote>
+<p>1.打开 Finder，进入</p>
+</blockquote>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">System</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">CoreService</span><span class="o">/</span><span class="n">SystemFolderLocalizations</span><span class="o">/</span>  
+<span class="p">(</span><span class="o">/</span><span class="err">系统</span><span class="o">/</span><span class="err">资源库</span><span class="o">/</span><span class="n">CoreService</span><span class="o">/</span><span class="n">SystemFolderLocalizations</span><span class="o">/</span><span class="p">)</span><span class="err">。</span>
+</pre></div>
+
+
+<blockquote>
+<p>2.进入 zh_CN.lproj 文件夹，看到下面有一个文件叫 SystemFolderLocalizations.strings。字符串就存放在这个文件里。</p>
+<p>3.修改文件权限。右键单击 SystemFolderLocalizations.strings，选“显示简介”，在“共享与权限”中添加自己的用户名并设置权限为读与写。</p>
+<p>4.用Property List Editor 编辑软件打开该文件，添加以下一行：<br />
+<code>“Developer” = “开发者”;</code></p>
+<p>5.另存为同名文件目录选择,用户目录下任何地方再备份下SystemFolderLocalizations.strings,把编辑后的文件移到zh_CN.lproj目录内</p>
+<p>6.killall Finder 重新启动finder读取SystemFolderLocalizations.strings文件</p>
+</blockquote>
+<h2 id="step-2-localized">Step 2: 添加 .localized 文件</h2>
+<p>复制任意一个文件夹中的 .localized 文件到 /Developer 目录下,文件名将自动改为开发者</p>
+<h2 id="finder">如果Finder不显示本地化名称通常因为以下问题</h2>
+<p><strong><code>第一 .localized这个文件被误删除了</code></strong></p>
+<p>我们可以手工创建一个，以Home下下载为例，终端使用这个命令</p>
+<p><code>touch ~/Dowloads/.localized</code></p>
+<p><strong><code>第二 设置了错误的权限，使得Finder不能访问到</code></strong><br />
+可以使用chmod命令设置正确的权限</p>
+<p>针对上面提到的第2个问题，看别人的文件夹名称是英文的，这个就不难理解了，那些文件夹你没有权限，自然不能访问.localized，Finder自然使用原始的名字来显示给你了</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

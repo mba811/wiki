@@ -1,0 +1,306 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>persie 使用手册 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Resources">Resources</a>&nbsp;&#187;&nbsp;persie 使用手册
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 20:14
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">persie 使用手册</div>
+
+  <h1 id="_1">前言</h1>
+<p>终于动手编写用户手册了！现在，persie 的开发已经进入到“文档驱动开发”阶段了。为了测试 persie，也为了发现潜在的问题，所以我开始编写用户手册。</p>
+<p>开发 persie 的动机有很多。主要是因为我觉得 <a href="https://github.com/AndorChen/burr">burr</a> 局限性太多，我需要一个能适应更广泛要求的电子书生成工具。而且，随着我越来越深入的接触 Markdown 和外文书籍的翻译工作，越发觉得 Markdown 已经无法满足丰富的书籍排版样式要求了。以前开发 burr 时，我曾经考察过各种“文本书写语言”，包括 Markdown、AsciiDoc 和 reStructuredText 等。但当时的眼光比较短，没有想太多，直接选用了自己最为熟悉的 Markdown。虽然 Markdown 的语法很少，但通过扩展 kramdown，最终也满足了我的需求。自此，我便使用 burr 制作《<a href="http://railstutorial.org/">Ruby on Rails 教程</a>》的电子书。</p>
+<p>但是，由于我的学识有限，burr 有太多的局限性。随着时间的推移，我越发看不上 burr。是的，我自己已经开始嫌弃它了。</p>
+<p>心生厌恶之后，我又开始四处搜索，想找到一种真正适合图书排版的“文本书写语言”。因为没有时间压力，这一次我的研究更为深入一些，最终选择了 AsciiDoc。至于原因，我想有下面几点：</p>
+<ul>
+<li>
+<p>AsciiDoc 基本上算是为图书排版而生的；</p>
+</li>
+<li>
+<p>因为第一点，国外很多出版社都在使用 AsciiDoc，包括 O’Reilly。</p>
+</li>
+</ul>
+<p>第二点对我的决策影响最大，既然我所喜爱的 O’Reilly 都在使用，就证明 AsciiDoc 确实不错，而且算得上“企业级”。所以我便选定了 AsciiDoc。</p>
+<p>说来也巧，我选定书写语言之后，O’Reilly 发布了 <a href="https://atlas.oreilly.com/">Atlas</a> 服务。简单地说，Atlas 就是电子书出版的 PaaS（Platform as a Service，平台即服务），任何人、团体只要花钱都能使用。很可惜，Atlas 没有免费套餐，试用期满之后我不得不带着遗憾向它告别。</p>
+<p>不过在使用 Atlas 的过程中我得知了 O’Reilly 正在制定的一项“标准”——<a href="http://oreillymedia.github.io/HTMLBook/">HTMLBook</a>。这个标准的目的是使用 HTML5 编写文稿，而且规范化图书中的各种语义化。又一个 O’Reilly 的产物，我毫不吝啬，决定在即将开发的新工具中使用这套标准。</p>
+<p>至此，我已经大概制定好了新工具的工作流程：使用 AsciiDoc 写稿，使用 <a href="http://rubygems.org/gems/asciidoctor">Asciidoctor</a> 生成符合 HTMLBook 标准的 HTML 文件，然后再使用这个 HTML 文件生成各种格式的电子书。</p>
+<p>开发 burr 时我已经积累了一些经验，所以我知道：由 HTML 文件生成 PDF 文件使用 <a href="http://princexml.com/">PrinceXML</a>；生成 ePub 文件使用 <a href="http://rubygems.org/gems/eeepub">eeepub</a>（最终使用的是 <a href="http://rubygems.org/gems/gepub">gepub</a>）；生成 mobi 文件使用 <a href="http://www.amazon.com/gp/feature.html?docId=1000765211">kindlegen</a>。</p>
+<p>三大主流电子书格式都有着落了，剩下的就是编程了。啊，编程！</p>
+<p>我多次说过，我不是程序员，我也没打算变成程序员，主要是因为我太笨，IT 技术日新月异，我跟不上步伐。目前为止我学的最为深入的编程语言是 Ruby，不过也只是入门级。如果把精通等级从低到高以十分制算，我应该能得 1-。是的，后面还有个减号。不过我还是决定使用 Ruby 来写这个项目，毕竟这是我最“精通”的语言，而且使用 Ruby 开发命令行工具太舒服了。</p>
+<p>说写就写。本着大无畏的“死猪不怕开水烫”精神，几乎每一天我都会写上几行代码。日积月累的，时至今日，已经有了雏形了。你瞧，我都开始用它生成这份手册了。</p>
+<p>哦，我似乎忘了说为什么这个工具叫“persie”。首先，我承认我是“伪球迷”。其次，我是荷兰队的“伪球迷”。最后，我是范佩西的“伪粉丝”。这个项目大概孕育在 2014 年巴西世界杯期间，具体在哪个凌晨我记不得了。“起名字什么是最痛苦的。”所以我就直接把范佩西的姓拿来用了。我不会告诉你，我还有一个私人项目叫做 flyman，对，小飞侠，罗本。果然很“伪”。</p>
+<p>说了这么多废话，我想你看的也烦了。那咱们就进入正题吧。</p>
+<h1 id="1">第 1 章 安装</h1>
+<p>persie 的安装十分简单，但前提是你的系统中已经安装好了 Ruby，而且版本不低于 1.9.3。对系统的另一个要求是，不能使用 Windows，任何版本都不行。</p>
+<p>persie 以 Ruby gem 的形式分发，安装过程十分简单，只需在命令行中执行以下命令即可：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">persie</span>
+</pre></div>
+
+
+<p>然后，执行以下命令确认是否正确安装：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">persie</span> <span class="n">version</span>
+<span class="n">persie</span> <span class="mf">0.0.1</span>
+</pre></div>
+
+
+<p>如果输出了版本号，说明安装成功。如果提示找不到 persie 命令，说明安装失败。</p>
+<h1 id="2">第 2 章 命令行界面</h1>
+<p>persie 是命令行工具，一切操作都在命令行中完成。当然写稿除外。</p>
+<h1 id="21">2.1. 检查依赖件</h1>
+<p>安装好 persie 之后，建议你先检查系统中是否安装了所需的依赖件。方法是，在命令行中运行下述命令：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">persie</span> <span class="n">check</span>
+<span class="o">===</span> <span class="n">Check</span> <span class="n">dependencies</span> <span class="o">=================================================</span>
+<span class="nl">PrinceXML:</span> <span class="n">installed</span>
+<span class="nl">epubcheck:</span> <span class="n">installed</span>
+<span class="nl">kindlegen:</span> <span class="n">installed</span>
+<span class="o">========================================================================</span>
+</pre></div>
+
+
+<p>然后根据输出的检查报告安装尚未安装的依赖件。</p>
+<h1 id="22">2.2. 新建项目</h1>
+<p>persie 提供了一个项目骨架，可以为你生成整个项目的基本文件夹结构。在命令行中运行下述命令，记得要把<code>project-name</code> 换成你所需的文件夹名：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">persie</span> <span class="n">new</span> <span class="n">project</span><span class="o">-</span><span class="n">name</span>
+</pre></div>
+
+
+<p>这个命令会在当前目录中新建 <code>project-name</code> 文件夹。</p>
+<p>在此我要提醒一下，文件夹不要使用中文命名，路径也是一样。我不知道使用中文路径有什么后果，也不打算考虑支持中文路径。如果你使用中文名遇到了什么问题，千万别找我——不是我不想帮你，我是在引导你养成好的习惯。</p>
+<p>新建项目后会生成以下文件夹结构：</p>
+<div class="hlcode"><pre><span class="err">├──</span> <span class="n">book</span><span class="p">.</span><span class="n">adoc</span>
+<span class="err">├──</span> <span class="n">build</span>
+<span class="err">├──</span> <span class="n">images</span>
+<span class="err">├──</span> <span class="n">manuscript</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">chapter1</span><span class="p">.</span><span class="n">adoc</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">chapter2</span><span class="p">.</span><span class="n">adoc</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">preface</span><span class="p">.</span><span class="n">adoc</span>
+<span class="err">├──</span> <span class="n">theme</span>
+<span class="err">└──</span> <span class="n">tmp</span>
+</pre></div>
+
+
+<p>这些文件夹和文件的作用如表 2-1 所示：</p>
+<p>表 2-1：项目内个文件/文件夹的作用</p>
+<p>文件/文件名作用</p>
+<p><em>book.adoc</em></p>
+<p>入口文件。这个文件用于设置，以及引入其他文件。</p>
+<p><em>build</em></p>
+<p>生成的电子书都存放在这个文件夹中，各种格式放在各自的子文件夹中。</p>
+<p><em>images</em></p>
+<p>存放书稿中用到的插图。</p>
+<p><em>manuscript</em></p>
+<p>书稿，建议一章一个文件。</p>
+<p><em>theme</em></p>
+<p>各种格式电子书的主题，包括样式表、字体等。各种格式放在各自的子文件夹中。</p>
+<p><em>tmp</em></p>
+<p>临时文件。</p>
+<h1 id="23-pdf">2.3. 生成 PDF 格式电子书</h1>
+<p>写好文稿之后，如果想生成 PDF 格式电子书，可以在项目所在目录中执行如下命令：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">pdf</span>
+
+<span class="cp"># 生成样章</span>
+<span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">pdf</span> <span class="o">-</span><span class="n">s</span>
+</pre></div>
+
+
+<p>persie 使用 <a href="http://princexml.com/">PrinceXML</a> 生成 PDF 文件。所以在此之前要先安装 PrinceXML。PrinceXML 可以免费试用，试用版和授权版功能上没有任何差异，只是会在 PDF 的第一页加上 PrinceXML 的 LOGO（业界良心）。如果你觉得 LOGO 有违观瞻，可以把它删掉。删除的方法我想对于充满智慧的你应该不是问题。</p>
+<p>生成的 PDF 文件保存在 <em>./build/pdf/</em> 文件夹中。</p>
+<p>生成 PDF 文件的过程中，会在 <em>./tmp/pdf/</em> 文件夹中生成一个临时文件，PDF 文件就是由这个临时文件生成的。默认情况下不会删除这个临时文件，以便调试。</p>
+<h1 id="24-epub">2.4. 生成 ePub 格式电子书</h1>
+<p>写好文稿之后，如果想生成 ePub 格式电子书，可以在项目所在目录中执行如下命令：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">epub</span>
+
+<span class="cp"># 生成样章</span>
+<span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">epub</span> <span class="o">-</span><span class="n">s</span>
+</pre></div>
+
+
+<p>生成的 ePub 文件保存在 <em>./build/epub/</em> 文件夹中。 生成 ePub 文件的过程中，会在 <em>./tmp/epub/</em> 文件夹中生成大量临时文件<a href="http://about.ac/persie-manual/#fn-1">1</a>，ePub 文件就是由这些临时文件生成的。默认情况下不会删除这些临时文件，以便调试。</p>
+<p>如果希望生成 ePub 文件之后使用 <a href="https://github.com/IDPF/epubcheck">epubcheck</a> 验证，可以指定旗标 <code>-c</code>：</p>
+<div class="hlcode"><pre><span class="cp"># 使用 epubcheck 验证</span>
+<span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">epub</span> <span class="o">-</span><span class="n">c</span>
+</pre></div>
+
+
+<p>在此之前，你要先在自己的系统中安装 epubcheck。如果没有安装，直接跳过验证。</p>
+<h1 id="25-mobi">2.5. 生成 mobi 格式电子书</h1>
+<p>mobi 格式电子书使用 <a href="http://www.amazon.com/gp/feature.html?docId=1000765211">kindlegen</a> 生成，在此之前要先生成 ePub 格式。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">mobi</span>
+
+<span class="cp"># 生成样章</span>
+<span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">mobi</span> <span class="o">-</span><span class="n">s</span>
+</pre></div>
+
+
+<p>生成的 ePub 文件保存在 <em>./build/mobi/</em> 文件夹中。</p>
+<h1 id="26-html">2.6. 生成静态 HTML</h1>
+<p>persie 支持生成两种静态 HTML：单文件和多文件。单文件是整本书都在一个文件中显示，多文件一章一个文件。</p>
+<div class="hlcode"><pre><span class="cp"># 生成多文件</span>
+<span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">html</span>
+
+<span class="cp"># 生成多文件</span>
+<span class="err">$</span> <span class="n">persie</span> <span class="n">build</span> <span class="n">html</span> <span class="o">-</span><span class="n">m</span>
+</pre></div>
+
+
+<p>生成的单文件在 <em>./build/html/single/</em> 文件夹中。生成的多文件在 <em>./build/html/multiple/</em> 文件夹中。</p>
+<h1 id="3">第 3 章 设置</h1>
+<p>persie 的设置全在入口文件 <em>book.adoc</em> 的“头部”（AsciiDoc 中的 Header 区）。全部选项如下所示：</p>
+<div class="hlcode"><pre><span class="o">:</span><span class="n">author</span><span class="o">:</span> <span class="n">Author</span> <span class="n">Name</span>
+<span class="o">:</span><span class="n">email</span><span class="o">:</span> <span class="n">your</span><span class="err">@</span><span class="n">email</span><span class="p">.</span><span class="n">com</span>
+<span class="o">:</span><span class="n">translator</span><span class="o">:</span> <span class="n">Translator</span> <span class="n">Name</span>
+<span class="o">:</span><span class="n">translator</span><span class="o">-</span><span class="n">email</span><span class="o">:</span> <span class="n">translator</span><span class="err">@</span><span class="n">email</span><span class="p">.</span><span class="n">com</span>
+<span class="o">:</span><span class="n">author</span><span class="o">-</span><span class="n">label</span><span class="o">:</span> <span class="n">Author</span><span class="o">:</span> <span class="p">{</span><span class="n">author</span><span class="p">}</span>
+<span class="o">:</span><span class="n">translator</span><span class="o">-</span><span class="n">label</span><span class="o">:</span> <span class="n">Translator</span><span class="o">:</span> <span class="p">{</span><span class="n">translator</span><span class="p">}</span>
+<span class="o">:</span><span class="n">revnumber</span><span class="o">:</span> <span class="mf">0.0.1</span>
+<span class="o">:</span><span class="n">revdate</span><span class="o">:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">05</span><span class="n">T21</span><span class="o">:</span><span class="mi">44</span><span class="o">:</span><span class="mi">41</span><span class="o">+</span><span class="mi">08</span><span class="o">:</span><span class="mo">00</span>
+<span class="o">:</span><span class="n">version</span><span class="o">-</span><span class="n">label</span><span class="o">:</span> <span class="n">rev</span>
+<span class="o">:</span><span class="n">lang</span><span class="o">:</span> <span class="n">en</span>
+<span class="o">:</span><span class="n">description</span><span class="o">:</span> <span class="n">Tell</span> <span class="n">me</span> <span class="n">some</span> <span class="n">information</span> <span class="n">about</span> <span class="n">your</span> <span class="n">book</span><span class="p">.</span>
+<span class="o">:</span><span class="n">keywords</span><span class="o">:</span> <span class="n">the</span><span class="p">,</span> <span class="n">book</span><span class="p">,</span> <span class="n">keywords</span>
+<span class="o">:</span><span class="n">toc</span><span class="o">:</span>
+<span class="o">:</span><span class="n">toclevels</span><span class="o">:</span> <span class="mi">2</span>
+<span class="o">:</span><span class="n">toc</span><span class="o">-</span><span class="n">title</span><span class="o">:</span> <span class="n">Table</span> <span class="n">of</span> <span class="n">Contents</span>
+<span class="o">:</span><span class="n">numbered</span><span class="o">:</span>
+<span class="o">:</span><span class="n">sectnumlevels</span><span class="o">:</span> <span class="mi">3</span>
+<span class="o">:</span><span class="n">listing</span><span class="o">-</span><span class="n">caption</span><span class="o">:</span> <span class="n">Listing</span> <span class="o">%</span><span class="n">NUM</span><span class="o">%-%</span><span class="n">SUBNUM</span><span class="o">%</span><span class="p">.</span>
+<span class="o">:</span><span class="n">image</span><span class="o">-</span><span class="n">caption</span><span class="o">:</span> <span class="n">Image</span> <span class="o">%</span><span class="n">NUM</span><span class="o">%-%</span><span class="n">SUBNUM</span><span class="o">%</span><span class="p">.</span>
+<span class="o">:</span><span class="n">table</span><span class="o">-</span><span class="n">caption</span><span class="o">:</span> <span class="n">Table</span> <span class="o">%</span><span class="n">NUM</span><span class="o">%-%</span><span class="n">SUBNUM</span><span class="o">%</span><span class="p">.</span>
+<span class="o">:</span><span class="n">caption</span><span class="o">-</span><span class="n">append</span><span class="o">-</span><span class="n">space</span><span class="o">:</span>
+<span class="o">:</span><span class="n">chapter</span><span class="o">-</span><span class="n">caption</span><span class="o">:</span> <span class="n">Chapter</span> <span class="o">%</span><span class="n">NUM</span><span class="o">%</span><span class="p">.</span>
+<span class="o">:</span><span class="n">appendix</span><span class="o">-</span><span class="n">caption</span><span class="o">:</span> <span class="n">Appendix</span> <span class="o">%</span><span class="n">NUM</span><span class="o">%</span><span class="p">.</span>
+<span class="o">:</span><span class="n">imagesdir</span><span class="o">:</span> <span class="n">images</span>
+<span class="o">:</span><span class="n">uuid</span><span class="o">:</span> <span class="n">urn</span><span class="o">:</span><span class="n">uuid</span><span class="o">:</span><span class="mf">3f</span><span class="n">c0a7e0</span><span class="o">-</span><span class="mi">1730</span><span class="o">-</span><span class="mo">0132</span><span class="o">-</span><span class="n">bf6e</span><span class="o">-</span><span class="mi">482</span><span class="n">a140fb2a8</span>
+<span class="o">:</span><span class="n">isbn</span><span class="o">:</span> <span class="mi">978</span><span class="o">-</span><span class="n">xxxx</span><span class="o">-</span><span class="n">xxxx</span>
+<span class="o">:</span><span class="n">epub</span><span class="o">-</span><span class="n">identifier</span><span class="o">-</span><span class="n">scheme</span><span class="o">:</span> <span class="n">uuid</span>
+</pre></div>
+
+
+<p>执行 <code>persie new</code> 命令生成项目骨架时，不会在 <em>book.adoc</em> 文件中生成上面列出的所有设置。如果需要某项设置，可以自己添加。修改设置时要注意，头部不能含有空行。</p>
+<p>各设置的作用详述如下。</p>
+<h1 id="31">3.1. 作者信息</h1>
+<p>设置项作用备注</p>
+<p><code>:author:</code></p>
+<p>作者姓名</p>
+<p>选填</p>
+<p><code>:email:</code></p>
+<p>作者的电子邮件地址</p>
+<p>选填</p>
+<p><code>:translator:</code></p>
+<p>译者姓名</p>
+<p>选填</p>
+<p><code>:translator-email:</code></p>
+<p>译者的电子邮件地址</p>
+<p>选填</p>
+<p><code>:author-label:</code></p>
+<p>titlepage 显示的作者信息格式</p>
+<p>选填</p>
+<p><code>:translator-label:</code></p>
+<p>titlepage 显示的译者信息格式</p>
+<p>选填</p>
+<h1 id="32">3.2. 版本信息</h1>
+<p>设置项作用备注</p>
+<p><code>:revnumber:</code></p>
+<p>版本号，或者修订历史版本号</p>
+<p>选填</p>
+<p><code>:revdate:</code></p>
+<p>该版本的发布日期，使用 ISO8601 格式</p>
+<p>选填，如果不指定，则使用当前日期</p>
+<p><code>:version-label:</code></p>
+<p>显示在版本号前的文字，例如“v”或“rev”</p>
+<p>选填</p>
+<h1 id="33">3.3. 元信息</h1>
+<p>这些设置项主要用于设置 HTML 的元信息。</p>
+<p>设置项作用备注</p>
+<p><code>:lang:</code></p>
+<p>书写文稿的语言，用于设定 <code>&lt;html&gt;</code> 标签的 <code>lang</code> 属性，以及 ePub 文件的 <code>dc:language</code> 元信息</p>
+<p>选填，默认值为 <code>en</code></p>
+<p><code>:description:</code></p>
+<p>书籍内容简介，用于设定 <code>description</code>元标签，以及 ePub 文件的 <code>dc:description</code> 元信息</p>
+<p>选填</p>
+<p><code>:keywords:</code></p>
+<p>书籍内容的关键词，用于设定 <code>keywords</code> 元标签，以及 ePub 文件的 <code>dc:subject</code> 元信息</p>
+<p>选填</p>
+<h1 id="34">3.4. 目录信息</h1>
+<p>设置项作用备注</p>
+<p><code>:toc:</code></p>
+<p>是否显示目录</p>
+<p>这是布尔值选项，没有值。如果需要真值，直接写 <code>:toc:</code>；需要假值，写成 <code>:toc!:</code></p>
+<p><code>:toclevels:</code></p>
+<p>显示几级目录</p>
+<p>选填，默认显示 2 级</p>
+<p><code>:toc-title:</code></p>
+<p>目录页的标题</p>
+<p>选填，默认值是“Table of Contents”</p>
+<h1 id="35">3.5. 自动编号</h1>
+<p>自动编号涉及到章节、图片、代码清单和表格等。</p>
+<p>设置项作用备注</p>
+<p><code>:numbered:</code></p>
+<p>开启所有自动排序</p>
+<p>如要关闭，使用 <code>:numbered!:</code></p>
+<p><code>:sectnumlevels:</code></p>
+<p>自动排序到哪一级小节</p>
+<p>默认为第 3 级，例如“1.2.3 节”</p>
+<h1 id="36">3.6. 标签格式</h1>
+<p>设置项作用备注</p>
+<p><code>:listing-caption:</code></p>
+<p>代码清单标题的标签格式</p>
+<p><code>:image-caption:</code></p>
+<p>图片标题的标签格式</p>
+<p><code>:table-caption:</code></p>
+<p>表格标题的标签格式</p>
+<p><code>:caption-append-space:</code></p>
+<p>是否在标签后面加上空格</p>
+<p>只对代码清单，图片和表格的标签有效</p>
+<p><code>:chapter-caption:</code></p>
+<p>章名的标签格式</p>
+<p><code>:appendix-caption:</code></p>
+<p>附录的标签格式</p>
+<p>其中，前三项设置可以使用两种占位符：<code>%NUM%</code> 和 <code>%SUBNUM%</code>。前者表示所在章的编号，后者表示在这一章中的序号。</p>
+<p>最后两项设置可以使用一种占位符：<code>%NUM%</code>，表示章或者附录的序号。章的序号使用阿拉伯数字，附录的序号使用大写英文字母。</p>
+<h1 id="37-epub">3.7. ePub 格式专用设置</h1>
+<p>这些设置是 ePub 格式专用的。</p>
+<p>设置项作用备注</p>
+<p><code>:uuid:</code></p>
+<p>用于设置 ePub 文件的 <code>dc:identifier</code>元信息</p>
+<p>创建项目时会自动生成</p>
+<p><code>:isbn:</code></p>
+<p>用于设置 ePub 文件的 <code>dc:identifier</code>元信息</p>
+<p>选填</p>
+<p><code>:epub-identifier-scheme</code></p>
+<p><code>dc:identifier</code> 元信息使用哪种机制</p>
+<p>可选值：<code>uuid</code> 或 <code>isbn</code></p>
+<ol>
+<li>具体有多少，取决于书中有多少章节。 <a href="http://about.ac/persie-manual/#fn-ref-1">↩</a></li>
+</ol>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

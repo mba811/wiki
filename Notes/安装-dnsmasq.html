@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>安装 DNSMasq - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;安装 DNSMasq
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 19:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">安装 DNSMasq</div>
+
+  <p>连接 VPN 之后，经常打不开国内的某些网站。经高人指点，这是 DNS 的问题，推荐使用<a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">DNSMasq</a>，在本机架设简易的 DNS 服务器，让 VPN 使用本地服务器解析域名。以下对安装的过程做一记录，以备不时之需。</p>
+<h2 id="dnsmasq">安装 DNSMasq</h2>
+<p>我使用的系统是 Mac OS X，因此使用 homebrew 安装。安装方式如下：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">up</span> <span class="o">&amp;</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">dnsmasq</span>
+</pre></div>
+
+
+<p>DNSMasq 比较小，下载过程很快。</p>
+<p>然后，根据 homebrew 的提示，执行几个命令：</p>
+<div class="hlcode"><pre><span class="n">cp</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">/</span><span class="n">dnsmasq</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">example</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">dnsmasq</span><span class="p">.</span><span class="n">conf</span>
+<span class="n">sudo</span> <span class="n">cp</span> <span class="o">-</span><span class="n">fv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">dnsmasq</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchDaemons</span>
+<span class="n">sudo</span> <span class="n">launchctl</span> <span class="n">load</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchDaemons</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">dnsmasq</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>这三个命令的作用分别是：</p>
+<ul>
+<li>把配置示例复制到指定位置；</li>
+<li>把 DNSMasq 加入启动列表，开机自启动；</li>
+<li>手动启动 DNSMasq。</li>
+</ul>
+<p>为了操作方便，我还定义了两个命令别名，用于手动启动和停止 DNSMasq：</p>
+<div class="hlcode"><pre><span class="n">alias</span> <span class="n">start</span><span class="o">-</span><span class="n">dnsmasq</span><span class="o">=</span><span class="s">&quot;sudo launchctl start homebrew.mxcl.dnsmasq&quot;</span>
+<span class="n">alias</span> <span class="n">stop</span><span class="o">-</span><span class="n">dnsmasq</span><span class="o">=</span><span class="s">&quot;sudo launchctl stop homebrew.mxcl.dnsmasq&quot;</span>
+</pre></div>
+
+
+<h2 id="dnsmasq_1">配置 DNSMasq</h2>
+<p>DNSMasq 的配置文件是 <code>/usr/local/etc/dnsmasq.conf</code>。在文本编辑器中打开，在文件末尾写入如下设置（<a href="https://ruby-china.org/topics/20270">via</a>）：</p>
+<div class="hlcode"><pre><span class="n">server</span><span class="o">=</span><span class="mf">8.8.8.8</span>
+<span class="n">server</span><span class="o">=</span><span class="mf">8.8.4.4</span>
+
+<span class="cp">#Bilibili</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">bilibili</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#fm</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">jing</span><span class="p">.</span><span class="n">fm</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">xiami</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Baidu</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">baidu</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">bdstatic</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#QQ</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">qq</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">qcloud</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Taobao</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">taobao</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">tmall</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">alipay</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">alibaba</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">taobaocdn</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Sina</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">sina</span><span class="p">.</span><span class="n">com</span><span class="p">.</span><span class="n">cn</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">weibo</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#163</span>
+<span class="n">server</span><span class="o">=/</span><span class="mf">163.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">youdao</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">netease</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Zhihu</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">zhihu</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">zhimg</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Apple</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">apple</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">autonavi</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Sohu</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">sohu</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">sogou</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Ifeng</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">ifeng</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="mf">360.</span><span class="n">cn</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+
+<span class="cp">#Youku</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">youku</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">ykimg</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">tudou</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">soku</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#douban</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">douban</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#TV</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">pptv</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">ppstream</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">pps</span><span class="p">.</span><span class="n">tv</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">letv</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="mf">56.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="mf">58.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">iqiyi</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">cntv</span><span class="p">.</span><span class="n">cn</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#ShopMall</span>
+<span class="n">server</span><span class="o">=/</span><span class="mi">51</span><span class="n">buy</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">yixun</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">yihaodian</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">dangdang</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">qunar</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">meituan</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">jd</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="mi">360</span><span class="n">buyimg</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Xunlei</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">xunlei</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">kankan</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Ruby China</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">ruby</span><span class="o">-</span><span class="n">china</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#CDN</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">tanx</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">aliyun</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">upaiyun</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#Map</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">amap</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">hvvc</span><span class="p">.</span><span class="n">us</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#cn</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">cn</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+
+<span class="cp">#guokr</span>
+<span class="n">server</span><span class="o">=/</span><span class="n">guokr</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="mf">114.114.114.114</span>
+</pre></div>
+
+
+<p>如果之前已经启动 DNSMasq，现在重启。</p>
+<h2 id="vpn">配置 VPN</h2>
+<p>打开 VPN 的高级设置，在 DNS 选项卡中填入 <code>127.0.0.1</code>，让 VPN 使用本地 DNS 服务器解析域名。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

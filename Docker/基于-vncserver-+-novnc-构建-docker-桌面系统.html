@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>基于 VNCServer + noVNC 构建 Docker 桌面系统 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;基于 VNCServer + noVNC 构建 Docker 桌面系统
+    <span class="updated">Page Updated&nbsp;
+      2015-05-19 00:23
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">基于 VNCServer + noVNC 构建 Docker 桌面系统</div>
+
+  <h3 id="_1">简介</h3>
+<p><a href="http://www.tinylab.org/based-on-ssh-build-docker-xpra-desktop/">基于 ssh + Xpra 构建 Docker 桌面系统</a> 刚介绍了如何通过 Ssh + <a href="http://xpra.org/">Xpra</a> 构建 C/S 架构的 Docker 桌面系统。</p>
+<p>本文介绍另外一种 B/S 架构的 Docker 桌面系统，即基于 VNCServer + <a href="http://kanaka.github.io/noVNC/">noVNC</a> 构建一个可以通过浏览器直接访问的 Docker 桌面系统。</p>
+<h3 id="novnc">noVNC</h3>
+<p>VNCServer 是一个为了满足分布式用户共享服务器资源，而在服务器开启的一项服务，对应的客户端软件有图形化客户端 VNCViewer，而 noVNC 则是 HTML5 VNC 客户端，它采用 HTML 5 WebSockets, Canvas 和 JavaScript 实现。</p>
+<p>noVNC 被普遍用在各大云计算、虚拟机控制面板中，比如 OpenStack Dashboard 和 OpenNebula Sunstone 都用的是 noVNC。noVNC 采用 WebSockets 实现，但是当前蛮多 VNC 服务器都不支持 WebSockets，所以 noVNC 不能直连 VNC 服务器，而是需要开启一个代理来做 WebSockets 和 TCP sockets 之间的转换。这个代理叫做 websockify。</p>
+<p>更多细节请访问末尾的参考资料。</p>
+<h3 id="fcwudocker-ubuntu-vnc-desktop">下载镜像：fcwu/docker-ubuntu-vnc-desktop</h3>
+<p>1</p>
+<p>$ docker pull fcwu/docker-ubuntu-vnc-desktop</p>
+<h3 id="vncserver">启动容器并加载 VNCServer 服务</h3>
+<p>1</p>
+<p>$ CONTAINER_ID=$(docker run -d -p 6080:6080 dorowu/ubuntu-desktop-lxde-vnc)</p>
+<h3 id="_2">获得登录密码</h3>
+<p>1</p>
+<p>2</p>
+<p>$ docker logs $CONTAINER_ID | sed -n 1p</p>
+<p>User: ubuntu Pass: ubuntu</p>
+<p><strong>注</strong>：<code>Pass</code> 后的字符串即为密码，这里为 <code>ubuntu</code>。</p>
+<h3 id="_3">通过浏览器登录</h3>
+<p>测试过的浏览器有 Chrome。访问方式：</p>
+<ul>
+<li>
+<p>本地宿主机访问</p>
+<ul>
+<li><code>http://localhost:6080/vnc.html</code></li>
+<li>
+<p>远程访问</p>
+</li>
+<li>
+<p>先获取 IP 地址</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>$ docker exec 8222763de ifconfig eth0 | grep "inet addr:"</p>
+<p>inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">远程访问：`</span><span class="n">http</span><span class="o">:</span><span class="c1">//172.17.0.1:6080/vnc.html`</span>
+</pre></div>
+
+
+<p>连接后，输入上面获得的密码 <code>ubuntu</code> 即可访问。</p>
+<h3 id="_4">效果图</h3>
+<p><img alt="Docker desktop with VNCServer + noVNC" src="http://www.tinylab.org/wp-content/uploads/2015/05/docker-desktop-with-vncserver+novnc.jpg" /></p>
+<h3 id="_5">自主构建</h3>
+<p>1</p>
+<p>2</p>
+<p>3</p>
+<p>$ git clone https://github.com/fcwu/docker-ubuntu-vnc-desktop.git</p>
+<p>$ cd docker-ubuntu-vnc-desktop</p>
+<p>$ docker build -t tinylab/ubuntu-desktop-lxde-vnc .</p>
+<h3 id="_6">参考资料</h3>
+<ul>
+<li><a href="http://www.infoq.com/cn/news/2010/07/html5-novnc">HTML 5案例研究：使用WebSockets、Canvas与JavaScript构建noVNC客户端</a></li>
+<li><a href="http://www.vpsee.com/2013/07/integrating-novnc-with-our-vm-control-panel/">使用 noVNC 开发 Web 虚拟机控制台</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

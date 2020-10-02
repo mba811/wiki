@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>如何在一台Mac运行多个Dropbox账户 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;如何在一台Mac运行多个Dropbox账户
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 22:20
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">如何在一台Mac运行多个Dropbox账户</div>
+
+  <p>虽然Dropbox官方的帮助里说明了<a href="http://dropboxchina.com/help/Desktop/run-two-dropbox-on-same-computer.html">不允许一台电脑同时运行多个Dropbox账户</a>，但是这个需求还是挺多的，所以大家都出了个种招来解决这个问题。比如Windows系统下的<a href="http://dropboxchina.com/help/apps/dropboxen.html">Dropboxen</a>就可以让Windows<a href="http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=%B5%E7%C4%D4&amp;k0=%B5%E7%C4%D4&amp;kdi0=0&amp;luki=5&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0">电脑</a>运行多个Dropbox程序。苹果的Mac电脑，其实也可以的，下面是网上的高人给出的方法，大家照做就可以了。</p>
+<p>步骤1（共10）：</p>
+<p>打开 Mac 的终端（默认藏在 Launchpad-&gt;实用工具）；</p>
+<p><strong>步骤2：</strong></p>
+<p>输入 bash -&gt; 回车 -&gt; 单行内输入 HOME=$HOME/.dropbox-alt /Applications/Dropbox.app/Contents/MacOS/Dropbox &amp;</p>
+<p>效果应该是下面这样：</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/EXMzTy.jpg" /></p>
+<p><strong>步骤3：</strong></p>
+<p>将会在顶部菜单栏里看到又一个 Dropbox 图标，如下图：</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/rf4Vke.jpg" /></p>
+<p><strong>步骤4：</strong></p>
+<p>一个新的 Dropbox 窗口将会弹出，如下图所示。只需要根据提示一步步设置。</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/zOhcrw.jpg" /></p>
+<p><strong>步骤5：</strong></p>
+<p>在上述设置的最后一步，勾选 “I want to choose where to <a href="http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=put&amp;k0=put&amp;kdi0=0&amp;luki=3&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0">put</a> my Dropbox folder”，并在下方点击“Change…”按钮指定一个本地存放路径。</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/aOuQdd.jpg" /></p>
+<p>全部设置完成后，新的 Dropbox 账号就此在本地建立。接下来的步骤是创建系统启动项。</p>
+<p><strong>步骤6：</strong></p>
+<p>再次打开终端，输入 mkdir -p ~/wherever you like/DropboxAltStarter.app/Contents/MacOS/ （其中 ~/wherever you like/ 替换为你想使用的任何文件夹名称），如 ~/Documents/。</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/XUd7KD.jpg" /></p>
+<p>于是你创建了如下应用，名为 DropboxAltStarter：</p>
+<p><a href="http://dropboxchina.com/pictures/2012/12/nKlGX0.jpg"><img alt="" src="http://dropboxchina.com/pictures/2012/12/nKlGX0.jpg" /></a></p>
+<p><strong>步骤7：</strong></p>
+<p>打开任意纯文本编辑<a href="http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=%B9%A4%BE%DF&amp;k0=%B9%A4%BE%DF&amp;kdi0=0&amp;luki=6&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0">工具</a>，如系统自带的 TextEdit，输入以下内容并保存为 Info.plist：</p>
+<div class="hlcode"><pre><span class="cp">&lt;?[</span><span class="kt">xml</span><span class="cp">](http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=xml&amp;k0=xml&amp;kdi0=0&amp;luki=7&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0) version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>CFBundlePackageType<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>APPL<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>CFBundleExecutable<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>DropboxAltStarter<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>LSUIElement<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>1<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+
+!<span class="cp">[]</span>(http://dropboxchina.com/pictures/2012/12/RGmoZZ.jpg)
+
+**步骤8：**
+
+右击你在步骤6中创建的 DropboxAltStarter 文件夹，选择“显示包内容（Show Package Contents）”。
+
+!<span class="cp">[]</span>(http://dropboxchina.com/pictures/2012/12/qE873b.jpg)
+
+将步骤7中创建的 Info.plist 文件丢到 Contents/ 文件夹下（地位与 MacOS/ 文件夹并列）。
+
+!<span class="cp">[]</span>(http://dropboxchina.com/pictures/2012/12/gFNK6U.jpg)
+
+!<span class="cp">[]</span>(http://dropboxchina.com/pictures/2012/12/HHmfa7.jpg)
+</pre></div>
+
+
+<p><strong>步骤9：</strong></p>
+<p>再次用 TextEdit 编辑创建以下文本：</p>
+<table class="hlcodetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="hlcode"><pre><span class="c">#!/bin/bash</span>
+<span class="nv">HOME</span><span class="o">=</span>/Users/<span class="nv">$USER</span>/.dropbox-alt /Applications/Dropbox.app/Contents/MacOS/Dropbox
+</pre></div>
+</td></tr></table>
+
+<p>保存上述文件，命名为 DropboxAltStarter，注意此时不需要后缀，因此需要同时注意勾选“if no extension is provided, use '.txt'”选项。</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/7m1tbW.jpg" /></p>
+<p>参照第8步位置，将这个 DropboxAltStarter 文件丢进 Contents/MacOS/ 文件夹（注意这次是丢进 MacOS/ 文件夹里哦）。</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/u9ypfH.jpg" /></p>
+<p><strong>步骤10：</strong></p>
+<p>继续打开终端，输入 chmod 755，再从 Finder 中将刚才创建的 DropboxAltStarter 拖拽到终端中（于是会自动补填完整文件路径），回车。</p>
+<p><img alt="" src="http://dropboxchina.com/pictures/2012/12/dXzywt.jpg" /></p>
+<div class="hlcode"><pre><span class="o">!</span><span class="p">[](</span><span class="n">http</span><span class="o">:</span><span class="c1">//dropboxchina.com/pictures/2012/12/FUdPDh.jpg)</span>
+
+<span class="err">至此所有创建工作完成！</span>
+
+<span class="err">优化收尾（适合有整理癖的你）：</span>
+
+<span class="mi">1</span><span class="err">、你可以将上述文件夹移到系统的“应用程序”目录中，然后双击即可运行。</span>
+<span class="o">!</span><span class="p">[](</span><span class="n">http</span><span class="o">:</span><span class="c1">//dropboxchina.com/pictures/2012/12/9EKg8T.jpg)</span>
+
+<span class="mi">2</span><span class="err">、你也可以将其加入系统启动项中，方法是单击屏幕左上方</span><span class="p">[</span><span class="err">苹果</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=%C6%BB%B9%FB&amp;k0=%C6%BB%B9%FB&amp;kdi0=0&amp;luki=8&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0)，选择 System Preferences &gt; Accounts &gt; Login Items （系统偏好设置 &gt; 用户与群组 &gt; 登录项）。</span>
+<span class="o">!</span><span class="p">[](</span><span class="n">http</span><span class="o">:</span><span class="c1">//dropboxchina.com/pictures/2012/12/r07HpC.jpg)</span>
+</pre></div>
+
+
+<p>当然，为了区分不同的 Dropbox <a href="http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=%CE%C4%BC%FE%BC%D0&amp;k0=%CE%C4%BC%FE%BC%D0&amp;kdi0=0&amp;luki=10&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0">文件夹</a>，你更可以通过 Mac 系统为它们指定各自的特殊图标或<a href="http://cpro.baidu.com/cpro/ui/uijs.php?c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;jk=63fbc9a90655375e&amp;k=%B1%EA%C7%A9&amp;k0=%B1%EA%C7%A9&amp;kdi0=0&amp;luki=1&amp;n=10&amp;p=baidu&amp;q=68038019_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=5e375506a9c9fb63&amp;ssp2=1&amp;stid=0&amp;t=tpclicked3_hc&amp;tu=u1692074&amp;u=http%3A%2F%2Fwww%2Edropboxchina%2Ecom%2Fhelp%2Ftips%2Fmulti%2Ddropbox%2Daccounts%2Don%2Dmac%2Ehtml&amp;urlid=0">标签</a>颜色，这全依赖你个人喜好。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

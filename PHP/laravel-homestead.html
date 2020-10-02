@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Laravel Homestead - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#PHP">PHP</a>&nbsp;&#187;&nbsp;Laravel Homestead
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:12
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Laravel Homestead</div>
+
+  <ul>
+<li><a href="http://laravel.com/docs/5.0/homestead#introduction">介绍</a></li>
+<li><a href="http://laravel.com/docs/5.0/homestead#included-software">包含的软件</a></li>
+<li><a href="http://laravel.com/docs/5.0/homestead#installation-and-setup">安装与设置</a></li>
+<li><a href="http://laravel.com/docs/5.0/homestead#daily-usage">日常使用</a></li>
+<li><a href="http://laravel.com/docs/5.0/homestead#ports">港口</a></li>
+<li><a href="http://laravel.com/docs/5.0/homestead#blackfire-profiler">Blackfire探查</a></li>
+</ul>
+<h2 id="_1"><a href="http://laravel.com/docs/5.0/homestead#introduction">介绍</a></h2>
+<p>Laravel努力使整个PHP开发经验令人愉快的，包括你的本地开发环境。<a href="http://vagrantup.com/">流浪者</a>提供了一种简单，优雅的方式来管理和提供虚拟机。</p>
+<p>Laravel家园是一个官方的，预包装流浪汉“盒子”，为您提供而不需要安装PHP，HHVM，web服务器一个美妙的开发环境，并在本地计算机上的任何其它服务器软件。没有关于搞乱你的操作系统更令人担忧！流浪箱是完全一次性的。如果出现错误，你可以摧毁并在几分钟内重新创建盒！</p>
+<p>宅基地上运行任何Windows，Mac或Linux系统，并包括Nginx的网络服务器，PHP 5.6，MySQL和Postgres的，Redis的，Memcached的，和所有其他好吃的东西，你需要开发惊人Laravel应用。</p>
+<blockquote>
+<p><strong>注：</strong>如果您使用的是Windows，你可能需要启用硬件虚拟化（VT-X）。它通常可以通过你的BIOS启用。</p>
+</blockquote>
+<p>宅基地目前正在建造和使用放浪1.7测试。</p>
+<h2 id="_2"><a href="http://laravel.com/docs/5.0/homestead#included-software">包含的软件</a></h2>
+<ul>
+<li>Ubuntu的14.04</li>
+<li>PHP 5.6</li>
+<li>HHVM</li>
+<li>Nginx的</li>
+<li>MySQL的</li>
+<li>Postgres的</li>
+<li>节点（与鲍尔，咕噜和咕嘟咕嘟）</li>
+<li>Redis的</li>
+<li>Memcached的</li>
+<li>Beanstalkd</li>
+<li><a href="http://laravel.com/docs/5.0/envoy">Laravel特使</a></li>
+<li><a href="http://laravel.com/docs/5.0/homestead#blackfire-profiler">Blackfire探查</a></li>
+</ul>
+<h2 id="_3"><a href="http://laravel.com/docs/5.0/homestead#installation-and-setup">安装与设置</a></h2>
+<h3 id="virtualbox-vmware">安装VirtualBox虚拟器/ VMware与放浪</h3>
+<p>下水前的家园环境，您必须安装<a href="https://www.virtualbox.org/wiki/Downloads">的VirtualBox</a>和<a href="http://www.vagrantup.com/downloads.html">流浪汉</a>。这两个软件包提供易于使用的可视化安装所有流行的操作系统。</p>
+<h4 id="vmware">VMware</h4>
+<p>除了​​VirtualBox的，宅基地也支持VMware。要使用VMware提供者，你将需要购买两个VMware Fusion的/ Desktop和<a href="http://www.vagrantup.com/vmware"> VMware Vagrant plug-in</a>。VMware提供更快的共享文件夹中表现出来的箱子。</p>
+<h3 id="adding-the-vagrant-box">Adding The Vagrant Box</h3>
+<p>一旦VirtualBox虚拟/ VMware和流浪已经安装，您应该添加<code>laravel/homestead</code>在终端使用下面的命令框，您的放浪安装。这将需要几分钟的时间下载框，这取决于你的互联网连接速度：</p>
+<div class="hlcode"><pre><span class="n">vagrant</span> <span class="n">box</span> <span class="n">add</span> <span class="n">laravel</span><span class="o">/</span><span class="n">homestead</span>
+</pre></div>
+
+
+<p>如果此命令失败，则可能有一个旧版本的流浪需要的完整URL：</p>
+<div class="hlcode"><pre><span class="n">vagrant</span> <span class="n">box</span> <span class="n">add</span> <span class="n">laravel</span><span class="o">/</span><span class="n">homestead</span> <span class="n">https</span><span class="o">:</span><span class="c1">//atlas.hashicorp.com/laravel/boxes/homestead</span>
+</pre></div>
+
+
+<h3 id="_4">安装宅基</h3>
+<p>你可以通过简单地克隆库手动安装家园。考虑克隆库成<code>宅基地</code>文件夹中的“家”目录下，如宅基地框将作为主机所有的Laravel（和PHP）的项目：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/laravel/homestead.git Homestead</span>
+</pre></div>
+
+
+<p>一旦你已经克隆了宅基地库，运行<code>bash的初始化。 SH</code>从宅基目录下创建命令<code>家园。 YAML</code>配置文件：</p>
+<div class="hlcode"><pre><span class="n">bash</span> <span class="n">init</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+
+
+<p>该<code>宅地。 YAML</code>文件将被放置在你的<code>〜/ 。宅基地</code>目录。</p>
+<h3 id="_5">配置您的提供商</h3>
+<p>该<code>供应商</code>在你的钥匙<code>家园。 YAML</code>文件指示哪些流浪提供商应使用：<code>VirtualBox的</code>，<code>vmware_fusion</code>键（Mac OS X）或<code>vmware_workstation</code>（Windows）中。你可以设置你喜欢这对任何供应商。</p>
+<div class="hlcode"><pre><span class="n">provider</span><span class="o">:</span> <span class="n">virtualbox</span>
+</pre></div>
+
+
+<h3 id="ssh">设置您的SSH密钥</h3>
+<p>接下来，你应该编辑<code>宅基地。 YAML</code>文件。在这个文件中，您可以配置的路径，你的公共SSH密钥，以及您希望得到您的主机和宅基地虚拟机之间共享文件夹。</p>
+<p>没有一个SSH密钥？在Mac和Linux，你可以使用下面的命令通常会产生一个SSH密钥对：</p>
+<div class="hlcode"><pre><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">C</span> <span class="s">&quot;you@homestead&quot;</span>
+</pre></div>
+
+
+<p>在Windows上，您可以安装<a href="http://git-scm.com/">的Git</a>，使用<code>Git的猛砸</code>外壳包括在GIT发出上面的命令。或者，你可以使用<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">腻子</a>和<a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTYgen</a>。</p>
+<p>一旦你创建了一个SSH密钥，指定要在关键的路径<code>授权</code>你的财产<code>家园。 YAML</code>文件。</p>
+<h3 id="configure-your-shared-folders">Configure Your Shared Folders</h3>
+<p>该<code>文件夹</code>的属性<code>家园。 YAML</code>文件列出所有你希望你的家园环境共享的文件夹。由于这些文件夹中的文件被更改，他们将保持同步你的本地计算机和宅基地环境之间。您可以配置多个共享文件夹的必要！</p>
+<p>要启用<a href="http://docs.vagrantup.com/v2/synced-folders/nfs.html">NFS</a>，只需添加一个简单的标志，您同步文件夹：</p>
+<div class="hlcode"><pre><span class="nl">folders:</span>
+    <span class="o">-</span> <span class="n">map</span><span class="o">:</span> <span class="o">~/</span><span class="n">Code</span>
+      <span class="nl">to:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">Code</span>
+      <span class="nl">type:</span> <span class="s">&quot;nfs&quot;</span>
+</pre></div>
+
+
+<h3 id="nginx">配置您的Nginx网站</h3>
+<p>不熟悉Nginx的？没问题。该<code>网站</code>属性让您轻松映射“域”到一个文件夹在你的家园环境。样本站点配置中包括了<code>宅基地。 YAML</code>文件。同样，你可以添加任意多的网站到你的家园环境是必要的。宅基地可作为每个项目Laravel你工作在一个方便，虚拟化环境！</p>
+<p>你可以做任何宅基网站上使用<a href="http://hhvm.com/">HHVM</a>通过设置<code>hhvm</code>选项<code>真</code>：</p>
+<div class="hlcode"><pre><span class="nl">sites:</span>
+    <span class="o">-</span> <span class="n">map</span><span class="o">:</span> <span class="n">homestead</span><span class="p">.</span><span class="n">app</span>
+      <span class="nl">to:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">Code</span><span class="o">/</span><span class="n">Laravel</span><span class="o">/</span><span class="n">public</span>
+      <span class="nl">hhvm:</span> <span class="nb">true</span>
+</pre></div>
+
+
+<p>每个站点将通过端口44300是通过访问通过HTTP端口8000和HTTPS。</p>
+<h3 id="_6">巴什别名</h3>
+<p>来砸别名添加到您的家园中，只需添加到<code>别名</code>中的根文件<code>〜/ 。宅基地</code>目录。</p>
+<h3 id="_7">推出的流浪盒</h3>
+<p>一旦你编辑的<code>家园。 YAML</code>根据自己的喜好，在运行<code>了漂泊不定</code>从您的宅基目录的命令。</p>
+<p>无业游民将启动虚拟机，并自动配置您的共享文件夹和网站Nginx的！摧毁机器，你可以使用<code>颠沛流离破坏-力</code>命令。</p>
+<p>不要忘了添加“域”为你的Nginx网站的<code>主机</code>计算机上的文件！该<code>主机</code>文件重定向将您的要求为当地域到您的家园环境。在Mac和Linux，这个文件位于<code>/等/主机</code>。在Windows上，它位于<code>ç ： \ 的Windows \ System32下\驱动程序\等\主机</code>。您添加到该文件中的行会如下所示：</p>
+<div class="hlcode"><pre><span class="mf">192.168.10.10</span>  <span class="n">homestead</span><span class="p">.</span><span class="n">app</span>
+</pre></div>
+
+
+<p>确保列出的IP地址是您在设置一个<code>家园。 YAML</code>文件。一旦你添加域到您的<code>主机</code>文件，您可以通过Web浏览器访问该网站！</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//homestead.app</span>
+</pre></div>
+
+
+<p>要了解如何连接到数据库，阅读！</p>
+<h2 id="_8"><a href="http://laravel.com/docs/5.0/homestead#daily-usage">日常使用</a></h2>
+<h3 id="ssh_1">连接通过SSH</h3>
+<p>因为你可能需要SSH到您的机器家园频繁，请考虑您的主机快速SSH，创造一个“别名”入宅框：</p>
+<div class="hlcode"><pre><span class="n">alias</span> <span class="n">vm</span><span class="o">=</span><span class="s">&quot;ssh vagrant@127.0.0.1 -p 2222&quot;</span>
+</pre></div>
+
+
+<p>一旦你创建这个别名，你可以简单地使用“vagrant ssh”到您的机器家园从任何地方你的系统上。</p>
+<p>或者，您可以使用<code>SSH流浪汉</code>从宅基目录的命令。</p>
+<h3 id="_9">连接到您的数据库</h3>
+<p>一个<code>宅基地</code>数据库配置为MySQL和Postgres的开箱。为了更方便，Laravel的<code>本地</code>数据库配置设置默认使用此数据库。</p>
+<p>要通过Navicat的或续集临主设备连接到您的MySQL或Postgres数据库，您应该连接到<code>127.0 ，0.1</code>和端口33060（MySQL的）或54320（Postgres的）。这两个数据库的用户名和密码是<code>宅基地</code> / <code>秘密</code>。</p>
+<blockquote>
+<p><strong>注意：</strong>您应该只连接到数据库，从您的主机时，使用这些非标准端口。您将使用默认的3306和5432端口，在Laravel数据库配置文件，因为Laravel正在运行_中_的虚拟机。</p>
+</blockquote>
+<h3 id="_10">添加其他网站</h3>
+<p>一旦你的家园环境配置和运行，你可能需要添加额外的Nginx网站为您Laravel应用。如你想在一个单一的环境家园，你可以运行尽可能多的Laravel安装。有两种方法可以做到这一点：首先，你可以简单地添加网站到你的<code>家园。 YAML</code>文件，然后运行<code>游民提供</code>从宅基目录。</p>
+<blockquote>
+<p><strong>注意：</strong>这个过程是破坏性的。当运行<code>提供</code>命令，现有数据库将被销毁并重新创建。</p>
+</blockquote>
+<p>或者，你可以使用<code>服务</code>脚本可在您的家园环境。要使用<code>服务</code>的脚本，SSH到您的家园环境，运行以下命令：</p>
+<div class="hlcode"><pre><span class="n">serve</span> <span class="n">domain</span><span class="p">.</span><span class="n">app</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">Code</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">public</span><span class="o">/</span><span class="n">directory</span> <span class="mi">80</span>
+</pre></div>
+
+
+<blockquote>
+<p><strong>注：</strong>在运行后<code>发球</code>命令，不要忘了在新的站点添加到<code>主机</code>的主机上的文件！</p>
+</blockquote>
+<h2 id="_11"><a href="http://laravel.com/docs/5.0/homestead#ports">港口</a></h2>
+<p>以下端口转发到您的家园环境：</p>
+<ul>
+<li><strong>SSH:</strong> 2222 → Forwards To 22</li>
+<li><strong>HTTP:</strong> 8000 → Forwards To 80</li>
+<li><strong>HTTPS:</strong> 44300 → Forwards To 443</li>
+<li><strong>MySQL:</strong> 33060 → Forwards To 3306</li>
+<li><strong>Postgres:</strong> 54320 → Forwards To 5432</li>
+</ul>
+<h3 id="_12">添加额外的端口</h3>
+<p>如果你愿意，你可以转发其他端口的流浪框，以及指定的协议：</p>
+<div class="hlcode"><pre><span class="nl">ports:</span>
+    <span class="o">-</span> <span class="n">send</span><span class="o">:</span> <span class="mi">93000</span>
+      <span class="nl">to:</span> <span class="mi">9300</span>
+    <span class="o">-</span> <span class="n">send</span><span class="o">:</span> <span class="mi">7777</span>
+      <span class="nl">to:</span> <span class="mi">777</span>
+      <span class="nl">protocol:</span> <span class="n">udp</span>
+</pre></div>
+
+
+<h2 id="blackfire"><a href="http://laravel.com/docs/5.0/homestead#blackfire-profiler">Blackfire探查</a></h2>
+<p><a href="https://blackfire.io/">Blackfire探查</a>由SensioLabs自动收集有关数据代码的执行，例如RAM，CPU时间和磁盘I / O。宅基地是一件轻而易举的使用这个分析器为自己的应用程序。</p>
+<p>所有适当的包已经被安装在你的家园中，你只需要设置一个Blackfire <strong>服务器</strong> ID和令牌在你的<code>Homestead.yaml</code>文件：</p>
+<div class="hlcode"><pre><span class="nl">blackfire:</span>
+    <span class="o">-</span> <span class="n">id</span><span class="o">:</span> <span class="n">your</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">id</span>
+      <span class="nl">token:</span> <span class="n">your</span><span class="o">-</span><span class="n">server</span><span class="o">-</span><span class="n">token</span>
+      <span class="n">client</span><span class="o">-</span><span class="n">id</span><span class="o">:</span> <span class="n">your</span><span class="o">-</span><span class="n">client</span><span class="o">-</span><span class="n">id</span>
+      <span class="n">client</span><span class="o">-</span><span class="n">token</span><span class="o">:</span> <span class="n">your</span><span class="o">-</span><span class="n">client</span><span class="o">-</span><span class="n">token</span>
+</pre></div>
+
+
+<p>一旦你已经配置了Blackfire凭证，再提供使用中<code>vagrant provision</code>，从你的家园目录。当然，一定要查看<a href="https://blackfire.io/getting-started">Blackfire文档，</a>以了解如何安装Blackfire伴侣扩展您的网络浏览器。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

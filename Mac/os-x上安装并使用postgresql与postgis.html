@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>OS X上安装并使用PostgreSQL与PostGIS - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;OS X上安装并使用PostgreSQL与PostGIS
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 18:29
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">OS X上安装并使用PostgreSQL与PostGIS</div>
+
+  <p>PostgreSQL是流行的先进开源关系型数据库，PostGIS是PostgreSQL空间信息扩展部分，支持空间索引与空间查询。越来越多的GIS应用使用两者的组合来完成后台空间数据的存储与获取，支撑前端应用系统。因其良好的性能与稳定表现，持续得到大家的追捧。避开当前流行的大数据与NoSQL，这种组合是完成一个稳健GIS系统的经典组合。</p>
+<p>两个软件虽然都是开源软件，但有很好的社区支持，产品化非常好。特别是针对Windows平台的支持，简单易用的安装包，自带的可视化工具PgAdmin3以及shp2pgsql_GUI，让不熟悉两者，甚至是不熟悉数据库的开发人员也能快速上手：使用shp2pgsql_GUI把Shape文件导入到PostGIS；使用PgAdmin3可视化运行SQL操作数据。在生产环境中，一般选择使用Linux平台，安装可以选择对应的发行包，也可以手工编译安装，<code>configure &amp;&amp; make &amp;&amp; make install</code>一马平川。在OS X系统上，PostgreSQL的安装有多种方法，最简单的，还是类似Windows下的可视化安装包，但使用OS X的用户大多喜欢使用类似Linux的方法。所以，这里我们还是选用神器<code>brew</code>的方法，并可深入了解OS X的用户管理与数据库初始化。</p>
+<h3 id="_1">一.安装</h3>
+<p>使用<code>brew</code>安装，过程是相当的Nice。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">postgresql</span>   <span class="err">#</span> <span class="err">当前最新版本是</span><span class="mf">9.3.4</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">postgis</span>      <span class="err">#</span> <span class="err">当前最新版本是</span><span class="mf">2.1.2</span>
+</pre></div>
+
+
+<p>安装PostGIS前，最好安装Proj4,GEOS,GDAL,GeoIP等开源GIS库，以支持空间分析、IP定位等。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">proj</span>     <span class="err">#</span> <span class="err">当前最新版本是</span><span class="mf">4.8.0</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">geos</span>     <span class="err">#</span> <span class="err">当前最新版本是</span><span class="mf">3.4.2</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">gdal</span>     <span class="err">#</span> <span class="err">当前最新版本是</span><span class="mf">1.10.1</span><span class="n">_1</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">libgeoip</span>
+</pre></div>
+
+
+<h3 id="_2">二.初始化</h3>
+<h4 id="1">1. 帐号配置</h4>
+<p>初始化数据库前需要指定一个用户帐号，使用安装PostgreSQL时默认创建的帐号<code>_postgres</code>，可以通过<code>/etc/passwd</code>文件查看帐号记录，也可以使用dscl工具进行查看。dscl工具是OS X上完成useradd,userdel,usermod等Linux平台上的工具功用的代替。以下使用dscl查看_postgres用户并修改其zsh登录。 具体选择哪种shell就按个人喜好了，具体系统中支持哪些可以查看<code>/etc/shells</code>文件。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">dscl</span> <span class="p">.</span> <span class="n">list</span> <span class="o">/</span><span class="n">Users</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">_postgres</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">dscl</span> <span class="p">.</span> <span class="n">read</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">_postgres</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">dscl</span> <span class="p">.</span> <span class="n">change</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">_postgres</span> <span class="n">UserShell</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="nb">false</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">zsh</span>
+</pre></div>
+
+
+<h4 id="2">2. 初始化数据库</h4>
+<p>创建数据库目录，修改目录访问权限并初始化。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">chown</span> <span class="n">_postgres</span><span class="o">:</span><span class="n">_postgres</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="o">/</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">su</span> <span class="o">-</span> <span class="n">_postgres</span>
+<span class="err">$</span> <span class="n">initdb</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span>
+</pre></div>
+
+
+<p>我的机子，系统为OS X 10.9，按上面执行，在运行initdb时会提示<code>Permission denied</code>。问过google后，索性把<code>/usr/local/var</code>的权限增加了可写，问题解决。</p>
+<h3 id="_3">三.数据库管理控制</h3>
+<h4 id="1-launchctl">1. 使用launchctl管理</h4>
+<ul>
+<li>登录时自动启动</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+<span class="err">$</span> <span class="n">cp</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/</span><span class="mf">9.4.1</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span>
+<span class="err">$</span> <span class="n">launchctl</span> <span class="n">load</span> <span class="o">-</span><span class="n">w</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>启动</p>
+<p>$ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist</p>
+</li>
+<li>
+<p>停止</p>
+<p>$ launchctl unload  ~/Library/LaunchAgents/homebrew.mxcl.postgresql.plist</p>
+</li>
+</ul>
+<h4 id="2-pg_ctl">2. 使用pg_ctl管理</h4>
+<ul>
+<li>
+<p>启动</p>
+<p>$ pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start</p>
+</li>
+<li>
+<p>停止</p>
+<p>$ pg_ctl -D /usr/local/var/postgres stop -s -m fast</p>
+</li>
+</ul>
+<h4 id="3">3. 进程验证</h4>
+<p><code>$ ps aux | grep postgres</code></p>
+<h3 id="_4">四.创建空间数据库</h3>
+<h4 id="1-v91postgresql">1. V9.1及以上版本的PostgreSQL</h4>
+<p>使用PostGIS 2.0+创建空间数据库非常的Nice</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">createdb</span> <span class="o">-</span><span class="n">E</span> <span class="n">UTF8</span> <span class="o">--</span><span class="n">template</span><span class="o">=</span><span class="n">template0</span> <span class="n">postgis</span>     <span class="err">#创建</span><span class="n">postgis</span><span class="err">数据库</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;CREATE EXTENSION postgis;&quot;</span>    <span class="err">#增加空间扩展</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;CREATE EXTENSION postgis_topology;&quot;</span>   <span class="err">#增加空间拓扑扩展</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">f</span> <span class="n">legacy</span><span class="p">.</span><span class="n">sql</span>                     <span class="err">#兼容旧版扩展</span>
+</pre></div>
+
+
+<p>如果不需要兼容旧版本，或者不需要拓扑扩展等，也可以方便地移除</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">f</span> <span class="n">uninstall_legacy</span><span class="p">.</span><span class="n">sql</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">f</span> <span class="n">uninstall_topology</span><span class="p">.</span><span class="n">sql</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">f</span> <span class="n">uninstall_postgis</span><span class="p">.</span><span class="n">sql</span>
+</pre></div>
+
+
+<h4 id="2-v91postgresql">2. V9.1以下版本PostgreSQL</h4>
+<p>老版本的Postgre创建空间数据库就稍有点麻烦，但本质上是一样的，也就是将空间扩展部分(数据表、函数、视图等)一个个地扩展到数据库中。为以后使用方便，一般是先创建一个空间数据库模板，这样，以后就以此为模板直接创建。</p>
+<ul>
+<li>创建空间数据库模板</li>
+</ul>
+<p>具体扩展哪些sql根据需求自行操作</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">POSTGIS_SQL_PATH</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">postgis</span>
+<span class="err">$</span> <span class="n">createdb</span> <span class="o">-</span><span class="n">E</span> <span class="n">UTF8</span> <span class="o">--</span><span class="n">template</span><span class="o">=</span><span class="n">template0</span> <span class="n">template_postgis</span>    <span class="err">#创建数据库</span>
+<span class="err">$</span> <span class="n">createlang</span> <span class="o">-</span><span class="n">d</span> <span class="n">template_postgis</span> <span class="n">plpgsql</span>                    <span class="err">#支持</span><span class="n">pl</span><span class="o">/</span><span class="n">pgsql</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgres</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;UPDATE pg_database SET datistemplate=&#39;true&#39; WHERE datname=&#39;template_postgis&#39;;&quot;</span>                                <span class="err">#设置为模板</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">template_postgis</span> <span class="o">-</span><span class="n">f</span> <span class="err">$</span><span class="n">POSTGIS_SQL_PATH</span><span class="o">/</span><span class="n">postgis</span><span class="p">.</span><span class="n">sql</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">template_postgis</span> <span class="o">-</span><span class="n">f</span> <span class="err">$</span><span class="n">POSTGIS_SQL_PATH</span><span class="o">/</span><span class="n">spatial_ref_sys</span><span class="p">.</span><span class="n">sql</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">template_postgis</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;GRANT ALL ON geometry_columns TO PUBLIC;&quot;</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">template_postgis</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;GRANT ALL ON geography_columns TO PUBLIC;&quot;</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">template_postgis</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;GRANT ALL ON spatial_ref_sys TO PUBLIC;&quot;</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>创建空间数据库及其用户</p>
+<p>$ createuser -P -d -e postgis   #创建一个postgis普通用戶,用来登录空间数据库<br />
+$ createdb -T template_postgis -E UTF8 postgis # 创建一个空间数据库</p>
+</li>
+</ul>
+<h3 id="_5">五.导入空间数据</h3>
+<p>创建好空间数据库后就是导入数据了，当前有两种方法：使用shp2pgsql工具将shapefile转为新的或追加到一个空间数据表内；直接sql语句将数据插入到空间数据表。</p>
+<h4 id="1-shp2pgsqlshapefile">1. 使用shp2pgsql导入shapefile</h4>
+<p>shp2pgsql是一个命令行工具，支持多个参数用于控制导入数据的方式。shp2pgsql-gui是其可视化版本，将大部分的参数进行了可视化。同时，还可以将shp2pgsql配置为pgAdmin的插件。</p>
+<p>将一个shp导入到数据库中的例子</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">shp2pgsql</span> <span class="o">-</span><span class="n">c</span> <span class="o">-</span><span class="n">D</span> <span class="o">-</span><span class="n">s</span> <span class="mi">4326</span> <span class="o">-</span><span class="n">W</span> <span class="n">GB18030</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">I</span> <span class="n">poi</span><span class="p">.</span><span class="n">shp</span> <span class="n">public</span><span class="p">.</span><span class="n">poi</span> <span class="o">&gt;</span> <span class="n">poi</span><span class="p">.</span><span class="n">sql</span>
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgis</span> <span class="o">-</span><span class="n">f</span> <span class="n">poi</span><span class="p">.</span><span class="n">sql</span>
+</pre></div>
+
+
+<p>使用unix管道合并执行如下：</p>
+<p><code>$ shp2pgsql -c -D -s 4326 -W GB18030 -i -I poi.shp public.poi | psql -d postgis</code></p>
+<h4 id="2-sql">2. 使用sql导入数据</h4>
+<p>创建好空间数据表后，可以直接使用sql语句向表中插入数据，一个示例。</p>
+<ul>
+<li>
+<p>创建空间数据表</p>
+<p>CREATE TABLE test_poi<br />
+(<br />
+  gid serial NOT NULL,<br />
+  geom geometry(Point,4326),<br />
+  name character varying(50),<br />
+  CONSTRAINT test_poi_pkey PRIMARY KEY (gid)<br />
+);</p>
+</li>
+<li>
+<p>插入数据</p>
+<p>BEGIN;<br />
+INSERT INTO test_poi (geom, name)<br />
+  VALUES (ST_GeomFromText('POINT(120 40)',4326),'林静小吃');<br />
+INSERT INTO test_poi (geom, name)<br />
+  VALUES (ST_GeomFromText('POINT(121 41)',4326),'石美泉加油站');<br />
+COMMIT;</p>
+</li>
+</ul>
+<h3 id="_6">六.结束</h3>
+<p>接下来的内容应当是从postgis中查询获取数据，还有很多使用PostGIS管理空间数据要写的，但由于本文只是PostGIS/PostgreSQL在OS X上的安装记录， 写到的或没写到的就这么多吧，具体可参考PostGIS用户手册。</p>
+<blockquote>
+<p>更新 Yosemite 后还有一个严重问题，会把 <code>/usr/local/var/postgres</code> &gt;目录下的一些文件删除，需要手工创建回来，</p>
+</blockquote>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="o">/</span><span class="n">pg_tblspc</span>
+<span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="o">/</span><span class="n">pg_twophase</span>
+<span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span><span class="o">/</span><span class="n">pg_stat_tmp</span>
+</pre></div>
+
+
+<p>然后再启动就可以了</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

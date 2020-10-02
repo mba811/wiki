@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Git服务器Gitosis安装设置 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Git">Git</a>&nbsp;&#187;&nbsp;Git服务器Gitosis安装设置
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 21:31
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Git服务器Gitosis安装设置</div>
+
+  <h2 id="gitosis">谈Gitosis实现原理</h2>
+<p>git作为一个分布式的版本控制系统,其实client端和server的差别并不是很大，只是server端往往没有工作拷贝的需求，所以往往是一个裸库（bare repository），往往文件夹的名称为xxxx.git ，裸库的内容其实就相当于客户端某个工程下的.git目录了.   </p>
+<p>使用git的时候，一般和服务器通讯使用的是ssh协议，用ssh的主要优点是速度快（传输前数据会先压缩，比HTTP快），安全，方便读写。 客户端通过ssh访问服务器端的验证方式一般有两种，一种是用户名密码的方式，一种是使用公私钥认证的方式. 使用公私钥的方式比较方便，无需每次登录输入密码。 某个受信任的客户端的公钥会被设置在服务器端的 ~/.ssh/authorized_keys文件中，有关此文件的格式可以参见 sshd的用户手册 <code>man sshd</code> . authorized_keys有个比较厉害的功能是 支持 command参数，使得每次用户使用此公钥进行验证的时候执行此后面的命令.这样就可以做一些逻辑处理了.   </p>
+<p>一般git库的管理需要权限控制，如何方便简单的进行库的权限管理呢？ authorized_keys是一个思路，指定特定command参数，每次验证好用户后首先执行相关逻辑，检测当前用户是否具有某个权限。 所以便有了gitosis，与其说gitosis是一个git权限管理系统，还不如说它是一个authorized_keys文件管理器. <br />
+gitosis的设计思路很巧妙，开天辟地之初，需要一个gitosis的管理员，所以你就在你的客户端机器上生成一对公私钥，将公钥拷贝到git服务器端的/tmp/下，然后通过gitosis在git用户home目录下运行如下初始化命令，后面的公钥便是gitosis首个管理员的公钥</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="o">-</span><span class="n">H</span> <span class="o">-</span><span class="n">u</span> <span class="n">git</span> <span class="n">gitosis</span><span class="o">-</span><span class="n">init</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span>
+</pre></div>
+
+
+<p>执行之后，home目录下出现一个repositories的目录，目录下存在一个gitosis-admin.git的git库. 其实gitosis就是通过这个git库来管理所有git库的访问权限的。 <br />
+在刚才你的客户端机器上clone出这个库，因为你刚刚用你的公钥初始化了gitosis，所以你有权限访问服务器端的库（其实你可以在服务器端看看authorized_keys文件便知道原因了）。 这个gitosis-admin的库中存在一个gitosis.conf和一个keydir的目录，gitosis.conf文件就是权限配置的地方，keydir目录下存放的是所有客户端的公钥，公钥名字必须和配置文件中的member名字对应.至于gitosis.conf的语法及用法可以去查看帮助。 <br />
+当修改完配置和添加好需要添加的公钥之后，提交并push到git服务器，这个库的存在hook，当提交后，会根据新的配置和公钥去更新服务器端git用户的authorized_keys，以便加入新用户的公钥，用于权限控制命令，以及在裸库的目录下提取出新的gitosis.conf文件。  </p>
+<p>所以 gitosis的核心在于authorized_keys的command参数和git的hook功能.</p>
+<h2 id="_1">安装设置</h2>
+<p>1、安装 openssh服务器</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">openssh</span><span class="o">-</span><span class="n">server</span> <span class="n">openssh</span><span class="o">-</span><span class="n">client</span>
+</pre></div>
+
+
+<p>2、创建个人公钥和私钥</p>
+<p>在默认用户的主目录路径下，运行以下命令，按照提示创建公钥和私钥</p>
+<div class="hlcode"><pre><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span>
+</pre></div>
+
+
+<p>默认生成2048位，如果需要提高安全级别，也可以通过下面的命令创建公钥和私钥</p>
+<div class="hlcode"><pre><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">b</span> <span class="mi">4096</span>
+</pre></div>
+
+
+<p>默认情况下，公钥和私钥会保存在~/.ssh目录下，如下所示：</p>
+<div class="hlcode"><pre><span class="n">id_rsa</span>  <span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span>  <span class="n">known_hosts</span>
+</pre></div>
+
+
+<p>3、安装 git服务器</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">git</span><span class="o">-</span><span class="n">core</span>
+</pre></div>
+
+
+<p>4、配置 git服务器</p>
+<p>创建git服务器管理用户</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">useradd</span> <span class="o">-</span><span class="n">m</span> <span class="n">git</span>
+<span class="n">sudo</span> <span class="n">passwd</span> <span class="n">git</span>
+</pre></div>
+
+
+<p>创建git仓库存储目录</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">repositories</span>
+</pre></div>
+
+
+<p>设置git仓库权限</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">chown</span> <span class="n">git</span><span class="o">:</span><span class="n">git</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">repositories</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">755</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">repositories</span>
+</pre></div>
+
+
+<p>初始化全局设置</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">user</span><span class="p">.</span><span class="n">name</span> <span class="s">&quot;myname&quot;</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">user</span><span class="p">.</span><span class="n">email</span> <span class="s">&quot;myname@server&quot;</span>
+</pre></div>
+
+
+<p>5、安装python的setup tool</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">setuptools</span>
+</pre></div>
+
+
+<p>6、获取并安装gitosis</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">tmp</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="p">[</span><span class="n">https</span><span class="o">:</span><span class="c1">//github.com/res0nat0r/gitosis.git](https://github.com/res0nat0r/gitosis.git)</span>
+<span class="n">cd</span> <span class="n">gitosis</span>
+<span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+
+
+<p>7、配置gitosis</p>
+<div class="hlcode"><pre><span class="n">cp</span> <span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span> <span class="o">/</span><span class="n">tmp</span>
+<span class="n">sudo</span> <span class="o">-</span><span class="n">H</span> <span class="o">-</span><span class="n">u</span> <span class="n">git</span> <span class="n">gitosis</span><span class="o">-</span><span class="n">init</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">755</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">repositories</span><span class="o">/</span><span class="n">gitosis</span><span class="o">-</span><span class="n">admin</span><span class="p">.</span><span class="n">git</span><span class="o">/</span><span class="n">hooks</span><span class="o">/</span><span class="n">post</span><span class="o">-</span><span class="n">update</span>
+</pre></div>
+
+
+<p>8、管理gitosis配置</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="err">@</span><span class="n">hostname</span><span class="o">:</span><span class="err">用户名</span><span class="o">/</span><span class="n">gitosis</span><span class="o">-</span><span class="n">admin</span><span class="p">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">gitosis</span><span class="o">-</span><span class="n">admin</span><span class="o">/</span>
+</pre></div>
+
+
+<p>各个用户按照前面提到的办法生成各自的ssh公钥文件后，服务器管理员把所有人的 ssh公钥文件都拿来，拷贝到keydir目录下。</p>
+<p>修改gitosis.conf文件，如下所示</p>
+<div class="hlcode"><pre><span class="k">[gitosis]</span>
+
+
+<span class="k">[group gitosis-admin]</span>
+<span class="na">writable</span> <span class="o">=</span> <span class="s">gitosis-admin</span>
+<span class="na">members</span> <span class="o">=</span> <span class="s">a@server1</span>
+
+
+<span class="k">[group developers]</span>
+<span class="na">writable</span> <span class="o">=</span> <span class="s">helloworld</span>
+<span class="na">members</span> <span class="o">=</span> <span class="s">a@server1 b@server2</span>
+
+
+<span class="err">[group</span> <span class="err">test]</span> 
+<span class="na">readonly</span> <span class="o">=</span> <span class="s">helloworld</span>
+<span class="na">members</span> <span class="o">=</span> <span class="s">c@server3</span>
+</pre></div>
+
+
+<p>这个配置文件表达了如下含义：gitosis-admin组成员有a，该组对gitosis-admin仓库有读写权限； developers组有a，b两个成员，该组对helloworld仓库有读写权限； test组有c一个成员，对helloworld仓库有只读权限。 当然目前这些配置文件的修改只是在你的本地，你必须推送到gitserver上才能真正生效。 加入新文件、提交并push到git服务器：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">add</span> <span class="p">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">am</span> <span class="s">&quot;add helloworld project and users&quot;</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="n">ssh</span><span class="o">:</span><span class="c1">//git@hostname/helloworld.git</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+
+<p>9、安装apache2</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">apache2</span>
+</pre></div>
+
+
+<p>10、安装gitweb</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">gitweb</span>
+</pre></div>
+
+
+<p>11、配置 gitweb</p>
+<p>默认没有 css 加载，把 gitweb 要用的静态文件连接到 DocumentRoot 下：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">gitweb</span><span class="o">/*</span> <span class="p">.</span>
+</pre></div>
+
+
+<p>修改配置：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">vi</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">gitweb</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>将 $projectroot 改为git仓库存储目录(例如：/home/git/repositories)，保存后刷新浏览器。</p>
+<p>如果没有找到项目，你需要将$projectroot/*.git 的属性改为755，让apache用户有可读权限。可以只改你需要让别人通过web访问的那个git。<a href="http://localhost/cgi-bin/gitweb.cgi">http://localhost/cgi-bin/gitweb.cgi</a></p>
+<p>修改/etc/gitweb.conf 内容：</p>
+<div class="hlcode"><pre><span class="err">#</span> <span class="nb">path</span> <span class="k">to</span> <span class="nx">git</span> <span class="nx">projects</span> <span class="p">(</span><span class="o">&lt;</span><span class="nx">project</span><span class="o">&gt;</span><span class="bp">.</span><span class="nx">git</span><span class="p">)</span>
+<span class="err">#</span><span class="nv">$projectroot</span> <span class="o">=</span> <span class="s2">&quot;/var/cache/git&quot;</span><span class="p">;</span>
+<span class="nv">$projectroot</span> <span class="o">=</span> <span class="s2">&quot;/home/git/repositories&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nx">directory</span> <span class="k">to</span> <span class="nx">use</span> <span class="nb">for</span> <span class="nx">temp</span> <span class="nx">files</span>
+<span class="nv">$git_temp</span> <span class="o">=</span> <span class="s2">&quot;/tmp&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nb">target</span> <span class="nx">of</span> <span class="nx">the</span> <span class="nb">home</span> <span class="k">link</span> <span class="k">on</span> <span class="nb">top</span> <span class="nx">of</span> <span class="kc">all</span> <span class="nx">pages</span>
+<span class="nv">$home_link</span> <span class="o">=</span> <span class="nv">$my_uri</span> <span class="o">||</span> <span class="s2">&quot;/&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nx">html</span> <span class="nx">text</span> <span class="k">to</span> <span class="nb">include</span> <span class="nx">at</span> <span class="nb">home</span> <span class="nx">page</span>
+<span class="nv">$home_text</span> <span class="o">=</span> <span class="s2">&quot;indextext.html&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nb">file</span> <span class="k">with</span> <span class="nx">project</span> <span class="nb">list</span><span class="p">;</span> <span class="k">by</span> <span class="nb">default</span><span class="p">,</span> <span class="nx">simply</span> <span class="nx">scan</span> <span class="nx">the</span> <span class="nx">projectroot</span> <span class="nx">dir.</span>
+<span class="nv">$projects_list</span> <span class="o">=</span> <span class="nv">$projectroot</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nx">stylesheet</span> <span class="k">to</span> <span class="nx">use</span>
+<span class="p">@</span><span class="n">stylesheets</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;/gitweb/static/gitweb.css&quot;</span><span class="p">);</span>
+
+
+<span class="err">#</span> <span class="nb">javascript</span> <span class="nb">code</span> <span class="nb">for</span> <span class="nx">gitweb</span>
+<span class="nv">$javascript</span> <span class="o">=</span> <span class="s2">&quot;gitweb/static/gitweb.js&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nx">logo</span> <span class="k">to</span> <span class="nx">use</span>
+<span class="nv">$logo</span> <span class="o">=</span> <span class="s2">&quot;/gitweb/static/git-logo.png&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nx">the</span> <span class="s1">&#39;favicon&#39;</span>
+<span class="nv">$favicon</span> <span class="o">=</span> <span class="s2">&quot;/gitweb/static/git-favicon.png&quot;</span><span class="p">;</span>
+
+
+<span class="err">#</span> <span class="nx">git</span><span class="na">-diff-tree</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="nx">options</span> <span class="k">to</span> <span class="nx">use</span> <span class="nb">for</span> <span class="nx">generated</span> <span class="nx">patches</span>
+<span class="err">#</span><span class="p">@</span><span class="n">diff_opts</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;-M&quot;</span><span class="p">);</span>
+<span class="p">@</span><span class="n">diff_opts</span> <span class="o">=</span> <span class="p">();</span>
+</pre></div>
+
+
+<p>12、配置apache2</p>
+<p>ubuntu中默认的web目录是/var/www，默认的cgi目录是 /usr/lib/cgi-bin/,安装完成gitweb后，gitweb的gitweb.cgi会自动放置到该目录下。</p>
+<p>如果你的cgi路径不是默认的/usr/lib/cgi-bin/，需要将gitweb安装在/usr/lib/cgi-bin中的gitweb.cgi复制到原来配置的cgi-bin路径，并在apache的配置文件/etc/apache2/apache.conf末尾加上以下内容：</p>
+<div class="hlcode"><pre><span class="nx">SetEnv</span>  <span class="nx">GITWEB_CONFIG</span>   <span class="p">/</span><span class="nx">etc</span><span class="p">/</span><span class="nx">gitweb.conf</span> 
+<span class="o">&lt;</span><span class="nx">Directory</span> <span class="s2">&quot;/srv/www/cgi-bin/gitweb&quot;</span><span class="o">&gt;</span>           
+     <span class="nx">Options</span> <span class="nx">FollowSymlinks</span> <span class="nx">ExecCGI</span>          
+     <span class="nx">Allow</span> <span class="nb">from</span> <span class="kc">all</span>                          
+     <span class="nx">AllowOverride</span> <span class="kc">all</span>                       
+     <span class="k">Order</span> <span class="nx">allow</span><span class="p">,</span><span class="nx">deny</span>                        
+     <span class="o">&lt;</span><span class="nx">Files</span> <span class="nx">gitweb.cgi</span><span class="o">&gt;</span> 
+          <span class="nx">SetHandler</span> <span class="nx">cgi</span><span class="na">-script</span> 
+     <span class="o">&lt;/</span><span class="nx">Files</span><span class="o">&gt;</span>                    
+     <span class="nx">RewriteEngine</span> <span class="k">on</span> 
+     <span class="nx">RewriteCond</span> <span class="o">%</span><span class="p">{</span><span class="nx">REQUEST_FILENAME</span><span class="p">}</span> <span class="o">!-</span><span class="nb">f</span> 
+     <span class="nx">RewriteCond</span> <span class="o">%</span><span class="p">{</span><span class="nx">REQUEST_FILENAME</span><span class="p">}</span> <span class="o">!-</span><span class="nb">d</span> 
+     <span class="nx">RewriteRule</span> <span class="p">^</span><span class="nx">.</span><span class="o">*</span> <span class="p">/</span><span class="nx">gitweb.cgi</span><span class="o">/</span><span class="err">$</span><span class="mi">0</span> <span class="err">[</span><span class="nx">L</span><span class="p">,</span><span class="nx">PT</span><span class="cp">]</span> 
+<span class="nt">&lt;/Directory&gt;</span>
+</pre></div>
+
+
+<p>重新启动apache：sudo /etc/init.d/apache2 restart，访问<a href="http://localhost/cgi-bin/gitweb.cgi">http://localhost/cgi-bin/gitweb.cgi</a> <a href="http://wiki.ubuntu.org.cn/File:5640850295_c021ba8c01_z.jpg"><img alt="File:5640850295_c021ba8c01_z.jpg" src="http://wiki.ubuntu.org.cn/images/a/ad/5640850295_c021ba8c01_z.jpg" /></a></p>
+<p>13、参考：</p>
+<p><a href="http://gitref.org/index.html">Git Reference</a></p>
+<p><a href="http://techblog.iamzellux.com/2009/05/install-git-gitoss-gitweb-in-archlinux/">ArchLinux下安装git, gitosis, gitweb服务</a></p>
+<p><a href="http://blog.csdn.net/wirror800/archive/2010/01/14/5189564.aspx">Git服务器在Ubuntu中的搭建</a></p>
+<p><a href="http://zensheno.blog.51cto.com/2712776/489571">Ubuntu中Git服务器搭建</a></p>
+<p><a href="http://www.jiangmiao.org/blog/1600.html">Git服务器Gitosis架设指南</a></p>
+<p><a href="http://blog.chinaunix.net/space.php?uid=20146040&amp;do=blog&amp;cuid=2422172">gitweb在ubuntu上的配置</a></p>
+<p><a href="http://blog.csdn.net/jixiuffff/archive/2010/10/26/5966852.aspx">git通过ssh进行认证连接</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

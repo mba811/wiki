@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>豆瓣 API 快速入门 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#API">API</a>&nbsp;&#187;&nbsp;豆瓣 API 快速入门
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 21:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">豆瓣 API 快速入门</div>
+
+  <h1 id="api">豆瓣 API 快速入门</h1>
+<p>本文档为需要快速了解豆瓣API的用户提供一个概览, 更为完整的豆瓣API信息请参阅 <a href="http://www.douban.com/service/apidoc/reference/">豆瓣API 参考手册</a>。</p>
+<p>如果你编写了一个有趣的API应用，欢迎到<a href="http://www.douban.com/group/dbapi/">API小组</a>发布, 另外也欢迎到<a href="http://www.douban.com/group/dbapi/">API小组</a>参与豆瓣API的讨论，提出你对豆瓣API各种意见和建议。</p>
+<h1 id="_1">快速入门</h1>
+<p>下面通过一个简单的示例来演示豆瓣API的使用.</p>
+<p>这个示例中展示了使用API获得ID为1220562的书的信息, 请求的url如下（注意将{yourapikey}替换为你的API Key）</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//api.douban.com/book/subject/1220562?apikey={yourkeyapi}</span>
+</pre></div>
+
+
+<p>返回值为XML文档</p>
+<div class="hlcode"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="nt">&lt;entry</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.w3.org/2005/Atom&quot;</span>
+    <span class="na">xmlns:gd=</span><span class="s">&quot;http://schemas.google.com/g/2005&quot;</span>
+    <span class="na">xmlns:opensearch=</span><span class="s">&quot;http://a9.com/-/spec/opensearchrss/1.0/&quot;</span>
+    <span class="na">xmlns:db=</span><span class="s">&quot;http://www.douban.com/xmlns/&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;category</span> <span class="na">scheme=</span><span class="s">&quot;http://www.douban.com/2007#kind&quot;</span>
+        <span class="na">term=</span><span class="s">&quot;http://www.douban.com/2007#book&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;db:tag</span> <span class="na">count=</span><span class="s">&quot;20&quot;</span> <span class="na">name=</span><span class="s">&quot;片山恭一&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;db:tag</span> <span class="na">count=</span><span class="s">&quot;14&quot;</span> <span class="na">name=</span><span class="s">&quot;日本&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;db:tag</span> <span class="na">count=</span><span class="s">&quot;10&quot;</span> <span class="na">name=</span><span class="s">&quot;小说&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;db:tag</span> <span class="na">count=</span><span class="s">&quot;8&quot;</span> <span class="na">name=</span><span class="s">&quot;日本文学&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;db:tag</span> <span class="na">count=</span><span class="s">&quot;4&quot;</span> <span class="na">name=</span><span class="s">&quot;爱情&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;</span>满月之夜白鲸现<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;author&gt;</span>
+        <span class="nt">&lt;name&gt;</span>（日）片山恭一<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;/author&gt;</span>
+    <span class="nt">&lt;content&gt;</span>
+        冷静地想一想吧！公寓的一个房间里只有两上人，连被褥都铺好了，理应是犯
+        错误的时候，我为什么却这么拘谨？一直胆小的毛病又犯了。事到如今，不要
+        说上床，就连接吻也还差得很远。这就是横亘在男人和女人之间的又深又暗的
+        河流吗？
+        如果有可能，我希望把手伸进她的心里，把她内心所有的东西都掏出来。她对
+        我究竟是一种什么感觉呢？我在她的心昊确实占有一席之地吗？抑或只是她生
+        命中的匆匆过客？
+    <span class="nt">&lt;/content&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;self&quot;</span> <span class="na">href=</span><span class="s">&quot;http://api.douban.com/book/subject/1220562&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;alternate&quot;</span> <span class="na">href=</span><span class="s">&quot;http://book.douban.com/subject/1220562/&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;image&quot;</span> <span class="na">href=</span><span class="s">&quot;http://t.douban.com/spic/s1747553.jpg&quot;</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;author&quot;</span><span class="nt">&gt;</span>（日）片山恭一<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;isbn10&quot;</span><span class="nt">&gt;</span>7543632608<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;isbn13&quot;</span><span class="nt">&gt;</span>9787543632608<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;pages&quot;</span><span class="nt">&gt;</span>180<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;tranlator&quot;</span><span class="nt">&gt;</span>豫人<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;price&quot;</span><span class="nt">&gt;</span>18.00<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;publisher&quot;</span><span class="nt">&gt;</span>青岛出版社<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;binding&quot;</span><span class="nt">&gt;</span>平装(无盘)<span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;db:attribute</span> <span class="na">name=</span><span class="s">&quot;author-intro&quot;</span><span class="nt">&gt;</span>
+        片山恭一，1959年生于日本爱媛县，九州大学农学系农业经济学专业毕业。
+        学生时代通读了包括夏目漱石和大江健三郎在内的日本近现代文学全集，
+        同时读了笛卡尔、莱布尼茨到结构主义的欧洲近现代哲学。也读了马克思。
+        学士论文写的是马克思，硕士论文写的是恩格斯。二十二三岁开始创作小说。
+        代表作有《在世界中心呼唤爱》、《世界在你不知道的地方运转》、《气息》、
+        《别相信约翰·列侬》、《满月之夜白鲸现》、《空镜头》以及新作
+        《倘若我在彼岸》、《雨天的海豚们》等。
+    <span class="nt">&lt;/db:attribute&gt;</span>
+    <span class="nt">&lt;id&gt;</span>http://api.douban.com/book/subject/1220562<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;gd:rating</span> <span class="na">min=</span><span class="s">&quot;1&quot;</span> <span class="na">numRaters=</span><span class="s">&quot;39&quot;</span> <span class="na">average=</span><span class="s">&quot;3.69&quot;</span> <span class="na">max=</span><span class="s">&quot;5&quot;</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/entry&gt;</span>
+</pre></div>
+
+
+<p>通过请求中包括alt参数，你可以改变返回值的格式。 目前支持的alt参数值包括：</p>
+<ul>
+<li>atom (默认)</li>
+<li>json</li>
+</ul>
+<p>通过将alt设置为json来获得json格式的返回值:</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="o">:</span><span class="err">{</span>
+    <span class="s2">&quot;@scheme&quot;</span><span class="o">:</span><span class="s2">&quot;http://www.douban.com/2007#kind&quot;</span><span class="o">,</span>
+    <span class="s2">&quot;@term&quot;</span><span class="o">:</span><span class="s2">&quot;http://www.douban.com/2007#book&quot;</span><span class="p">}</span><span class="o">,</span>
+    <span class="s2">&quot;db:tag&quot;</span><span class="o">:</span><span class="cp">[</span>
+        <span class="p">{</span><span class="s2">&quot;@count&quot;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;片山恭一&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;@count&quot;</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;日本&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;@count&quot;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;小说&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;@count&quot;</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;日本文学&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;@count&quot;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;爱情&quot;</span><span class="p">}</span>
+    <span class="cp">]</span><span class="o">,</span>
+    <span class="s2">&quot;title&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="o">:</span><span class="s2">&quot;满月之夜白鲸现&quot;</span><span class="p">}</span><span class="o">,</span>
+    <span class="s2">&quot;author&quot;</span><span class="o">:</span><span class="cp">[</span>
+        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;（日）片山恭一&quot;</span><span class="p">}}</span>
+    <span class="cp">]</span><span class="o">,</span>
+    <span class="s2">&quot;content&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="o">:</span><span class="s2">&quot;冷静地想一想吧！公寓的一个房间里只有两上人，连被褥都铺</span>
+<span class="s2">    好了，理应是犯错误的时候，我为什么却这么拘谨？一直胆小的毛病又犯了。事到</span>
+<span class="s2">    如今，不要说上床，就连接吻也还差得很远。这就是横亘在男人和女人之间的又深</span>
+<span class="s2">    又暗的河流吗？\n    如果有可能，我希望把手伸进她的心里，把她内心所有的东</span>
+<span class="s2">    西都掏出来。她对我究竟是一种什么感觉呢？我在她的心昊确实占有一席之地吗？</span>
+<span class="s2">    抑或只是她生命中的匆匆过客？&quot;</span><span class="p">}</span><span class="o">,</span>
+    <span class="s2">&quot;link&quot;</span><span class="o">:</span><span class="cp">[</span>
+        <span class="p">{</span><span class="s2">&quot;@rel&quot;</span><span class="p">:</span><span class="s2">&quot;self&quot;</span><span class="p">,</span><span class="s2">&quot;@href&quot;</span><span class="p">:</span><span class="s2">&quot;http://api.douban.com/book/subject/1220562&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;@rel&quot;</span><span class="p">:</span><span class="s2">&quot;alternate&quot;</span><span class="p">,</span><span class="s2">&quot;@href&quot;</span><span class="p">:</span><span class="s2">&quot;http://book.douban.com/subject/1220562/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;@rel&quot;</span><span class="p">:</span><span class="s2">&quot;image&quot;</span><span class="p">,</span><span class="s2">&quot;@href&quot;</span><span class="p">:</span><span class="s2">&quot;http://t.douban.com/spic/s1747553.jpg&quot;</span><span class="p">}</span>
+    <span class="cp">]</span><span class="o">,</span>
+    <span class="s2">&quot;db:attribute&quot;</span><span class="o">:</span><span class="cp">[</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;（日）片山恭一&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;author&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;7543632608&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;isbn10&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;9787543632608&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;isbn13&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;180&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;pages&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;豫人&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;tranlator&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;18.00&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;price&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;青岛出版社&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;publisher&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;平装(无盘)&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;binding&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="p">:</span><span class="s2">&quot;片山恭一，1959年生于日本爱媛县，九州大学农学系农业经济学专业</span>
+<span class="s2">        毕业。学生时代通读了包括夏目漱石和大江健三郎在内的日本近现代文学全集，</span>
+<span class="s2">        同时读了笛卡尔、莱布尼茨到结构主义的欧洲近现代哲学。也读了马克思。</span>
+<span class="s2">        学士论文写的是马克思，硕士论文写的是恩格斯。二十二三岁开始创作小说。</span>
+<span class="s2">        代表作有《在世界中心呼唤爱》、《世界在你不知道的地方运转》、《气息》、</span>
+<span class="s2">        《别相信约翰·列侬》、《满月之夜白鲸现》、《空镜头》以及新作《倘若我在</span>
+<span class="s2">        彼岸》、《雨天的海豚们》等。&quot;</span><span class="p">,</span><span class="s2">&quot;@name&quot;</span><span class="p">:</span><span class="s2">&quot;author-intro&quot;</span><span class="p">}</span>
+    <span class="cp">]</span><span class="o">,</span>
+    <span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;$t&quot;</span><span class="o">:</span><span class="s2">&quot;http://api.douban.com/book/subject/1220562&quot;</span><span class="p">}</span><span class="o">,</span>
+    <span class="s2">&quot;gd:rating&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;@min&quot;</span><span class="o">:</span><span class="m">1</span><span class="o">,</span><span class="s2">&quot;@numRaters&quot;</span><span class="o">:</span><span class="m">39</span><span class="o">,</span><span class="s2">&quot;@average&quot;</span><span class="o">:</span><span class="s2">&quot;3.69&quot;</span><span class="o">,</span><span class="s2">&quot;@max&quot;</span><span class="o">:</span><span class="m">5</span><span class="p">}</span>
+<span class="err">}</span>
+</pre></div>
+
+
+<h1 id="api_1">豆瓣API 客户端</h1>
+<h3 id="python">Python客户端</h3>
+<p>google code <a href="http://code.google.com/p/douban-python/">douban-python项目</a></p>
+<h3 id="java">Java客户端</h3>
+<p>google code <a href="http://code.google.com/p/douban-java/">douban-java项目</a></p>
+<h3 id="php">PHP客户端</h3>
+<p>google code <a href="http://code.google.com/p/douban-php-client/">douban-php-client项目</a></p>
+<h3 id="javascript">Javascript客户端</h3>
+<p>对于javascript开发人员，豆瓣API提供一种更简单的方式可以直接在HTML页面中使用API，下面给出这种使用方式的简单示例。</p>
+<p>首先你需要在HTML页面中如下script标签:</p>
+<div class="hlcode"><pre><span class="o">&lt;</span><span class="n">script</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;http://www.douban.com/js/api.js?v=2&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+
+
+<p>之后你需要在javascript中设置好你的apikey:</p>
+<div class="hlcode"><pre><span class="n">DOUBAN</span><span class="p">.</span><span class="n">apikey</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">c4579586f41a90372f762cb65c78be5d</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>而后你就可以调用豆瓣API，其中通过定义callback函数来操作返回的JSON数据:</p>
+<div class="hlcode"><pre><span class="nx">DOUBAN</span><span class="p">.</span><span class="nx">getMovie</span><span class="p">({</span>
+    <span class="nx">id</span><span class="o">:</span><span class="s1">&#39;2340927&#39;</span><span class="p">,</span>
+    <span class="nx">callback</span><span class="o">:</span><span class="kd">function</span><span class="p">(</span><span class="nx">movie</span><span class="p">){</span>
+        <span class="kd">var</span> <span class="nx">title</span> <span class="o">=</span> <span class="nx">movie</span><span class="p">.</span><span class="nx">title</span><span class="cp">[</span><span class="s1">&#39;$t&#39;</span><span class="cp">]</span><span class="p">;</span>
+                <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+
+
+<p>此外，豆瓣也提供了解析函数来帮助你更容易地使用JSON格式的返回值。使用豆瓣提供的解析函数，你需要在页面中添加如下的script标签：</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;http://www.douban.com/js/api-parser.js?v=1&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>接下来你就可以使用豆瓣提供的解析函数来处理返回值，例如：</p>
+<div class="hlcode"><pre><span class="n">var</span> <span class="n">book</span> <span class="o">=</span> <span class="n">DOUBAN</span><span class="p">.</span><span class="n">parseSubject</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+
+
+<p>解析函数返回更容易使用的javascript对象，例如你可以这样得到书的封面图片：</p>
+<div class="hlcode"><pre><span class="n">book</span><span class="p">.</span><span class="n">link</span><span class="p">.</span><span class="n">image</span>
+</pre></div>
+
+
+<p>下面HTML页面使用API获得ID为2340927电影的信息并展示在页面上（注意将{yourapikey}替换为你的API Key）</p>
+<div class="hlcode"><pre><span class="cp">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;</span>
+<span class="nt">&lt;HTML</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.w3.org/1999/xhtml&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;HEAD&gt;</span>
+<span class="nt">&lt;TITLE&gt;&lt;/TITLE&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">content=</span><span class="s">&quot;text/html; charset=utf-8&quot;</span> <span class="na">http-equiv=</span><span class="s">&quot;Content-Type&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;style&gt;</span>
+    body {padding:0;margin: 0;background: #FEFEFE;}
+    body,td,th { font: 12px Arial, Helvetica, sans-serif; line-height: 150%; }
+    span.title {
+        margin:5px;
+    }
+<span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;http://www.douban.com/js/api.js?v=2&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;http://www.douban.com/js/api-parser.js?v=1&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;BODY&gt;</span>
+<span class="nt">&lt;/BODY&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+DOUBAN.apikey = {yourapikey}
+DOUBAN.getMovie({
+    id:&#39;2340927&#39;,
+    callback:function(re){
+        var subj = DOUBAN.parseSubject(re)
+        var tl = subj.title ? subj.title : &quot;&quot;;
+        var author = subj.author ? subj.author : &quot;&quot;;
+        var di = subj.attribute.director ? subj.attribute.director.join(&#39; / &#39;) : &quot;&quot;;
+        var tmp = &quot;<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">&quot;+subj.link.image+&quot;</span> <span class="na">style=</span><span class="s">&#39;margin:10px;float:left&#39;</span><span class="nt">&gt;</span>&quot;;
+        tmp += &quot;<span class="nt">&lt;div&gt;</span>Title : <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;+subj.link.alternate+&quot;</span> <span class="na">target=</span><span class="s">&#39;_blank&#39;</span><span class="nt">&gt;</span>&quot;+tl+&quot;<span class="nt">&lt;/a&gt;&lt;/div&gt;</span>&quot;;
+        if (subj.attribute.author) tmp += &quot;<span class="nt">&lt;div&gt;</span>Authors : &quot;+(subj.attribute.author.join(&#39; / &#39;))+&quot;<span class="nt">&lt;/div&gt;</span>&quot;;
+        if (subj.attribute.director) tmp += &quot;<span class="nt">&lt;div&gt;</span>Director : &quot;+(subj.attribute.director.join(&#39; / &#39;))+&quot;<span class="nt">&lt;/div&gt;</span>&quot;;
+        if (subj.attribute.cast) tmp += &quot;<span class="nt">&lt;div&gt;</span>Casts : &quot;+(subj.attribute.cast.join(&#39; / &#39;))+&quot;<span class="nt">&lt;/div&gt;</span>&quot;;
+        if (subj.attribute.aka) tmp += &quot;<span class="nt">&lt;div&gt;</span>A.k.a : &quot;+(subj.attribute.aka.join(&#39; <span class="nt">&lt;br/&gt;</span>   &#39;))+&quot;<span class="nt">&lt;/div&gt;</span>&quot;;
+        if (subj.attribute.language) tmp += &quot;<span class="nt">&lt;div&gt;</span>Language : &quot;+(subj.attribute.language.join(&#39; / &#39;))+&quot;<span class="nt">&lt;/div&gt;</span>&quot;;
+        if (subj.attribute.country) tmp += &quot;<span class="nt">&lt;div&gt;</span>Country : &quot;+(subj.attribute.country.join(&#39; / &#39;))+&quot;<span class="nt">&lt;/div&gt;</span>&quot;;
+        if (subj.rating.average)
+            tmp +=&quot;<span class="nt">&lt;div&gt;</span>Rating: &quot;+subj.rating.average+&quot; / &quot;+subj.rating.numRaters+decodeURI(&quot;%E4%BA%BA&quot;)+ &quot;<span class="nt">&lt;/div&gt;</span>&quot;
+        tmp += &quot;<span class="nt">&lt;p&gt;</span>&quot;+(subj.summary ? subj.summary : &quot;&quot;)+&quot;<span class="nt">&lt;/p&gt;</span>&quot;;
+        document.body.innerHTML = tmp;
+    }
+})
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/HTML&gt;</span>
+</pre></div>
+
+
+<p>注：实现上，豆瓣API使用 <a href="http://docs.jquery.com/Release:jQuery_1.2/Ajax#Cross-Domain_getJSON_.28using_JSONP.29">JSONP </a>方式来支持跨域调用API 因此你也可以使用自己熟悉的javascript库来调用JSONP风格的豆瓣API. 此时，你需要将alt设置为xd同时提供callback参数。</p>
+<p>例如使用JQuery，前面的例子则可以写为</p>
+<div class="hlcode"><pre><span class="nx">$</span><span class="p">.</span><span class="nx">getJSON</span><span class="p">(</span><span class="s2">&quot;http://api.douban.com/movie/subject/2340927?alt=xd&amp;callback=?&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">movie</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">title</span> <span class="o">=</span> <span class="nx">movie</span><span class="p">.</span><span class="nx">title</span><span class="cp">[</span><span class="s1">&#39;$t&#39;</span><span class="cp">]</span><span class="p">;</span>
+    <span class="p">...</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<h1 id="api_2">豆瓣 API 参考手册</h1>
+<p>本文档提供豆瓣 API 的详细说明， 建议你在阅读本文档之前，先阅读<a href="http://www.douban.com/service/apidoc/guide">豆瓣 API 使用指南</a>来快速了解豆瓣 API。</p>
+<p>豆瓣 API 遵循 Atom 和 GData 规范，了解这两个规范有助于你更好地使用豆瓣 API。不过这不是必须的。 Atom 和 GData 规范的详细信息可以参阅<a href="http://www.ietf.org/rfc/rfc4287.txt">The Atom Syndication Format</a> 和 <a href="http://code.google.com/apis/gdata/">Google Data APIs</a>。</p>
+<p>API进行增删改操作时，需要进行OAuth认证，详见<a href="http://www.douban.com/service/apidoc/auth">API OAuth认证</a>。</p>
+<h1 id="_2">目录</h1>
+<ul>
+<li>
+<ul>
+<li><a href="http://www.douban.com/service/apidoc/reference/common">通用说明</a><a href="http://www.douban.com/service/apidoc/reference/common#通用参数说明">通用参数说明</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/common#通用元素说明">通用元素说明</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/common#返回状态说明">返回状态说明</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/user">用户</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/user#获取用户信息">获取用户信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/user#获取当前授权用户信息">获取当前授权用户信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/user#搜索用户">搜索用户</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/user#获取用户朋友">获取用户朋友</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/user#获取用户关注的人">获取用户关注的人</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/subject">书籍、电影、音乐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/subject#获取书籍信息">获取书籍信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/subject#获取电影信息">获取电影信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/subject#获取音乐信息">获取音乐信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/subject#搜索书籍电影音乐">搜索书籍、电影、音乐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review">评论</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review#获取评论信息">获取评论信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review#特定用户的所有评论">特定用户的所有评论</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review#特定书籍电影音乐的所有评论">特定书籍、电影、音乐的所有评论</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review#发布新评论">发布新评论</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review#修改评论">修改评论</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/review#删除评论">删除评论</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/collection">收藏</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/collection#获取收藏信息">获取收藏信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/collection#获取用户收藏信息">获取用户收藏信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/collection#添加收藏">添加收藏</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/collection#更新收藏信息">更新收藏信息</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/collection#删除收藏">删除收藏</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/note">日记</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/note#获取日记">获取日记</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/note#获取用户的所有日记">获取用户的所有日记</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/note#发表新日记">发表新日记</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/note#更新日记">更新日记</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/note#删除日记">删除日记</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event">活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#获取活动">获取活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#获取用户的所有活动">获取用户的所有活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#获取城市的所有活动">获取城市的所有活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#搜索活动">搜索活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#创建新活动">创建新活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#参加活动">参加活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#更新活动">更新活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/event#删除活动">删除活动</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation">推荐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#获取推荐">获取推荐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#获取用户的所有推荐">获取用户的所有推荐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#获取推荐回复">获取推荐回复</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#发表新推荐">发表新推荐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#删除推荐">删除推荐</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#发表新回复">发表新回复</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/recommendation#删除回复">删除回复</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail">豆邮</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#获取收件箱列表">获取收件箱列表</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#获取收件箱未读邮件列表">获取收件箱未读邮件列表</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#获取发件箱列表">获取发件箱列表</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#获取一封豆邮">获取一封豆邮</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#发豆邮">发豆邮</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#标记豆邮已读">标记豆邮已读</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#删除豆邮">删除豆邮</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#批量标记豆邮已读">批量标记豆邮已读</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/doumail#批量删除豆邮">批量删除豆邮</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/tag">标签</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/tag#某个书籍电影音乐中标记最多的标签">某个书籍、电影、音乐中标记最多的标签</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/tag#用户对书籍电影音乐标记的所有标签">用户对书籍、电影、音乐标记的所有标签</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/access_token">Access Token</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/access_token#验证Access Token是否可用">验证Access Token是否可用</a></li>
+<li><a href="http://www.douban.com/service/apidoc/reference/access_token#注销一个Access Token">注销一个Access Token</a></li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

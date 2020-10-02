@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Docker-详细操作 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Docker-详细操作
+    <span class="updated">Page Updated&nbsp;
+      2015-05-17 02:44
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Docker-详细操作</div>
+
+  <ul>
+<li>
+<p>获取镜像</p>
+<p>docker pull ubuntu:14.04<br />
+  相当于docker pull registry.hub.docker.com/ubuntu:14.04<br />
+  可以从国内镜像网站下载docker pull dl.dockerpool.com:5000/ubuntu:14.04</p>
+</li>
+<li>
+<p>列出本地已有的镜像<code>docker images</code></p>
+</li>
+<li>
+<p>创建镜像，利用Dockerfile来创建镜像,新建一个目录和一个Dockerfile</p>
+<p>$ mkdir sinatra<br />
+  $ cd sinatra<br />
+  $ touch Dockerfile</p>
+<ul>
+<li>
+<p>Dockerfile 基本的语法是</p>
+</li>
+<li>
+<p>编写完成Dockerfile后可以使用<code>docker build</code>来生成镜像</p>
+</li>
+</ul>
+<p>docker build -t="ouruser/sinatra:v2" .</p>
+<ul>
+<li>
+<p>使用#来注释</p>
+</li>
+<li>
+<p>FROM 指令告诉 Docker 使用哪个镜像作为基础</p>
+</li>
+<li>
+<p>接着是维护者的信息</p>
+</li>
+<li>
+<p>RUN开头的指令会在创建中运行，比如安装一个软件包，在这里使用 apt-get 来安装了一些软件</p>
+</li>
+<li>
+<p>其中 -t 标记来添加 tag，指定新的镜像的用户信息。 “.” 是 Dockerfile 所在的路径（当前目录），也可以替换为一个具体的 Dockerfile 的路径。</p>
+</li>
+<li>
+<p><code>docker run -t -i ouruser/sinatra:v2 /bin/bash</code>运行</p>
+</li>
+<li>
+<p>Dockerfile文件内容</p>
+</li>
+</ul>
+<p># This is a comment<br />
+  FROM ubuntu:14.04<br />
+  MAINTAINER Docker Newbee <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#110;&#101;&#119;&#98;&#101;&#101;&#64;&#100;&#111;&#99;&#107;&#101;&#114;&#46;&#99;&#111;&#109;">&#110;&#101;&#119;&#98;&#101;&#101;&#64;&#100;&#111;&#99;&#107;&#101;&#114;&#46;&#99;&#111;&#109;</a><br />
+  RUN apt-get -qq update<br />
+  RUN apt-get -qqy install ruby ruby-dev<br />
+  RUN gem install sinatra</p>
+</li>
+<li>
+<p>如果要导出镜像到本地文件，可以使用 <code>docker save</code> 命令。</p>
+<p>docker save -o ubuntu_14.04.tar ubuntu:14.04</p>
+</li>
+<li>
+<p>载入镜像,可以使用 docker load 从导出的本地文件中再导入到本地镜像库，例如</p>
+<p>docker load --input ubuntu_14.04.tar<br />
+  或<br />
+  docker load &lt; ubuntu_14.04.tar</p>
+</li>
+<li>
+<p>输出<code>hello world</code></p>
+<p>docker run ubuntu:14.04 /bin/echo 'hello world'</p>
+</li>
+<li>
+<p>启动一个bash终端，允许用户进行交互</p>
+<p>docker run -t -i ubuntu:14.04 /bin/bash</p>
+</li>
+<li>
+<p>让Docker容器在后台以守护状态形式运行，可以通过通过<code>-d</code>参数来实现</p>
+<p>docker run -d ubuntu:14.04 /bin/sh -c "while true; do echo hello world; sleep 1; done"</p>
+<ul>
+<li>
+<p><code>docker ps</code>返回容器信息，包括NAMES</p>
+</li>
+<li>
+<p>获取容器的输出信息，可以通过<code>docker logs</code>命令</p>
+</li>
+</ul>
+<p>docker logs NAMES</p>
+</li>
+<li>
+<p>获取终止状态的容器<code>docker ps -a</code>,终止状态的容器可以通过<code>docker start</code>命令来重新启动，<code>docker restart</code>命令会将一个运行态的容器终止，然后再重新启动。<code>docker restart NAMES</code>。</p>
+</li>
+<li>
+<p>在使用 <code>-d</code> 参数时，容器启动后会进入后台。 某些时候需要进入容器进行操作，有很多种方法，包括使用 <code>docker attach</code> 命令或 <code>nsenter</code> 工具等。</p>
+<ul>
+<li>
+<p>如果出现<code>2014/11/10 17:46:08 You cannot attach to a stopped container, start it first</code>,执行<code>docker start berserk_fermat</code></p>
+</li>
+<li>
+<p>attach</p>
+</li>
+</ul>
+<p>docker run -idt ubuntu:14.04<br />
+  [root@MyCloudServer ~]# docker run -idt ubuntu:12.04<br />
+  e13112150bd52dbb12d7fbbe0e24e786ba86e97a2e337db654d0ec144d6b88f4<br />
+  [root@MyCloudServer ~]# docker ps -a<br />
+  CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS                     PORTS               NAMES<br />
+  e13112150bd5        ubuntu:12.04        "/bin/bash"            15 seconds ago      Up 14 seconds                                  berserk_fermat<br />
+  005c6adf29a4        ubuntu:12.04        "/bin/echo 'hello wo   3 minutes ago       Exited (0) 3 minutes ago                       lonely_leakey<br />
+  f4d208e3e8e6        ubuntu:12.04        "/bin/bash"            37 minutes ago      Up 4 minutes                                   jovial_rosalind<br />
+  [root@MyCloudServer ~]# docker attach berserk_fermat<br />
+  root@e13112150bd5:/# ls<br />
+  bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  selinux  srv  sys  tmp  usr  var<br />
+  root@e13112150bd5:/# pwd<br />
+  /<br />
+  root@e13112150bd5:/# exit<br />
+  exit</p>
+</li>
+</ul>
+<h4 id="_1">导出和导入容器</h4>
+<h5 id="_2">导出容器</h5>
+<ul>
+<li>
+<p>如果要导出本地某个容器，可以使用 <code>docker export</code> 命令.</p>
+<p>[root@MyCloudServer ~]# docker ps -a<br />
+  CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS                      PORTS               NAMES<br />
+  e13112150bd5        ubuntu:12.04        "/bin/bash"            13 minutes ago      Exited (0) 11 minutes ago                       berserk_fermat<br />
+      005c6adf29a4        ubuntu:12.04        "/bin/echo 'hello wo   17 minutes ago      Exited (0) 16 minutes ago                       lonely_leakey<br />
+  f4d208e3e8e6        ubuntu:12.04        "/bin/bash"            50 minutes ago      Up 17 minutes                                   jovial_rosalind<br />
+  [root@MyCloudServer ~]# docker export e13112150bd5&gt;ubuntu.tar</p>
+</li>
+</ul>
+<h5 id="_3">导入容器快照</h5>
+<ul>
+<li>
+<p>可以使用 <code>docker import</code> 从容器快照文件中再导入为镜像，例如</p>
+<p>$ cat ubuntu.tar | sudo docker import - test/buntu:v1.0<br />
+  $ sudo docker images<br />
+  REPOSITORY          TAG                 IMAGE ID            CREATED              VIRTUAL SIZE<br />
+  test/ubuntu         v1.0                9d37a6082e97        About a minute ago   171.3 MB</p>
+</li>
+</ul>
+<h4 id="docker">docker删除镜像</h4>
+<ul>
+<li>
+<p><code>docker ps -a</code>列出所有依赖Image的container</p>
+</li>
+<li>
+<p><code>docker rm (CONTAINER ID前4位)</code>执行删除容器操作</p>
+</li>
+<li>
+<p><code>docker images</code>列出所有镜像</p>
+</li>
+<li>
+<p><code>docker rmi (image id前4位)</code></p>
+</li>
+<li>
+<p>如果要删除一个运行中的容器，可以添加 -f 参数。Docker 会发送 SIGKILL 信号给容器。</p>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

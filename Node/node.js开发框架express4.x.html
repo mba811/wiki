@@ -1,0 +1,564 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Node.js开发框架Express4.x - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;Node.js开发框架Express4.x
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 10:04
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Node.js开发框架Express4.x</div>
+
+  <p><strong>前言</strong></p>
+<p>Nodejs是一个年轻的编程框架，充满了活力和无限激情，一直都在保持着快速更新。基于Nodejs的官方Web开发库Express也在同步发展着，每年升级一个大版本，甚至对框架底层都做了大手术。在Express4时，替换掉中件间库connect，而改用多个更细粒度的库来取代。带来的好处是明显地，这些中间件能更自由的更新和发布，不会受到Express发布周期的影响；但问题也是很的棘手，不兼容于之前的版本，升级就意味着要修改代码。</p>
+<p>之前写过一篇文章“<a href="http://blog.fens.me/nodejs-express3/">Nodejs开发框架Express3.0开发手记–从零开始</a>”，很多新学Node的朋友都在参考，但由于Express已经升级，文章中有部分的代码已经不能使用，所以就有了这篇介绍Express4.x的文章。</p>
+<p><strong>目录</strong></p>
+<ol>
+<li>建立工程</li>
+<li>目录结构</li>
+<li>package.json项目配置</li>
+<li>app.js核心文件</li>
+<li>Bootstrap界面框架</li>
+<li>路由功能</li>
+<li>程序代码</li>
+<li>Express3.x和Express4.x的改动列表</li>
+</ol>
+<h2 id="1">1. 建立项目</h2>
+<p>让我们从头开始Express4.x的安装和使用吧，安装Node和NPM在本文就不多说了。Linux环境安装请参考文章，<a href="http://blog.fens.me/nodejs-enviroment/">准备Nodejs开发环境Ubuntu</a>，Window环境安装直接下载Node的安装文件，双击安装就行了。</p>
+<p>我的系统环境</p>
+<ul>
+<li>Win7 64bit</li>
+<li>Nodejs:v0.10.31</li>
+<li>Npm:1.4.23</li>
+</ul>
+<p>首先，我们需要安装express库。在Express3.6.x之前的版本，Express需要全局安装的，项目构建器模块是合并在Express项目中的，后来这个构建器被拆分出来，独立成为了一个项目express-generator，现在我们只需要全局安装express-generator项目就行了。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="n">express</span><span class="o">-</span><span class="n">generator</span><span class="err">@</span><span class="mi">4</span>  <span class="err">#全局安装</span><span class="o">-</span><span class="n">g</span>
+<span class="nl">C:</span><span class="err">\</span><span class="n">Users</span><span class="err">\</span><span class="n">Administrator</span><span class="err">\</span><span class="n">AppData</span><span class="err">\</span><span class="n">Roaming</span><span class="err">\</span><span class="n">npm</span><span class="err">\</span><span class="n">express</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="o">:</span><span class="err">\</span><span class="n">Users</span><span class="err">\</span><span class="n">Administrator</span><span class="err">\</span><span class="n">AppData</span><span class="err">\</span><span class="n">Roaming</span><span class="err">\</span><span class="n">npm</span><span class="err">\</span><span class="n">node_modules</span><span class="err">\</span><span class="n">express</span><span class="o">-</span><span class="n">ge</span>
+<span class="n">nerator</span><span class="err">\</span><span class="n">bin</span><span class="err">\</span><span class="n">express</span>
+
+<span class="n">express</span><span class="o">-</span><span class="n">generator</span><span class="err">@</span><span class="mf">4.11.2</span> <span class="n">C</span><span class="o">:</span><span class="err">\</span><span class="n">Users</span><span class="err">\</span><span class="n">Administrator</span><span class="err">\</span><span class="n">AppData</span><span class="err">\</span><span class="n">Roaming</span><span class="err">\</span><span class="n">npm</span><span class="err">\</span><span class="n">node_modules</span><span class="err">\</span><span class="n">express</span><span class="o">-</span><span class="n">generator</span>
+<span class="err">├──</span> <span class="n">sorted</span><span class="o">-</span><span class="n">object</span><span class="err">@</span><span class="mf">1.0.0</span>
+<span class="err">├──</span> <span class="n">commander</span><span class="err">@</span><span class="mf">2.6.0</span>
+<span class="err">└──</span> <span class="n">mkdirp</span><span class="err">@</span><span class="mf">0.5.0</span> <span class="p">(</span><span class="n">minimist</span><span class="err">@</span><span class="mf">0.0.8</span><span class="p">)</span>
+</pre></div>
+
+
+<p>安装好express-generator包后，我们在命令行就可以使用express命令了。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">express</span> <span class="o">-</span><span class="n">V</span> <span class="err">#</span> <span class="err">检查</span><span class="n">express</span><span class="err">的版本</span>
+<span class="mf">4.11.2</span>
+
+<span class="o">~</span> <span class="n">express</span> <span class="o">-</span><span class="n">h</span>  <span class="err">#</span> <span class="err">检查看</span><span class="n">express</span><span class="err">的帮助命令</span>
+  <span class="nl">Usage:</span> <span class="n">express</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="p">[</span><span class="n">dir</span><span class="p">]</span>
+  <span class="nl">Options:</span>
+    <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>          <span class="n">output</span> <span class="n">usage</span> <span class="n">information</span>
+    <span class="o">-</span><span class="n">V</span><span class="p">,</span> <span class="o">--</span><span class="n">version</span>       <span class="n">output</span> <span class="n">the</span> <span class="n">version</span> <span class="n">number</span>
+    <span class="o">-</span><span class="n">e</span><span class="p">,</span> <span class="o">--</span><span class="n">ejs</span>           <span class="n">add</span> <span class="n">ejs</span> <span class="n">engine</span> <span class="n">support</span> <span class="p">(</span><span class="n">defaults</span> <span class="n">to</span> <span class="n">jade</span><span class="p">)</span>
+        <span class="o">--</span><span class="n">hbs</span>           <span class="n">add</span> <span class="n">handlebars</span> <span class="n">engine</span> <span class="n">support</span>
+    <span class="o">-</span><span class="n">H</span><span class="p">,</span> <span class="o">--</span><span class="n">hogan</span>         <span class="n">add</span> <span class="n">hogan</span><span class="p">.</span><span class="n">js</span> <span class="n">engine</span> <span class="n">support</span>
+    <span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="o">--</span><span class="n">css</span>   <span class="n">add</span> <span class="n">stylesheet</span>  <span class="n">support</span> <span class="p">(</span><span class="n">less</span><span class="o">|</span><span class="n">stylus</span><span class="o">|</span><span class="n">compass</span><span class="p">)</span> <span class="p">(</span><span class="n">defaults</span> <span class="n">to</span> <span class="n">plain</span> <span class="n">css</span><span class="p">)</span>
+        <span class="o">--</span><span class="n">git</span>           <span class="n">add</span> <span class="p">.</span><span class="n">gitignore</span>
+    <span class="o">-</span><span class="n">f</span><span class="p">,</span> <span class="o">--</span><span class="n">force</span>         <span class="n">force</span> <span class="n">on</span> <span class="n">non</span><span class="o">-</span><span class="n">empty</span> <span class="n">directory</span>
+</pre></div>
+
+
+<p>接下来，我们使用express的命令，来创建项目了。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">cd</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span>  <span class="err">#</span> <span class="err">进入工作目录</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="o">&gt;</span><span class="n">express</span> <span class="o">-</span><span class="n">e</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span>  <span class="err">#</span> <span class="err">创建项目</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">package</span><span class="p">.</span><span class="n">json</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">app</span><span class="p">.</span><span class="n">js</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">public</span><span class="o">/</span><span class="n">javascripts</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">public</span><span class="o">/</span><span class="n">images</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">public</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">public</span><span class="o">/</span><span class="n">stylesheets</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">public</span><span class="o">/</span><span class="n">stylesheets</span><span class="o">/</span><span class="n">style</span><span class="p">.</span><span class="n">css</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">views</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">ejs</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">error</span><span class="p">.</span><span class="n">ejs</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">routes</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">js</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="n">users</span><span class="p">.</span><span class="n">js</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">bin</span>
+   <span class="n">create</span> <span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">www</span>
+
+   <span class="n">install</span> <span class="n">dependencies</span><span class="o">:</span>
+     <span class="err">$</span> <span class="n">cd</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span> <span class="o">&amp;&amp;</span> <span class="n">npm</span> <span class="n">install</span>
+   <span class="n">run</span> <span class="n">the</span> <span class="n">app</span><span class="o">:</span>
+     <span class="err">$</span> <span class="n">DEBUG</span><span class="o">=</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">:*</span> <span class="p">.</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">www</span>
+</pre></div>
+
+
+<p>进入项目目录，下载依赖库，构建项目。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="o">&gt;</span><span class="n">cd</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span> <span class="o">&amp;&amp;</span> <span class="n">npm</span> <span class="n">install</span>
+</pre></div>
+
+
+<p>启动项目。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">&gt;</span><span class="n">npm</span> <span class="n">start</span>
+
+<span class="o">&gt;</span> <span class="n">express4</span><span class="o">-</span><span class="n">demo</span><span class="err">@</span><span class="mf">0.0.0</span> <span class="n">start</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span>
+<span class="o">&gt;</span> <span class="n">node</span> <span class="p">.</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">www</span>
+
+<span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">338</span>
+    <span class="n">throw</span> <span class="n">err</span><span class="p">;</span>
+          <span class="o">^</span>
+<span class="nl">Error:</span> <span class="n">Cannot</span> <span class="n">find</span> <span class="n">module</span> <span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="n">users</span><span class="err">&#39;</span>
+    <span class="n">at</span> <span class="n">Function</span><span class="p">.</span><span class="n">Module</span><span class="p">.</span><span class="n">_resolveFilename</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">336</span><span class="o">:</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Function</span><span class="p">.</span><span class="n">Module</span><span class="p">.</span><span class="n">_load</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">278</span><span class="o">:</span><span class="mi">25</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Module</span><span class="p">.</span><span class="n">require</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">365</span><span class="o">:</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">require</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">384</span><span class="o">:</span><span class="mi">17</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Object</span><span class="p">.</span> <span class="p">(</span><span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="err">\</span><span class="n">app</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">9</span><span class="o">:</span><span class="mi">13</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Module</span><span class="p">.</span><span class="n">_compile</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">460</span><span class="o">:</span><span class="mi">26</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Object</span><span class="p">.</span><span class="n">Module</span><span class="p">.</span><span class="n">_extensions</span><span class="p">..</span><span class="n">js</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">478</span><span class="o">:</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Module</span><span class="p">.</span><span class="n">load</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">355</span><span class="o">:</span><span class="mi">32</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Function</span><span class="p">.</span><span class="n">Module</span><span class="p">.</span><span class="n">_load</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">310</span><span class="o">:</span><span class="mi">12</span><span class="p">)</span>
+    <span class="n">at</span> <span class="n">Module</span><span class="p">.</span><span class="n">require</span> <span class="p">(</span><span class="n">module</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="mi">365</span><span class="o">:</span><span class="mi">17</span><span class="p">)</span>
+</pre></div>
+
+
+<p>第一次启动发生了错误，可能是express-generator和express不匹配造成的，找到问题在app.js文件中，注释第9行和第26行。</p>
+<div class="hlcode"><pre><span class="gh">..</span>
+<span class="gh">//var users = require(&#39;./routes/users&#39;);</span>
+<span class="gh">..</span>
+//app.use(&#39;/users&#39;, users);       
+<span class="cp">..</span>
+</pre></div>
+
+
+<p>再次启动项目。</p>
+<div class="hlcode"><pre><span class="nl">D:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="o">&gt;</span><span class="n">npm</span> <span class="n">start</span>
+<span class="o">&gt;</span> <span class="n">express4</span><span class="o">-</span><span class="n">demo</span><span class="err">@</span><span class="mf">0.0.0</span> <span class="n">start</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span>
+<span class="o">&gt;</span> <span class="n">node</span> <span class="p">.</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">www</span>
+</pre></div>
+
+
+<p>项目启动成功，打开浏览器 http://localhost:3000，就可以看到显示的页面了。<br />
+<a href="http://blog.fens.me/wp-content/uploads/2015/02/express_1.png"><img alt="express_1" src="http://blog.fens.me/wp-content/uploads/2015/02/express_1.png" /></a></p>
+<p>这样非常简单地，我们就把一个最基本的Web应用做好了，就是几条命令而已。</p>
+<h2 id="2">2. 目录结构</h2>
+<p>接下来，我们详细看一下Express4项目的结构、配置和使用。</p>
+<ul>
+<li>bin, 存放启动项目的脚本文件</li>
+<li>node_modules, 存放所有的项目依赖库。</li>
+<li>public，静态文件(css,js,img)</li>
+<li>routes，路由文件(MVC中的C,controller)</li>
+<li>views，页面文件(Ejs模板)</li>
+<li>package.json，项目依赖配置及开发者信息</li>
+<li>app.js，应用核心配置文件</li>
+</ul>
+<p><a href="http://blog.fens.me/wp-content/uploads/2015/02/express_2.png"><img alt="express_2" src="http://blog.fens.me/wp-content/uploads/2015/02/express_2.png" /></a></p>
+<h2 id="3-packagejson">3. package.json项目配置</h2>
+<p>package.json用于项目依赖配置及开发者信息，scripts属性是用于定义操作命令的，可以非常方便的增加启动命令，比如默认的start，用npm start代表执行node ./bin/www命令。</p>
+<p>查看package.json文件。</p>
+<div class="hlcode"><pre><span class="p">{</span>
+  <span class="s">&quot;name&quot;</span><span class="o">:</span> <span class="s">&quot;express4-demo&quot;</span><span class="p">,</span>
+  <span class="s">&quot;version&quot;</span><span class="o">:</span> <span class="s">&quot;0.0.0&quot;</span><span class="p">,</span>
+  <span class="s">&quot;private&quot;</span><span class="o">:</span> <span class="nb">true</span><span class="p">,</span>
+  <span class="s">&quot;scripts&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s">&quot;start&quot;</span><span class="o">:</span> <span class="s">&quot;node ./bin/www&quot;</span>
+  <span class="p">},</span>
+  <span class="s">&quot;dependencies&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s">&quot;body-parser&quot;</span><span class="o">:</span> <span class="s">&quot;~1.10.2&quot;</span><span class="p">,</span>
+    <span class="s">&quot;cookie-parser&quot;</span><span class="o">:</span> <span class="s">&quot;~1.3.3&quot;</span><span class="p">,</span>
+    <span class="s">&quot;debug&quot;</span><span class="o">:</span> <span class="s">&quot;~2.1.1&quot;</span><span class="p">,</span>
+    <span class="s">&quot;ejs&quot;</span><span class="o">:</span> <span class="s">&quot;~2.2.3&quot;</span><span class="p">,</span>
+    <span class="s">&quot;express&quot;</span><span class="o">:</span> <span class="s">&quot;~4.11.1&quot;</span><span class="p">,</span>
+    <span class="s">&quot;morgan&quot;</span><span class="o">:</span> <span class="s">&quot;~1.5.1&quot;</span><span class="p">,</span>
+    <span class="s">&quot;serve-favicon&quot;</span><span class="o">:</span> <span class="s">&quot;~2.2.0&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="4-appjs">4. app.js核心文件</h2>
+<p>从Express3.x升级到Express4.x，主要的变化就在app.js文件中。查看app.js文件，我已经增加注释说明。</p>
+<div class="hlcode"><pre><span class="c1">// 加载依赖库，原来这个类库都封装在connect中，现在需地注单独加载</span>
+<span class="k">var</span> <span class="n">express</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;</span><span class="n">express</span><span class="p">&#39;);</span> 
+<span class="k">var</span> <span class="n">path</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;</span><span class="n">path</span><span class="p">&#39;);</span>
+<span class="k">var</span> <span class="n">favicon</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;</span><span class="n">serve</span><span class="o">-</span><span class="n">favicon</span><span class="p">&#39;);</span>
+<span class="k">var</span> <span class="n">logger</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;</span><span class="n">morgan</span><span class="p">&#39;);</span>
+<span class="k">var</span> <span class="n">cookieParser</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;</span><span class="n">cookie</span><span class="o">-</span><span class="n">parser</span><span class="p">&#39;);</span>
+<span class="k">var</span> <span class="n">bodyParser</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;</span><span class="n">body</span><span class="o">-</span><span class="n">parser</span><span class="p">&#39;);</span>
+
+<span class="c1">// 加载路由控制</span>
+<span class="k">var</span> <span class="n">routes</span> <span class="o">=</span> <span class="n">require</span><span class="p">(&#39;.</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="n">index</span><span class="p">&#39;);</span>
+<span class="c1">//var users = require(&#39;./routes/users&#39;);</span>
+
+<span class="c1">// 创建项目实例</span>
+<span class="k">var</span> <span class="n">app</span> <span class="o">=</span> <span class="n">express</span><span class="p">();</span>
+
+<span class="c1">// 定义EJS模板引擎和模板文件位置，也可以使用jade或其他模型引擎</span>
+<span class="n">app</span><span class="p">.</span><span class="n">set</span><span class="p">(&#39;</span><span class="n">views</span><span class="p">&#39;,</span> <span class="n">path</span><span class="p">.</span><span class="k">join</span><span class="p">(</span><span class="n">__dirname</span><span class="p">,</span> <span class="p">&#39;</span><span class="n">views</span><span class="p">&#39;));</span>
+<span class="n">app</span><span class="p">.</span><span class="n">set</span><span class="p">(&#39;</span><span class="n">view</span> <span class="n">engine</span><span class="p">&#39;,</span> <span class="p">&#39;</span><span class="n">ejs</span><span class="p">&#39;);</span>
+
+<span class="c1">// 定义icon图标</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="n">favicon</span><span class="p">(</span><span class="n">__dirname</span> <span class="o">+</span> <span class="p">&#39;</span><span class="o">/</span><span class="n">public</span><span class="o">/</span><span class="n">favicon</span><span class="p">.</span><span class="n">ico</span><span class="p">&#39;));</span>
+<span class="c1">// 定义日志和输出级别</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="n">logger</span><span class="p">(&#39;</span><span class="n">dev</span><span class="p">&#39;));</span>
+<span class="c1">// 定义数据解析器</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="n">bodyParser</span><span class="p">.</span><span class="n">json</span><span class="p">());</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="n">bodyParser</span><span class="p">.</span><span class="n">urlencoded</span><span class="p">({</span> <span class="nl">extended:</span> <span class="n">false</span> <span class="p">}));</span>
+<span class="c1">// 定义cookie解析器</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="n">cookieParser</span><span class="p">());</span>
+<span class="c1">// 定义静态文件目录</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="n">express</span><span class="p">.</span><span class="k">static</span><span class="p">(</span><span class="n">path</span><span class="p">.</span><span class="k">join</span><span class="p">(</span><span class="n">__dirname</span><span class="p">,</span> <span class="p">&#39;</span><span class="n">public</span><span class="p">&#39;)));</span>
+
+<span class="c1">// 匹配路径和路由</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="sc">&#39;/&#39;</span><span class="p">,</span> <span class="n">routes</span><span class="p">);</span>
+<span class="c1">//app.use(&#39;/users&#39;, users);</span>
+
+<span class="c1">// 404错误处理</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="n">err</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Error</span><span class="p">(&#39;</span><span class="n">Not</span> <span class="n">Found</span><span class="p">&#39;);</span>
+    <span class="n">err</span><span class="p">.</span><span class="n">status</span> <span class="o">=</span> <span class="mh">404</span><span class="p">;</span>
+    <span class="n">next</span><span class="p">(</span><span class="n">err</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// 开发环境，500错误处理和错误堆栈跟踪</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">get</span><span class="p">(&#39;</span><span class="n">env</span><span class="p">&#39;)</span> <span class="o">===</span> <span class="p">&#39;</span><span class="n">development</span><span class="p">&#39;)</span> <span class="p">{</span>
+    <span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">res</span><span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">err</span><span class="p">.</span><span class="n">status</span> <span class="o">||</span> <span class="mh">500</span><span class="p">);</span>
+        <span class="n">res</span><span class="p">.</span><span class="n">render</span><span class="p">(&#39;</span><span class="n">error</span><span class="p">&#39;,</span> <span class="p">{</span>
+            <span class="nl">message:</span> <span class="n">err</span><span class="p">.</span><span class="n">message</span><span class="p">,</span>
+            <span class="nl">error:</span> <span class="n">err</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c1">// 生产环境，500错误处理</span>
+<span class="n">app</span><span class="p">.</span><span class="k">use</span><span class="p">(</span><span class="k">function</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">status</span><span class="p">(</span><span class="n">err</span><span class="p">.</span><span class="n">status</span> <span class="o">||</span> <span class="mh">500</span><span class="p">);</span>
+    <span class="n">res</span><span class="p">.</span><span class="n">render</span><span class="p">(&#39;</span><span class="n">error</span><span class="p">&#39;,</span> <span class="p">{</span>
+        <span class="nl">message:</span> <span class="n">err</span><span class="p">.</span><span class="n">message</span><span class="p">,</span>
+        <span class="nl">error:</span> <span class="p">{}</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="c1">// 输出模型app</span>
+<span class="k">module</span><span class="p">.</span><span class="n">exports</span> <span class="o">=</span> <span class="n">app</span><span class="p">;</span>
+</pre></div>
+
+
+<p>我们看到在app.js中，原来调用connect库的部分都被其他的库所代替，serve-favicon、morgan、cookie-parser、body-parser，默认项目中，只用到了最基本的几个库，还没有其他需要替换的库，在本文最后有详细列出。</p>
+<p>另外，原来用于项目启动代码也被移到./bin/www的文件，www文件也是一个node的脚本，用于分离配置和启动程序。</p>
+<p>查看./bin/www文件。</p>
+<table class="hlcodetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78</pre></div></td><td class="code"><div class="hlcode"><pre><span class="err">#</span><span class="o">!</span><span class="err">/usr/bin/env node</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * 依赖加载</span>
+<span class="cm"> */</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../app&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">debug</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">)(</span><span class="s1">&#39;nodejs-demo:server&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * 定义启动端口</span>
+<span class="cm"> */</span>
+<span class="kd">var</span> <span class="nx">port</span> <span class="o">=</span> <span class="nx">normalizePort</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="s1">&#39;3000&#39;</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;port&#39;</span><span class="p">,</span> <span class="nx">port</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * 创建HTTP服务器实例</span>
+<span class="cm"> */</span>
+<span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">app</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * 启动网络服务监听端口</span>
+<span class="cm"> */</span>
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">);</span>
+<span class="nx">server</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">onError</span><span class="p">);</span>
+<span class="nx">server</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;listening&#39;</span><span class="p">,</span> <span class="nx">onListening</span><span class="p">);</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * 端口标准化函数</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">normalizePort</span><span class="p">(</span><span class="nx">val</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">port</span> <span class="o">=</span> <span class="nb">parseInt</span><span class="p">(</span><span class="nx">val</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nb">isNaN</span><span class="p">(</span><span class="nx">port</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">port</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">port</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * HTTP异常事件处理函数</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">onError</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">syscall</span> <span class="o">!==</span> <span class="s1">&#39;listen&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="nx">error</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">bind</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">port</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span>
+    <span class="o">?</span> <span class="s1">&#39;Pipe &#39;</span> <span class="o">+</span> <span class="nx">port</span>
+    <span class="o">:</span> <span class="s1">&#39;Port &#39;</span> <span class="o">+</span> <span class="nx">port</span>
+
+  <span class="c1">// handle specific listen errors with friendly messages</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="s1">&#39;EACCES&#39;</span><span class="o">:</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">bind</span> <span class="o">+</span> <span class="s1">&#39; requires elevated privileges&#39;</span><span class="p">);</span>
+      <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="s1">&#39;EADDRINUSE&#39;</span><span class="o">:</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">bind</span> <span class="o">+</span> <span class="s1">&#39; is already in use&#39;</span><span class="p">);</span>
+      <span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+      <span class="k">break</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+      <span class="k">throw</span> <span class="nx">error</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * 事件绑定函数</span>
+<span class="cm"> */</span>
+<span class="kd">function</span> <span class="nx">onListening</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">addr</span> <span class="o">=</span> <span class="nx">server</span><span class="p">.</span><span class="nx">address</span><span class="p">();</span>
+  <span class="kd">var</span> <span class="nx">bind</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">addr</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span>
+    <span class="o">?</span> <span class="s1">&#39;pipe &#39;</span> <span class="o">+</span> <span class="nx">addr</span>
+    <span class="o">:</span> <span class="s1">&#39;port &#39;</span> <span class="o">+</span> <span class="nx">addr</span><span class="p">.</span><span class="nx">port</span><span class="p">;</span>
+  <span class="nx">debug</span><span class="p">(</span><span class="s1">&#39;Listening on &#39;</span> <span class="o">+</span> <span class="nx">bind</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="5-bootstrap">5. Bootstrap界面框架</h2>
+<p>创建Bootstrap界面框架，直接在index.ejs文件上面做修改。可以手动下载Bootstrap库放到项目中对应的位置引用，也可以通过bower来管理前端的Javascript库，参考文章 <a href="http://blog.fens.me/nodejs-bower-intro/">bower解决js的依赖管理</a>。另外还可以直接使用免费的CDN源加载Bootstrap的css和js文件。下面我就直接使用Bootcss社区提供的CDN源加载Bootstrap。</p>
+<p>编辑views/index.ejs文件</p>
+<div class="hlcode"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;zh-CN&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span> <span class="na">href=</span><span class="s">&#39;/stylesheets/style.css&#39;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;well jumbotron&quot;</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;h1&gt;</span><span class="cp">&lt;%=</span> <span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/h1&gt;</span>
+      <span class="nt">&lt;p&gt;</span>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.<span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p&gt;&lt;a</span> <span class="na">class=</span><span class="s">&quot;btn btn-primary btn-lg&quot;</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">role=</span><span class="s">&quot;button&quot;</span><span class="nt">&gt;</span>Learn more<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>效果如下，已经加入了bootstrap的样式了。</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2015/02/express_3.png"><img alt="express_3" src="http://blog.fens.me/wp-content/uploads/2015/02/express_3.png" /></a></p>
+<p>接下来，我们把index.ejs页面切分成3个部分：header.ejs, index.ejs, footer.ejs，用于网站页面的模块化。</p>
+<ul>
+<li>header.ejs, 为页面的头部区域</li>
+<li>index.ejs, 为内容显示区域</li>
+<li>footer.ejs，为页面底部区域</li>
+</ul>
+<p>编辑header.ejs。</p>
+<div class="hlcode"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;zh-CN&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span><span class="cp">&lt;%=</span> <span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;http://cdn.bootcss.com/bootstrap/3.3.2/css/bootstrap.min.css&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&#39;stylesheet&#39;</span> <span class="na">href=</span><span class="s">&#39;/stylesheets/style.css&#39;</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+</pre></div>
+
+
+<p>编辑footer.ejs。</p>
+<div class="hlcode"><pre>    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://cdn.bootcss.com/bootstrap/3.3.2/js/bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>编辑index.ejs。</p>
+<div class="hlcode"><pre><span class="cp">&lt;%</span> <span class="kp">include</span> <span class="n">header</span><span class="o">.</span><span class="n">ejs</span> <span class="cp">%&gt;</span>
+
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;well jumbotron&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;h1&gt;</span><span class="cp">&lt;%=</span> <span class="n">title</span> <span class="cp">%&gt;</span><span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;p&gt;&lt;a</span> <span class="na">class=</span><span class="s">&quot;btn btn-primary btn-lg&quot;</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">role=</span><span class="s">&quot;button&quot;</span><span class="nt">&gt;</span>Learn more<span class="nt">&lt;/a&gt;&lt;/p&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+
+<span class="cp">&lt;%</span> <span class="kp">include</span> <span class="n">footer</span><span class="o">.</span><span class="n">ejs</span> <span class="cp">%&gt;</span>
+</pre></div>
+
+
+<p>把页表和页底的代码分离后，让index.ejs页面的核心代码更少，更容易维护。</p>
+<h2 id="6">6. 路由功能</h2>
+<p>路由功能，是Express4以后全面改版的功能。在应用程序加载隐含路由中间件，不用担心在中间件被装载相对于路由器中间件的顺序。定义路由的方式是不变的，路由系统中增加2个新的功能。</p>
+<ul>
+<li>app.route()函数，创建可链接的途径处理程序的路由路径。</li>
+<li>express.Router类，创建模块化安装路径的处理程序。</li>
+</ul>
+<p>app.route方法会返回一个Route实例，它可以继续使用所有的HTTP方法，包括get,post,all,put,delete,head等。</p>
+<div class="hlcode"><pre><span class="nx">app</span><span class="p">.</span><span class="nx">route</span><span class="p">(</span><span class="s1">&#39;/users&#39;</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{})</span>
+  <span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{})</span>
+</pre></div>
+
+
+<p>express.Router类，则可以帮助我们更好的组织代码结构。在app.js文件中，定义了app.use(‘/’, routes); routes是指向了routes目录下的index.js文件，./routes/index.js文件中，express.Router被定义使用，路径/*处理都会由routes/index.js文件里的Router来处理。如果我们要管理不同的路径，那么可以直接配置为多个不同的Router。</p>
+<div class="hlcode"><pre><span class="n">app</span><span class="p">.</span><span class="n">use</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">user</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">require</span><span class="p">(</span><span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="n">user</span><span class="err">&#39;</span><span class="p">).</span><span class="n">user</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="n">use</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">admin</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">require</span><span class="p">(</span><span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="n">routes</span><span class="o">/</span><span class="n">admin</span><span class="err">&#39;</span><span class="p">).</span><span class="n">admin</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="n">use</span><span class="p">(</span><span class="sc">&#39;/&#39;</span><span class="p">,</span> <span class="n">require</span><span class="p">(</span><span class="err">&#39;</span><span class="p">.</span><span class="o">/</span><span class="n">routes</span><span class="err">&#39;</span><span class="p">));</span>
+</pre></div>
+
+
+<h2 id="7">7. 程序代码</h2>
+<p>对于刚接触Express4.x的朋友，可以直接从Github上面下载本文项目中的源代码，按照片文章中的介绍学习Express4，下载地址：<a href="https://github.com/bsspirit/nodejs-demo/tree/express4">https://github.com/bsspirit/nodejs-demo/tree/express4</a></p>
+<p>也可以直接用github命令行来下载：</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">bsspirit</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span><span class="p">.</span><span class="n">git</span>   <span class="err">#</span> <span class="err">下载</span><span class="n">github</span><span class="err">项目</span>
+<span class="o">~</span> <span class="n">cd</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">demo</span>                                      <span class="err">#</span> <span class="err">进入下载目录</span>
+<span class="o">~</span> <span class="n">git</span> <span class="n">checkout</span> <span class="n">express4</span>                               <span class="err">#</span> <span class="err">切换到</span><span class="n">express4</span><span class="err">的分支</span>
+<span class="o">~</span> <span class="n">npm</span> <span class="n">install</span>                                         <span class="err">#</span> <span class="err">下载依赖库</span>
+<span class="o">~</span> <span class="n">npm</span> <span class="n">start</span>                                           <span class="err">#</span> <span class="err">启动服务器</span>
+</pre></div>
+
+
+<p>注：Github上本项目有3分支，express3和master分支都是express3的例子，express4分支是本文的例子。</p>
+<p>当然，本文对express4的介绍其实还远远不够，除了文中说到的express改动的部分，其他的部分都express3类似，所以更详细的使用说明，还请大家同时参考文章，<a href="http://blog.fens.me/nodejs-express3/">Nodejs开发框架Express3.0开发手记–从零开始</a> 来一起学习。</p>
+<h2 id="8-express3xexpress4x">8. Express3.x和Express4.x的改动列表</h2>
+<p>最后，列举一下3.x的内置模块和4.x模块的对照表，我们可以发现大部分都是connect部分的替换。关于connect库的详细介绍，可以参考文章，<a href="http://blog.fens.me/nodejs-connect/">Nodejs基础中间件Connect</a></p>
+<p>Express 3Express 4</p>
+<p>express.bodyParser<br />
+<a href="https://github.com/expressjs/body-parser">body-parser</a> +<br />
+<a href="https://github.com/expressjs/multer">multer</a></p>
+<p>express.compress<br />
+<a href="https://github.com/expressjs/compression">compression</a></p>
+<p>express.cookieSession<br />
+<a href="https://github.com/expressjs/cookie-session">cookie-session</a></p>
+<p>express.cookieParser<br />
+<a href="https://github.com/expressjs/cookie-parser">cookie-parser</a></p>
+<p>express.logger<br />
+<a href="https://github.com/expressjs/morgan">morgan</a></p>
+<p>express.session<br />
+<a href="https://github.com/expressjs/session">express-session</a></p>
+<p>express.favicon<br />
+<a href="https://github.com/expressjs/serve-favicon">serve-favicon</a></p>
+<p>express.responseTime<br />
+<a href="https://github.com/expressjs/response-time">response-time</a></p>
+<p>express.errorHandler<br />
+<a href="https://github.com/expressjs/errorhandler">errorhandler</a></p>
+<p>express.methodOverride<br />
+<a href="https://github.com/expressjs/method-override">method-override</a></p>
+<p>express.timeout<br />
+<a href="https://github.com/expressjs/timeout">connect-timeout</a></p>
+<p>express.vhost<br />
+<a href="https://github.com/expressjs/vhost">vhost</a></p>
+<p>express.csrf<br />
+<a href="https://github.com/expressjs/csurf">csurf</a></p>
+<p>express.directory<br />
+<a href="https://github.com/expressjs/serve-index">serve-index</a></p>
+<p>express.static<br />
+<a href="https://github.com/expressjs/serve-static">serve-static</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

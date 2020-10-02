@@ -1,0 +1,633 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac安装及配置Rime输入法——鼠鬚管(Squirrel) - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac安装及配置Rime输入法——鼠鬚管(Squirrel)
+    <span class="updated">Page Updated&nbsp;
+      2015-02-09 04:23
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac安装及配置Rime输入法——鼠鬚管(Squirrel)</div>
+
+  <hr />
+<blockquote>
+<p>奉送原甫侍讀出守永興<br />
+嘉祐五年<br />
+歐陽修</p>
+<p>酌君以荊州魚枕之蕉<br />
+贈君以宣城鼠鬚之管<br />
+酒如長虹飲滄海<br />
+筆若駿馬馳平坂<br />
+受君尚少力方豪<br />
+嗟我久衰歡漸鮮<br />
+文章驚世知名早<br />
+意氣論交相得晩<br />
+魚枕蕉<br />
+一舉十分當覆盞<br />
+鼠鬚管<br />
+爲物雖微情不淺<br />
+新詩醉墨時一揮<br />
+別後寄我無辭遠</p>
+</blockquote>
+<p>这首诗应该就是「鼠须管」的出处吧</p>
+<p>奉上一张用「小鹤双拼·语句流」输入的效果，中英混输 + Emoji 表情哦</p>
+<p><img alt="Rime输入法演示" src="http://www.dreamxu.com/uploads/images/post/2014-06-12_230341.gif" /></p>
+<h2 id="_1">安装</h2>
+<p>就一条理由就可以弃用使用 N 多年的其它输入法<br />
+1. <a href="https://github.com/lotem/squirrel">https://github.com/lotem/squirrel</a></p>
+<p>Rime 官网 <a href="https://code.google.com/p/rimeime/">https://code.google.com/p/rimeime/</a></p>
+<p>下载点 Downloads 或者使用 Homebrew Cask 来安装（截至到今天版本非最新）</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">squirrel</span>
+</pre></div>
+
+
+<p>刚安装好，拼音输入是繁体的，按组合键 `Ctrl+`` 呼出输入法方案选单（如下），切换为「汉字」就可以输入简体了</p>
+<p><img alt="输入法方案选单" src="http://www.dreamxu.com/uploads/images/post/2014-06-09_212556.png" /></p>
+<h2 id="_2">配置</h2>
+<p>自行查看《<a href="https://code.google.com/p/rimeime/wiki/CustomizationGuide">Rime 定製指南 | rimeime</a>》</p>
+<p>以下是我对官网说明书的一些摘录，加上我的一些修改，只限于对拼音输入的理解<br />
+如果你用的是小鹤双拼，可以直接看下文《<a href="http://www.dreamxu.com/install-config-squirrel/#详细配置小鹤双拼语句流">详细配置「小鹤双拼·语句流」</a>》，介绍的是「小鹤双拼·语句流」的配置</p>
+<h3 id="_3">数据文件位置</h3>
+<p>共享资料夹：“/Library/Input Methods/Squirrel.app/Contents/SharedSupport/”<br />
+用户资料夹：“~/Library/Rime/”</p>
+<h3 id="_4">用户资料夹内的文件说明如下</h3>
+<ul>
+<li>〔全局设定〕 default.yaml</li>
+<li>〔发行版设定〕 weasel.yaml</li>
+<li>〔预设输入方案副本〕 &lt;方案标识&gt;.schema.yaml</li>
+<li><strong>※〔安装信息〕 installation.yaml</strong></li>
+<li><strong>※〔用户状态信息〕 user.yaml</strong></li>
+</ul>
+<p>编译输入方案所产生的二进制文件：</p>
+<ul>
+<li>〔Rime 棱镜〕 &lt;方案标识&gt;.prism.bin</li>
+<li>〔Rime 固态词典〕 &lt;词典名&gt;.table.bin</li>
+<li>〔Rime 反查词典〕 &lt;词典名&gt;.reverse.bin</li>
+</ul>
+<p>记录用户写作习惯的文件：</p>
+<ul>
+<li><strong>※〔用户词典〕 &lt;词典名&gt;.userdb.kct</strong></li>
+<li><strong>※〔用户词典快照〕 &lt;词典名&gt;.userdb.txt、&lt;词典名&gt;.userdb.kct.snapshot 见于同步文件夾</strong></li>
+</ul>
+<p>以及用户自己设定的：</p>
+<ul>
+<li><strong>※〔用户对全局设定的定制信息〕 default.custom.yaml</strong></li>
+<li><strong>※〔用户对预设输入方案的定制信息〕 &lt;方案标识&gt;.custom.yaml</strong></li>
+<li><strong>※〔用户自制输入方案〕及配套的词典源文件</strong></li>
+</ul>
+<p><strong>注：以上标有「※ 号」和「粗体」的文件，包含用户资料，您在清理文件时要注意备份！</strong></p>
+<h3 id="_5">自定义配置</h3>
+<h4 id="_6">对全局的定制</h4>
+<p>新建文件 <code>touch ~/Library/Rime/default.custom.yaml</code>, 内容如下</p>
+<div class="hlcode"><pre><span class="cp"># default.custom.yaml, 全局生效</span>
+<span class="cp"># 添加小鹤双拼到方案选单</span>
+<span class="nl">patch:</span>
+  <span class="nl">schema_list:</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">double_pinyin_flypy</span>   <span class="err">#</span> <span class="err">新增小鹤双拼</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">cangjie5</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin_fluency</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin_simp</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin_tw</span>
+</pre></div>
+
+
+<h4 id="_7">对输入方案的定制</h4>
+<p>比如定制小鹤双拼<br />
+新建文件 <code>touch ~/Library/Rime/double_pinyin_flypy.custom.yaml</code></p>
+<div class="hlcode"><pre><span class="cp"># double_pinyin_flypy.custom.yaml, 只对小鹤双拼生效</span>
+<span class="nl">patch:</span>
+  <span class="n">translator</span><span class="o">/</span><span class="n">preedit_format</span><span class="o">:</span> <span class="p">{}</span>     <span class="err">#</span> <span class="err">输入双拼码的时候不转化为全拼码</span>
+</pre></div>
+
+
+<p>配置好之后需要「重新部署」：切换到「鼠须管」输入法，点击右上角的的输入法图标，点击「重新部署」<br />
+之后就可以用小鹤双拼了</p>
+<h3 id="_8">外观设定</h3>
+<div class="hlcode"><pre><span class="cp"># 适用于【鼠须管】0.9.13+</span>
+<span class="cp"># 位置：~/Library/Rime/squirrel.custom.yaml</span>
+<span class="cp"># 用法：想要哪项生效，就删去该行行首的 &quot;#&quot; 字符，但注意保留用于缩进的空格</span>
+
+<span class="nl">patch:</span>
+<span class="cp">#  us_keyboard_layout: true                 # 键盘选项：应用美式键盘布局</span>
+<span class="cp"># 状态通知，适当，也可设为全开（always）全关（never）</span>
+<span class="cp">#  show_notifications_when: appropriate</span>
+<span class="cp">#</span>
+<span class="cp">#  style/color_scheme: luna                 # 选择配色方案</span>
+<span class="cp">#  style/horizontal: true                   # 候选窗横向显示</span>
+<span class="cp">#  style/inline_preedit: false              # 关闭内嵌编码，这样就可以显示首行的拼音</span>
+<span class="cp">#  style/corner_radius: 10                  # 窗口圆角半径</span>
+<span class="cp">#  style/border_height: 0                   # 窗口边界高度，大于圆角半径才有效果</span>
+<span class="cp">#  style/border_width: 0                    # 窗口边界宽度，大于圆角半径才有效果</span>
+<span class="cp">#  style/line_spacing: 1                    # 候选词的行间距</span>
+<span class="cp">#  style/spacing: 5                         # 在非内嵌编码模式下，预编辑和候选词之间的间距</span>
+<span class="cp">#  style/font_face: &quot;Hiragino Sans GB W3&quot;   # 字体名称</span>
+<span class="cp">#  style/font_point: 21                     # 字号</span>
+
+<span class="cp"># 注：预设的配色方案及代码（指定为 style/color_scheme ）</span>
+<span class="cp">#   碧水 - aqua</span>
+<span class="cp">#   青天 - azure</span>
+<span class="cp">#   明月 - luna</span>
+<span class="cp">#   墨池 - ink</span>
+<span class="cp">#   孤寺 - lost_temple</span>
+<span class="cp">#   暗堂 - dark_temple</span>
+<span class="cp">#   星际我争霸 - starcraft</span>
+<span class="cp">#   谷歌 - google</span>
+<span class="cp">#   晒经石 - solarized_rock</span>
+<span class="cp">#   简约白 - clean_white</span>
+</pre></div>
+
+
+<h3 id="_9">一些快捷键</h3>
+<h4 id="_10">输入的时候删除一个音节</h4>
+<p><code>⌃ + BackSpace</code> 或 <code>⇧ + BackSpace</code></p>
+<h4 id="_11">从用户词典中删除误上屏的错词</h4>
+<p><code>Shift + Fn + Delete</code></p>
+<h4 id="emacs">Emacs 风格的编辑键</h4>
+<ul>
+<li>↑：<code>⌃ + p</code></li>
+<li>↓：<code>⌃ + n</code></li>
+<li>←：<code>⌃ + b</code></li>
+<li>→：<code>⌃ + f</code></li>
+<li>上页：<code>⌥ + v</code></li>
+<li>下页：<code>⌃ + v</code></li>
+<li>句首：<code>⌃ + a</code></li>
+<li>句末：<code>⌃ + e</code></li>
+<li>回退：<code>⌃ + h</code></li>
+<li>刪除：<code>⌃ + d</code></li>
+<li>清空：<code>⌃ + g</code></li>
+</ul>
+<p>有时候快捷键可能会用不了，那是因为其它应用首先获取了快捷键，这样输入法就不会影响你对其它软件的控制</p>
+<h3 id="_12">定制标点符号</h3>
+<p>可以参考 default.yaml 和相应输入法方案的配置（比如 double_pinyin_flypy.schema.yaml）</p>
+<p>比如在 default.yaml 中看到</p>
+<div class="hlcode"><pre><span class="n">punctuator</span><span class="o">:</span>
+  <span class="n">half_shape</span><span class="o">:</span>
+    <span class="s2">&quot;/&quot;</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;、&quot;</span><span class="o">,</span> <span class="s2">&quot;/&quot;</span><span class="o">,</span> <span class="s2">&quot;／&quot;</span><span class="o">,</span> <span class="s2">&quot;÷&quot;</span><span class="o">]</span>
+</pre></div>
+
+
+<p>意思是当你输入 “/” 的时候，会出现上面列表中的候选<br />
+若你想让 “/键” 直接输出 “、”，可以做如下修改</p>
+<div class="hlcode"><pre><span class="cp"># double_pinyin_flypy.custom.yaml</span>
+<span class="nl">patch:</span>
+  <span class="n">punctuator</span><span class="o">/</span><span class="n">full_shape</span><span class="o">:</span>
+    <span class="s">&quot;/&quot;</span><span class="o">:</span> <span class="s">&quot;、&quot;</span>
+  <span class="n">punctuator</span><span class="o">/</span><span class="n">half_shape</span><span class="o">:</span>
+    <span class="s">&quot;/&quot;</span><span class="o">:</span> <span class="s">&quot;、&quot;</span>
+</pre></div>
+
+
+<p>如果你的用的输入方案导入了 symbols.yaml, 你就可以参考 symbols.yaml 文件来修改了， 里面还有各种特殊符号</p>
+<h4 id="_13">活用标点创建自定义词组</h4>
+<p>这还有个用法，你可以将一个键或多个键专门用于输入自定义的词组比如</p>
+<div class="hlcode"><pre><span class="cp"># double_pinyin_flypy.custom.yaml</span>
+<span class="nl">patch:</span>
+  <span class="n">punctuator</span><span class="o">/</span><span class="n">half_shape</span><span class="o">:</span>
+    <span class="s">&quot;+&quot;</span><span class="o">:</span> <span class="s">&quot;+_+&quot;</span>
+</pre></div>
+
+
+<p>当你输入 “+” 的时候就会变成 “+_+" 了</p>
+<h3 id="_14">在特定程序里关闭中文输入</h3>
+<p>在一些程序里很少需要输入中文，于是让鼠须管在这些程序里默认不开启中文输入</p>
+<p>要自定义 Mac 应用程序的初始转换状态， 首先查看应用的 Info.plist 文件得到该应用的 Bundle Identifier, 通常是形如 com.apple.Xcode 的字符串</p>
+<p>例如，要在 Xcode 里面默认关闭中文输入，又要在 Alfred 2 里面恢复开启中文输入，可如此设定：</p>
+<div class="hlcode"><pre><span class="cp"># squirrel.custom.yaml</span>
+<span class="nl">patch:</span>
+  <span class="n">app_options</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">Xcode</span><span class="o">:</span>
+    <span class="nl">ascii_mode:</span> <span class="nb">true</span>
+  <span class="n">app_options</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">runningwithcrayons</span><span class="p">.</span><span class="n">Alfred</span><span class="o">-</span><span class="mi">2</span><span class="o">:</span> <span class="p">{}</span>
+</pre></div>
+
+
+<p>修改之前先查看以下 squirrel.yaml 文件，默认设置了一些常用的软件</p>
+<h3 id="_15">更改切换中西文的快捷键</h3>
+<div class="hlcode"><pre><span class="cp"># default.custom.yaml</span>
+<span class="cp">#</span>
+<span class="cp"># 可用的按键有 Caps_Lock, Shift_L, Shift_R, Control_L, control_R</span>
+<span class="cp"># Mac 系统上的鼠须管不能区分左、右，因此只有对 Shift_L, Control_L 的设定起作用</span>
+<span class="cp">#</span>
+<span class="cp"># 已输入编码时按切换键，可以进一步设定输入法中西文切换的形式</span>
+<span class="cp"># 可选的临时切换策略有三：</span>
+<span class="cp"># inline_ascii 在输入法的临时西文编辑区内输入字母、数字、符号、空格等，回车上屏后自动复位到中文</span>
+<span class="cp"># commit_text 已输入的候选文字上屏并切换至西文输入模式</span>
+<span class="cp"># commit_code 已输入的编码字符上屏并切换至西文输入模式</span>
+<span class="cp"># 设为 noop, 屏蔽该切换键</span>
+<span class="cp">#</span>
+<span class="cp"># 如果要把Caps Lock 设为只改变字母的大小写而不做中西文切换，可将 Caps_Lock 对应的切换方式设为 noop</span>
+<span class="cp"># 如果要以Caps Lock 切换到西文模式，默认输出小写字母，请置 ascii_composer/good_old_caps_lock: false</span>
+<span class="cp"># 如果要以Caps Lock 切换到西文模式，默认输出大写字母，请置 ascii_composer/good_old_caps_lock: true</span>
+
+<span class="nl">patch:</span>
+  <span class="n">ascii_composer</span><span class="o">/</span><span class="n">good_old_caps_lock</span><span class="o">:</span> <span class="nb">true</span>
+  <span class="n">ascii_composer</span><span class="o">/</span><span class="n">switch_key</span><span class="o">:</span>
+    <span class="nl">Caps_Lock:</span> <span class="n">noop</span>
+    <span class="nl">Shift_L:</span> <span class="n">commit_code</span>
+    <span class="nl">Shift_R:</span> <span class="n">noop</span>
+    <span class="nl">Control_L:</span> <span class="n">noop</span>
+    <span class="nl">Control_R:</span> <span class="n">noop</span>
+</pre></div>
+
+
+<h3 id="_16">以方括号 “[" 和 “]” 来换页</h3>
+<div class="hlcode"><pre><span class="cp"># default.custom.yaml</span>
+<span class="nl">patch:</span>
+  <span class="n">key_binder</span><span class="o">/</span><span class="n">bindings</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">when</span><span class="o">:</span> <span class="n">paging</span>
+      <span class="nl">accept:</span> <span class="n">bracketleft</span>
+      <span class="nl">send:</span> <span class="n">Page_Up</span>
+    <span class="o">-</span> <span class="n">when</span><span class="o">:</span> <span class="n">has_menu</span>
+      <span class="nl">accept:</span> <span class="n">bracketright</span>
+      <span class="nl">send:</span> <span class="n">Page_Down</span>
+</pre></div>
+
+
+<h3 id="_17">定制每页候选数</h3>
+<div class="hlcode"><pre><span class="cp"># default.custom.yaml</span>
+<span class="nl">patch:</span>
+  <span class="n">menu</span><span class="o">/</span><span class="n">page_size</span><span class="o">:</span> <span class="mi">5</span>
+</pre></div>
+
+
+<p>来张 15 个候选的靓照</p>
+<p><img alt="输入法15个候选词" src="http://www.dreamxu.com/uploads/images/post/2014-06-12_221853.png" /></p>
+<h3 id="_18">关闭用户词典和字频调整</h3>
+<div class="hlcode"><pre><span class="cp"># double_pinyin_flypy.custom.yaml</span>
+<span class="nl">patch:</span>
+  <span class="n">translator</span><span class="o">/</span><span class="n">enable_user_dict</span><span class="o">:</span> <span class="nb">false</span>
+</pre></div>
+
+
+<h2 id="_19">词库管理及用户资料的同步</h2>
+<h3 id="_20">用户词库的导入导出</h3>
+<p>目前鼠须管没有图形工具，使用命令行工具也是一样的</p>
+<p>先做一些准备工作</p>
+<ol>
+<li>
+<p>新建文件 <code>touch ~/Library/Rime/rime_dict_manager</code>, 输入如下内容</p>
+<h1 id="binbash">!/bin/bash</h1>
+<h1 id="_21"></h1>
+<h1 id="put-this-script-in-libraryrime-list-existing-user-dictionaries">put this script in ~/Library/Rime, list existing user dictionaries:</h1>
+<h1 id="rime_dict_manager-list">./rime_dict_manager --list</h1>
+<h1 id="see-other-supported-options">see other supported options:</h1>
+<h1 id="rime_dict_manager">./rime_dict_manager</h1>
+<p>DYLD_LIBRARY_PATH="/Library/Input Methods/Squirrel.app/Contents/Frameworks" "/Library/Input Methods/Squirrel.app/Contents/MacOS/rime_dict_manager" $@</p>
+</li>
+<li>
+<p>然后添加可执行权限</p>
+<p>chmod +x ~/Library/Rime/rime_dict_manager</p>
+</li>
+<li>
+<p>进入用户资料夹 (~/Library/Rime/), 执行相关操作</p>
+</li>
+</ol>
+<h4 id="_22">导入导出</h4>
+<ol>
+<li>
+<p>查看用户词典列表</p>
+<p>./rime_dict_manager -l</p>
+</li>
+<li>
+<p>先关闭输入法，释放以独占方式打开的词典文件</p>
+<p>killall Squirrel</p>
+</li>
+<li>
+<p>将词库导入</p>
+<p>./rime_dict_manager -i dict_name import.txt</p>
+</li>
+<li>
+<p>将词库导出</p>
+<p>./rime_dict_manager -e dict_name export.txt</p>
+</li>
+</ol>
+<h4 id="_23">导入扩充词库</h4>
+<p>应该导入到系统词库，方法：固态词典引用多份码表文件<br />
+详细解释请看《<a href="http://tieba.baidu.com/p/2757690418">〔新手推荐敎程〕关于导入词库及「深蓝词库转换」的正确操作方法 | rime 吧</a>》</p>
+<p>感谢词库制作者，下载词库点击《<a href="https://bintray.com/rime-aca/dictionaries/luna_pinyin.dict">朙月拼音擴充詞庫 | Rime 翰林院</a>》</p>
+<p>导入方法（以「小鹤双拼·语句流」输入方案，extend_dictionaries20131121.rar 词库文件为例）：</p>
+<ol>
+<li>
+<p>修改定制文件</p>
+<h1 id="double_pinyin_flypy_fluencycustomyaml">double_pinyin_flypy_fluency.custom.yaml</h1>
+<p>patch:<br />
+  translator/dictionary: luna_pinyin.extended</p>
+</li>
+<li>
+<p>将<br />
+luna_pinyin.hanyu.dict.yaml<br />
+luna_pinyin.extended.dict.yaml<br />
+luna_pinyin.poetry.dict.yaml<br />
+这三个词库文件移动到用户资料夹 “~/Library/Rime/”</p>
+</li>
+<li>
+<p>重新部署</p>
+</li>
+</ol>
+<h3 id="_24">同步用户资料</h3>
+<h4 id="dropbox">使用 Dropbox 同步</h4>
+<p>编辑 installation.yaml 文件，添加一行：</p>
+<div class="hlcode"><pre><span class="nl">sync_dir:</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">username</span><span class="o">/</span><span class="n">Dropbox</span><span class="o">/</span><span class="n">sync</span><span class="o">/</span><span class="n">Rime</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h2 id="_25">详细配置「小鹤双拼·语句流」</h2>
+<p>首先简单介绍一下语句流</p>
+<p>玩法是：空格断词，回车和标点上屏<br />
+令输入码直接上屏：输入的时候切换为西文编码，然后回车上屏</p>
+<p>对用户来说优点很明显，整句输入真的很爽，中英文混输很方便<br />
+对输入法来说，它能知道你输入的更多信息，使你输入更爽快</p>
+<p>效果图在最上面，<a href="http://www.dreamxu.com/install-config-squirrel/#">点这里乘电梯</a></p>
+<h3 id="_26">创建「小鹤双拼·语句流」输入方案</h3>
+<p>在「小鹤双拼」的基础上进行修改</p>
+<div class="hlcode"><pre><span class="n">cp</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Input</span><span class="err">\</span> <span class="n">Methods</span><span class="o">/</span><span class="n">Squirrel</span><span class="p">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">SharedSupport</span><span class="o">/</span><span class="n">double_pinyin_flypy</span><span class="p">.</span><span class="n">schema</span><span class="p">.</span><span class="n">yaml</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Rime</span><span class="o">/</span><span class="n">double_pinyin_flypy_fluency</span><span class="p">.</span><span class="n">schema</span><span class="p">.</span><span class="n">yaml</span>
+</pre></div>
+
+
+<p>不同的地方基本都有说明</p>
+<div class="hlcode"><pre><span class="err">#</span> <span class="nx">double_pinyin_flypy_fluency.schema.yaml</span>
+<span class="err">#</span> <span class="nx">Rime</span> <span class="nx">schema</span>
+<span class="err">#</span> <span class="nb">encoding</span><span class="p">:</span> <span class="nx">utf</span><span class="o">-</span><span class="mi">8</span>
+
+<span class="nx">schema</span><span class="p">:</span>
+  <span class="nx">schema_id</span><span class="p">:</span> <span class="nx">double_pinyin_flypy_fluency</span>        <span class="err">#</span> <span class="nx">更改方案标识</span>
+  <span class="nb">name</span><span class="p">:</span> <span class="nx">小鶴雙拼</span><span class="err">·</span><span class="nx">語句流</span>
+  <span class="nb">version</span><span class="p">:</span> <span class="s2">&quot;fluency_0.17&quot;</span>
+  <span class="nx">author</span><span class="p">:</span>
+    <span class="o">-</span> <span class="nx">double</span> <span class="nx">pinyin</span> <span class="nx">layout</span> <span class="k">by</span> <span class="nx">鶴</span>
+    <span class="o">-</span> <span class="nx">Rime</span> <span class="nx">schema</span> <span class="k">by</span> <span class="nx">佛振</span> <span class="o">&lt;</span><span class="nx">chen.sst</span><span class="p">@</span><span class="nx">gmail.com</span><span class="o">&gt;</span>
+  <span class="nb">description</span><span class="p">:</span> <span class="o">|</span>
+    <span class="err">「</span><span class="nx">朙月拼音</span><span class="err">＋</span><span class="nx">小鶴雙拼</span><span class="err">」</span><span class="nx">語句流方案</span><span class="err">。</span>
+    <span class="nx">以空格分詞</span><span class="err">、</span><span class="nx">標點或回車上屏</span><span class="err">。</span>
+  <span class="nx">dependencies</span><span class="p">:</span>
+    <span class="o">-</span> <span class="nx">stroke</span>                        <span class="err">#</span> <span class="nx">带别名的</span> <span class="nx">translator</span> <span class="nx">所引用的字典部署时不会自动编译</span>
+    <span class="o">-</span> <span class="nx">chinese_contain_english</span>       <span class="err">#</span> <span class="nx">只有</span> <span class="nx">translator</span><span class="p">/</span><span class="nx">dictionary</span><span class="p">:</span> <span class="nx">指定的字典会被编译</span>
+    <span class="o">-</span> <span class="nx">emoji</span>                         <span class="err">#</span> <span class="nx">因此需要设置输入方案的依赖关系</span><span class="err">，</span><span class="nx">保证词典可用</span>
+
+<span class="nx">switches</span><span class="p">:</span>
+  <span class="o">-</span> <span class="nb">name</span><span class="p">:</span> <span class="nx">ascii_mode</span>
+    <span class="nb">reset</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="nx">states</span><span class="p">:</span> <span class="err">[</span> <span class="nx">中文</span><span class="p">,</span> <span class="nx">西文</span> <span class="cp">]</span>
+  - name: full_shape
+    states: <span class="cp">[</span> <span class="nx">半角</span><span class="p">,</span> <span class="nx">全角</span> <span class="cp">]</span>
+  - name: ascii_punct
+    states: <span class="cp">[</span> <span class="err">，。</span><span class="p">,</span> <span class="err">，．</span> <span class="cp">]</span>
+  - name: simplification
+    states: <span class="cp">[</span> <span class="nx">漢字</span><span class="p">,</span> <span class="nx">汉字</span> <span class="cp">]</span>
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - fluency_editor        # 语句流必需，编辑器，处理空格、回车上屏、回退键等
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator
+    - script_translator
+    - table_translator@chinese_contain_english      # 添加码表式副翻译器
+    - table_translator@custom_phrase                # 同上
+    - table_translator@emoji                        # 同上
+  filters:
+    - simplifier
+    - uniquifier
+
+speller:
+  alphabet: zyxwvutsrqponmlkjihgfedcba
+  delimiter: &quot; &#39;&quot;
+  algebra:
+    - erase/^xx$/
+    - derive/^(<span class="cp">[</span><span class="nx">jqxy</span><span class="cp">]</span>)u$/$1v/
+    - derive/^(<span class="cp">[</span><span class="nx">aoe</span><span class="cp">]</span>)(<span class="cp">[</span><span class="nx">ioun</span><span class="cp">]</span>)$/$1$1$2/
+    - xform/^(<span class="cp">[</span><span class="nx">aoe</span><span class="cp">]</span>)(ng)?$/$1$1$2/
+    - xform/iu$/Q/
+    - xform/(.)ei$/$1W/
+    - xform/uan$/R/
+    - xform/<span class="cp">[</span><span class="nx">uv</span><span class="cp">]</span>e$/T/
+    - xform/un$/Y/
+    - xform/^sh/U/
+    - xform/^ch/I/
+    - xform/^zh/V/
+    - xform/uo$/O/
+    - xform/ie$/P/
+    - xform/i?ong$/S/
+    - xform/ing$|uai$/K/
+    - xform/(.)ai$/$1D/
+    - xform/(.)en$/$1F/
+    - xform/(.)eng$/$1G/
+    - xform/<span class="cp">[</span><span class="nx">iu</span><span class="cp">]</span>ang$/L/
+    - xform/(.)ang$/$1H/
+    - xform/ian$/M/
+    - xform/(.)an$/$1J/
+    - xform/(.)ou$/$1Z/
+    - xform/<span class="cp">[</span><span class="nx">iu</span><span class="cp">]</span>a$/X/
+    - xform/iao$/N/
+    - xform/(.)ao$/$1C/
+    - xform/ui$/V/
+    - xform/in$/B/
+    - xlit/QWRTYUIOPSDFGHJKLZXCVBNM/qwrtyuiopsdfghjklzxcvbnm/
+    #- abbrev/^(.).+$/$1/
+
+translator:
+  dictionary: luna_pinyin
+  prism: double_pinyin_flypy_fluency    # 由拼写运算规则产生的拼写映射表的名称
+  # 去掉了 preedit_format:, 作用是输入双拼码的时候不转化为全拼码
+
+# 中英文混输的时候，可补全英文，并在英文两边加上半角空格
+# 例如：我爱 Rime 输入法
+chinese_contain_english:
+  dictionary: chinese_contain_english
+
+# 用户自定义词典，可直接编辑文件 &quot;~/Library/Rime/custom_phrase.txt&quot;
+# db_class: stabledb 指定词典格式为文本码表格式（文字<span class="nt">&lt;TAB&gt;</span>编码<span class="nt">&lt;TAB&gt;</span>权重（可选））
+custom_phrase:
+  dictionary: &quot;&quot;
+  user_dict: custom_phrase
+  db_class: stabledb
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 1
+
+# 可直接输入 Emoji 表情编码来输入表情
+emoji:
+  dictionary: emoji
+
+reverse_lookup:
+  dictionary: stroke
+  enable_completion: true
+  prefix: &quot;`&quot;
+  suffix: &quot;&#39;&quot;
+  tips: 〔筆畫〕
+  preedit_format:
+    - xlit/hspnz/一丨丿丶乙/
+  comment_format:
+    - xform/(<span class="cp">[</span><span class="nx">nl</span><span class="cp">]</span>)v/$1ü/
+
+punctuator:
+  import_preset: symbols        # 导入 symbols.yaml, 用于输入特殊符号
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    number: &quot;^<span class="cp">[</span><span class="o">-+</span><span class="cp">]</span>?<span class="cp">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="cp">][</span><span class="nx">.</span><span class="p">:</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="cp">]</span>*<span class="cp">[</span><span class="o">%</span><span class="cp">]</span>?$&quot;
+    punct: &quot;^/<span class="cp">[</span><span class="mi">0</span><span class="o">-</span><span class="mi">9</span><span class="cp">]</span>*<span class="cp">[</span><span class="nx">a</span><span class="na">-z</span><span class="cp">]</span>*$&quot;            # 配合特殊符号的输入
+    reverse_lookup: &quot;`<span class="cp">[</span><span class="nx">a</span><span class="na">-z</span><span class="cp">]</span>*&#39;?$&quot;
+</pre></div>
+
+
+<h4 id="chinese_contain_english">创建 chinese_contain_english 输入方案</h4>
+<p>因「小鹤双拼·语句流」输入方案依赖 “chinese_contain_english” 输入方案， 如果不创建的话 chinese_contain_english 词典无法被编译<br />
+创建简单版本即可 <code>touch ~/Library/Rime/chinese_contain_english.schema.yaml</code>, 内容如下：</p>
+<div class="hlcode"><pre><span class="cp"># chinese_contain_english.schema.yaml</span>
+<span class="cp"># Rime schema</span>
+<span class="cp"># encoding: utf-8</span>
+
+<span class="nl">schema:</span>
+  <span class="nl">schema_id:</span> <span class="n">chinese_contain_english</span>
+  <span class="nl">name:</span> <span class="err">英文</span>
+  <span class="nl">version:</span> <span class="s">&quot;0.1&quot;</span>
+  <span class="nl">description:</span>
+    <span class="err">为了配合「小鹤双拼·语句流」输入方案</span>
+
+<span class="nl">engine:</span>
+  <span class="nl">processors:</span>
+    <span class="o">-</span> <span class="n">speller</span>               <span class="err">#</span> <span class="err">把字母追加到编码串</span>
+    <span class="o">-</span> <span class="n">selector</span>              <span class="err">#</span> <span class="err">选字、换页</span>
+    <span class="o">-</span> <span class="n">navigator</span>             <span class="err">#</span> <span class="err">移动插入点</span>
+    <span class="o">-</span> <span class="n">express_editor</span>        <span class="err">#</span> <span class="err">空格确认当前输入、其他字符直接上屏</span>
+  <span class="nl">segmentors:</span>
+    <span class="o">-</span> <span class="n">abc_segmentor</span>         <span class="err">#</span> <span class="err">标记输入码的类型</span>
+  <span class="nl">translators:</span>
+    <span class="o">-</span> <span class="n">echo_translator</span>       <span class="err">#</span> <span class="err">没有候选项时，创建一个与编码串一个模样的候选项</span>
+    <span class="o">-</span> <span class="n">table_translator</span>      <span class="err">#</span> <span class="err">码表式转换</span>
+
+<span class="nl">translator:</span>
+  <span class="nl">dictionary:</span> <span class="n">chinese_contain_english</span>       <span class="err">#</span> <span class="err">设定</span> <span class="n">table_translator</span> <span class="err">使用的词典名</span>
+</pre></div>
+
+
+<h4 id="chinese_contain_english_1">创建 chinese_contain_english 词典</h4>
+<div class="hlcode"><pre><span class="n">touch</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Rime</span><span class="o">/</span><span class="n">chinese_contain_english</span><span class="p">.</span><span class="n">dict</span><span class="p">.</span><span class="n">yaml</span>
+</pre></div>
+
+
+<p>内容如下：</p>
+<div class="hlcode"><pre><span class="cp"># chinese_contain_english.dict.yaml</span>
+<span class="cp"># Rime dictionary</span>
+<span class="cp"># encoding: utf-8</span>
+<span class="cp">#</span>
+<span class="cp"># 中英文混输的时候有用</span>
+
+<span class="o">---</span>
+<span class="nl">name:</span> <span class="n">chinese_contain_english</span>
+<span class="nl">version:</span> <span class="s">&quot;0.1&quot;</span>
+<span class="nl">sort:</span> <span class="n">by_weight</span>
+<span class="nl">use_preset_vocabulary:</span> <span class="nb">false</span>
+<span class="p">...</span>
+
+ <span class="n">Rime</span>   <span class="n">rime</span>
+ <span class="n">Android</span>    <span class="n">android</span>
+ <span class="n">Apple</span>  <span class="n">apple</span>
+ <span class="n">Mac</span>    <span class="n">mac</span>
+ <span class="n">Windows</span>    <span class="n">windows</span>
+<span class="cp"># ...</span>
+</pre></div>
+
+
+<p>需要<strong>注意</strong>的是：<code>Rime rime</code> 之间要有 tab，其它的类似，词典格式是如此<br />
+完整的文件内容请看：<a href="https://gist.github.com/mwum/931e306e2ae8bd32b169">https://gist.github.com/mwum/931e306e2ae8bd32b169</a></p>
+<h3 id="_27">添加「小鹤双拼·语句流」输入方案以及对全局的定制</h3>
+<p>首先创建对全局的用户定制文件</p>
+<div class="hlcode"><pre><span class="n">touch</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Rime</span><span class="o">/</span><span class="k">default</span><span class="p">.</span><span class="n">custom</span><span class="p">.</span><span class="n">yaml</span>
+</pre></div>
+
+
+<p>然后编辑该文件</p>
+<div class="hlcode"><pre><span class="cp"># default.custom.yaml</span>
+<span class="cp"># Rime default settings</span>
+<span class="cp"># encoding: utf-8</span>
+
+<span class="nl">patch:</span>
+  <span class="nl">schema_list:</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">double_pinyin_flypy_fluency</span>   <span class="err">#</span> <span class="err">新增「小鶴雙拼·語句流」</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">cangjie5</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin_fluency</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin_simp</span>
+    <span class="o">-</span> <span class="n">schema</span><span class="o">:</span> <span class="n">luna_pinyin_tw</span>
+
+  <span class="n">key_binder</span><span class="o">/</span><span class="n">bindings</span><span class="o">:</span>                      <span class="err">#</span> <span class="err">以方括号换页</span>
+    <span class="o">-</span> <span class="n">when</span><span class="o">:</span> <span class="n">paging</span>
+      <span class="nl">accept:</span> <span class="n">bracketleft</span>
+      <span class="nl">send:</span> <span class="n">Page_Up</span>
+    <span class="o">-</span> <span class="n">when</span><span class="o">:</span> <span class="n">has_menu</span>
+      <span class="nl">accept:</span> <span class="n">bracketright</span>
+      <span class="nl">send:</span> <span class="n">Page_Down</span>
+
+  <span class="n">ascii_composer</span><span class="o">/</span><span class="n">good_old_caps_lock</span><span class="o">:</span> <span class="nb">true</span>   <span class="err">#</span> <span class="err">中西文切换快捷键</span>
+  <span class="n">ascii_composer</span><span class="o">/</span><span class="n">switch_key</span><span class="o">:</span>
+    <span class="nl">Caps_Lock:</span> <span class="n">noop</span>
+    <span class="nl">Shift_L:</span> <span class="n">inline_ascii</span>
+    <span class="nl">Shift_R:</span> <span class="n">noop</span>
+    <span class="nl">Control_L:</span> <span class="n">noop</span>
+    <span class="nl">Control_R:</span> <span class="n">noop</span>
+</pre></div>
+
+
+<h3 id="_28">外观设定</h3>
+<p>见上文《<a href="http://www.dreamxu.com/install-config-squirrel/#外观设定">外观设定</a>》</p>
+<h3 id="_29">导入扩充词库</h3>
+<p>见上文《<a href="http://www.dreamxu.com/install-config-squirrel/#导入扩充词库">导入扩充词库</a>》</p>
+<h3 id="_30">同步用户资料</h3>
+<p>见上文《<a href="http://www.dreamxu.com/install-config-squirrel/#同步用户资料">同步用户资料</a>》</p>
+<hr />
+<p>参考：<br />
+<a href="https://code.google.com/p/rimeime/wiki/MoodCollection">Rime 心情集 | rimeime</a><br />
+<a href="https://code.google.com/p/rimeime/wiki/UserGuide">說明書 | rimeime</a><br />
+<a href="https://code.google.com/p/rimeime/wiki/CustomizationGuide">Rime 定製指南 | rimeime</a><br />
+<a href="https://code.google.com/p/rimeime/wiki/RimeWithSchemata">Rime 輸入方案設計書 | rimeime</a><br />
+<a href="https://github.com/LEOYoon-Tsaw/Rime_collections/blob/master/Rime_discription.md">雪齋的文檔 | GitHub</a><br />
+<a href="http://tieba.baidu.com/p/2283095493">预备发布一个新版本【小狼毫】0.9.21 | rime 吧</a><br />
+<a href="http://tieba.baidu.com/p/2757690418">〔新手推荐敎程〕关于导入词库及「深蓝词库转换」的正确操作方法 | rime 吧</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

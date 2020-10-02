@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>将七牛与Dropbox双剑合璧解决图床问题 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Cloud">Cloud</a>&nbsp;&#187;&nbsp;将七牛与Dropbox双剑合璧解决图床问题
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 22:20
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">将七牛与Dropbox双剑合璧解决图床问题</div>
+
+  <p>三天前我就开始说要根本上解决WordPress for SAE的图床问题，拖到到今天才搞定这事。也是我坚持将图床要用博客子域名放，所以得慢慢等待七牛那短则一天长则七天的审核，想当初我费精力弄了备案也算有点好处了。</p>
+<p>子域名图床益处多，分担主机压力，节约流量，轻装搬家，灵活针对线路加速等等，Dropbox做图床的想法已实践，而用七牛做主力是最近才萌生的想法。特别要说明的是，七牛与Dropbox双备份的方法仅限备案的域名，无备案的话只能用Dropbox了。</p>
+<p>为啥之前没考虑七牛？是因为七牛服务是面向开发者的，所谓开发者就是看得懂指令，求灵活简约，能使用先进工具而不屑于使用传统做法的人群，七牛的服务风格从它的帮助说明讲，那FTP的上传管理方式都过时了。我之前从网页上传东西，没见它有“新建文件夹”这基本功能，瞬间感觉这东西可能不适合我，以至我一直没下决心好好用。</p>
+<p>废话少说，直奔主题。所谓七牛与Dropbox双备份图床，指得是本地图片同步之后在七牛与Dropbox上都有备份，并且外链地址的文件夹层次一样，外链地址的区别只在于前面的域名，想使用哪一家的外链服务，子域名就解析过去。解析到七牛，用的就是七牛的加速，解析到Dropbox，那就享受Dropbox全球分布式外链。如果用智能解析，国外用Dropbox，国内用七牛，那是极好的。</p>
+<p><img alt="将七牛与Dropbox双剑合璧解决图床问题 - 第1张  | 随望淡思" src="http://u.lushaojun.com/2014/1044_1.jpg" /></p>
+<p>Dropbox中Public文件夹的外链地址有明确规则，即“域名/u/账户ID/文件位置/文件名.后缀”。七牛则更简单，“域名/文件名.后缀”就搞定了，要两边相同，我们只能在七牛这边做灵活处理。我们使用官方提供的QRSBox同步上传工具的时候，要在Key前缀里预先配置一下，使得每个上传的文件名前面都能带上如Dropbox外链那样的地址格式，我加的Key前缀是“u/账户ID/”（不带双引号，注意前面没有斜杠，而后面不能少了斜杠）。至于其他的什么AccessKey/SecretKey，看帮助说明自己找即可。同步源目录肯定是跟Dropbox中Public文件夹一致。这样才能两边上传。</p>
+<p><img alt="将七牛与Dropbox双剑合璧解决图床问题 - 第2张  | 随望淡思" src="http://u.lushaojun.com/2014/1044_2.jpg" /></p>
+<p>接下来就是要做智能解析，国外线路直接用CNAME方式解析到Dropbox的外链域名。默认线路则填写七牛审核后给出的CDN域名。这样就做到了国内使用七牛，而国外使用Dropbox。内外分流应该是不错的。七牛本不提供还原操作，而Dropbox可以在一个月之内无限次还原，正好补充七牛缺陷了。</p>
+<p>最后就是上传了，特别说明一点，七牛这QRSBox上传工具是极客型的，上传过程全部以代码形式滚滚浮现在你眼前，而且它只同步上传跟修改操作，不同步删除操作。常识都说电脑的文件名不允许包含“/”，但你上传文件夹后，在七牛网页端看每个文件的名字都是带“/”的。这是七牛描述目录的方式，而且只输入文件名的话在它网页端通常找不到想要的文件，你得连着目录名层次一块输入才能搜索，这让我等小白好不习惯！</p>
+<p>极客就极客吧，那是七牛一向的风格，上传之后如何获取直链就不用多说了，至此七牛与Dropbox双备份图床完成。百度的加速乐我也关了，有新浪SAE国内多节点多线路支持，我无需担心博客访问速度，接下来可以安心写博咯！！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

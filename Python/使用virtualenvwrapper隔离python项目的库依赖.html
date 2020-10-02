@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用VirtualEnvWrapper隔离python项目的库依赖 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Python">Python</a>&nbsp;&#187;&nbsp;使用VirtualEnvWrapper隔离python项目的库依赖
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 21:51
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用VirtualEnvWrapper隔离python项目的库依赖</div>
+
+  <h2 id="_1">关于：</h2>
+<p>VirtualEnv用于在一台机器上创建多个独立的python运行环境，VirtualEnvWrapper为前者提供了一些便利的命令行上的封装。</p>
+<h2 id="_2">为什么要用</h2>
+<ul>
+<li>
+<p>隔离项目之间的第三方包依赖，如A项目依赖django1.2.5，B项目依赖django1.3。</p>
+</li>
+<li>
+<p>为部署应用提供方便，把开发环境的虚拟环境打包到生产环境即可,不需要在服务器上再折腾一翻。</p>
+</li>
+</ul>
+<h2 id="_3">怎么用</h2>
+<h3 id="_4">安装</h3>
+<ul>
+<li>
+<p>pip install virtualenvwrapper</p>
+</li>
+<li>
+<p>把下面这句加到~/.bash_profile里面，如不嫌麻烦，也可以每次都手动执行。</p>
+</li>
+</ul>
+<p>source /usr/local/bin/virtualenvwrapper.sh</p>
+<h3 id="_5">常用命令</h3>
+<p>创新的虚拟环境</p>
+<p>– mkvirtualenv [env1]</p>
+<p>该命令会帮我们创建一个新环境,默认情况下，环境的目录是.virtualenv/en1,创建过程中它会自动帮我们安装pip，以后我们要安装新依赖时可直接使用pip命令。</p>
+<p>创建完之后，自动切换到该环境下工作，可看到提示符变为：</p>
+<p>(env1)$</p>
+<p>在这个环境下安装的依赖不会影响到其他的环境</p>
+<p>– lssitepackages</p>
+<p>显示该环境中所安装的包</p>
+<p>切换环境</p>
+<p>– workon [env]</p>
+<p>随时使用”workon 环境名”可以进行环境切换，如果不带环境名参数，则显示当前使用的环境</p>
+<p>– deactivate</p>
+<p>在某个环境中使用，切换到系统的python环境</p>
+<h4 id="_6">其他命令</h4>
+<p>– showvirtualenv [env]</p>
+<p>显示指定环境的详情。</p>
+<p>– rmvirtualenv [env]</p>
+<p>移除指定的虚拟环境，移除的前提是当前没有在该环境中工作。如在该环境工作，先使用deactivate退出。</p>
+<p>– cpvirtualenv [source] [dest]</p>
+<p>复制一份虚拟环境。</p>
+<p>– cdvirtualenv [subdir]</p>
+<p>把当前工作目录设置为所在的环境目录。</p>
+<p>– cdsitepackages [subdir]</p>
+<p>把当前工作目录设置为所在环境的sitepackages路径。</p>
+<p>– add2virtualenv [dir] [dir]</p>
+<p>把指定的目录加入当前使用的环境的path中，这常使用于在多个project里面同时使用一个较大的库的情况。</p>
+<p>– toggleglobalsitepackages -q</p>
+<p>控制当前的环境是否使用全局的sitepackages目录。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

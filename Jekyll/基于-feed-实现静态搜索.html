@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>基于 Feed 实现静态搜索 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;基于 Feed 实现静态搜索
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 22:05
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">基于 Feed 实现静态搜索</div>
+
+  <p>静态搜索的实现。由于静态博客没有后台，目前站内搜索大多使用 Google 自定义搜索，之前也提到过如何添加，缺点是 Google 在国内访问速度慢且不稳定。最近百度也推出了站内搜索，据说可以搜到没被收录的内容，可是目前还处于内测中，小博客没试用机会。</p>
+<p>在网上转了一圈，发现有几篇文章提到先生成一个含有标题、日期、链接等信息的文件 <code>search.xml</code>，然后用 js 搜索这个文件的方法，但是这种方法功能太过简单。换英文搜了一下，发现有人提出了一个类似的但功能更完善的方法 —— 搜索 RSS Feed 或 Atom Feed。这种方法好处在于不用生成额外的文件，而且可以通过 Feed 中的内容摘要来搜索文章内容。本博客目前使用的就是这种方法，还有人专门建了一个网站为静态博客提供这种服务。</p>
+<h2 id="_1">一、定义表单</h2>
+<p>因为表单不是真的要提交，只需要一个输入框就可以了，还可以加上一个按钮。</p>
+<div class="hlcode"><pre><span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">&quot;search-form&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">&quot;query&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;正则搜索&quot;</span><span class="nt">&gt;&lt;/input&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;submit&quot;</span><span class="nt">&gt;&lt;i</span> <span class="na">class=</span><span class="s">&quot;icon-search&quot;</span><span class="nt">&gt;&lt;/i&gt;&lt;/button&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</pre></div>
+
+
+<h2 id="div">二、定义相关div</h2>
+<p>因为使用 ajax 获取 feed 的 xml 文件，经过处理后将匹配的结果展现出来，所以需要定义两个 div，其中<code>#loader</code> 显示一个动态图表示正在加载，<code>#main-content</code> 用来显示匹配的结果。</p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;loader&quot;</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">&quot;{{ ASSET_PATH }}/img/loading.gif&quot;</span> <span class="na">alt=</span><span class="s">&quot;请稍侯&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;main-content&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+
+
+<h2 id="js">二、编写js代码</h2>
+<p>代码不长，应该很容易看懂。大致思路是响应表单的提交事件，发出 ajax 请求，调用 <code>findEntries</code> 进行匹配。几个注意事项：</p>
+<ol>
+<li>由于使用了 jQuery，需要链接 jQuery 库文件。</li>
+<li>此处使用的是 Atom Feed，如果你用的是 RSS Feed，<code>findEntries</code> 需要做一些修改，因为两者格式不一样。</li>
+<li>此处使用正则表达式进行搜索，想搜索 <code>c++</code>，应该输入 <code>c\+\+</code>。如果不想使用正则表达式，请自行修改。</li>
+</ol>
+<div class="hlcode"><pre><span class="err">$</span><span class="p">(</span><span class="nb">document</span><span class="p">)</span><span class="bp">.</span><span class="nb">ready</span><span class="p">(</span><span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="n">entries</span> <span class="o">=</span> <span class="kt">null</span><span class="p">;</span>
+
+  <span class="nx">function</span> <span class="nx">formatDate</span><span class="p">(</span><span class="kt">date</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="n">monthNames</span> <span class="o">=</span> <span class="err">[</span> <span class="s2">&quot;January&quot;</span><span class="p">,</span> <span class="s2">&quot;February&quot;</span><span class="p">,</span> <span class="s2">&quot;March&quot;</span><span class="p">,</span> <span class="s2">&quot;April&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="s2">&quot;June&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;July&quot;</span><span class="p">,</span> <span class="s2">&quot;August&quot;</span><span class="p">,</span> <span class="s2">&quot;September&quot;</span><span class="p">,</span> <span class="s2">&quot;October&quot;</span><span class="p">,</span> <span class="s2">&quot;November&quot;</span><span class="p">,</span> <span class="s2">&quot;December&quot;</span> <span class="cp">]</span>;
+    return date.getDate() + &#39; &#39; + monthNames<span class="cp">[</span><span class="kt">date</span><span class="bp">.</span><span class="nx">getMonth</span><span class="p">()</span><span class="cp">]</span> + &#39; &#39; + date.getFullYear();
+  }
+
+  function findEntries(q) {
+    var matches = <span class="cp">[]</span>;
+    var rq = new RegExp(q, &#39;im&#39;);
+    var rl = /^http:\/\/liberize\.me\/post\/(.+)\.html$/;
+    for (var i = 0; i <span class="nt">&lt; entries</span><span class="err">.</span><span class="na">length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+      <span class="na">var</span> <span class="na">entry =</span><span class="err"> </span><span class="s">entries</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="s">;</span>
+      <span class="na">var</span> <span class="na">title =</span><span class="err"> </span><span class="s">$(entry.getElementsByTagName(&#39;title&#39;)</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="s">).text();</span>
+      <span class="na">var</span> <span class="na">link =</span><span class="err"> </span><span class="s">$(entry.getElementsByTagName(&#39;link&#39;)</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="s">).attr(&#39;href&#39;);</span>
+      <span class="na">var</span> <span class="na">title_en =</span><span class="err"> </span><span class="s">rl.exec(link)</span><span class="cp">[</span><span class="mi">1</span><span class="cp">]</span><span class="s">.replace(/-/g,</span> <span class="err">&#39;</span> <span class="err">&#39;);</span>
+      <span class="na">var</span> <span class="na">content =</span><span class="err"> </span><span class="s">$(entry.getElementsByTagName(&#39;content&#39;)</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="s">).text();</span>          
+      <span class="na">if</span> <span class="err">(</span><span class="na">rq</span><span class="err">.</span><span class="na">test</span><span class="err">(</span><span class="na">title</span><span class="err">)</span> <span class="err">||</span> <span class="na">rq</span><span class="err">.</span><span class="na">test</span><span class="err">(</span><span class="na">title_en</span><span class="err">)</span> <span class="err">||</span> <span class="na">rq</span><span class="err">.</span><span class="na">test</span><span class="err">(</span><span class="na">content</span><span class="err">))</span> <span class="err">{</span>
+        <span class="na">var</span> <span class="na">updated =</span><span class="err"> </span><span class="s">formatDate(xmlDateToJavascriptDate($(entry.getElementsByTagName(&#39;updated&#39;)</span><span class="cp">[</span><span class="mi">0</span><span class="cp">]</span><span class="s">).text()));</span>
+        <span class="na">matches</span><span class="err">.</span><span class="na">push</span><span class="err">({&#39;</span><span class="na">title</span><span class="err">&#39;</span><span class="na">:</span> <span class="na">title</span><span class="err">,</span> <span class="err">&#39;</span><span class="na">link</span><span class="err">&#39;</span><span class="na">:</span> <span class="na">link</span><span class="err">,</span> <span class="err">&#39;</span><span class="na">date</span><span class="err">&#39;</span><span class="na">:</span> <span class="na">updated</span><span class="err">,</span> <span class="err">&#39;</span><span class="na">content</span><span class="err">&#39;</span><span class="na">:</span> <span class="na">content</span><span class="err">});</span>
+      <span class="err">}</span>
+    <span class="err">}</span>
+    <span class="na">var</span> <span class="na">html =</span><span class="err"> </span><span class="s">&#39;&#39;</span><span class="err">;</span>
+    <span class="na">for</span> <span class="err">(</span><span class="na">var</span> <span class="na">i =</span><span class="err"> </span><span class="s">0;</span> <span class="na">i</span> <span class="err">&lt;</span> <span class="na">matches</span><span class="err">.</span><span class="na">length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+      <span class="na">var</span> <span class="na">match =</span><span class="err"> </span><span class="s">matches</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="s">;</span> 
+      <span class="na">html</span> <span class="err">+=</span> <span class="err">&#39;&lt;</span><span class="na">article</span> <span class="na">class=</span><span class="s">&quot;nested&quot;</span><span class="nt">&gt;</span>&#39;;
+      html += &#39;<span class="nt">&lt;header&gt;&lt;h2&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;&#39; + match.link + &#39;&quot;</span><span class="nt">&gt;</span>&#39; + htmlEscape(match.title) + &#39;<span class="nt">&lt;/a&gt;&lt;/h2&gt;&lt;/header&gt;</span>&#39;;
+      html += &#39;<span class="nt">&lt;section&gt;&lt;p&gt;</span>&#39; + htmlEscape(match.content) + &#39;<span class="nt">&lt;/p&gt;&lt;/section&gt;</span>&#39;;
+      html += &#39;<span class="nt">&lt;footer&gt;&lt;p&gt;</span>更新日期：&#39; + match.date + &#39;<span class="nt">&lt;/p&gt;&lt;/footer&gt;</span>&#39;;
+      html += &#39;<span class="nt">&lt;/article&gt;</span>&#39;;
+    }
+    $(&#39;#main-content&#39;).html(html);
+    $(&#39;#loader&#39;).hide();
+    $(&#39;#main-content&#39;).show();
+  }
+
+  $(&#39;#search-form&#39;).submit(function() {
+    var query = $(&#39;#query&#39;).val();
+    $(&#39;#query&#39;).blur().attr(&#39;disabled&#39;, true);
+    $(&#39;#main-content&#39;).hide();
+    $(&#39;#loader&#39;).show();
+    if (entries == null) {
+      $.ajax({url: &#39;/atom.xml?r=&#39; + (Math.random() * 99999999999), dataType: &#39;xml&#39;, success: function(data) {
+        entries = data.getElementsByTagName(&#39;entry&#39;);
+        findEntries(query);
+      }});
+    } else {
+      findEntries(query);
+    }
+    $(&#39;#query&#39;).blur().attr(&#39;disabled&#39;, false);
+    return false;
+  });
+
+});
+</pre></div>
+
+
+<p>其中，htmlEscape 函数用来对内容做 html 转义，xmlDateToJavascriptDate 函数用来将 feed 中的 xml 格式的日期转为 js 中的 Date 对象。</p>
+<p>完整代码见 Gist：<a href="https://gist.github.com/mba811/bd8312d4e48195204183">https://gist.github.com/mba811/bd8312d4e48195204183</a>。</p>
+<p>第一次搜索因为需要取回 xml 会比较慢，后面每次搜索都非常快。另外，使用这种方法不建议将 feed 设为全文输出，因为这会导致取回和搜索都比较慢，尤其是在文章很多的情况下。</p>
+<p>为简单起见，没有加入返回搜索前页面的功能，可以使用 <code>history.js</code> 来实现。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

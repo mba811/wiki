@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>制作自己的Vagrant Box - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;制作自己的Vagrant Box
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:28
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">制作自己的Vagrant Box</div>
+
+  <h2 id="_1">前置条件</h2>
+<ol>
+<li>安装<a href="https://www.virtualbox.org/">VirtualBox</a></li>
+<li>安装<a href="https://www.vagrantup.com/">Vagrant</a></li>
+<li>在VirtualBox中安装操作系统，例如 <a href="http://www.centos.org/">CentOS</a></li>
+</ol>
+<h2 id="vbox">想要将操作系统打包为可用的Vbox镜像要做以下工作</h2>
+<ol>
+<li>创建vagrant用户和用户目录，密码为vagrant</li>
+<li>添加vagrant用户的公共密钥，文件为/home/vagrant/.ssh/<a href="https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub">authorized_keys</a></li>
+<li>在真实操作系统中执行vagrant package --base 虚拟机名称，这样会创建指定虚拟机的box</li>
+<li>将制作好的Box添加到Vagrant环境中，vagrant box add name package.box</li>
+<li>初始化运行环境,vagrant init name</li>
+<li>运行Vagrant虚拟机，vagrant up</li>
+</ol>
+<p>到此完成整个流程</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

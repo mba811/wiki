@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 固定链接 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 固定链接
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 11:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 固定链接</div>
+
+  <blockquote>
+<p>原文地址：<a href="https://github.com/mojombo/jekyll/wiki/Permalinks">https://github.com/mojombo/jekyll/wiki/Permalinks</a></p>
+</blockquote>
+<p><strong>Jekyll</strong>支持以一种灵活的方式来定制你站点的URL路径。你可以通过 <a href="http://havee.me/internet/2013-07/jekyll-configuration.html">配置文件</a> 和 <a href="http://havee.me/internet/2013-07/jekyll-yaml-front-matter.html">YAML前置数据</a> 来指定你站点的每个页面的固定链接。你可以使用内建的风格来创建你的链接，或者你也可以自己定制。默认的风格总是<code>date</code>。</p>
+<p><strong>注意</strong>:即使 <code>--auto</code> 选项被打开了，当你在 Jekyll 运行时修改其固定链接的风格，你需要重新启动 Jekyll 才能使新的风格生效。</p>
+<h3 id="_1">模板变量</h3>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">year</td>
+<td align="left">从文件名中获取的年份</td>
+</tr>
+<tr>
+<td align="left">month</td>
+<td align="left">从文件名中获取的月份</td>
+</tr>
+<tr>
+<td align="left">day</td>
+<td align="left">从文件名中获取的日期</td>
+</tr>
+<tr>
+<td align="left">title</td>
+<td align="left">从文件名中获取的标题</td>
+</tr>
+<tr>
+<td align="left">categories</td>
+<td align="left">当前文章指定的分类。Jekyll 自动将它解析到 URL 的双斜杠之间。如果没有分类，那将会被忽略。</td>
+</tr>
+<tr>
+<td align="left">i_month</td>
+<td align="left">从文件名中获取没有前导零的月份</td>
+</tr>
+<tr>
+<td align="left">i_day</td>
+<td align="left">从文件名中获取没有前导零的日期</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_2">内建风格</h3>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">date</td>
+<td align="left">/:categories/:year/:month/:day/:title.html</td>
+</tr>
+<tr>
+<td align="left">pretty</td>
+<td align="left">/:categories/:year/:month/:day/:title/</td>
+</tr>
+<tr>
+<td align="left">none</td>
+<td align="left">/:categories/:title.html</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">例子</h3>
+<p>假设文章的名字是：<code>/2009-4-29-slap-chop.textile</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">none</td>
+<td align="left">/2009/04/29/slap-chop.html</td>
+</tr>
+<tr>
+<td align="left">permalink: pretty</td>
+<td align="left">/2009/04/29/slap-chop/index.html</td>
+</tr>
+<tr>
+<td align="left">permalink: /:month-:day-:year/:title.html</td>
+<td align="left">/04-29-2009/slap-chop.html</td>
+</tr>
+<tr>
+<td align="left">permalink: /blog/:year/:month/:day/:title</td>
+<td align="left">/blog/2009/04/29/slap-chop/index.html</td>
+</tr>
+</tbody>
+</table>
+<p>转自：<a href="http://zhouyichu.com/%E7%BF%BB%E8%AF%91/Jekyll-Wiki-Permalinks.html">【译文】Jekyll固定链接</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

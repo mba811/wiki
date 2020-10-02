@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用ssh保护3389终端服务流量安全 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;使用ssh保护3389终端服务流量安全
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:20
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用ssh保护3389终端服务流量安全</div>
+
+  <p>之前为了方便演示代理服务，我使用一台微软服务器作为HTTP Relay的演示机，后来又用来做了一些其他用途，在家能控制公司的机器十分方便。但是，3389服务本身就存在着某些严重的安全隐患。不仅密码简单会遇到暴力破解攻击，由于现代计算机的高性能，大并发扫描可以短时间内扫描大量端口，即使把3389端口改为别的端口号，也会被扫描出来。而且据某些研究，<a href="http://www.ecice06.com/CN/article/downloadArticleFile.do?attachType=PDF&amp;id=16259">RDP协议存在明文传输密码等问题</a>，在认证过程中容易被嗅探。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/lunwen.png"><img alt="lunwen" src="https://velaciela.ms/wp-content/uploads/2014/12/lunwen-300x114.png" /></a></p>
+<p>同时，使用严格的IPSec规范保护3389，需要很复杂的设置，同时还需要导入私钥，一般的用户难以实现。一般用户连接远程桌面往往会遇到证书不信任的提示（因为没有安装证书，安装证书需要设置PkI，这超过了一般用户的能力），一般直接确定通过。但是，<a href="http://www.freebuf.com/articles/network/29288.html">rdp劫持可以利用用户长期以来忽略证书报警的疏忽，达到中间人攻击的目的</a>。 </p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/cert-warning.png"><img alt="cert-warning" src="https://velaciela.ms/wp-content/uploads/2014/12/cert-warning.png" /></a></p>
+<p>证书警告</p>
+<p>最后，RDP采用RC4加密（默认），这是一种不安全的密码。在当今的计算机处理能力下，Rc4可以被很快破解。如果结合流量分析，攻击者完全可以还原在远程桌面上的全部操作，并还原于远程桌面间传输的文件。加上破解的密码和端口扫描，服务器很容易变成肉鸡。特别是在所谓“大数据”时代，使用远程桌面的信息安全受到更高层次的威胁，用强加密手段保护3389是应有的预防措施。</p>
+<p>下面我演示使用SSH协议-Socks5代理方式保护3389流量的一种方式。服务器均为中国，不存在SSH被阻断的问题。如果在国外，可以考虑使用Shadowsocks作为加密通道。SSH协议目前尚未有可见的漏洞，破解方法均为暴力破解，如果密码足够强壮，加上防暴力工具，应该是安全的。</p>
+<p><strong>实验环境：</strong></p>
+<p>Linux、Windows服务器均在同一远程内网（172.16.1.0/24)，远程内网网关开放SSH端口，不开放3389端口。</p>
+<p>软件：Windows远程桌面客户端、Proxifer代理调度工具（可以调度不支持代理的程序通过代理）、SSH客户端。</p>
+<p><strong>一、建立Proxfier代理规则。</strong></p>
+<p>去Profixer<a href="https://proxifier.com/">官网下载</a>软件，注意需要购买正版，不然只能试用。（我不推荐安装破解版，不安全），安装后，设置Profixer的代理规则。如果不正确设置规则，它会把所有流量都通过代理。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/Profixer.png"><img alt="Profixer" src="https://velaciela.ms/wp-content/uploads/2014/12/Profixer-1024x529.png" /></a></p>
+<p>Proxifer界面</p>
+<p>首先需要设定代理。点击左侧第一个按钮”Proxy Server” 设定代理服务器。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/proxy.png"><img alt="proxy" src="https://velaciela.ms/wp-content/uploads/2014/12/proxy.png" /></a></p>
+<p>服务器地址设定为本地127.0.0.1,端口设定为8964（……其实可以是任意端口），类型选择Socks5。保存后确定。</p>
+<p>第二步是设定代理规则。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/rules.png"><img alt="rules" src="https://velaciela.ms/wp-content/uploads/2014/12/rules.png" /></a></p>
+<p>点开第二个按钮（Rules），即代理规则。这个规则很简单，规则名、程序、目标地址、目标端口、代理策略。</p>
+<p>我们新增一个规则，程序为终端服务（3389），位置C:\windows\system32\mstsc.exe,目标地址、端口均为任意（也可以指定为服务器的地址），动作（Action）为通过127.0.0.1：8964上的Socks5代理。最后点击钩子启用。</p>
+<p>注意第二个应该是默认就有的”localhost”，程序、目标、端口均为任意，动作为Direct，意思是其他所有程序访问所有地址均为直接连接（不走代理）。如果不正确设置，所有流量都会被发到这个代理上。</p>
+<p>最后通过移动规则，确保mstsc在第一条，因为规则优先为从上到下。这样，就设置了“终端服务程序”在访问任意地址时通过代理，其他程序直接连接。 </p>
+<p><strong>设置SSH</strong></p>
+<p>SSH的设置十分简单，我就不多讲了。由于连接在支国境内建立，没有被检测和阻止的风险，速度也非常快。这里使用Bitvise客户端，在连接SSH的同时，开启Socks5 在本地的127.0.0.1：8964端口上。这样两个程序就通过这个端口互相通信了。</p>
+<p>注意，本次测试的Linux主机与Windows主机在同一个内网，因此3389服务连接时是直接连接内网地址的。等同于通过SSH先安全连接到远程内网，接下来3389程序通过SSH的通道，在内网控制Windows服务器。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/3389.png"><img alt="3389" src="https://velaciela.ms/wp-content/uploads/2014/12/3389.png" /></a> </p>
+<p><strong>连接测试</strong></p>
+<p>先建立SSH连接，然后打开Prixifer程序，打开3389，可以看到3389通过SSH通道进入远程内网，并通过内网地址建立连接。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/Capture.png"><img alt="Capture" src="https://velaciela.ms/wp-content/uploads/2014/12/Capture.png" /></a></p>
+<p>这张图中可以看到3389已经通过SSH通道传输数据。 </p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/3389-via-profixer.png"><img alt="3389-via-profixer" src="https://velaciela.ms/wp-content/uploads/2014/12/3389-via-profixer-1024x533.png" /></a></p>
+<p>可以看到3389与主机的通信是通过远程内网。</p>
+<p>此时，远程内网只开放了一个SSH端口，不再开放3389端口，3389服务器对网络完全隐藏。且通信通过SSH加密，防御流量分析和劫持。</p>
+<p>在实际操作中，运行一个Linux服务器往往很安全，但操作维护起来比较麻烦，而运行一个Windows服务器虽然方便，但不安全。但Linux可以在一些奇怪的设备里运行，完全可以在内网中放一个树莓派，通过SSH到树莓派，再从内网访问微软服务器来解决安全问题。这样也比使用VPN优雅，比使用IPSec简单。 </p>
+<p>在操作海外的微软VPS时，如果担忧安全问题，可以使用Shadowsocks保护连接，操作方法大同小异。但注意Shadowsocks到微软服务器的这一段连接不是内网连接的话，3389还是要连接服务器的公网Ip的。当然，由于扫描的问题，强密码还是不可少的。虽然仍然可以用IPSec，但是这样可以隐藏你的流量，让人不知道你在操作服务器。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

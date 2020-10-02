@@ -1,0 +1,403 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>CNPM 搭建私有的NPM服务 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;CNPM 搭建私有的NPM服务
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 10:03
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">CNPM 搭建私有的NPM服务</div>
+
+  <p><strong>前言</strong></p>
+<p>随着Nodejs开发的项目越来越多，Node项目管理就成了一个需要思考的问题了。如果所有项目都开源统一用 NPM 进行管理也没什么问题，但总有一些是我们不希望的完全开放的代码，作为企业是核心秘密保留在公司内部，这个时候就需要在公司内网也搭建一套 NPM 依赖管理系统。</p>
+<p>CNPM正好就提供了这个功能。从Github上CNPM的主页看，CNPM由国内Alibaba团队开发维护。</p>
+<p><strong>目录</strong></p>
+<ol>
+<li>CNPM是什么？</li>
+<li>搭建CNPM的服务器</li>
+<li>设置私有注册库的三种方法</li>
+<li>CNPM的客户端使用</li>
+</ol>
+<h2 id="1-cnpm">1. CNPM是什么？</h2>
+<p>CNPM 是一个Nodejs的库，致力于打造私有的 NPM 注册服务。当然，除了私有库功能以外，CNPM官网 (<a href="http://cnpmjs.org/">http://cnpmjs.org/</a>) 还提供了NPM同步的服务。</p>
+<p>CNPM官方发布的架构图：<br />
+<a href="http://blog.fens.me/wp-content/uploads/2014/09/cnpm-architect.png"><img alt="cnpm-architect" src="http://blog.fens.me/wp-content/uploads/2014/09/cnpm-architect.png" /></a></p>
+<p>从CNPM的架构图中，我们可以看出CNPM是对NPM做的镜像服务，CNPM会定期同步NPM的资源库，同时CNPM支持发布私有的库，这样就非常方便地集成了公有库和私有库，对于公司内部的开发者来说，基本感觉不到两种库的区别。</p>
+<p>另外，我们使用NPM下载依赖包时，经常性地会遇到一些包下载失败的情况，主要原因了NPM的注册服务器在国外，国内的网络环境访问国外的IP并不是太好。所以，直接配置到国内的NPM镜像，可以减少NPM下载出错机会。</p>
+<p>比如，最近发生的NPM下载时的“No compatible version found”错误，如果不想升级NPM的环境，那么你还选择用CNPM去进行依赖管理，关于错误的详细介绍，请参考文章 <a href="http://blog.fens.me/nodejs-npm-no-compatible-version/">NPM下载出错 No compatible version found</a></p>
+<h2 id="2-cnpm">2. 搭建CNPM的服务器</h2>
+<p>从官方文档中，我们看到CNPM服务器环境，只需要Node(0.11.12) + MySQL(&gt;= 0.5.0)，另外我们还需要Linux的环境，接下来就让我们动手自己搭建一个私有NPM的服务器。</p>
+<p>我的系统环境：</p>
+<ul>
+<li>Linux: Ubuntu 12.04.2 64bit Server</li>
+<li>Node: v0.11.2</li>
+<li>Npm: 1.2.21</li>
+<li>MySQL: 5.6.11 MySQL Community Server (GPL)</li>
+<li>IP: 192.168.1.20</li>
+</ul>
+<p>通过github下载项目源代码</p>
+<div class="hlcode"><pre><span class="cp"># 下载项目，进入目录</span>
+<span class="o">~</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/cnpm/cnpmjs.org.git</span>
+<span class="o">~</span> <span class="n">cd</span> <span class="n">cnpmjs</span><span class="p">.</span><span class="n">org</span>
+</pre></div>
+
+
+<p>在我们开始安装依赖包之前，先要升级NPM的版本，不然会出现“No compatible version found”的错误。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">sudo</span> <span class="n">npm</span> <span class="n">install</span> <span class="n">npm</span> <span class="o">-</span><span class="n">g</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">npm</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">npm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">npm</span><span class="o">-</span><span class="n">cli</span><span class="p">.</span><span class="n">js</span>
+<span class="n">npm</span><span class="err">@</span><span class="mf">2.0.0</span><span class="o">-</span><span class="n">beta</span><span class="mf">.0</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">npm</span>
+</pre></div>
+
+
+<p>安装项目依赖</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">sudo</span> <span class="n">npm</span> <span class="n">install</span> 
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">engine</span> <span class="n">koa</span><span class="o">-</span><span class="n">generic</span><span class="o">-</span><span class="n">session</span><span class="err">@</span><span class="mf">1.1.3</span><span class="o">:</span> <span class="n">wanted</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;&gt;= 0.11.9&quot;</span><span class="p">}</span> <span class="p">(</span><span class="n">current</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;0.11.2&quot;</span><span class="p">,</span><span class="s">&quot;np               m&quot;</span><span class="o">:</span><span class="s">&quot;2.0.0-beta.0&quot;</span><span class="p">})</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">engine</span> <span class="n">koa</span><span class="o">-</span><span class="n">redis</span><span class="err">@</span><span class="mf">0.1.1</span><span class="o">:</span> <span class="n">wanted</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;&gt;= 0.11.9&quot;</span><span class="p">}</span> <span class="p">(</span><span class="n">current</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;0.11.2&quot;</span><span class="p">,</span><span class="s">&quot;npm&quot;</span><span class="o">:</span><span class="s">&quot;2.0.0-               beta.0&quot;</span><span class="p">})</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">engine</span> <span class="n">koa</span><span class="o">-</span><span class="n">resource</span><span class="o">-</span><span class="n">router</span><span class="err">@</span><span class="mf">0.3.3</span><span class="o">:</span> <span class="n">wanted</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;&gt; 0.11.4&quot;</span><span class="p">}</span> <span class="p">(</span><span class="n">current</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;0.11.2&quot;</span><span class="p">,</span><span class="s">&quot;npm               &quot;</span><span class="o">:</span><span class="s">&quot;2.0.0-beta.0&quot;</span><span class="p">})</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">engine</span> <span class="n">koa</span><span class="o">-</span><span class="n">rt</span><span class="err">@</span><span class="mf">0.0.2</span><span class="o">:</span> <span class="n">wanted</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;&gt;= 0.11.9&quot;</span><span class="p">}</span> <span class="p">(</span><span class="n">current</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;0.11.2&quot;</span><span class="p">,</span><span class="s">&quot;npm&quot;</span><span class="o">:</span><span class="s">&quot;2.0.0-bet               a.0&quot;</span><span class="p">})</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">engine</span> <span class="n">koa</span><span class="o">-</span><span class="n">router</span><span class="err">@</span><span class="mf">3.2.3</span><span class="o">:</span> <span class="n">wanted</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;&gt; 0.11.4&quot;</span><span class="p">}</span> <span class="p">(</span><span class="n">current</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;0.11.2&quot;</span><span class="p">,</span><span class="s">&quot;npm&quot;</span><span class="o">:</span><span class="s">&quot;2.0.0-               beta.0&quot;</span><span class="p">})</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">engine</span> <span class="n">koa</span><span class="o">-</span><span class="k">static</span><span class="o">-</span><span class="n">cache</span><span class="err">@</span><span class="mf">1.1.0</span><span class="o">:</span> <span class="n">wanted</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;&gt; 0.11.4&quot;</span><span class="p">}</span> <span class="p">(</span><span class="n">current</span><span class="o">:</span> <span class="p">{</span><span class="s">&quot;node&quot;</span><span class="o">:</span><span class="s">&quot;0.11.2&quot;</span><span class="p">,</span><span class="s">&quot;npm&quot;</span><span class="o">:</span><span class="s">&quot;               2.0.0-beta.0&quot;</span><span class="p">})</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">deprecated</span> <span class="n">lingo</span><span class="err">@</span><span class="mf">0.0.5</span><span class="o">:</span> <span class="n">This</span> <span class="n">project</span> <span class="n">is</span> <span class="n">abandoned</span>
+<span class="n">co</span><span class="o">-</span><span class="n">read</span><span class="err">@</span><span class="mf">0.1.0</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">co</span><span class="o">-</span><span class="n">read</span>
+
+<span class="n">error</span><span class="o">-</span><span class="n">formater</span><span class="err">@</span><span class="mf">1.0.3</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">error</span><span class="o">-</span><span class="n">formater</span>
+<span class="err">└──</span> <span class="n">utility</span><span class="err">@</span><span class="mf">0.1.16</span> <span class="p">(</span><span class="n">address</span><span class="err">@</span><span class="mf">0.0.3</span><span class="p">)</span>
+
+<span class="n">multiline</span><span class="err">@</span><span class="mf">1.0.0</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">multiline</span>
+<span class="err">└──</span> <span class="n">strip</span><span class="o">-</span><span class="n">indent</span><span class="err">@</span><span class="mf">1.0.0</span> <span class="p">(</span><span class="n">get</span><span class="o">-</span><span class="n">stdin</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">)</span>
+
+<span class="n">jshint</span><span class="err">@</span><span class="mf">2.5.5</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">jshint</span>
+<span class="err">├──</span> <span class="n">strip</span><span class="o">-</span><span class="n">json</span><span class="o">-</span><span class="n">comments</span><span class="err">@</span><span class="mf">0.1.3</span>
+<span class="err">├──</span> <span class="n">underscore</span><span class="err">@</span><span class="mf">1.6.0</span>
+<span class="err">├──</span> <span class="n">exit</span><span class="err">@</span><span class="mf">0.1.2</span>
+<span class="err">├──</span> <span class="n">shelljs</span><span class="err">@</span><span class="mf">0.3.0</span>
+<span class="err">├──</span> <span class="n">minimatch</span><span class="err">@</span><span class="mf">0.4.0</span> <span class="p">(</span><span class="n">sigmund</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">,</span> <span class="n">lru</span><span class="o">-</span><span class="n">cache</span><span class="err">@</span><span class="mf">2.5.0</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">console</span><span class="o">-</span><span class="n">browserify</span><span class="err">@</span><span class="mf">1.1.0</span> <span class="p">(</span><span class="n">date</span><span class="o">-</span><span class="n">now</span><span class="err">@</span><span class="mf">0.1.4</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">cli</span><span class="err">@</span><span class="mf">0.6.4</span> <span class="p">(</span><span class="n">glob</span><span class="err">@</span><span class="mf">3.2.11</span><span class="p">)</span>
+<span class="err">└──</span> <span class="n">htmlparser2</span><span class="err">@</span><span class="mf">3.7.3</span> <span class="p">(</span><span class="n">domelementtype</span><span class="err">@</span><span class="mf">1.1.1</span><span class="p">,</span> <span class="n">domutils</span><span class="err">@</span><span class="mf">1.5.0</span><span class="p">,</span> <span class="n">entities</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">,</span> <span class="n">domhandler</span><span class="err">@</span><span class="mf">2.2.0</span><span class="p">,</span> <span class="n">readabl</span>               <span class="n">e</span><span class="o">-</span><span class="n">stream</span><span class="err">@</span><span class="mf">1.1.13</span><span class="p">)</span>
+
+<span class="n">koa</span><span class="o">-</span><span class="n">middlewares</span><span class="err">@</span><span class="mf">1.2.0</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">koa</span><span class="o">-</span><span class="n">middlewares</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">conditional</span><span class="o">-</span><span class="n">get</span><span class="err">@</span><span class="mf">1.0.2</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">rt</span><span class="err">@</span><span class="mf">0.0.2</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">session</span><span class="err">@</span><span class="mf">2.0.0</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">etag</span><span class="err">@</span><span class="mf">1.3.1</span> <span class="p">(</span><span class="n">buffer</span><span class="o">-</span><span class="n">crc32</span><span class="err">@</span><span class="mf">0.2.3</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">logger</span><span class="err">@</span><span class="mf">1.2.2</span> <span class="p">(</span><span class="n">passthrough</span><span class="o">-</span><span class="n">counter</span><span class="err">@</span><span class="mf">0.0.1</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">compress</span><span class="err">@</span><span class="mf">1.0.7</span> <span class="p">(</span><span class="n">statuses</span><span class="err">@</span><span class="mf">1.0.4</span><span class="p">,</span> <span class="n">koa</span><span class="o">-</span><span class="n">is</span><span class="o">-</span><span class="n">json</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">,</span> <span class="n">compressible</span><span class="err">@</span><span class="mf">1.1.1</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">safe</span><span class="o">-</span><span class="n">jsonp</span><span class="err">@</span><span class="mf">0.2.0</span> <span class="p">(</span><span class="n">jsonp</span><span class="o">-</span><span class="n">body</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">rewrite</span><span class="err">@</span><span class="mf">1.1.0</span> <span class="p">(</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">regexp</span><span class="err">@</span><span class="mf">0.0.2</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="k">static</span><span class="o">-</span><span class="n">cache</span><span class="err">@</span><span class="mf">1.1.0</span> <span class="p">(</span><span class="n">fs</span><span class="o">-</span><span class="n">readdir</span><span class="o">-</span><span class="n">recursive</span><span class="err">@</span><span class="mf">0.0.2</span><span class="p">,</span> <span class="n">compressible</span><span class="err">@</span><span class="mf">1.1.1</span><span class="p">,</span> <span class="n">mime</span><span class="o">-</span><span class="n">types</span><span class="err">@</span><span class="mf">1.0.2</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">redis</span><span class="err">@</span><span class="mf">0.1.1</span> <span class="p">(</span><span class="n">redis</span><span class="err">@</span><span class="mf">0.10.3</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">router</span><span class="err">@</span><span class="mf">3.2.3</span> <span class="p">(</span><span class="n">koa</span><span class="o">-</span><span class="n">compose</span><span class="err">@</span><span class="mf">2.3.0</span><span class="p">,</span> <span class="n">methods</span><span class="err">@</span><span class="mf">1.1.0</span><span class="p">,</span> <span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">regexp</span><span class="err">@</span><span class="mf">0.2.1</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">bodyparser</span><span class="err">@</span><span class="mf">1.0.1</span> <span class="p">(</span><span class="n">co</span><span class="o">-</span><span class="n">body</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">favicon</span><span class="err">@</span><span class="mf">1.1.0</span> <span class="p">(</span><span class="n">co</span><span class="o">-</span><span class="n">fs</span><span class="err">@</span><span class="mf">1.2.0</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">resource</span><span class="o">-</span><span class="n">router</span><span class="err">@</span><span class="mf">0.3.3</span> <span class="p">(</span><span class="n">koa</span><span class="o">-</span><span class="n">compose</span><span class="err">@</span><span class="mf">2.2.0</span><span class="p">,</span> <span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">regexp</span><span class="err">@</span><span class="mf">0.0.2</span><span class="p">,</span> <span class="n">debug</span><span class="err">@</span><span class="mf">0.7.4</span><span class="p">,</span> <span class="n">lingo</span><span class="err">@</span><span class="mf">0.0.5</span><span class="p">,</span> <span class="n">defa</span>               <span class="n">ults</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">generic</span><span class="o">-</span><span class="n">session</span><span class="err">@</span><span class="mf">1.1.3</span> <span class="p">(</span><span class="n">buffer</span><span class="o">-</span><span class="n">crc32</span><span class="err">@</span><span class="mf">0.2.3</span><span class="p">,</span> <span class="n">uid</span><span class="o">-</span><span class="n">safe</span><span class="err">@</span><span class="mf">1.0.1</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">csrf</span><span class="err">@</span><span class="mf">2.1.3</span> <span class="p">(</span><span class="n">csrf</span><span class="err">@</span><span class="mf">2.0.1</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">koa</span><span class="o">-</span><span class="n">ejs</span><span class="err">@</span><span class="mf">1.0.1</span> <span class="p">(</span><span class="n">ejs</span><span class="err">@</span><span class="mf">1.0.0</span><span class="p">,</span> <span class="n">co</span><span class="o">-</span><span class="n">fs</span><span class="err">@</span><span class="mf">1.2.0</span><span class="p">,</span> <span class="n">is</span><span class="o">-</span><span class="n">type</span><span class="o">-</span><span class="n">of</span><span class="err">@</span><span class="mf">0.2.1</span><span class="p">)</span>
+<span class="err">└──</span> <span class="n">koa</span><span class="o">-</span><span class="n">onerror</span><span class="err">@</span><span class="mf">1.0.3</span> <span class="p">(</span><span class="n">swig</span><span class="err">@</span><span class="mf">1.4.2</span><span class="p">)</span>
+</pre></div>
+
+
+<p>创建MySQL数据库，我本地的MySQL用户名为root，密码是mysql，可以通过下面语句创建。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">pmysql</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">DROP</span> <span class="n">DATABASE</span> <span class="n">IF</span> <span class="n">EXISTS</span> <span class="n">cnpmjs_test</span><span class="p">;</span><span class="err">&#39;</span> <span class="o">&amp;&amp;</span>\
+<span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">pmysql</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">CREATE</span> <span class="n">DATABASE</span> <span class="n">cnpmjs_test</span><span class="p">;</span><span class="err">&#39;</span> <span class="o">&amp;&amp;</span>\
+<span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">pmysql</span> <span class="err">&#39;</span><span class="n">cnpmjs_test</span><span class="err">&#39;</span> <span class="o">&lt;</span> <span class="n">docs</span><span class="o">/</span><span class="n">db</span><span class="p">.</span><span class="n">sql</span> <span class="o">&amp;&amp;</span>\
+<span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">pmysql</span> <span class="err">&#39;</span><span class="n">cnpmjs_test</span><span class="err">&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">show</span> <span class="n">tables</span><span class="p">;</span><span class="err">&#39;</span>
+<span class="o">+-----------------------+</span>
+<span class="o">|</span> <span class="n">Tables_in_cnpmjs_test</span> <span class="o">|</span>
+<span class="o">+-----------------------+</span>
+<span class="o">|</span> <span class="n">dist_dir</span>              <span class="o">|</span>
+<span class="o">|</span> <span class="n">dist_file</span>             <span class="o">|</span>
+<span class="o">|</span> <span class="n">download_total</span>        <span class="o">|</span>
+<span class="o">|</span> <span class="n">module</span>                <span class="o">|</span>
+<span class="o">|</span> <span class="n">module_deps</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">module_keyword</span>        <span class="o">|</span>
+<span class="o">|</span> <span class="n">module_log</span>            <span class="o">|</span>
+<span class="o">|</span> <span class="n">module_maintainer</span>     <span class="o">|</span>
+<span class="o">|</span> <span class="n">module_star</span>           <span class="o">|</span>
+<span class="o">|</span> <span class="n">module_unpublished</span>    <span class="o">|</span>
+<span class="o">|</span> <span class="n">tag</span>                   <span class="o">|</span>
+<span class="o">|</span> <span class="n">total</span>                 <span class="o">|</span>
+<span class="o">|</span> <span class="n">user</span>                  <span class="o">|</span>
+<span class="o">+-----------------------+</span>
+</pre></div>
+
+
+<p>接下来，我们需要在项目的./config/index.js文件中，修改MySQL数据库的用户名和密码。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="nt">vi</span> <span class="o">./</span><span class="nt">config</span><span class="o">/</span><span class="nt">index</span><span class="nc">.js</span>
+
+<span class="nt">108</span>   <span class="c">/**</span>
+<span class="c">109    * mysql config</span>
+<span class="c">110    */</span>
+<span class="nt">111</span>
+<span class="nt">112</span>   <span class="nt">mysqlServers</span><span class="o">:</span> <span class="cp">[</span>
+<span class="mi">113</span>     <span class="p">{</span>
+<span class="mi">114</span>       <span class="nb">host</span><span class="p">:</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+<span class="mi">115</span>       <span class="nb">port</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span>
+<span class="mi">116</span>       <span class="nb">user</span><span class="p">:</span> <span class="s1">&#39;root&#39;</span><span class="p">,</span>
+<span class="mi">117</span>       <span class="nx">password</span><span class="p">:</span> <span class="s1">&#39;mysql&#39;</span>
+<span class="mi">118</span>     <span class="p">}</span>
+<span class="mi">119</span>   <span class="cp">]</span><span class="o">,</span>
+<span class="nt">120</span>   <span class="nt">mysqlDatabase</span><span class="o">:</span> <span class="s1">&#39;cnpmjs_test&#39;</span><span class="o">,</span>
+<span class="nt">121</span>   <span class="nt">mysqlMaxConnections</span><span class="o">:</span> <span class="nt">4</span><span class="o">,</span>
+<span class="nt">122</span>   <span class="nt">mysqlQueryTimeout</span><span class="o">:</span> <span class="nt">5000</span><span class="o">,</span>
+<span class="nt">123</span>
+</pre></div>
+
+
+<p>启动CNPM服务器，默认会打开两个端口，7001用于NPM的注册服务，7002用于Web访问。</p>
+<div class="hlcode"><pre><span class="o">~</span>  <span class="n">node</span> <span class="o">--</span><span class="n">harmony_generators</span> <span class="n">dispatch</span><span class="p">.</span><span class="n">js</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">54</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">25211</span><span class="o">:</span><span class="n">common</span><span class="o">/</span><span class="n">redis</span><span class="p">.</span><span class="n">js</span><span class="p">]</span> <span class="n">Redis</span> <span class="n">config</span> <span class="n">can</span> <span class="n">not</span> <span class="n">found</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">54</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">25211</span><span class="p">]</span> <span class="n">Server</span> <span class="n">started</span><span class="p">,</span> <span class="n">registry</span> <span class="n">server</span> <span class="n">listen</span> <span class="n">at</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">7001</span><span class="p">,</span> <span class="n">web</span> <span class="n">listen</span> <span class="n">at</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">7002</span><span class="p">,</span> <span class="n">cluster</span><span class="o">:</span> <span class="nb">false</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">54</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">25211</span><span class="p">]</span> <span class="n">mysql</span> <span class="n">ready</span><span class="p">,</span> <span class="n">got</span> <span class="mi">13</span> <span class="n">tables</span>
+</pre></div>
+
+
+<p>从日志中看到，这两个端口服务都绑定在127.0.0.1的本地网络中，我们需要修改配置文件 ./config/index.js文件，注释bindingHost一行，对外网开放。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">vi</span> <span class="p">.</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">js</span>
+
+ <span class="mi">39</span>   <span class="cm">/*</span>
+<span class="cm"> 40    * server configure</span>
+<span class="cm"> 41    */</span>
+ <span class="mi">42</span>   <span class="n">registryPort</span><span class="o">:</span> <span class="mi">7001</span><span class="p">,</span>
+ <span class="mi">43</span>   <span class="n">webPort</span><span class="o">:</span> <span class="mi">7002</span><span class="p">,</span>
+ <span class="mi">44</span>   <span class="c1">//bindingHost: &#39;127.0.0.1&#39;, // only binding on 127.0.0.1 for local access</span>
+</pre></div>
+
+
+<p>第二次，启动CNPM服务器</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">node</span> <span class="o">--</span><span class="n">harmony_generators</span> <span class="n">dispatch</span><span class="p">.</span><span class="n">js</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">46</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">25259</span><span class="o">:</span><span class="n">common</span><span class="o">/</span><span class="n">redis</span><span class="p">.</span><span class="n">js</span><span class="p">]</span> <span class="n">Redis</span> <span class="n">config</span> <span class="n">can</span> <span class="n">not</span> <span class="n">found</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">46</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">25259</span><span class="p">]</span> <span class="n">Server</span> <span class="n">started</span><span class="p">,</span> <span class="n">registry</span> <span class="n">server</span> <span class="n">listen</span> <span class="n">at</span> <span class="n">undefined</span><span class="o">:</span><span class="mi">7001</span><span class="p">,</span> <span class="n">web</span> <span class="n">listen</span> <span class="n">at</span> <span class="n">undefined</span><span class="o">:</span><span class="mi">7002</span><span class="p">,</span> <span class="n">cluster</span><span class="o">:</span> <span class="nb">false</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">46</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">25259</span><span class="p">]</span> <span class="n">mysql</span> <span class="n">ready</span><span class="p">,</span> <span class="n">got</span> <span class="mi">13</span> <span class="n">tables</span>
+</pre></div>
+
+
+<p>通过浏览器访问：http://192.168.1.20:7002，没想到的情况，应用又崩溃了，这个坑深入了！！</p>
+<div class="hlcode"><pre><span class="cp">[</span><span class="nx">Tue</span> <span class="nx">Sep</span> <span class="mi">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">00</span> <span class="nb">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="nx">CST</span><span class="p">)</span><span class="cp">]</span> <span class="cp">[</span><span class="nx">worker</span><span class="p">:</span><span class="mi">25404</span><span class="cp">]</span> Server started, registry server listen at undefined:7001, web listen at undefined:7002, cluster: false
+<span class="cp">[</span><span class="nx">Tue</span> <span class="nx">Sep</span> <span class="mi">02</span> <span class="mi">2014</span> <span class="mi">15</span><span class="p">:</span><span class="mi">29</span><span class="p">:</span><span class="mi">00</span> <span class="nb">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="nx">CST</span><span class="p">)</span><span class="cp">]</span> <span class="cp">[</span><span class="nx">worker</span><span class="p">:</span><span class="mi">25404</span><span class="cp">]</span> mysql ready, got 13 tables
+
+==== JS stack trace =========================================
+
+    2: arguments adaptor frame: 0-&gt;1
+Security context: 0x185dd4b5e291 <span class="nt">&lt;JS</span> <span class="na">Object</span><span class="nt">&gt;</span>#0#
+    4: /* anonymous */ <span class="cp">[</span><span class="p">/</span><span class="nb">home</span><span class="p">/</span><span class="nx">conan</span><span class="p">/</span><span class="nx">nodejs</span><span class="p">/</span><span class="nx">cnpmjs.org</span><span class="p">/</span><span class="nx">node_modules</span><span class="p">/</span><span class="nx">co</span><span class="p">/</span><span class="nx">index.js</span><span class="p">:</span><span class="mi">40</span><span class="cp">]</span> (this=0x2a1e646d07e1 <span class="nt">&lt;an</span> <span class="na">Object</span><span class="nt">&gt;</span>#1#,done=0x2d36f5fcdd31 <span class="nt">&lt;JS</span> <span class="na">Function</span><span class="nt">&gt;</span>#2#)
+    5: /* anonymous */ <span class="cp">[</span><span class="p">/</span><span class="nb">home</span><span class="p">/</span><span class="nx">conan</span><span class="p">/</span><span class="nx">nodejs</span><span class="p">/</span><span class="nx">cnpmjs.org</span><span class="p">/</span><span class="nx">node_modules</span><span class="p">/</span><span class="nx">koa</span><span class="p">/</span><span class="nx">lib</span><span class="p">/</span><span class="nx">application.js</span><span class="p">:</span><span class="mi">125</span><span class="cp">]</span> (this=0x2d36f5fab301 <span class="nt">&lt;a</span> <span class="na">Server</span><span class="nt">&gt;</span>#3#,req=0x2d36f5fcacc1 <span class="nt">&lt;an</span> <span class="na">IncomingMessage</span><span class="nt">&gt;</span>#4#,res=0x2d36f5fcc3f9 <span class="nt">&lt;a</span> <span class="na">ServerResponse</span><span class="nt">&gt;</span>#5#)
+    6: emit <span class="cp">[</span><span class="nx">events.js</span><span class="p">:</span><span class="mi">100</span><span class="cp">]</span> (this=0x2d36f5fab301 <span class="nt">&lt;a</span> <span class="na">Server</span><span class="nt">&gt;</span>#3#,type=0x8305a126379 <span class="nt">&lt;String</span><span class="cp">[</span><span class="mi">7</span><span class="cp">]</span><span class="nt">:</span> <span class="na">request</span><span class="nt">&gt;</span>)
+    7: arguments adaptor frame: 3-&gt;1
+    8: onIncoming <span class="cp">[</span><span class="nx">_http_server.js</span><span class="p">:</span><span class="mi">450</span><span class="cp">]</span> (this=0x2d36f5fc8029 <span class="nt">&lt;an</span> <span class="na">HTTPParser</span><span class="nt">&gt;</span>#6#,req=0x2d36f5fcacc1 <span class="nt">&lt;an</span> <span class="na">IncomingMessage</span><span class="nt">&gt;</span>#4#,shouldKeepAlive=0x185dd4b04161 <span class="nt">&lt;true&gt;</span>)
+
+//省略日志
+</pre></div>
+
+
+<p>经过检查发现，是Node版本的问题。重新下载编译安装Node，详细操作请参考文章<a href="http://blog.fens.me/nodejs-enviroment/">准备Nodejs开发环境Ubuntu</a>，升级后的版本为</p>
+<ul>
+<li>Node v0.13.0-pre</li>
+<li>NPM 1.4.21</li>
+</ul>
+<p>第三次，启动CNPM服务器。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">node</span> <span class="o">--</span><span class="n">harmony_generators</span> <span class="n">dispatch</span><span class="p">.</span><span class="n">js</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">16</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mi">25</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">14842</span><span class="o">:</span><span class="n">common</span><span class="o">/</span><span class="n">redis</span><span class="p">.</span><span class="n">js</span><span class="p">]</span> <span class="n">Redis</span> <span class="n">config</span> <span class="n">can</span> <span class="n">not</span> <span class="n">found</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">16</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mi">25</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">14842</span><span class="p">]</span> <span class="n">Server</span> <span class="n">started</span><span class="p">,</span> <span class="n">registry</span> <span class="n">server</span> <span class="n">listen</span> <span class="n">at</span> <span class="n">undefined</span><span class="o">:</span><span class="mi">7001</span><span class="p">,</span> <span class="n">web</span> <span class="n">listen</span> <span class="n">at</span> <span class="n">undefined</span><span class="o">:</span><span class="mi">7002</span><span class="p">,</span> <span class="n">cluster</span><span class="o">:</span> <span class="nb">false</span>
+<span class="p">[</span><span class="n">Tue</span> <span class="n">Sep</span> <span class="mo">02</span> <span class="mi">2014</span> <span class="mi">16</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mi">25</span> <span class="n">GMT</span><span class="o">+</span><span class="mi">0800</span> <span class="p">(</span><span class="n">CST</span><span class="p">)]</span> <span class="p">[</span><span class="n">worker</span><span class="o">:</span><span class="mi">14842</span><span class="p">]</span> <span class="n">mysql</span> <span class="n">ready</span><span class="p">,</span> <span class="n">got</span> <span class="mi">13</span> <span class="n">tables</span>
+</pre></div>
+
+
+<p>通过浏览器访问，CNPM服务：http://192.168.1.20:7002</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2014/09/cnpm-local.png"><img alt="cnpm-local" src="http://blog.fens.me/wp-content/uploads/2014/09/cnpm-local.png" /></a></p>
+<p>终于正常了，这样就成功搭建了私有的NPM注册服务。</p>
+<p>搜索一下，我之前在NPM发布的自己的包ape-algorithm，发现没有结果，根据界面提示CNPM应用会自动去NPM上同步。</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2014/09/cnpm-ape-algorithm.png"><img alt="cnpm-ape-algorithm" src="http://blog.fens.me/wp-content/uploads/2014/09/cnpm-ape-algorithm.png" /></a></p>
+<p>第一次同步操作，会下载很多的包，大家要耐心等待啊。页面不能切换！</p>
+<h2 id="3">3. 设置私有注册库的三种方法</h2>
+<p>我们自己搭建的私有服务怎么用呢？</p>
+<p>我们先建一个项目目录</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span><span class="o">/</span><span class="n">nodejs</span>
+<span class="o">~</span> <span class="n">mkdir</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">cnpm</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">cnpm</span>
+</pre></div>
+
+
+<p><strong>3.1 下载指定私有库</strong></p>
+<p>一种简单的方式就是，下载的时候指定我们自己的私有库，这样就会从我们自己的私有库中下载。如果私有库没有对应的库，CNPM会自动同步到NPM 找到我们要下载的库和版本，先在CNPM中存一份，然后再传给客户端一份，运行原理和Maven的原理一样。</p>
+<p>执行下载的操作</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">npm</span> <span class="n">install</span> <span class="n">ape</span><span class="o">-</span><span class="n">algorithm</span> <span class="o">--</span><span class="n">registry</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//192.168.1.20:7001</span>
+<span class="n">ape</span><span class="o">-</span><span class="n">algorithm</span><span class="err">@</span><span class="mf">0.0.8</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">ape</span><span class="o">-</span><span class="n">algorithm</span>
+<span class="err">└──</span> <span class="n">linklist</span><span class="err">@</span><span class="mf">0.0.3</span>
+
+<span class="cp"># 查看下载的库</span>
+<span class="o">~</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span>
+<span class="n">drwxrwxr</span><span class="o">-</span><span class="n">x</span> <span class="mi">3</span> <span class="n">conan</span> <span class="n">conan</span> <span class="mi">4096</span>  <span class="mi">9</span><span class="err">月</span>  <span class="mi">2</span> <span class="mi">16</span><span class="o">:</span><span class="mi">36</span> <span class="n">node_modules</span>
+</pre></div>
+
+
+<p><strong>3.2 给项目设置私有库</strong></p>
+<p>如果这个项目所有依赖库都从公司内网下载，那么我们可以给整个项目设置私有库，就不需要每次下载的时候单独指定了。</p>
+<p>首先，我们查看项目的默设置，通过npm config list命令。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">npm</span> <span class="n">config</span> <span class="n">list</span>
+
+<span class="p">;</span> <span class="n">cli</span> <span class="n">configs</span>
+<span class="n">registry</span> <span class="o">=</span> <span class="s">&quot;https://registry.npmjs.org/&quot;</span>
+<span class="n">user</span><span class="o">-</span><span class="n">agent</span> <span class="o">=</span> <span class="s">&quot;npm/1.4.21 node/v0.13.0-pre linux x64&quot;</span>
+
+<span class="p">;</span> <span class="n">node</span> <span class="n">bin</span> <span class="n">location</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">node</span>
+<span class="p">;</span> <span class="n">cwd</span> <span class="o">=</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span><span class="o">/</span><span class="n">nodejs</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">cnpm</span>
+<span class="p">;</span> <span class="n">HOME</span> <span class="o">=</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span>
+<span class="p">;</span> <span class="err">&#39;</span><span class="n">npm</span> <span class="n">config</span> <span class="n">ls</span> <span class="o">-</span><span class="n">l</span><span class="err">&#39;</span> <span class="n">to</span> <span class="n">show</span> <span class="n">all</span> <span class="n">defaults</span><span class="p">.</span>
+</pre></div>
+
+
+<p>registry属性是指向NPM的官司位置https://registry.npmjs.org/，我们可以通过npm config set registry命令来修改这个配置。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">npm</span> <span class="n">config</span> <span class="n">set</span> <span class="n">registry</span> <span class="n">http</span><span class="o">:</span><span class="c1">//192.168.1.20:7001</span>
+
+<span class="cp"># 再次查看项目设置</span>
+<span class="o">~</span> <span class="n">npm</span> <span class="n">config</span> <span class="n">list</span>
+<span class="p">;</span> <span class="n">cli</span> <span class="n">configs</span>
+<span class="n">registry</span> <span class="o">=</span> <span class="s">&quot;http://192.168.1.20:7001/&quot;</span>
+<span class="n">user</span><span class="o">-</span><span class="n">agent</span> <span class="o">=</span> <span class="s">&quot;npm/1.4.21 node/v0.13.0-pre linux x64&quot;</span>
+
+<span class="p">;</span> <span class="n">userconfig</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span><span class="o">/</span><span class="p">.</span><span class="n">npmrc</span>
+<span class="n">registry</span> <span class="o">=</span> <span class="s">&quot;http://192.168.1.20:7001/&quot;</span>
+
+<span class="p">;</span> <span class="n">node</span> <span class="n">bin</span> <span class="n">location</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">node</span>
+<span class="p">;</span> <span class="n">cwd</span> <span class="o">=</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span><span class="o">/</span><span class="n">nodejs</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">cnpm</span>
+<span class="p">;</span> <span class="n">HOME</span> <span class="o">=</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span>
+</pre></div>
+
+
+<p>这个项目再下载新包时，就会通过我们私有库去下载。</p>
+<p><strong>3.3 给用户设置私有库</strong></p>
+<p>如果我们的开发环境在内网，不允许访问外网，那么我们可以设置全局的NPM库。</p>
+<p>在当前用户所在的根目录，找到.npmrc文件，配置NPM私有库。</p>
+<div class="hlcode"><pre><span class="o">~</span>  <span class="n">vi</span> <span class="o">~/</span><span class="p">.</span><span class="n">npmrc</span>
+
+<span class="n">registry</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//192.168.1.20:7001</span>
+</pre></div>
+
+
+<p>设置成功后，当前用户的所有NPM下载都会通过私有库来完成。</p>
+<p><strong>3.4 设置淘宝的开放库</strong></p>
+<p>我们除了使用自己的私有库，还可以使用淘宝的NPM库，这样可以有效地避免国内访问国外NPM库，网络不通的问题。</p>
+<p>按照上面的方法，把registry配置为https://registry.npm.taobao.org 就行了。</p>
+<div class="hlcode"><pre><span class="n">registry</span> <span class="o">=</span> <span class="s">&quot;https://registry.npm.taobao.org/&quot;</span>
+</pre></div>
+
+
+<h2 id="4-cnpm">4. CNPM的客户端使用</h2>
+<p>CNPM 不仅提供服务端的功能，还提供了客户端的访问功能，就像NPM一样。通过全局安装cnpm包，可以完全取代了npm的命令操作了。</p>
+<p>安装cnpm客户端</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">sudo</span> <span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="n">cnpm</span>
+
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">sync</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">sync</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">check</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">check</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">web</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">web</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">user</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">user</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">doc</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">doc</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">search</span> <span class="o">-&gt;</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">cnpm</span><span class="o">-</span><span class="n">search</span>
+<span class="n">cnpm</span><span class="err">@</span><span class="mf">1.0.0</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">cnpm</span>
+<span class="err">├──</span> <span class="n">commander</span><span class="err">@</span><span class="mf">2.3.0</span>
+<span class="err">├──</span> <span class="k">auto</span><span class="o">-</span><span class="n">correct</span><span class="err">@</span><span class="mf">1.0.0</span>
+<span class="err">├──</span> <span class="n">giturl</span><span class="err">@</span><span class="mf">0.0.3</span>
+<span class="err">├──</span> <span class="n">cross</span><span class="o">-</span><span class="n">spawn</span><span class="err">@</span><span class="mf">0.1.7</span>
+<span class="err">├──</span> <span class="n">colors</span><span class="err">@</span><span class="mf">0.6.2</span>
+<span class="err">├──</span> <span class="n">bagpipe</span><span class="err">@</span><span class="mf">0.3.5</span>
+<span class="err">├──</span> <span class="n">open</span><span class="err">@</span><span class="mf">0.0.5</span>
+<span class="err">├──</span> <span class="n">debug</span><span class="err">@</span><span class="mf">1.0.4</span> <span class="p">(</span><span class="n">ms</span><span class="err">@</span><span class="mf">0.6.2</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">npm</span><span class="o">-</span><span class="n">request</span><span class="err">@</span><span class="mf">0.0.4</span> <span class="p">(</span><span class="n">urllib</span><span class="err">@</span><span class="mf">0.5.11</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">npm</span><span class="err">@</span><span class="mf">2.0.0</span><span class="o">-</span><span class="n">beta</span><span class="mf">.2</span>
+<span class="err">└──</span> <span class="n">urllib</span><span class="err">@</span><span class="mf">0.5.17</span> <span class="p">(</span><span class="k">default</span><span class="o">-</span><span class="n">user</span><span class="o">-</span><span class="n">agent</span><span class="err">@</span><span class="mf">0.0.1</span><span class="p">,</span> <span class="n">debug</span><span class="err">@</span><span class="mf">0.8.1</span><span class="p">,</span> <span class="n">digest</span><span class="o">-</span><span class="n">header</span><span class="err">@</span><span class="mf">0.0.1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>测试一下，通过cnpm安装gulp包。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">cnpm</span> <span class="n">install</span> <span class="n">gulp</span>
+
+<span class="o">&gt;</span> <span class="n">node</span><span class="o">-</span><span class="n">v8</span><span class="o">-</span><span class="n">clone</span><span class="err">@</span><span class="mf">0.6.2</span> <span class="n">install</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">conan</span><span class="o">/</span><span class="n">nodejs</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">cnpm</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">gulp</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">gulp</span><span class="o">-</span><span class="n">util</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">vinyl</span><span class="o">/</span><span class="n">node_modules</span><span class="o">/</span><span class="n">node</span><span class="o">-</span><span class="n">v8</span><span class="o">-</span><span class="n">clone</span>
+<span class="o">&gt;</span> <span class="n">node</span><span class="o">-</span><span class="n">gyp</span> <span class="n">rebuild</span>
+
+<span class="n">gulp</span><span class="err">@</span><span class="mf">3.8.7</span> <span class="n">node_modules</span><span class="o">/</span><span class="n">gulp</span>
+<span class="err">├──</span> <span class="n">tildify</span><span class="err">@</span><span class="mf">0.2.0</span>
+<span class="err">├──</span> <span class="n">interpret</span><span class="err">@</span><span class="mf">0.3.2</span>
+<span class="err">├──</span> <span class="n">pretty</span><span class="o">-</span><span class="n">hrtime</span><span class="err">@</span><span class="mf">0.2.0</span>
+<span class="err">├──</span> <span class="n">deprecated</span><span class="err">@</span><span class="mf">0.0.1</span>
+<span class="err">├──</span> <span class="n">archy</span><span class="err">@</span><span class="mf">0.0.2</span>
+<span class="err">├──</span> <span class="n">minimist</span><span class="err">@</span><span class="mf">0.2.0</span>
+<span class="err">├──</span> <span class="n">semver</span><span class="err">@</span><span class="mf">3.0.1</span>
+<span class="err">├──</span> <span class="n">chalk</span><span class="err">@</span><span class="mf">0.5.0</span> <span class="p">(</span><span class="n">escape</span><span class="o">-</span><span class="n">string</span><span class="o">-</span><span class="n">regexp</span><span class="err">@</span><span class="mf">1.0.1</span><span class="p">,</span> <span class="n">ansi</span><span class="o">-</span><span class="n">styles</span><span class="err">@</span><span class="mf">1.1.0</span><span class="p">,</span> <span class="n">supports</span><span class="o">-</span><span class="n">color</span><span class="err">@</span><span class="mf">0.2.0</span><span class="p">,</span> <span class="n">has</span><span class="o">-</span><span class="n">ansi</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">,</span> <span class="n">strip</span><span class="o">-</span><span class="n">ansi</span><span class="err">@</span><span class="mf">0.3.0</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">orchestrator</span><span class="err">@</span><span class="mf">0.3.0</span> <span class="p">(</span><span class="n">sequencify</span><span class="err">@</span><span class="mf">0.0.7</span><span class="p">,</span> <span class="n">events</span><span class="err">@</span><span class="mf">1.0.2</span><span class="p">,</span> <span class="n">execify</span><span class="err">@</span><span class="mf">0.0.3</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">liftoff</span><span class="err">@</span><span class="mf">0.12.0</span> <span class="p">(</span><span class="n">extend</span><span class="err">@</span><span class="mf">1.2.1</span><span class="p">,</span> <span class="n">minimist</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">,</span> <span class="n">resolve</span><span class="err">@</span><span class="mf">0.7.4</span><span class="p">,</span> <span class="n">findup</span><span class="o">-</span><span class="n">sync</span><span class="err">@</span><span class="mf">0.1.3</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">gulp</span><span class="o">-</span><span class="n">util</span><span class="err">@</span><span class="mf">3.0.1</span> <span class="p">(</span><span class="n">lodash</span><span class="p">.</span><span class="n">_reinterpolate</span><span class="err">@</span><span class="mf">2.4.1</span><span class="p">,</span> <span class="n">dateformat</span><span class="err">@</span><span class="mf">1.0.8</span><span class="o">-</span><span class="mf">1.2.3</span><span class="p">,</span> <span class="n">minimist</span><span class="err">@</span><span class="mf">1.1.0</span><span class="p">,</span> <span class="n">multipipe</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">,</span> <span class="n">lodash</span><span class="p">.</span><span class="n">template</span><span class="err">@</span><span class="mf">2.4.1</span><span class="p">,</span> <span class="n">through2</span><span class="err">@</span><span class="mf">0.6.1</span><span class="p">,</span> <span class="n">lodash</span><span class="err">@</span><span class="mf">2.4.1</span><span class="p">,</span> <span class="n">vinyl</span><span class="err">@</span><span class="mf">0.4.0</span><span class="p">)</span>
+<span class="err">└──</span> <span class="n">vinyl</span><span class="o">-</span><span class="n">fs</span><span class="err">@</span><span class="mf">0.3.0</span> <span class="p">(</span><span class="n">map</span><span class="o">-</span><span class="n">stream</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">,</span> <span class="n">graceful</span><span class="o">-</span><span class="n">fs</span><span class="err">@</span><span class="mf">3.0.2</span><span class="p">,</span> <span class="n">lodash</span><span class="p">.</span><span class="n">defaults</span><span class="err">@</span><span class="mf">2.4.1</span><span class="p">,</span> <span class="n">mkdirp</span><span class="err">@</span><span class="mf">0.5.0</span><span class="p">,</span> <span class="n">through2</span><span class="err">@</span><span class="mf">0.5.1</span><span class="p">,</span> <span class="n">strip</span><span class="o">-</span><span class="n">bom</span><span class="err">@</span><span class="mf">0.3.0</span><span class="p">,</span> <span class="n">through2</span><span class="o">-</span><span class="n">map</span><span class="err">@</span><span class="mf">1.4.0</span><span class="p">,</span> <span class="n">glob</span><span class="o">-</span><span class="n">watcher</span><span class="err">@</span><span class="mf">0.0.6</span><span class="p">,</span> <span class="n">glob</span><span class="o">-</span><span class="n">stream</span><span class="err">@</span><span class="mf">3.1.15</span><span class="p">,</span> <span class="n">vinyl</span><span class="err">@</span><span class="mf">0.2.0</span><span class="p">)</span>
+</pre></div>
+
+
+<p>效果同NPM一样，gulp包被成功安装。</p>
+<p>当我们要发布包到NPM的时候，由于CNPM默认同步时间差是30分钟，如果想马上同步，需要手动输入同步的命令。</p>
+<p>同步gulp包。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">cnpm</span> <span class="n">sync</span> <span class="n">gulp</span>
+
+<span class="n">Start</span> <span class="n">sync</span> <span class="p">[</span><span class="s">&quot;gulp&quot;</span><span class="p">].</span>
+<span class="n">sync</span> <span class="n">gulp</span><span class="p">,</span> <span class="n">PUT</span> <span class="n">http</span><span class="o">:</span><span class="c1">//r.cnpmjs.org/gulp/sync?publish=false&amp;nodeps=false</span>
+<span class="nl">logurl:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//cnpmjs.org/sync/gulp#logid=10798</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span> <span class="n">user</span><span class="o">:</span> <span class="n">anonymous</span><span class="p">,</span> <span class="n">sync</span> <span class="n">gulp</span> <span class="n">worker</span> <span class="n">start</span><span class="p">,</span> <span class="mi">1</span> <span class="n">concurrency</span><span class="p">,</span> <span class="n">nodeps</span><span class="o">:</span> <span class="nb">false</span><span class="p">,</span> <span class="n">publish</span><span class="o">:</span> <span class="nb">false</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span> <span class="p">[</span><span class="n">c</span><span class="err">#</span><span class="mi">0</span><span class="p">]</span> <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">pkg</span> <span class="n">status</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">start</span><span class="p">...</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">found</span> <span class="mi">15</span> <span class="n">missing</span> <span class="n">star</span> <span class="n">users</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">all</span> <span class="n">versions</span> <span class="n">are</span> <span class="n">exists</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">no</span> <span class="n">versions</span> <span class="n">need</span> <span class="n">to</span> <span class="n">deleted</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">saving</span> <span class="mi">15</span> <span class="n">star</span> <span class="n">users</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">saving</span> <span class="mi">3</span><span class="o">/</span><span class="mi">187</span> <span class="n">missing</span> <span class="n">npm</span> <span class="n">users</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;mittya&quot;</span><span class="p">,</span><span class="s">&quot;160mph&quot;</span><span class="p">,</span><span class="s">&quot;vivainio&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span> <span class="p">[</span><span class="n">c</span><span class="err">#</span><span class="mi">0</span><span class="p">]</span> <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">synced</span> <span class="n">success</span><span class="p">,</span> <span class="mi">0</span> <span class="n">versions</span><span class="o">:</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span> <span class="p">[</span><span class="n">c</span><span class="err">#</span><span class="mi">0</span><span class="p">]</span> <span class="n">setImmediate</span> <span class="n">after</span><span class="p">,</span> <span class="n">gulp</span> <span class="n">done</span><span class="p">,</span> <span class="n">start</span> <span class="n">next</span><span class="p">...</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mo">05</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">09</span><span class="p">]</span> <span class="p">[</span><span class="n">done</span><span class="p">]</span> <span class="n">Sync</span> <span class="n">gulp</span> <span class="n">module</span> <span class="n">finished</span><span class="p">,</span> <span class="mi">1</span> <span class="n">success</span><span class="p">,</span> <span class="mi">0</span> <span class="n">fail</span>
+<span class="nl">Success:</span> <span class="p">[</span> <span class="n">gulp</span> <span class="p">]</span>
+<span class="nl">Fail:</span> <span class="p">[</span>  <span class="p">]</span>
+<span class="n">sync</span> <span class="n">gulp</span><span class="p">,</span> <span class="n">PUT</span> <span class="n">https</span><span class="o">:</span><span class="c1">//registry.npm.taobao.org/gulp/sync?publish=false&amp;nodeps=false</span>
+<span class="nl">logurl:</span> <span class="n">https</span><span class="o">:</span><span class="c1">//npm.taobao.org/sync/gulp#logid=8354</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">13</span><span class="p">]</span> <span class="n">user</span><span class="o">:</span> <span class="n">anonymous</span><span class="p">,</span> <span class="n">sync</span> <span class="n">gulp</span> <span class="n">worker</span> <span class="n">start</span><span class="p">,</span> <span class="mi">1</span> <span class="n">concurrency</span><span class="p">,</span> <span class="n">nodeps</span><span class="o">:</span> <span class="nb">false</span><span class="p">,</span> <span class="n">publish</span><span class="o">:</span> <span class="nb">false</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">14</span><span class="p">]</span> <span class="p">[</span><span class="n">c</span><span class="err">#</span><span class="mi">0</span><span class="p">]</span> <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">pkg</span> <span class="n">status</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span> <span class="n">start</span><span class="p">...</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">14</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">found</span> <span class="mi">15</span> <span class="n">missing</span> <span class="n">star</span> <span class="n">users</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">14</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">all</span> <span class="n">versions</span> <span class="n">are</span> <span class="n">exists</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">14</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">saving</span> <span class="mi">15</span> <span class="n">star</span> <span class="n">users</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">14</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">no</span> <span class="n">versions</span> <span class="n">need</span> <span class="n">to</span> <span class="n">deleted</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">15</span><span class="p">]</span>   <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">saving</span> <span class="mi">3</span><span class="o">/</span><span class="mi">188</span> <span class="n">missing</span> <span class="n">npm</span> <span class="n">users</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;mittya&quot;</span><span class="p">,</span><span class="s">&quot;160mph&quot;</span><span class="p">,</span><span class="s">&quot;vivainio&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">15</span><span class="p">]</span> <span class="p">[</span><span class="n">c</span><span class="err">#</span><span class="mi">0</span><span class="p">]</span> <span class="n">setImmediate</span> <span class="n">after</span><span class="p">,</span> <span class="n">gulp</span> <span class="n">done</span><span class="p">,</span> <span class="n">start</span> <span class="n">next</span><span class="p">...</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">15</span><span class="p">]</span> <span class="p">[</span><span class="n">c</span><span class="err">#</span><span class="mi">0</span><span class="p">]</span> <span class="p">[</span><span class="n">gulp</span><span class="p">]</span> <span class="n">synced</span> <span class="n">success</span><span class="p">,</span> <span class="mi">0</span> <span class="n">versions</span><span class="o">:</span>
+<span class="p">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mo">02</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">15</span><span class="p">]</span> <span class="p">[</span><span class="n">done</span><span class="p">]</span> <span class="n">Sync</span> <span class="n">gulp</span> <span class="n">module</span> <span class="n">finished</span><span class="p">,</span> <span class="mi">1</span> <span class="n">success</span><span class="p">,</span> <span class="mi">0</span> <span class="n">fail</span>
+<span class="nl">Success:</span> <span class="p">[</span> <span class="n">gulp</span> <span class="p">]</span>
+<span class="nl">Fail:</span> <span class="p">[</span>  <span class="p">]</span>
+<span class="n">Sync</span> <span class="n">all</span> <span class="n">packages</span> <span class="n">done</span><span class="p">,</span> <span class="n">successed</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;gulp&quot;</span><span class="p">],</span> <span class="n">failed</span><span class="o">:</span> <span class="p">[]</span>
+</pre></div>
+
+
+<p>这样我们就完全地把CNPM私有库在公司内部用起来了。把包管理的问题解决了，让程序员可以踏踏实实地写代码才是最重要的！！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

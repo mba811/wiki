@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用新浪微博API：创建Web应用 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;使用新浪微博API：创建Web应用
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 09:31
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用新浪微博API：创建Web应用</div>
+
+  <p>在<a href="http://www.liaoxuefeng.com/article/00137389308005720bf24cb6cf14d9e897e7026dbc6a842000">使用新浪微博API：创建SDK</a>一文中，我们为编写Web应用准备好了SDK，并可在命令行中测试成功。现在，我们可以在Web网站中集成并调用新浪微博的API了。</p>
+<h3 id="_1">微博登录</h3>
+<p>使用新浪微博API的第一步是让用户通过微博登陆。在您的网站放置一个“用微博帐号登录”的链接，该链接指向网站的一个URL，例如/signin。代码如下：</p>
+<div class="hlcode"><pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;/signin&quot;</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">&quot;/static/i/signin.png&quot;</span> <span class="na">style=</span><span class="s">&quot;width: 239px;height: 48px&quot;</span> <span class="nt">/&gt;&lt;/a&gt;</span>
+</pre></div>
+
+
+<p>效果如图所示：</p>
+<p><img alt="weibo-signin-button" src="http://www.liaoxuefeng.com/files/attachments/001384850611002ef1fec8d39cc46f288618a54644cfa4c000/0" /></p>
+<p>在URL映射的处理函数signing中，创建一个APIClient实例，然后调用get_authorize_url()方法获得新浪微博认证的URL，将用户重定向至该URL。代码如下：</p>
+<div class="hlcode"><pre><span class="n">def</span> <span class="n">_create_client</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">_APP_ID</span> <span class="err">＝</span> <span class="err">&#39;</span><span class="mi">12345</span><span class="err">&#39;</span>
+    <span class="n">_APP_SECRET</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">abc123xyz</span><span class="err">&#39;</span>
+    <span class="n">_REDIRECT_URI</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">http</span><span class="o">:</span><span class="c1">//example.com/callback&#39;</span>
+    <span class="k">return</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">_APP_ID</span><span class="p">,</span> <span class="n">_APP_SECRET</span><span class="p">,</span> <span class="n">_REDIRECT_URI</span><span class="p">)</span>
+
+<span class="err">@</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">signin</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">signin</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_create_client</span><span class="p">()</span>
+    <span class="err">#</span> <span class="err">重定向到新浪微博登陆页</span><span class="o">:</span>
+    <span class="n">raise</span> <span class="n">seeother</span><span class="p">(</span><span class="n">client</span><span class="p">.</span><span class="n">get_authorize_url</span><span class="p">())</span>
+</pre></div>
+
+
+<p>当用户在新浪微博的认证页中完成登录后，新浪微博将用户重定向到我们指定的redirect_uri，并附加参数code。处理redirect_uri的函数将提取参数code，然后，获取登录用户的access token。代码如下：</p>
+<div class="hlcode"><pre><span class="err">@</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">callback</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">callback</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_create_client</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">request_access_token</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">request</span><span class="p">[</span><span class="err">&#39;</span><span class="n">code</span><span class="err">&#39;</span><span class="p">])</span>
+    <span class="n">access_token</span><span class="p">,</span> <span class="n">expires_in</span><span class="p">,</span> <span class="n">uid</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">access_token</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">expires_in</span><span class="p">,</span> <span class="n">r</span><span class="p">.</span><span class="n">uid</span>
+</pre></div>
+
+
+<p>在获取access token的同时，新浪微博还将返回access token的过期时间和用户ID。SDK将过期时间转化成UNIX时间戳后返回。</p>
+<p>获取到的access token就可以该登录用户的身份调用API，从而进一步获取用户详细资料。代码如下：</p>
+<div class="hlcode"><pre><span class="err">@</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">callback</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">callback</span><span class="p">()</span><span class="o">:</span>
+    <span class="p">...</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">set_access_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">expires_in</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">users</span><span class="p">.</span><span class="n">show</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">uid</span><span class="p">)</span>
+    <span class="n">logging</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="n">json</span><span class="p">.</span><span class="n">dump</span><span class="p">(</span><span class="n">user</span><span class="p">))</span> <span class="err">#</span> <span class="p">{</span> <span class="s">&quot;uid&quot;</span><span class="o">:</span> <span class="mi">1234</span><span class="p">,</span> <span class="s">&quot;screen_name&quot;</span><span class="o">:</span> <span class="s">&quot;Michael&quot;</span><span class="p">,</span> <span class="err">…</span> <span class="p">}</span>
+</pre></div>
+
+
+<p>紧接着，网站要判断该用户是否是第一次访问，如果是，在数据库中创建一条记录，如果用户已存在，则更新用户的相关信息。由于uid是用户在新浪微博的唯一ID号，所以可作为主键保存用户信息。同时，将access token和过期时间一并存入数据库。代码如下：</p>
+<div class="hlcode"><pre><span class="err">@</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">callback</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">callback</span><span class="p">()</span><span class="o">:</span>
+    <span class="p">...</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">_is_user_exist</span><span class="p">(</span><span class="n">uid</span><span class="p">))</span><span class="o">:</span>
+        <span class="n">_update_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">expires_in</span><span class="p">)</span>
+    <span class="nl">else:</span>
+        <span class="n">_create_user</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">expires_in</span><span class="p">)</span>
+</pre></div>
+
+
+<p>最后一步是在您的网站上通过session或cookie来标识用户已登录，然后，用户就可以以登录身份访问您的网站。</p>
+<h3 id="api">调用API</h3>
+<p>在获取用户授权后，即可调用API。例如，列出用户关注的微博列表，代码如下：</p>
+<div class="hlcode"><pre><span class="err">@</span><span class="n">get</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">list</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">list_weibo</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">_user_from_session</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_create_client</span><span class="p">()</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">set_access_token</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">auth_token</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">expired_time</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">statuses</span><span class="p">.</span><span class="n">home_timeline</span><span class="p">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="err">&#39;</span><span class="n">list</span><span class="p">.</span><span class="n">html</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">statuses</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">statuses</span><span class="p">)</span>
+</pre></div>
+
+
+<p>在HTML模板里，您可以将JSON格式的statuses列表转化为HTML，代码如下：</p>
+<div class="hlcode"><pre><span class="n">L</span> <span class="o">=</span> <span class="err">[</span><span class="cp">]</span>
+for st in statuses:
+    L.append(&#39;&#39;&#39;
+<span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;div&gt;&lt;img</span> <span class="na">src=</span><span class="s">&quot;%s&quot;</span> <span class="nt">/&gt;&lt;/div&gt;</span>
+    <span class="nt">&lt;div&gt;</span>%s<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div&gt;</span>%s<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>&#39;&#39;&#39; % (st.user.profile_image_url, st.user.screen_name, st.text)
+print &#39;&#39;.join(L)
+</pre></div>
+
+
+<p>经过CSS处理后的最终HTML效果如图：</p>
+<p><img alt="miniweibo" src="http://www.liaoxuefeng.com/files/attachments/0013848506252722f1d5db91a32402f8b1a35143bf45d1a000/0" /></p>
+<p>不过，仔细观察，我们输出的微博和新浪微博官网还有所不同，官网会把@和http开头的文本和#话题#变为超链接，如何处理@某某某，#话题#和链接？这里给出一个JavaScript的正则匹配解决方案，代码如下：</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="n">g_all</span> <span class="o">=</span> <span class="o">/</span><span class="p">(</span><span class="o">\</span><span class="p">@</span><span class="err">[</span><span class="p">^</span><span class="o">\</span><span class="nb">s</span><span class="o">\&amp;\</span><span class="p">:</span><span class="o">\</span><span class="p">)</span><span class="o">\</span><span class="nx">uff09</span><span class="o">\</span><span class="nx">uff1a</span><span class="o">\</span><span class="p">@</span><span class="cp">]</span>+)|(\#<span class="cp">[</span><span class="p">^</span><span class="o">\</span><span class="err">#</span><span class="cp">]</span>+\#)|(http\:\/\/<span class="cp">[</span><span class="nx">a</span><span class="na">-zA-Z0</span><span class="o">-</span><span class="mi">9</span><span class="o">\</span><span class="nx">_</span><span class="o">\/\</span><span class="nx">.</span><span class="o">\-</span><span class="cp">]</span>+)/g;
+var g_at = /^\@<span class="cp">[</span><span class="p">^</span><span class="o">\</span><span class="nb">s</span><span class="o">\&amp;\</span><span class="p">:</span><span class="o">\</span><span class="p">)</span><span class="o">\</span><span class="nx">uff09</span><span class="o">\</span><span class="nx">uff1a</span><span class="o">\</span><span class="p">@</span><span class="cp">]</span>+$/;
+var g_topic = /^\#<span class="cp">[</span><span class="p">^</span><span class="o">\</span><span class="err">#</span><span class="cp">]</span>+\#$/;
+var g_link = /^http\:\/\/<span class="cp">[</span><span class="nx">a</span><span class="na">-zA-Z0</span><span class="o">-</span><span class="mi">9</span><span class="o">\</span><span class="nx">_</span><span class="o">\/\</span><span class="nx">.</span><span class="o">\-</span><span class="cp">]</span>+$/;
+
+function format_text(t) {
+    ss = t.replace(&#39;<span class="err">&lt;</span>&#39;, &#39;<span class="ni">&amp;lt;</span>&#39;).replace(&#39;&gt;&#39;, &#39;<span class="ni">&amp;gt;</span>&#39;).split(g_all);
+    L = <span class="cp">[]</span>
+    $.each(ss, function(index, s) {
+        if (s===undefined)
+            return;
+        if (g_at.test(s)) {
+            L.push(&#39;<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://weibo.com/n/&#39; + s.substring(1) + &#39;&quot;</span> <span class="na">target=</span><span class="s">&quot;_blank&quot;</span><span class="nt">&gt;</span>&#39; + s + &#39;<span class="nt">&lt;/a&gt;</span>&#39;);
+        }
+        else if (g_topic.test(s)) {
+            L.push(&#39;<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://huati.weibo.com/k/&#39; + s.substring(1, s.length-1) + &#39;&quot;</span> <span class="na">target=</span><span class="s">&quot;_blank&quot;</span><span class="nt">&gt;</span>&#39; + s + &#39;<span class="nt">&lt;/a&gt;</span>&#39;);
+        }
+        else if (g_link.test(s)) {
+            L.push(&#39;<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;&#39; + s + &#39;&quot;</span> <span class="na">target=</span><span class="s">&quot;_blank&quot;</span><span class="nt">&gt;</span>&#39; + s + &#39;<span class="nt">&lt;/a&gt;</span>&#39;);
+        }
+        else {
+            L.push(s);
+        }
+    });
+    return L.join(&#39;&#39;);
+}
+</pre></div>
+
+
+<h3 id="_2">发布微博</h3>
+<p>发布微博的API是statuses/update，该API需要通过POST调用。发布微博的代码如下：</p>
+<div class="hlcode"><pre><span class="err">@</span><span class="n">post</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">update</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">statuses_update</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">ctx</span><span class="p">.</span><span class="n">request</span><span class="p">[</span><span class="err">&#39;</span><span class="n">text</span><span class="err">&#39;</span><span class="p">]</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">_user_from_session</span><span class="p">()</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">_create_client</span><span class="p">()</span>
+    <span class="n">client</span><span class="p">.</span><span class="n">set_access_token</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">auth_token</span><span class="p">,</span> <span class="n">user</span><span class="p">.</span><span class="n">expired_time</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="p">.</span><span class="n">statuses</span><span class="p">.</span><span class="n">update</span><span class="p">.</span><span class="n">post</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">True</span>
+</pre></div>
+
+
+<p>本文演示网站：</p>
+<p><a href="http://sinaweibopy.sinaapp.com/">http://sinaweibopy.sinaapp.com/</a></p>
+<p>本文的网站源码可以从GitHub下载：</p>
+<p><a href="https://github.com/michaelliao/miniweibo">https://github.com/michaelliao/miniweibo</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

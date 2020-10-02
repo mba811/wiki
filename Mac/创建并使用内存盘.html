@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>创建并使用内存盘 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;创建并使用内存盘
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 22:23
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">创建并使用内存盘</div>
+
+  <p>机子上有 8G 内存，平时基本用不到这么多，于是想到拿出一部分作为内存盘使用，然后把系统临时文件目录设置到内存盘里，这样可以加快运行速度，同时保护硬盘。所以，每次重装系统，设置内存盘都是必做的事情之一。</p>
+<h2 id="_1">内存盘概述</h2>
+<p>Windows 对内存盘没有原生支持，但是有很多软件可以做到，只是 Windows 下的内存盘貌似都是静态分配的，也就是说如果分配了2个G的内存盘，那么这2个G就不能被其他程序使用了，即使实际占用小于2个G。</p>
+<p>Linux 对内存盘支持最好，设置内存盘最方便，只要在 <code>/etc/fstab</code> 中加入一行：</p>
+<div class="hlcode"><pre><span class="n">tmpfs</span>     <span class="o">/</span><span class="n">tmp</span>    <span class="n">tmpfs</span>  <span class="n">defaults</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="mi">3</span><span class="n">G</span>       <span class="mi">0</span> <span class="mi">0</span>
+</pre></div>
+
+
+<p>就可以设置一个 3G 的内存盘，并且开机自动挂载到 <code>/tmp</code>。注意：Linux 下内存盘是动态分配的，3G 是最大大小。</p>
+<p>Mac OS X 下设置内存盘同 Linux 一样不需要第三方软件来完成，利用系统自带的 <code>hdiutil</code> 和<code>diskutil</code> 这两个命令行工具就行了：</p>
+<div class="hlcode"><pre><span class="n">DISK_NAME</span><span class="o">=</span><span class="n">RamDisk</span>
+<span class="n">DISK_SPACE</span><span class="o">=</span><span class="mi">3072</span>
+<span class="n">diskutil</span> <span class="n">erasevolume</span> <span class="n">HFS</span><span class="o">+</span> <span class="err">$</span><span class="n">DISK_NAME</span> <span class="err">`</span><span class="n">hdiutil</span> <span class="n">attach</span> <span class="o">-</span><span class="n">nomount</span> <span class="n">ram</span><span class="o">:</span><span class="c1">//$(($DISK_SPACE*1024*2))`</span>
+</pre></div>
+
+
+<p>OS X 下的内存盘也是动态分配的。只是默认情况下每次注销内存盘都会消失，登录时需要重新创建，而重新创建速度很慢，而且原来文件会消失。</p>
+<h2 id="os-x">OS X 下创建内存盘的理想方法</h2>
+<p>为了解决前面提到的问题，达到 Linux 下同样效果，我搜索了很多关于 Mac 下使用内存盘的文章，也试过了很多 App，但是都存在这个问题。没办法，只好自己动手了。经过一番摸索，终于实现了只开机创建一次，注销时不会消失。</p>
+<p>首先，创建 <code>~/Scripts/create_ram_disk.sh</code> 内容如下：</p>
+<table class="hlcodetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="hlcode"><pre><span class="c">#!/bin/bash</span>
+
+<span class="nv">DISK_NAME</span><span class="o">=</span>RamDisk
+<span class="nv">MOUNT_PATH</span><span class="o">=</span>/Volumes/<span class="nv">$DISK_NAME</span>
+<span class="nv">DISK_SPACE</span><span class="o">=</span>3072
+
+<span class="k">if</span> <span class="o">[</span> ! -e <span class="nv">$MOUNT_PATH</span> <span class="o">]</span>; <span class="k">then</span>
+<span class="k">    </span><span class="nv">device</span><span class="o">=</span><span class="sb">`</span>hdiutil attach -notremovable -nomount ram://<span class="k">$((</span><span class="nv">$DISK_SPACE</span><span class="o">*</span><span class="m">1024</span><span class="o">*</span><span class="m">2</span><span class="k">))</span><span class="sb">`</span>
+    <span class="o">[</span> -z <span class="s2">&quot;$device&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>1
+    diskutil erasevolume HFS+ <span class="nv">$DISK_NAME</span> <span class="nv">$device</span>
+    diskutil disableJournal <span class="nv">$device</span>
+    diskutil disableOwnership <span class="nv">$device</span>
+    mkdir <span class="nv">$MOUNT_PATH</span>/Caches
+<span class="k">fi</span>
+<span class="nb">exit </span>0
+</pre></div>
+</td></tr></table>
+
+<p>这是创建内存盘的主要代码，其实和前面方法是一样的，只是多加了点内容。</p>
+<p>然后，在 <code>/Library/LaunchDaemons</code> 下新建 <code>com.me.ramdisk.plist</code>，内容如下：</p>
+<div class="hlcode"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>Label<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>com.me.ramdisk<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>ProgramArguments<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;array&gt;</span>
+        <span class="nt">&lt;string&gt;</span>bash<span class="nt">&lt;/string&gt;</span>
+        <span class="nt">&lt;string&gt;</span>/Users/liberize/Scripts/create_ram_disk.sh<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;/array&gt;</span>
+    <span class="nt">&lt;key&gt;</span>RunAtLoad<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;true/&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+</pre></div>
+
+
+<p>并修改文件所有者和权限，终端下运行：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchDaemons</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="n">root</span><span class="o">:</span><span class="n">wheel</span> <span class="n">com</span><span class="p">.</span><span class="n">me</span><span class="p">.</span><span class="n">ramdisk</span><span class="p">.</span><span class="n">plist</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">644</span> <span class="n">com</span><span class="p">.</span><span class="n">me</span><span class="p">.</span><span class="n">ramdisk</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>这样做将在开机时（非登陆时）自动运行创建内存盘的脚本，其中<code>/Users/liberize/Scripts/create_ram_disk.sh</code> 是脚本路径。</p>
+<p>最后，为了避免每次注销时卸载 RamDisk，终端下运行：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">defaults</span> <span class="n">write</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Preferences</span><span class="o">/</span><span class="n">SystemConfiguration</span><span class="o">/</span><span class="n">autodiskmount</span> <span class="n">AutomountDisksWithoutUserLogin</span> <span class="o">-</span><span class="kt">bool</span> <span class="nb">true</span>
+</pre></div>
+
+
+<p>重启即可。</p>
+<p>由于 OS X 临时文件主要在 <code>~/Library/Caches</code> 下，所以可以把 <code>~/Library/Caches</code> 链接到 Ramdisk：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~/</span><span class="n">Library</span>
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">Caches</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Volumes</span><span class="o">/</span><span class="n">RamDisk</span><span class="o">/</span><span class="n">Caches</span> <span class="n">Caches</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

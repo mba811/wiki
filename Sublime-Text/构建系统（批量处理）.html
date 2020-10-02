@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>构建系统（批量处理） - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Sublime-Text">Sublime-Text</a>&nbsp;&#187;&nbsp;构建系统（批量处理）
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 45:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">构建系统（批量处理）</div>
+
+  <p>另请参见</p>
+<p><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html"><em>参考构建系统</em></a><br />
+    在所有可用的选项，变量等完整的文档</p>
+<p>构建系统让你通过像外部程序运行你的文件 <strong>make</strong>，<strong>整理</strong>，翻译，等等。</p>
+<p>可执行文件从生成系统称为必须在你的<code>PATH</code>。有关确保更多的信息，<code>PATH</code>看到崇高文本设置正确，请参阅<a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html#troubleshooting-build-systems"><em>故障排除构建系统</em></a>。</p>
+<h2 id="_1">文件格式</h2>
+<p>打造系统是JSON文件，并具有扩展_.sublime建造_。</p>
+<h3 id="_2">例</h3>
+<p>下面是一个构建系统的一个例子：</p>
+<div class="hlcode"><pre><span class="p">{</span>
+    <span class="s">&quot;cmd&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;python&quot;</span><span class="p">,</span> <span class="s">&quot;-u&quot;</span><span class="p">,</span> <span class="s">&quot;$file&quot;</span><span class="p">],</span>
+    <span class="s">&quot;file_regex&quot;</span><span class="o">:</span> <span class="s">&quot;^[ ]*File </span><span class="se">\&quot;</span><span class="s">(...*?)</span><span class="se">\&quot;</span><span class="s">, line ([0-9]*)&quot;</span><span class="p">,</span>
+    <span class="s">&quot;selector&quot;</span><span class="o">:</span> <span class="s">&quot;source.python&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><code>CMD</code></p>
+<p>必需的。这个选项包含要执行的实际命令行：</p>
+<div class="hlcode"><pre><span class="n">python</span> <span class="o">-</span><span class="n">u</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">current</span><span class="o">/</span><span class="n">file</span><span class="p">.</span><span class="n">ext</span>
+</pre></div>
+
+
+<p><code>file_regex</code><br />
+    一个Perl样式的正则表达式来捕获从外部程序的输出错误信息。此信息用于帮助您浏览的错误实例与<code>F4</code>。<br />
+<code>选择selector</code><br />
+    如果<strong>工具|构建系统|自动</strong>，<strong>Tools | Build System | Automatic</strong><br />
+选项设置，崇高的文本会自动匹配找到相应的编译系统的活动文件<code>选择</code>该文件的适用范围。</p>
+<p>除了 ​​选项，您可以使用的编译系统的一些变数太多，因为我们上面做<code>$文件</code>，它扩展到活动缓冲区的文件名 ​​。</p>
+<h2 id="_3">在哪里存储系统构建</h2>
+<p>构建系统必须设下的地方 Packages folder（Packages/User）。许多软件包包括自己构建系统。</p>
+<h2 id="_4">运行系统构建</h2>
+<p>构建系统可以通过按运行<code>F7</code>或<strong>工具|构建</strong>，<strong>Tools | Build</strong><br />
+。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

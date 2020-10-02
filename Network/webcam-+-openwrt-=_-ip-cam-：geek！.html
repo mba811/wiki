@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Webcam + OpenWRT => IP CAM ：GEEK！ - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;Webcam + OpenWRT => IP CAM ：GEEK！
+    <span class="updated">Page Updated&nbsp;
+      2015-02-27 00:45
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Webcam + OpenWRT => IP CAM ：GEEK！</div>
+
+  <p>用普通旧Webcam视像头 + OpenWRT 变成 IP CAM 网络摄像头：</p>
+<p><a href="http://lszb811.qiniudn.com/webcam1.png"><img alt="" src="http://lszb811.qiniudn.com/webcam1.png" /></a></p>
+<p><strong>我把这普通的便宜的Logitech摄像头变成IP CAM网络摄像头，就靠OpenWRT</strong></p>
+<h2 id="_1">基本步骤：</h2>
+<p>爲路由器安装Webcam驱动程序 -&gt; 爲路由器安装mjpg_streamer 套件 -&gt; 电脑、路由相关设置 -&gt; 使用</p>
+<h2 id="_2">详细步骤：</h2>
+<h3 id="webcam-usb-driver">Webcam USB Driver驱动</h3>
+<p>根据：<a href="http://wiki.openwrt.org/doc/howto/usb.video%E7%9A%84%E8%AF%B4%E6%98%8E%EF%BC%8COpenWRT%E7%9A%84%E6%91%84%E5%83%8F%E5%A4%B4%E9%A9%B1%E5%8A%A8%E6%9C%89%E4%B8%A4%E7%A7%8D%E5%BD%A2%E5%BC%8F%EF%BC%9A%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%98%AFUVC">http://wiki.openwrt.org/doc/howto/usb.video的说明，OpenWRT的摄像头驱动有两种形式：第一种是UVC</a> support 的Webcam（<a href="http://www.ideasonboard.org/uvc/%EF%BC%89%EF%BC%8C">http://www.ideasonboard.org/uvc/），</a></p>
+<p>第二种是 GSPCA support的Webcam（<a href="http://www.mjmwired.net/kernel/Documentation/video4linux/gspca.txt%EF%BC%89">http://www.mjmwired.net/kernel/Documentation/video4linux/gspca.txt）</a></p>
+<p>你需要根据你的Webcam型号，选取合适的驱动，我的是Logitech最基本的C200（其实我不确定是C200/C250还是C300…）UVC 和GSPCA的zc3xx都能支持。后来发现mjpg_streamer用uvc比较省设置功夫，于是旧用了UVC的driver。</p>
+<p>UVC 安装：</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">opkg</span> <span class="n">install</span> <span class="n">kmod</span><span class="o">-</span><span class="n">video</span><span class="o">-</span><span class="n">uvc</span>
+</pre></div>
+
+
+<p>GSPCA zc3xx安装：</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">opkg</span> <span class="n">install</span> <span class="n">kmod</span><span class="o">-</span><span class="n">video</span><span class="o">-</span><span class="n">gspca</span><span class="o">-</span><span class="n">core</span> <span class="n">kmod</span><span class="o">-</span><span class="n">video</span><span class="o">-</span><span class="n">gspca</span><span class="o">-</span><span class="n">zc3xx</span>
+</pre></div>
+
+
+<p>如果不熟悉openwrt安装形式的，请参考：</p>
+<p><a href="http://upsangel.com/dd-wrt/openwrt-install-remove-optware-softwar/">Openwrt安裝卸載和啓動Optware的簡單說明</a></p>
+<p>对了，在安装这两个套件前，usb-core是必须的：</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">opkg</span> <span class="n">install</span> <span class="n">kmod</span><span class="o">-</span><span class="n">usb</span><span class="o">-</span><span class="n">core</span> <span class="n">kmod</span><span class="o">-</span><span class="n">usb2</span> <span class="n">kmod</span><span class="o">-</span><span class="n">video</span><span class="o">-</span><span class="n">core</span>
+</pre></div>
+
+
+<h2 id="mjpg_streamer">安装mjpg_streamer</h2>
+<p>这个强大的套件可以帮助你将普通的视像头变成流媒体的网络摄像头。安装方法一样：</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">opkg</span> <span class="n">install</span> <span class="n">mjpg</span><span class="o">-</span><span class="n">streamer</span>
+</pre></div>
+
+
+<p>然后我是进入LUCI界面把mjpg_streamer的daemon打开，再设置成为自启动：</p>
+<p><a href="http://lszb811.qiniudn.com/webcam2.jpg"><img alt="" src="http://lszb811.qiniudn.com/webcam2.jpg" /></a></p>
+<p>有的网友建议用motion这个套件，我试了试发现不行，而且<a href="http://wiki.openwrt.org/doc/howto/webcam%E8%AF%B4motion%E5%B7%B2%E7%BB%8F%E4%B8%8D%E6%94%AF%E6%8C%81%E4%BA%86%E3%80%82">http://wiki.openwrt.org/doc/howto/webcam说motion已经不支持了。</a></p>
+<h2 id="_3">调试啓动</h2>
+<p>用OpenWRT有经验的朋友都知道，搞这一步通常是最耗时的。幸好多得之前的经验，Upsangel调试起来得心应手：</p>
+<ul>
+<li>确认USB Webcam已经识别</li>
+</ul>
+<p>插入USB，进入Putty后用dmesg，如果看到usbcore: … uvc… 的字句，说明UVC driver已经运行成功。另外一种方法是进入/dev，如果看到video0，证明已经识别成功</p>
+<ul>
+<li>确认mjpg_streamer已经运行</li>
+</ul>
+<p>可以用ps来看mjpg有没有运行，用netstat -an看看8080有没有打开，如果都没有，证明还没运行。手动啓动的方法：</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">mjpg_streamer</span> <span class="o">-</span><span class="n">i</span> <span class="err">“</span><span class="n">input_uvc</span><span class="p">.</span><span class="n">so</span><span class="err">”</span> <span class="o">-</span><span class="n">o</span> <span class="err">“</span><span class="n">output_http</span><span class="p">.</span><span class="n">so</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8080</span><span class="err">″</span>
+</pre></div>
+
+
+<p>请看图:</p>
+<p><a href="http://lszb811.qiniudn.com/webcam3.jpg"><img alt="" src="http://lszb811.qiniudn.com/webcam3.jpg" /></a></p>
+<ul>
+<li>预览图像</li>
+</ul>
+<p>正常来说，运行上面命令后，摄像头已经打开（我的是绿灯亮了）然后可以输入<code>http://192.168.1.1:8080?action=snapshot</code>（192.168.1.1改成你自己的<code>ROUTER IP</code>），如果看到静止图像，恭喜你，你离成功之差半步。</p>
+<ul>
+<li>用VLC软件</li>
+</ul>
+<p><a href="http://www.videolan.org/vlc/download-windows.html%E4%B8%8B%E8%BD%BDVLC%E8%BD%AF%E4%BB%B6%EF%BC%88%E7%90%86%E8%AE%BA%E4%B8%8AKMPlayer%E7%AD%89%E7%9A%84%E9%83%BD%E5%8F%AF%E4%BB%A5%E7%9A%84%EF%BC%89%E7%84%B6%E5%90%8E%E9%80%89%E6%8B%A9%E7%BD%91%E7%BB%9C%E6%BA%90%EF%BC%88%E5%8F%AF%E4%BB%A5%E6%8C%89ctrl+n">http://www.videolan.org/vlc/download-windows.html下载VLC软件（理论上KMPlayer等的都可以的）然后选择网络源（可以按ctrl+n</a>) 输入</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="nl">http:</span><span class="c1">//192.168.1.1:8080/?action=stream</span>
+</pre></div>
+
+
+<p>可以看到动画了吗？掌声鼓励！</p>
+<p><a href="http://lszb811.qiniudn.com/webcam4.jpg"><img alt="" src="http://lszb811.qiniudn.com/webcam4.jpg" /></a></p>
+<ul>
+<li>从外网链接</li>
+</ul>
+<p>我用的是VPN的方法，设置VPN之后就可以用192.168.1.1访问IP CAM网络摄像头，设置VPN的方法：</p>
+<p><a href="http://upsangel.com/dd-wrt/safe-use-open-wifi-ddwrt-vpn/">DD-WRT/OpenWRT VPN: 安全地使用公共WIFI（沒加密）的 Hotspot熱點接入</a></p>
+<p>然后爲手机装上VLC软件，联入VPN，就可以随时随地看到家裡的情况了。</p>
+<h2 id="_4">总结：</h2>
+<p>现在的IP CAM动辄600-1000HKD，其实明白了本文道理的就知道，普通的200元摄像头加上Lunix环境（而且只需要很小很小的Computing Power）再加上网络链接，就可以成为IP CAM。其他的方法还有用Raspberry Pi （250HKD） + Webcam 的方法， 和用旧的Android手机设置成IP CAM的方法（<a href="http://www.hkepc.com/forum/viewthread.php?tid=2019923&amp;rpid=30874333&amp;ordertype=0&amp;page=4#pid30874333）">http://www.hkepc.com/forum/viewthread.php?tid=2019923&amp;rpid=30874333&amp;ordertype=0&amp;page=4#pid30874333）</a></p>
+<p>总之，肯动手的人设置IP CAM的方法多的是，IP CAM网络摄像头的厂家是赚不了我们钱的。。。</p>
+<h3 id="_5">参考：</h3>
+<p><a href="http://kernelhacks.blogspot.hk/2012/09/making-ip-webcam-using-old-router.html">Kernal Hacks大神的文章</a></p>
+<p><a href="http://eko.one.pl/index.php?p=openwrt-webcam">一位葡萄牙文的大神文章</a></p>
+<p><a href="http://www.hkepc.com/forum/viewthread.php?tid=2025967&amp;extra=page%3D1">如果你還未瞭解OpenWRT的強大用途（架設vpn server,共享printer,scanner, 離線BT等），請參考：OpenWRT, DD-WRT資源彙總索引</a></p>
+<blockquote>
+<p>如果你還未有刷3rd party firmware第三方固件的路由器，請參考：</p>
+</blockquote>
+<p><a href="http://upsangel.com/dd-wrt/dd-wrt-router-buying-guide/">DD-WRT Router路由器選購指南、選擇注意事項考慮因素</a></p>
+<p>对了，Upsangel有个小小请求：Google+最近推出了新个人注册服务，需要10个G+朋友，如果大家不介意和我交个网友的话可以按下面Google+的Follow按钮，感谢！Upsangel也会加你进入G circle，那么你也可以定製自己的G+了～</p>
+<p>文章作者：upsangel</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

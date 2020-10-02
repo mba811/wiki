@@ -1,0 +1,242 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用 Vagrant 和 Docker 在一个 VM 中进行开发 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;使用 Vagrant 和 Docker 在一个 VM 中进行开发
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:34
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用 Vagrant 和 Docker 在一个 VM 中进行开发</div>
+
+  <p><strong>理由</strong></p>
+<ol>
+<li>
+<p>用Vagrant开发很酷-一个项目/组件一个VB</p>
+</li>
+<li>
+<p>用Vagrant开发很垃圾-缓慢的Chef/Puppet/Ansible，多个巨大的VM，遍地重复的软件。</p>
+</li>
+<li>
+<p>Docker带来独立的仅有一个VM的VM盒子。</p>
+</li>
+<li>
+<p>CoreOS内整合了docker, 产品发布时候会做得很完美。</p>
+</li>
+<li>
+<p>开发者开心！编码和发布太容易了。</p>
+</li>
+</ol>
+<p>像我，你可以（或不可以）喜欢用Vagrant发布。为一个项目存储使用多个VM是不可思议的： 像Ansibe之类的工具意味着你的VM将总是反映产品的环境。</p>
+<p>假如你是揽活的人或者有许多项目，然而，可能是你有几十个Vagrant盒子在你的dev文件夹，慢慢吸收上亿磁盘空间。这是vagrant 垃圾的地方。。。提别是有多个小SSD的时候。</p>
+<p>进入：<a href="https://www.docker.io/">Docker</a>. 一个从一个机器上管理容器的开源的工具。为所有我们的来自一个VM的项目，我们将使用容器作为“迷你vagrants".我假设你这里用的是Mac-我不了解windows.</p>
+<p>让我们投入docker! </p>
+<h2 id="coreos">步骤一：设置CoreOS</h2>
+<p>我们要使用CoreOS和Vagrant来安装Docker， 取代Docker推荐的Ubuntu vagrant 文件安装。Screw的建议。</p>
+<p><em>为什么用CoreOS？</em></p>
+<p>CoreOS是一个雄心勃勃的旨在简单、可伸缩服务部署的linux发行版。它是轻量级的，并且自带Docker的预安装。它的目的是让服务Docker-based应用变得容易。这就是为什么选择该OS（系统）的原因-文件体积小、建议的安装方式都值得称赞！所以、我真的想去实测一下它。</p>
+<p>Note：CoreOS在alpha中已被创建。这意味着它在SSH回话中，可能发生随机重启的现象，但从长远的角度来看，希望是有帮助的。这个是需要注意下的。</p>
+<h3 id="_1"><strong>安装</strong></h3>
+<p>你从CoreOS的Github的仓库中进行安装，CoreOS团队做了一个非常棒的工作。</p>
+<p>你只需要按照下面的要求去做：</p>
+<ol>
+<li>
+<p>安装1.3.1版本以上的Vagrant和4.0版本以上的VirtualBox。<br />
+你可以通过vagrant --version命令检查你的vagrant版本，如果需要下载新的版本可以从vagrant的官网上去下载。</p>
+</li>
+<li>
+<p>下载已经提供含有你开发使用根目录文件夹的CoreOS vagrant文件。在Vagrant中会安装CoreOS。<br />
+<a href="https://raw.githubusercontent.com/coreos/coreos-vagrant/master/Vagrantfile">vagrant的文件在这里。</a></p>
+</li>
+<li>
+<p>添加端口转发到Vagrant的web服务器：<br />
+命令是：config.vm.network :forwarded_port, guest: 80, host: 8080</p>
+</li>
+<li>
+<p>需要注意的是默认情况下共享文件夹没有启用：<br />
+可以通过下面的命令开启你vagrant文件的共享文件夹：<br />
+config.vm.network "private_network",<br />
+ip: "10.1.2.3" <em>config.vm.synced_folder ".",  <br />
+"/home/core/share", id: "core",<br />
+:nfs =&gt; true,<br />
+:mount_options =&gt; ['nolock,vers=3,udp']</em><br />
+我们已经修改了IP地址，CoreOS提供了专用网络：他们使用的IP地址是在公共地址的范围内（即别人公开的可访问的机器）。整个10.X.X.X的IP地址段都是私有的，这样的话可以避免冲突。  </p>
+</li>
+</ol>
+<p>你可能已经清楚了安装步骤：我们已经创建了一个vagrant文件，添加了连接CoreOS分布式的URL，设置了共享文件夹的网络。和其他Vagrant的配置步骤相似，只是没有其他的Chef/Puppet/Ansible。</p>
+<p>CoreOS已经预先安装好了docker，所以不需要马上做一些配置和软件的安装。</p>
+<h2 id="docker">第二步: 设置Docker</h2>
+<p>Docker已经安装了,但是它需要一个“基础图像”来运行。 我们所有的容器都将会在这个OS中运行。 本质上, 是所有项目的OS虚拟机。<br />
+我们使用ubuntu：</p>
+<blockquote>
+<p>docker pull ubuntu</p>
+</blockquote>
+<p>这下载了所有我们会用到的ubuntu基础图像(12.04, 12.10)。让我们来确认一下这个步骤创建了一个新的容器(说明如下):</p>
+<blockquote>
+<p>docker run -name="test" -t -i ubuntu /bin/bash</p>
+</blockquote>
+<p>下面我们要做的依次是:</p>
+<ol>
+<li>
+<p>让Docker创建开始并且运行一个新的容器(docker run)</p>
+</li>
+<li>
+<p>命名新的容器为“test”(name="test").<br />
+这让我们操作容器变得更简单，并且当我们列出容器时，我们就知道哪个是哪个了。</p>
+</li>
+<li>
+<p>创建一个违终端，并让其保持打开(-t -i)</p>
+</li>
+<li>
+<p>让ubuntu成为新容器的基础图像(ubuntu)</p>
+</li>
+<li>
+<p>在新容器中运行/bin/bash.</p>
+</li>
+</ol>
+<p><strong>Docker需要一个程序来运行一个容器</strong>. 更重要的。这包括两层意思: 容器不能脱离程序而运行,    并且当程序结束时容器也将结束<strong>.</strong> 我们以后将继续讨论这个问题.</p>
+<p>你现在在CoreOS的一个Ubuntu容器中.一个小型的Ubuntu虚拟机就可以用了。</p>
+<h2 id="_2">第三步: 创建开发环境</h2>
+<p>现在我们可以离开Docker了. 我们要设置一个基础的LAMP堆栈, 这是很容易安装的. 根据你自己的需要调整这个堆栈也是很重要的.</p>
+<p>我们将通过命令行来操作容器, <em>而不是通过Docker文件</em>. 这是对docker如何工作的介绍.</p>
+<h3 id="_3">初始设置</h3>
+<p>我们已经在Ubuntu容器中了。 如果不是, 重新运行上面的命令来启动一个Ubuntu容器.</p>
+<p>Ubuntu是一个很小的容器. 其中有很多我们需要的东西都没有装.基本操作如下:</p>
+<ol>
+<li>
+<p>增加 universe/multiverse 到apt源:  </p>
+<blockquote>
+<p>echo "$(cat /etc/apt/sources.list) universe multiverse" &gt; /etc/apt/sources.list<br />
+这是增加 ' universe multiverse' 到apt-get的源列表. 正如之前所说, 这是一个准Ubuntu系统的安装，并且在默认时是不具备的.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>apt-get update</p>
+</blockquote>
+</li>
+<li>
+<p>安装 curl, wget, vim, build-essential, git:  </p>
+<blockquote>
+<p>apt-get install curl wget vim-tiny</p>
+</blockquote>
+</li>
+</ol>
+<p>我们基本上完成了环境的搭建.首先,将这些改变提交给新的Docker容器。这样我们就不用每次都这么做了(注: 这也是你使用Dockerfiles文件的原因.)</p>
+<h3 id="_4">提交容器</h3>
+<p>试想想Docker当做是git.  我们已经对Ubuntu做了一些修改, 必须承认这减少了我们的工作量.</p>
+<p>和Git一样, Docker减少了每个容器的差别，而不是整个系统. 这意味着我们至于要保存我们安装的软件以及我们改变的文件. 多厉害!</p>
+<ol>
+<li>
+<p>退出Ubuntu容器:  </p>
+<blockquote>
+<p>ctrl-d<br />
+这将使容器消失. 我们用the/bin/bash程序开始容器 (&gt; docker run -name="test" -t -i ubuntu /bin/bash), 并且当这个开始程序结束时这个容器也就消失了.</p>
+</blockquote>
+</li>
+<li>
+<p>列出所有Docker容器:  </p>
+<blockquote>
+<p>docker ps -a<br />
+-a选项列出了所有的容器.docker ps列出了运行的容器.</p>
+</blockquote>
+</li>
+<li>
+<p>我们在列表中可以看见自己的容器:</p>
+<p>CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES<br />
+4bf2ba69c69c        ubuntu:12.04        /bin/bash           5 seconds ago       Exit 0                                  test</p>
+</li>
+<li>
+<p>提交改变给新的容器:  </p>
+<blockquote>
+<p>docker commit test custom/base<br />
+我们已经使用ID而不是名字写了docker commit 4bf2b custom/base 来只是我们改变的那个容器.</p>
+</blockquote>
+</li>
+</ol>
+<p>这创建了一个叫做custom/base的新容器，这个新容器保存了所有已经做过的修改.和Ubuntu一样我们可以启动这个容器docker run [...] custom/base.这就好了.</p>
+<p>可以通过键入docker images查看可用的容器. 你会看见新的Ubuntu图像,以及新的custom/base图像.</p>
+<p>这是基础: 创建一个包含部分修改的新容器(用命令行也行, 但最好使用<a href="http://docs.docker.io/en/latest/use/builder/">Docker files</a>文件),并且提交和运行.</p>
+<h3 id="_5">建立协议栈</h3>
+<p>我们将安装一个基于我们创建的容器的LAMP协议栈. 这不是必须的，安装 python, ruby, golang可以由你自己来选择.</p>
+<p>首先，用下列步骤来创建一个新的容器:</p>
+<blockquote>
+<p>docker run -name="lamp" -t -i custom/base /bin/bash</p>
+</blockquote>
+<p>这个shell已经装载了我们刚才修改的那个容器.再为我们的基础协议栈安装mysql、apache和PHP.</p>
+<blockquote>
+<p>apt-get install apache2 mysql-server php5 libapache2-mod-php5</p>
+</blockquote>
+<p>厉害. 跳过这些服务的配置，因为其中有很简单的向导. 如果失败了就加入头<a href="https://library.linode.com/">Linode Library</a>.</p>
+<p>软件安装和配置完成了, 将这些修改提交给新的容器. 按ctrl-d回到CoreOS, 然后按照如下方法提交容器:</p>
+<blockquote>
+<p>docker commit lamp custom/lamp</p>
+</blockquote>
+<h3 id="_6">运行协议栈并且转发端口</h3>
+<p>我们已经做到了可以开始使用Docker容器这一步. 不过有几个前提条件: 转发端口, 并且是数据库和网络服务可以自动运行.</p>
+<p>幸运的, 端口可以通过命令行轻松设置(用dockerfiles文件设置更简单):</p>
+<blockquote>
+<p>docker run -t -i -p 80:80 -p 3306:3306 -v /home/core/vagrant/project:/var/www/project custom/lamp /bin/bash</p>
+</blockquote>
+<p>接下来我们要做:</p>
+<ol>
+<li>
+<p>再次使用伪shell运行容器(-t -i)</p>
+</li>
+<li>
+<p>将容器端口80和3306设置的和CoreOS相同的端口 (-p 80:80 -p 3306:3306)</p>
+</li>
+<li>
+<p>从CoreOS 安装一个卷到容器, 同时这个卷也被安装在Vagrant上. 这是装在我们机器上的开发文件(-v /from:/to)</p>
+</li>
+</ol>
+<p>现在, 我们可以通过localhost:8080(由Vagrant转发的端口)在容器中运行的网络服务了. 整理一下环境，现在可以开始开发我们的应用了.</p>
+<h2 id="_7">从这里开始</h2>
+<p>你应该熟悉docker的高级功能，如提交、运行、图像以及通过向导创建新的工作开发环境。</p>
+<p>通过docker可以做很多事情. 以下一些你可以参考:</p>
+<ul>
+<li>
+<p><strong><a href="http://docs.docker.io/en/latest/examples/using_supervisord/">使用docker的supervisord</a></strong> - 需要一个在容器中运行的程序来保持它处于活动状态. Supervisord 是一个可以再前台运行的管理程序. 在supervisord.conf文件中设置你的服务并且通过docker启动supervisord来保持你的容器处于活动状态.</p>
+</li>
+<li>
+<p><strong><a href="http://docs.docker.io/en/latest/use/workingwithrepository/">通过Docker资料库</a>分享图像</strong></p>
+</li>
+<li>
+<p>在你的机构里面分享容器和图像.保持你的开发环境健全,使开发更简单.</p>
+</li>
+<li>
+<p><strong><a href="http://docs.docker.io/en/latest/use/working_with_volumes/">docker</a></strong>的数据库管理 - 在Docker中数据存储(storage in general, actually)是较难管理的. 在docker中有一个相关的向导. 更多信息<a href="http://stackoverflow.com/questions/18496940/how-to-deal-with-persistent-storage-e-g-databases-in-docker">here</a>,<a href="http://www.tech-d.net/2013/12/16/persistent-volumes-with-docker-container-as-volume-pattern/">here</a>, and <a href="http://crosbymichael.com/advanced-docker-volumes.html">here</a>.</p>
+</li>
+<li>
+<p><strong><a href="http://docs.docker.io/en/latest/use/builder/">使用 dockerfiles</a></strong>文件 -这将使你不必手动创建容器.</p>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

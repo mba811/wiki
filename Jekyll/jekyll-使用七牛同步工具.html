@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 使用七牛同步工具 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 使用七牛同步工具
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 10:45
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 使用七牛同步工具</div>
+
+  <p>今天有些空闲，遂研究了下，如何将 <strong>Jekyll</strong> 博客下的图片同步至七牛。为什么要用七牛，因为七牛尽管不是免费的产品，但是它很热心的给用户提供了免费的配额。</p>
+<ul>
+<li>存储空间 10GB</li>
+<li>每月流量 10GB</li>
+<li>每月 put/delete 10 万次请求</li>
+<li>每月 get 100 万次请求</li>
+</ul>
+<p>好吧，作为一个个人博客来说，足够使用。再加上几个月前七牛工作人员联系上鄙人，希望能写篇有关 <strong>Jekyll</strong> 上使用七牛的文章，琢磨着过去好久了，于是今天就有了这篇文章。</p>
+<p>首先，以下所有的前提是：</p>
+<ol>
+<li>你有一个 Jekyll 搭建的博客</li>
+<li>你有一个七牛的账户</li>
+</ol>
+<p>Jekyll 相关的介绍本博客里有，可以直接上方输入框输入 Jekyll 来搜索，七牛的话，可以通过以下注册：<a href="https://portal.qiniu.com/signup?code=3ljaarok4jaz6">https://portal.qiniu.com/signup?code=3ljaarok4jaz6</a>，如果对推广链接不爽的话，去掉结尾处的 <code>?code=3ljaarok4jaz6</code> 吧。</p>
+<p>其次，鄙人使用的工具是七牛提供的：<a href="http://developer.qiniu.com/docs/v6/tools/qrsync.html#download">http://developer.qiniu.com/docs/v6/tools/qrsync.html#download</a>。根据各自平台去下载响应的同步工具。</p>
+<p>解压开，将 <strong>qrsync</strong> 两进制文件放入你的 <strong>Jekyll</strong> 根目录下，再在 <strong>.gitignore</strong> 文件中添加 <code>qrsync</code>，毕竟，你是不会希望一个 12 MB 大小的两进制包进入你的源代码中吧（嗯，我第一次就上传了 -_-!!）。如下</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cat</span> <span class="p">.</span><span class="n">gitignore</span>
+<span class="n">_site</span>
+<span class="n">Thumbs</span><span class="p">.</span><span class="n">db</span>
+<span class="p">.</span><span class="n">DS_Store</span>
+<span class="o">!</span><span class="p">.</span><span class="n">gitkeep</span>
+<span class="p">.</span><span class="n">sass</span><span class="o">-</span><span class="n">cache</span>
+<span class="n">qrsync</span>
+<span class="n">qiniu</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+
+
+<p>鄙人是创建了个 <strong>qiniu</strong> 目录用来同步图片到七牛的。</p>
+<p>接着，配置你的 <strong>Rakefile</strong>，没有的话在 <strong>Jekyll</strong> 根目录新建个文件，有的话，在适当的位置添加如下几行，很简单：</p>
+<div class="hlcode"><pre><span class="n">require</span> <span class="s">&quot;rubygems&quot;</span>
+<span class="n">require</span> <span class="s">&quot;rake&quot;</span>
+
+<span class="p">......</span>
+
+<span class="n">desc</span> <span class="s">&quot;synchronize qiniu folder to remote server with qiniu sync tool&quot;</span>
+<span class="n">task</span> <span class="o">:</span><span class="n">qrsync</span> <span class="k">do</span>
+  <span class="n">bin</span> <span class="o">=</span> <span class="s">&quot;qrsync&quot;</span>
+  <span class="n">json</span> <span class="o">=</span> <span class="s">&quot;qiniu.json&quot;</span>
+  <span class="n">ignore</span> <span class="o">=</span> <span class="s">&quot;.gitignore&quot;</span>
+  <span class="n">filebin</span> <span class="o">=</span> <span class="n">File</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">Dir</span><span class="p">.</span><span class="n">pwd</span><span class="p">,</span> <span class="n">bin</span><span class="p">)</span>
+  <span class="n">filejson</span> <span class="o">=</span> <span class="n">File</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">Dir</span><span class="p">.</span><span class="n">pwd</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span>
+  <span class="n">fileignore</span> <span class="o">=</span> <span class="n">File</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">Dir</span><span class="p">.</span><span class="n">pwd</span><span class="p">,</span> <span class="n">ignore</span><span class="p">)</span>
+
+  <span class="n">abort</span><span class="p">(</span><span class="s">&quot;rake aborted: &#39;#{filebin}&#39; file not found.&quot;</span><span class="p">)</span> <span class="n">unless</span> <span class="n">File</span><span class="p">.</span><span class="n">exist</span><span class="o">?</span><span class="p">(</span><span class="n">filebin</span><span class="p">)</span>
+
+  <span class="n">unless</span> <span class="n">File</span><span class="p">.</span><span class="n">exist</span><span class="o">?</span><span class="p">(</span><span class="n">filejson</span><span class="p">)</span>
+    <span class="n">open</span><span class="p">(</span><span class="n">filejson</span><span class="p">,</span> <span class="sc">&#39;w&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">json</span><span class="o">|</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="sc">&#39;{&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="err">&#39;</span>    <span class="s">&quot;access_key&quot;</span><span class="o">:</span> <span class="s">&quot;your access key&quot;</span><span class="p">,</span><span class="err">&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="err">&#39;</span>    <span class="s">&quot;secret_key&quot;</span><span class="o">:</span> <span class="s">&quot;your secret_key&quot;</span><span class="p">,</span><span class="err">&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="err">&#39;</span>    <span class="s">&quot;bucket&quot;</span><span class="o">:</span> <span class="s">&quot;your bucket name&quot;</span><span class="p">,</span><span class="err">&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="err">&#39;</span>    <span class="s">&quot;sync_dir&quot;</span><span class="o">:</span> <span class="s">&quot;local directory to upload&quot;</span><span class="p">,</span><span class="err">&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="err">&#39;</span>    <span class="s">&quot;async_ops&quot;</span><span class="o">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span><span class="err">&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="err">&#39;</span>    <span class="s">&quot;debug_level&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="err">&#39;</span>
+      <span class="n">json</span><span class="p">.</span><span class="n">puts</span> <span class="sc">&#39;}&#39;</span>
+    <span class="n">end</span>
+    <span class="k">if</span> <span class="n">File</span><span class="p">.</span><span class="n">exist</span><span class="o">?</span><span class="p">(</span><span class="n">fileignore</span><span class="p">)</span>
+      <span class="n">unless</span> <span class="n">File</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="n">fileignore</span><span class="p">).</span><span class="n">each_line</span><span class="p">.</span><span class="n">any</span><span class="o">?</span><span class="p">{</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span> <span class="n">line</span><span class="p">.</span><span class="n">include</span><span class="o">?</span><span class="p">(</span><span class="n">json</span><span class="p">)</span> <span class="p">}</span>
+        <span class="n">open</span><span class="p">(</span><span class="n">fileignore</span><span class="p">,</span> <span class="sc">&#39;a&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">ignore</span><span class="o">|</span> <span class="n">ignore</span><span class="p">.</span><span class="n">puts</span> <span class="s">&quot;#{json}&quot;</span> <span class="p">}</span>
+      <span class="n">end</span>
+    <span class="k">else</span>
+      <span class="n">open</span><span class="p">(</span><span class="n">fileignore</span><span class="p">,</span> <span class="sc">&#39;w&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">ignore</span><span class="o">|</span> <span class="n">ignore</span><span class="p">.</span><span class="n">puts</span> <span class="s">&quot;#{json}&quot;</span> <span class="p">}</span>
+    <span class="n">end</span>
+    <span class="n">puts</span> <span class="s">&quot;please edit #{filejson}&quot;</span>
+  <span class="k">else</span>
+    <span class="n">system</span> <span class="s">&quot;#{Dir.pwd}/qrsync #{filejson}&quot;</span>
+  <span class="n">end</span>
+
+<span class="n">end</span>
+</pre></div>
+
+
+<p>随后放入一张图片至你的同步目录，运行以下命令</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">rake</span> <span class="n">qrsync</span>
+</pre></div>
+
+
+<p>第一次运行会创建 <strong>qiniu.json</strong>。编辑好 <strong>qiniu.json</strong> 后第二次运行，如果填写正确，则上传到远端。</p>
+<p>如果 <strong>qiniu.json</strong> 中配置的 <code>sync_dir</code> 为 <code>qiniu</code></p>
+<p>则丢在目录 <strong>qiniu</strong> 中的文件会被上传，需要说明的是，七牛没有目录的概念，不管你在目录 <strong>qiniu</strong>下分几层目录，远端都是单个文件。譬如本地目录类似于：</p>
+<div class="hlcode"><pre><span class="n">qiniu</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">name1</span><span class="p">.</span><span class="n">png</span>
+<span class="n">qiniu</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">name2</span><span class="p">.</span><span class="n">png</span>
+<span class="n">qiniu</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">name3</span><span class="p">.</span><span class="n">png</span>
+</pre></div>
+
+
+<p>则同步到远端后的文件名则为:</p>
+<div class="hlcode"><pre><span class="n">images</span><span class="o">/</span><span class="n">name1</span><span class="p">.</span><span class="n">png</span>
+<span class="n">images</span><span class="o">/</span><span class="n">name2</span><span class="p">.</span><span class="n">png</span>
+<span class="n">images</span><span class="o">/</span><span class="n">name3</span><span class="p">.</span><span class="n">png</span>
+</pre></div>
+
+
+<p>链接为：</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//bucket.qiniudn.com/images/name1.png</span>
+<span class="nl">http:</span><span class="c1">//bucket.qiniudn.com/images/name2.png</span>
+<span class="nl">http:</span><span class="c1">//bucket.qiniudn.com/images/name3.png</span>
+</pre></div>
+
+
+<p>有同学想整个博客静态页面 <code>_site</code> 同步上去，那么文章中老老实实的写本地路径吧：</p>
+<div class="hlcode"><pre><span class="o">!</span><span class="p">[</span><span class="n">image</span><span class="p">](</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">image</span><span class="p">)</span>
+</pre></div>
+
+
+<p>随后，<code>sync_dir</code> 为 <code>_site</code> 即可。</p>
+<p>以后，写博客，有新加图片的时候，在 push 之前，先 <code>rake qrsync</code> 上传下即可。不过鄙人这里测试，配置 <code>"deletable": 1,</code> 无效，就是说，本地删除某图片，远端不会删除，真囧（难道是我姿势不对）。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Installing Redmine on OS X 10.9 Mavericks / 10.10 Yosemite - Server and Client - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;Installing Redmine on OS X 10.9 Mavericks / 10.10 Yosemite - Server and Client
+    <span class="updated">Page Updated&nbsp;
+      2015-05-24 17:33
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Installing Redmine on OS X 10.9 Mavericks / 10.10 Yosemite - Server and Client</div>
+
+  <p>This is a quick summary of the necessary steps for a simple install of Redmine on Apple OS X Mavericks Server 10.9. This summary can also be applied on Mavericks Client. This is slightly different from the install for <a href="http://www.redmine.org/projects/redmine/wiki/RedmineInstallOSXServer">Snow Leopard Server</a>. This is meant only as a supplement, not a replacement, to the official install guide found <a href="http://www.redmine.org/projects/redmine/wiki/RedmineInstall">here</a>. This summary contains instructions for MySQL only, for PostgreSQL please see related part of the official install guide.</p>
+<h2 id="install-prerequisites">Install Prerequisites</h2>
+<p><strong>Xcode 5 and MySQL Server</strong></p>
+<p>First, install the developer command line-tools via Terminal:  </p>
+<div class="hlcode"><pre><span class="n">xcode</span><span class="o">-</span><span class="n">select</span> <span class="o">--</span><span class="n">install</span>
+</pre></div>
+
+
+<p>Then install MySQL Community Server - get it from <a href="http://dev.mysql.com/downloads/mysql">http://dev.mysql.com/downloads/mysql</a> (get the Mac OS X 10.9 64-bit DMG archive).<br />
+This will also install a nifty little preference pane to start and stop the MySQL server. Make sure the Mysql-server is started before you proceed and that it is started after each machine restart.</p>
+<p>To make database administration easier you should include the database binaries in your path:  </p>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">PATH</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">bin</span><span class="o">:</span><span class="err">$</span><span class="n">PATH</span>
+</pre></div>
+
+
+<p>(To make your life easier in the long run you may want to include this command in your ~/.bash_profile file.)</p>
+<p>Because the installer doesn't set a root password during the installation, you've got to set it with mysqladmin:  </p>
+<div class="hlcode"><pre><span class="n">mysqladmin</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="n">password</span> <span class="s">&quot;newpwd&quot;</span>
+</pre></div>
+
+
+<p>Next, login to mysql.   </p>
+<div class="hlcode"><pre><span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+
+
+<p>Create the database, the database user and set privileges:  </p>
+<div class="hlcode"><pre><span class="n">CREATE</span> <span class="n">DATABASE</span> <span class="n">redmine</span> <span class="n">CHARACTER</span> <span class="n">SET</span> <span class="n">utf8</span> <span class="n">COLLATE</span> <span class="n">utf8_general_ci</span><span class="p">;</span>
+<span class="n">CREATE</span> <span class="n">USER</span> <span class="err">&#39;</span><span class="n">redmine</span><span class="sc">&#39;@&#39;</span><span class="n">localhost</span><span class="err">&#39;</span> <span class="n">IDENTIFIED</span> <span class="n">BY</span> <span class="err">&#39;</span><span class="n">my_password</span><span class="err">&#39;</span><span class="p">;</span>
+<span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">redmine</span><span class="p">.</span><span class="o">*</span> <span class="n">TO</span> <span class="err">&#39;</span><span class="n">redmine</span><span class="sc">&#39;@&#39;</span><span class="n">localhost</span><span class="err">&#39;</span><span class="p">;</span>
+</pre></div>
+
+
+<p>The Redmine installer expects the MySQL client library in a different place, so you need to create a symbolic link to the original location:  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="mf">.18</span><span class="p">.</span><span class="n">dylib</span>  <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="mf">.18</span><span class="p">.</span><span class="n">dylib</span>
+</pre></div>
+
+
+<p><strong>Redmine Prerequisites</strong></p>
+<p>Redmine is built on Ruby which comes with Xcode, but some gems are missing:  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">rails</span> <span class="n">bundler</span> <span class="n">passenger</span>
+</pre></div>
+
+
+<p>Next, use passenger to build the apache2-passenger module:  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">passenger</span><span class="o">-</span><span class="n">install</span><span class="o">-</span><span class="n">apache2</span><span class="o">-</span><span class="n">module</span>
+</pre></div>
+
+
+<p>This will in the end output few lines of configuration code that you'll have to add to your Apache configuration. Here follows an example, be aware that exact content may change with newer versions of related software:  </p>
+<div class="hlcode"><pre><span class="nx">LoadModule</span> <span class="nx">passenger_module</span> <span class="p">/</span><span class="nb">Library</span><span class="p">/</span><span class="nx">Ruby</span><span class="p">/</span><span class="nx">Gems</span><span class="p">/</span><span class="nx">2.0.0</span><span class="p">/</span><span class="nx">gems</span><span class="p">/</span><span class="nx">passenger</span><span class="o">-</span><span class="mf">4.0.55</span><span class="p">/</span><span class="nx">buildout</span><span class="p">/</span><span class="nx">apache2</span><span class="p">/</span><span class="nx">mod_passenger.so</span>
+<span class="o">&lt;</span><span class="nx">IfModule</span> <span class="nx">mod_passenger.c</span><span class="o">&gt;</span>
+    <span class="nx">PassengerRoot</span> <span class="p">/</span><span class="nb">Library</span><span class="p">/</span><span class="nx">Ruby</span><span class="p">/</span><span class="nx">Gems</span><span class="p">/</span><span class="nx">2.0.0</span><span class="p">/</span><span class="nx">gems</span><span class="p">/</span><span class="nx">passenger</span><span class="o">-</span><span class="mf">4.0.55</span>
+    <span class="nx">PassengerDefaultRuby</span> <span class="p">/</span><span class="nx">System</span><span class="p">/</span><span class="nb">Library</span><span class="p">/</span><span class="nx">Frameworks</span><span class="p">/</span><span class="nx">Ruby.framework</span><span class="p">/</span><span class="nx">Versions</span><span class="p">/</span><span class="nx">2.0</span><span class="p">/</span><span class="nx">usr</span><span class="p">/</span><span class="nx">bin</span><span class="p">/</span><span class="nx">ruby</span>
+<span class="o">&lt;/</span><span class="nx">IfModule</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>In OS X Mavericks it's necessary to put this code in one of two files. Either in the default standard https.conf-file or in a separate file that is automatically included.<br />
+Alternative A - main config file:<br />
+Server:</p>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Server</span><span class="o">/</span><span class="n">Web</span><span class="o">/</span><span class="n">Config</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">httpd_server_app</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Client:</p>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">httpd</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Alternative B - separate include file (create as needed):<br />
+Server:</p>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Server</span><span class="o">/</span><span class="n">Web</span><span class="o">/</span><span class="n">Config</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">other</span><span class="o">/</span><span class="n">passenger</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Client:</p>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">other</span><span class="o">/</span><span class="n">passenger</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Finally, OS X Mavericks has a problem to install the rmagick gem which is optional for a successful installation of Redmine, but if you want to display images and charts it's necessary.<br />
+Get the following packages:<br />
+ImageMagick - <a href="http://cactuslab.com/imagemagick/">http://cactuslab.com/imagemagick/</a> (Note there are two versions, one with free type which requires XQuartz to be installed - the basic version is sufficient.)<br />
+Pgkconfig - <a href="http://macpkg.sourceforge.net/">http://macpkg.sourceforge.net</a><br />
+rmagick - <a href="http://rubygems.org/gems/rmagick">http://rubygems.org/gems/rmagick</a> (sometimes the download during installation fails, it's easier to have it stored locally)</p>
+<p>Install ImageMagick and Pkgconfig, both should be installed in the /opt directory by default.<br />
+Because neither ImageMagick or Pkgconfig seems to add the path to the executable during the installation, you have to export the path variable:  </p>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">ImageMagick</span><span class="o">/</span><span class="n">bin</span><span class="o">:/</span><span class="n">opt</span><span class="o">/</span><span class="n">pkgconfig</span><span class="o">/</span><span class="n">bin</span><span class="o">:</span><span class="err">$</span><span class="n">PATH</span>
+</pre></div>
+
+
+<p>The following command should install the rmagick gem without errors (check the exact version number). If installation fails please check the paths to MagickCore.pc and MagickWand.h. Please be aware that latest version at this time, 2.13.4, does not build clean (at least not on OS X 10.10 Yosemite). You may have to use the version before, 2.13.3, that one seems to compile and install fine.  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">C_INCLUDE_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">ImageMagick</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">ImageMagick</span><span class="o">-</span><span class="mi">6</span><span class="o">/</span> <span class="n">PKG_CONFIG_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">ImageMagick</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">pkgconfig</span><span class="o">/</span> <span class="n">gem</span> <span class="n">install</span> <span class="o">--</span><span class="n">local</span> <span class="o">~/</span><span class="n">Downloads</span><span class="o">/</span><span class="n">rmagick</span><span class="o">-</span><span class="mf">2.13.3</span><span class="p">.</span><span class="n">gem</span>
+</pre></div>
+
+
+<p>(Assuming rmagick has been downloaded to your Downloads directory)</p>
+<h2 id="install-redmine">Install Redmine</h2>
+<p>Get the latest stable build of Redmine and move the redmine directory to your web server root folder. The web server root folder is different on Server and client:<br />
+Server:</p>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Server</span><span class="o">/</span><span class="n">Web</span><span class="o">/</span><span class="n">Data</span><span class="o">/</span><span class="n">Sites</span><span class="o">/</span><span class="n">Default</span><span class="o">/</span>
+</pre></div>
+
+
+<p>Client:</p>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">WebServer</span><span class="o">/</span><span class="n">Documents</span>
+</pre></div>
+
+
+<p><strong>Configure Redmine</strong></p>
+<p>In the Terminal, change current directory to the new redmine foder in your web root and excute the following commands to setup the folder structure:  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">mkdir</span> <span class="n">public</span><span class="o">/</span><span class="n">plugin_assets</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">_www</span><span class="o">:</span><span class="n">_www</span> <span class="n">tmp</span> <span class="n">public</span><span class="o">/</span><span class="n">plugin_assets</span> <span class="n">log</span> <span class="n">files</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="o">-</span><span class="n">R</span> <span class="mi">755</span> <span class="n">files</span> <span class="n">log</span> <span class="n">tmp</span> <span class="n">public</span><span class="o">/</span><span class="n">plugin_assets</span>
+<span class="n">sudo</span> <span class="n">cp</span> <span class="n">config</span><span class="o">/</span><span class="n">database</span><span class="p">.</span><span class="n">yml</span><span class="p">.</span><span class="n">example</span> <span class="n">config</span><span class="o">/</span><span class="n">database</span><span class="p">.</span><span class="n">yml</span>
+</pre></div>
+
+
+<p>Edit database.yml, e.g., for MySql:  </p>
+<div class="hlcode"><pre><span class="n">production</span><span class="o">:</span>
+  <span class="n">adapter</span><span class="o">:</span> <span class="n">mysql2</span>
+  <span class="n">database</span><span class="o">:</span> <span class="n">redmine</span>
+  <span class="n">host</span><span class="o">:</span> <span class="n">localhost</span>
+  <span class="n">username</span><span class="o">:</span> <span class="n">redmine</span>
+  <span class="n">password</span><span class="o">:</span> <span class="n">put_redmine</span><span class="err">&#39;</span><span class="n">s_password_here</span>
+</pre></div>
+
+
+<p>E.g., for PostgreSQL (as detailed at <a href="http://www.uponmyshoulder.com/blog/2011/cant-find-the-postgresql-client-library-libpq">http://www.uponmyshoulder.com/blog/2011/cant-find-the-postgresql-client-library-libpq</a>), an additional package needs to be installed in a nondefault way to forestall the install failures that will occur for PostgreSQL during “bundle install” far below:  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">env</span> <span class="n">ARCHFLAGS</span><span class="o">=</span><span class="s">&quot;-arch x86_64&quot;</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">pg</span> <span class="o">-</span><span class="n">v</span> <span class="err">&#39;</span><span class="mf">0.17.1</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>then for PostgreSQL, edit database.yml:  </p>
+<div class="hlcode"><pre><span class="n">production</span><span class="o">:</span>
+  <span class="n">adapter</span><span class="o">:</span> <span class="n">postgresql</span>
+  <span class="n">database</span><span class="o">:</span> <span class="n">redmine</span>
+  <span class="n">host</span><span class="o">:</span> <span class="n">localhost</span>
+  <span class="n">username</span><span class="o">:</span> <span class="n">redmine</span>
+  <span class="n">password</span><span class="o">:</span> <span class="n">put_redmine</span><span class="err">&#39;</span><span class="n">s_password_here</span>
+  <span class="n">encoding</span><span class="o">:</span> <span class="n">utf8</span>
+</pre></div>
+
+
+<p><strong>Run Bundler</strong></p>
+<p>If you were forced to install an earlier version of rmagick (like 2.13.3) you will need to force the Bundler to use that version or the installation will fail. You can avoid this by edit the file "Gemfile". Look for the row that says gem "rmagick", "&gt;= 2.0.0" and change it to gem "rmagick", "2.13.3". Save the file and then run the bundle install:  </p>
+<div class="hlcode"><pre><span class="n">bundle</span> <span class="n">install</span> <span class="o">--</span><span class="n">without</span> <span class="n">development</span> <span class="n">test</span>
+</pre></div>
+
+
+<p>Assuming the installation finished without errors you can generate the secret token:  </p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate_secret_token</span>
+</pre></div>
+
+
+<p>Next steps:  </p>
+<div class="hlcode"><pre><span class="n">RAILS_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rake</span> <span class="n">db</span><span class="o">:</span><span class="n">migrate</span>
+
+
+
+
+<span class="n">RAILS_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rake</span> <span class="n">redmine</span><span class="o">:</span><span class="n">load_default_data</span>
+</pre></div>
+
+
+<p>You will be asked to choose language. Do so.</p>
+<p>If you want to do a quick test and take Redmine for a ride your can now do so:  </p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">ruby</span> <span class="n">script</span><span class="o">/</span><span class="n">rails</span> <span class="n">server</span> <span class="n">webrick</span> <span class="o">-</span><span class="n">e</span> <span class="n">production</span>
+</pre></div>
+
+
+<p>This will make your redmine available att <a href="http://localhost:3000/">http://localhost:3000</a></p>
+<p>Last but not least you need to point Apache to the public folder inside the red mine directory to serve Redmine as a website.<br />
+Please make sure you tick <em>Allow overrides using .htaccess file</em> in the advanced settings of your website configuration.</p>
+<p>For further information please see<br />
+<a href="http://www.redmine.org/projects/redmine/wiki/RedmineInstallOSXServer">HowTo Install Redmine on Mac OS X Server</a> 10.6 Snow Leopard<br />
+and<br />
+<a href="http://www.redmine.org/projects/redmine/wiki/RedmineInstallOSXLionServer">HowTo Install Redmine on Mac OS X Lion Server</a><br />
+in case some details are missing here.<br />
+Here is some step by step advice how to do quick install and upgrade on 10.8 and 10.9 Mac OS X Server with bitnami package<a href="http://www.macweb.cz/aktualizujeme-redmine-na-novou-verzi-2-5-x/">http://www.macweb.cz/aktualizujeme-redmine-na-novou-verzi-2-5-x/</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

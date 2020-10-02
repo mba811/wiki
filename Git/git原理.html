@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Git原理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Git">Git</a>&nbsp;&#187;&nbsp;Git原理
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 22:35
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Git原理</div>
+
+  <p>git的底层从其本质上讲是一个内容寻址文件系统,然后基于这个内容寻址文件系统实现了一套vcs(版本控制系统)的高层接口,方便我们使用.当然git也提供了底层接口,便于我们使用之做出符合自己需求的系统.</p>
+<p>我们把文件内容交给git进行管理,总得有一个地方来存放这些内容是吧! 是的,在git中,所有的文件内容都保存在git仓库的objects目录中.</p>
+<h4 id="git">初始化git库</h4>
+<p>我们初始化一个git仓库有两种方式,git init和git –bare init 这两者的区别是,前者会在当前目录下生成一个.git目录(此目录即为git库的目录),而当前目录为我们的工作目录,一般是checkout后的文件,我们编程时所读写的内容都在此目录下. 后者的bare的意思就是裸的意思,也就是直接把当前目录当作git库的目录,这个一般用在远程git库上,因为我们在远程git库上没有checkout的需求,只是用作单纯的git库 git库还有个优点就是直接拷贝到另一个地方就可以直接用了,只要你的相应的机器上安装了git即可.</p>
+<h4 id="git_1">git对象</h4>
+<p>git中一个非常重要的概念就是git对象,我们可以把git系统想象成一个强大的key-value存储,每一个对象都对应着一个40位的哈希值.通过这个哈希值我们便可以很容易的取得对象(当然我们可以为这些哈希值取一些有意义的别名,方便我们使用).我们可以把这个哈希值看作指针.而对应的对象就是指针所指向的实体.对象和对象之间还可以通过通过指针进行一些关联的操作. git对象可分为四种类型:</p>
+<ul>
+<li>blob对象 用来存放文件数据</li>
+<li>tree对象 对应着目录,tree的内容为blob对象的指针或者其他tree对象的指针</li>
+<li>commit对象 每一次commit都会产生一个新的commit对象,其包含了一个指向tree对象的指针,指向前一次commit对象的指针,还包含了commit的时间,作者和注释等信息,就相当于为项目做了一次snapshot,通过commit对象我们可以跟踪到前一次commit对象,这样就可以实现log功能了</li>
+<li>tag对象 一种特殊的commit对象</li>
+</ul>
+<p>git库目录 接下来分析git库目录中各个文件的作用</p>
+<div class="hlcode"><pre><span class="n">Lukes</span><span class="o">-</span><span class="n">MacBook</span><span class="o">:</span><span class="n">test</span><span class="p">.</span><span class="n">git</span> <span class="n">Luke</span><span class="err">$</span> <span class="n">ls</span> <span class="o">-</span><span class="n">al</span>
+<span class="n">total</span> <span class="mi">32</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>  <span class="mi">11</span> <span class="n">Luke</span>  <span class="n">staff</span>   <span class="mi">374</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="p">.</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>  <span class="mi">24</span> <span class="n">Luke</span>  <span class="n">staff</span>   <span class="mi">816</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="p">..</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span>   <span class="mi">1</span> <span class="n">Luke</span>  <span class="n">staff</span>    <span class="mi">23</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">HEAD</span> <span class="p">(</span><span class="err">当前分支的指针</span><span class="p">)</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>   <span class="mi">2</span> <span class="n">Luke</span>  <span class="n">staff</span>    <span class="mi">68</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">branches</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span>   <span class="mi">1</span> <span class="n">Luke</span>  <span class="n">staff</span>    <span class="mi">85</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">config</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span>   <span class="mi">1</span> <span class="n">Luke</span>  <span class="n">staff</span>    <span class="mi">73</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">description</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>  <span class="mi">12</span> <span class="n">Luke</span>  <span class="n">staff</span>   <span class="mi">408</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">hooks</span> <span class="p">(</span><span class="err">可以实现在特定操作的前或者后触发一些动作</span><span class="p">)</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>   <span class="mi">3</span> <span class="n">Luke</span>  <span class="n">staff</span>   <span class="mi">102</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">info</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>  <span class="mi">64</span> <span class="n">Luke</span>  <span class="n">staff</span>  <span class="mi">2176</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">objects</span> <span class="p">(</span><span class="n">blob</span><span class="p">,</span><span class="n">tree</span><span class="p">,</span><span class="n">commit</span><span class="p">,</span><span class="n">tag</span> <span class="err">对象</span><span class="p">)</span>
+<span class="o">-</span><span class="n">rw</span><span class="o">-</span><span class="n">r</span><span class="o">--</span><span class="n">r</span><span class="o">--</span>   <span class="mi">1</span> <span class="n">Luke</span>  <span class="n">staff</span>    <span class="mi">85</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">packed</span><span class="o">-</span><span class="n">refs</span>
+<span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>   <span class="mi">4</span> <span class="n">Luke</span>  <span class="n">staff</span>   <span class="mi">136</span> <span class="n">Jun</span>  <span class="mi">4</span> <span class="mi">20</span><span class="o">:</span><span class="mi">21</span> <span class="n">refs</span> <span class="p">(</span><span class="err">指向各个分支的指针</span><span class="p">)</span>
+</pre></div>
+
+
+<p>objects保存的时候,以40位哈希值的前两位作为子目录的名称,后38位作为对象的文件名 git系统会定期对所有的objects进行打包操作,这样可以减少磁盘占用空间 git中最新版本的都是直接保存的,以前版本是通过引用最新的文件以及差异进行获取的,这是因为大都数时候我们对最新的分支代码更为关注。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

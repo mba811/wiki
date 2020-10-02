@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>文件导航和文件管理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Sublime-Text">Sublime-Text</a>&nbsp;&#187;&nbsp;文件导航和文件管理
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 55:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">文件导航和文件管理</div>
+
+  <h2 id="_1">转到什么</h2>
+<p>转到任何可以让你<strong>浏览文件</strong>迅速。打开它<code>按Ctrl + P</code>。当您输入到输入区域，打开的文件，并在文件名<a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/file_management/file_management.html#fm-projects-folders"><em>​​公开目录</em></a>将被搜索，而最匹配的预览会显示。该预览是_瞬时_，即，它不会成为实际的主动缓存，直到在其上执行一些操作。短暂的观点走，当你按下 <code>Esc键</code>。你会发现在其他情况下，如短暂的看法时，单点击侧边栏的文件。</p>
+<p>转到任何辜负它的名字-there的还不止查找文件。</p>
+<h3 id="_2">转到任何指令</h3>
+<p>还有的转到任何这将指向你到其他地方不是文件的开始几个特殊的指令。所有这些指令可以结合使用文件搜索查询和对当前选中的文件或如果你还没有指定任何文件名搜索词您正在编辑的文件将被应用。</p>
+<p>指令有一个特殊字符，如调用<code>：</code>，之后的所有文本将被指令进行解释。例如：</p>
+<div class="hlcode"><pre><span class="err">小岛：</span><span class="mi">123</span>
+</pre></div>
+
+
+<p>这指示崇高文本首先搜索相匹配的文件<code>岛</code> ，然后去排队123。</p>
+<p>这里是受支持的指令的列表：</p>
+<p><code>@ _符号_</code></p>
+<p>搜索<strong>符号</strong>在活动缓冲区象征; 势必会<code>按Ctrl + R</code>。</p>
+<p>符号通常是类或函数，但可以通过语法定义来定义什么。见_符号-语法首选项_（XXX待补）。作为回报，他们可能不会在所有定义和搜索符号将在这种情况下失败。</p>
+<p><code>＃_搜索_</code><br />
+    模糊搜索的文件匹配一个单词<strong>的搜索</strong>，并强调所有出现; 势必会<code>按Ctrl +;</code>。</p>
+<p><code>：_LINE_NUMBER_</code><br />
+    前进到指定的行数，或者如果它超过极限的文件的末尾; 势必会<code>按Ctrl + G</code>。</p>
+<h2 id="_3">侧边栏</h2>
+<p>侧边栏让你项目的概述。添加到侧边栏的文件和文 ​​件夹将在<a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/file_management/file_management.html#goto-anything">转到任何</a>和项目范围内的行动。项目和侧边栏是密切相关的。总有一个开放的项目，无论是隐含或明确。</p>
+<p>要<strong>打开或关闭</strong>侧边栏，按下<code>Ctrl + K， Ctrl + B键</code>。</p>
+<p>侧边栏可以使用箭头键进行导航，但首先你需要给它<strong>输入焦点</strong>，按<code>Ctrl键+ 0</code>。要返回输入焦点缓冲区，按<code>Esc键</code>。或者，您可以用鼠标同样的效果，但为什么你会吗？</p>
+<p>侧边栏还可以通过上下文菜单中提供了基本的文件管理操作。</p>
+<h2 id="_4">工程</h2>
+<p>项目组组文件和目录，你需要努力为单位。一旦你建立你的项目适合您通过添加文件夹的方式，保存它，并给它起一个名字。项目文件使用_.sublime项目_扩展。</p>
+<p>您可以添加和删除文件夹与工程<strong>项目</strong>的菜单和侧边栏的上下文菜单。Futhermore，您可以拖动文件夹到一个窗口，他们将被自动添加。</p>
+<p>要保存项目，选择<strong>项目|项目另存为...</strong>。</p>
+<p>为了项目，按之间快速切换<code>的Ctrl + Alt + P</code>。Alernatively您可以浏览<strong>项目|最近的项目</strong>。</p>
+<p>您可以打开从一个项目<strong>的命令行</strong>通过传递 _.sublime项目_文件作为参数。</p>
+<h3 id="_5">项目定义</h3>
+<p>项目定义存储在JSON文件与_.sublime项目_ 扩展。只要有一个_.sublime项目_文件，你会发现一个辅助_.sublime，工作区_文件也包含用户特定的数据，如打开的文件和修改每个。后者则用于通过崇高的文本，你不应该自己进行编辑。</p>
+<p>项目定义支持三个顶层部分：<code>文件夹folders</code>，所包含的文件夹，<code>设置settings</code>，用于设置覆盖，并<code>build_systems</code>，对于具体项目的构建系统。举个例子：</p>
+<div class="hlcode"><pre><span class="p">{</span> 
+    <span class="s">&quot;folders&quot;</span> <span class="o">:</span> 
+    <span class="p">[</span> 
+        <span class="p">{</span> 
+            <span class="s">&quot;path&quot;</span> <span class="o">:</span>  <span class="s">&quot;src&quot;</span> <span class="p">,</span> 
+            <span class="s">&quot;folder_exclude_patterns&quot;</span> <span class="o">:</span>  <span class="p">[</span> <span class="s">&quot;backup&quot;</span> <span class="p">]</span> 
+        <span class="p">},</span> 
+        <span class="p">{</span> 
+            <span class="s">&quot;path&quot;</span> <span class="o">:</span>  <span class="s">&quot;docs&quot;</span> <span class="p">,</span> 
+            <span class="s">&quot;name&quot;</span> <span class="o">:</span>  <span class="s">&quot;Documentation&quot;</span> <span class="p">,</span> 
+            <span class="s">&quot;file_exclude_patterns&quot;</span> <span class="o">:</span>  <span class="p">[</span> <span class="s">&quot;*.css&quot;</span> <span class="p">]</span> 
+        <span class="p">}</span> 
+    <span class="p">],</span> 
+    <span class="s">&quot;settings&quot;</span> <span class="o">:</span> 
+    <span class="p">{</span> 
+        <span class="s">&quot;tab_size&quot;</span> <span class="o">:</span>  <span class="mi">8</span> 
+    <span class="p">},</span> 
+    <span class="s">&quot;build_systems&quot;</span> <span class="o">:</span> 
+    <span class="p">[</span> 
+        <span class="p">{</span> 
+            <span class="s">&quot;name&quot;</span> <span class="o">:</span>  <span class="s">&quot;List&quot;</span> <span class="p">,</span> 
+            <span class="s">&quot;cmd&quot;</span> <span class="o">:</span>  <span class="p">[</span> <span class="s">&quot;ls&quot;</span> <span class="p">]</span> 
+        <span class="p">}</span> 
+    <span class="p">]</span> 
+<span class="p">}</span>
+</pre></div>
+
+
+<p><strong>文件夹</strong><br />
+    每个文件夹必须有一个<code>路径path</code>，并且可任选地具有一个 <code>folder_exclude_patterns</code>和<code>file_exclude_patterns</code>设置。路径可能是相对于项目目录或绝对路径。文件夹也可以给予<code>名称</code>设置，设置他们是如何边栏上显示。<br />
+<strong>设置</strong></p>
+<p>一个项目可以定义项目特定的设置，这仅适用于（开）项目中的文件。具体项目的设置将覆盖普通用户设置，但没有语法特定的设置。</p>
+<p>您可以覆盖几乎所有的设置（不包括全局设置）。</p>
+<p>另请参见</p>
+<p><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/customization/settings.html#settings-hierarchy"><em>设置层次</em></a><br />
+    一个详细的例子为优先的设置的顺序。<br />
+<a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/settings.html"><em>设置 - 参考</em></a><br />
+    参考可设置。</p>
+<p><strong>构建系统</strong></p>
+<p>您可以在项目定义定义项目特定的构建系统。除了 ​​常规的构建系统，一个<code>名称</code>必须为每一个被指定。建立在这里列出系统将可通过常规<strong>工具|构建系统</strong>菜单。</p>
+<p>另请参见</p>
+<p><a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/reference/build_systems.html"><em>构建系统 - 参考</em></a><br />
+    在构建系统及其选项文件...</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

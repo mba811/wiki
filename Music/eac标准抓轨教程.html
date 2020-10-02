@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>EAC标准抓轨教程 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;EAC标准抓轨教程
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:08
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">EAC标准抓轨教程</div>
+
+  <p>首先废话两句，<em>Exact Audio Copy</em>，简称_EAC_，德国人Andre Wiethoff编写，是目前精度最高的CD音频抓轨程序。大家一般用其来制作无损音乐。此软件并不是傻瓜软件，功能、设置方面有一定的专业性，所以网上有铺天盖地的各种EAC设置教程。不过从我看过的教程来说，大部分教程都是按照官方的抓轨标准来写的，而官方标准中，抓轨包括压缩选项并没有设置到极致，比如：FLAC编码的最高质量压缩级别为8，而官方推荐的是6，这是基于速度和体积而考虑的级别。但是对于发烧友来说，我们要的就是最完美的无损，我们可以为最高质量的压缩而牺牲速度、体积。</p>
+<p>这里推荐一篇我感觉目前比较出色的EAC设置教程：《<a href="http://www.ied2k.com/forum/index.php?showtopic=2792">EAC标准抓轨教程</a>》。这篇教程是翻译的，完全按照国际上最常用的无损抓轨设置编写，推荐各位准备制作无损的朋友认真阅读一下。</p>
+<p>不过教程在翻译的时候也有一些不清楚的地方,下面是一些补充说明：</p>
+<p>1、对于文章中“<strong>二、EAC菜单 &gt; 驱动器选项… (或直接按F10键)设置其中的标签</strong>”一章，“<strong>1．抓取模式菜单：</strong>”中的设置，<strong>请你一定要结合自己光驱的特性选择！</strong>文章里面的截图是作者的光驱特性，请不要照搬作者的选择。</p>
+<p>2、对于文章中 “<strong>二、EAC菜单 &gt; 驱动器选项… (或直接按F10键)设置其中的标签</strong>”  一章，”<strong>2．偏移/速度菜单：</strong>“一段提到的”<strong>对此驱动器使用AccurateRip：强烈建议勾选</strong>”，进行一下解释。AccurateRip是EAC特有的一个数据库，是一个为保证你没有错误的刻录或者读取CD而产生的一个方法。 如果AccurateRip 成功，那么就说明你的读取或者刻录是与数据库中所存在的CD信息相同。不过，对于有些非常少见的CD来说，AccurateRip数据库里的数据也未必是正确的，但是，你还是要把它当成一个重要参考。 至于AccurateRip 的原理就是，通过把你的刻录或者读取结果和别人的比较，并且报告你与你相同的数量或者不同的数量。 通过这些，你能知道你的刻率是否完美。</p>
+<p>不过有些朋友可能在设置AccurateRip时发现其选项是灰色的，这时候就需要你找一张非常常见的CD（越常见越好！），然后插入到光驱之后EAC会自动连接服务器下载关于这张CD的AccurateRip信息，然后，你就会发现AccurateRip选上了，并且驱动器的偏移值也选好了。</p>
+<p>3、对于“<strong>一、EAC菜单 &gt; EAC选项…(或直接按F9键)设置其中的标签</strong>”一章，“<strong>2．常规选项：</strong>”中提到的“<strong>• 使用语言：英语（推荐使用英语进行抓轨，方便全球P2P用户对了解CD抓取信息，建议：使用中文进行设置后将语言改为英语）</strong>”，这是个倡议，请大家尽量支持！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

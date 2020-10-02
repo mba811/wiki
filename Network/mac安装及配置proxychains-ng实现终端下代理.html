@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac安装及配置ProxyChains-NG实现终端下代理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;Mac安装及配置ProxyChains-NG实现终端下代理
+    <span class="updated">Page Updated&nbsp;
+      2015-02-09 04:43
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac安装及配置ProxyChains-NG实现终端下代理</div>
+
+  <p>项目主页：<a href="https://github.com/rofl0r/proxychains-ng">https://github.com/rofl0r/proxychains-ng</a></p>
+<p>官方说明：</p>
+<blockquote>
+<p>proxychains ng (new generation) - a preloader which hooks calls to sockets in dynamically linked programs and redirects it through one or more socks/http proxies. continuation of the unmaintained proxychains project.</p>
+</blockquote>
+<h2 id="_1">安装</h2>
+<p>使用 Homebrew 安装</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">proxychains</span><span class="o">-</span><span class="n">ng</span>
+</pre></div>
+
+
+<h2 id="_2">配置</h2>
+<p>编辑配置文件 <code>mvim /usr/local/etc/proxychains.conf</code><br />
+在 [ProxyList] 下面（也就是末尾）加入代理类型，代理地址和端口<br />
+例如使用 TOR 代理，注释掉原来的代理并添加</p>
+<div class="hlcode"><pre><span class="n">socks5</span>  <span class="mf">127.0.0.1</span> <span class="mi">9050</span>
+</pre></div>
+
+
+<p>如果所在的网络很复杂，可能需要在配置文件中启用<br />
+<code>dynamic_chain</code> - 按照列表中出现的代理服务器的先后顺序组成一条链，如果有代理服务器失效，则自动将其排除，但至少要有一个是有效的<br />
+然后在 [ProxyList] 下添加多个代理</p>
+<p>默认是：<br />
+<code>strict_chain</code> - 按照后面列表中出现的代理服务器的先后顺序组成一条链，要求所有的代理服务器都是有效的</p>
+<h2 id="_3">使用</h2>
+<div class="hlcode"><pre><span class="n">proxychains4</span> <span class="n">curl</span> <span class="n">twitter</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>配合 wget 和 curl 来下载，非常好用</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Pelican - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Python">Python</a>&nbsp;&#187;&nbsp;Pelican
+    <span class="updated">Page Updated&nbsp;
+      2015-05-08 06:54
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Pelican</div>
+
+  <h1 id="geek"><a href="/poem_of_sunshine/article/details/12913325">一步一步打造Geek风格的技术博客</a></h1>
+<h3 id="geek_1">Geek是什么</h3>
+<p>Geek更多的是一种精神，一种态度，一种对技术的理解与信念。他们无法忍受丑陋的代码，拙劣的技术。他们思路开阔，技术娴熟，他们不甘平庸，追求完美。他们不会囿于常识，他们敢于突破。在常人眼中，他们不走寻常路，享受各种非主流的技术。但在他们自己眼中，这些又是那么得自然与优美。他们用自己的行为诠释着自己对于技术的理解，用那份固执传达着自己的信念。</p>
+<p>他们掌握并热爱着技术，叛逆、执着，崇尚自由。</p>
+<h3 id="csdnwordpressjekyll">为什么不选择CSDN、Wordpress、Jekyll等技术</h3>
+<p>我在CSDN上发表博文被和谐了一次，就不会允许这种事发生第二次。</p>
+<p>Wordpress上手容易、功能强大、插件丰富。但是在我看来，这些优点同时也是它的缺点：太笨重、太无脑、不够酷、无用功能太多、可定制的粒度不够小。我更喜欢简洁快速粗暴的博客系统。</p>
+<p>Jekyll非常棒，可惜它基于Ruby。对于Python爱好者而言，基于Python的Pelican显然更加可口。</p>
+<h2 id="_1">卧薪尝胆</h2>
+<hr />
+<p>我在搭建这个博客的过程中学到了很多很多有意思的技术。</p>
+<p>搭建环境为Mac OS X/Linux，Windows下可能会麻烦一些。</p>
+<p>搭建过程中会涉及到的技术名词如下：</p>
+<ul>
+<li>Mac OS X </li>
+<li>Python </li>
+<li>Pip </li>
+<li>Pelican </li>
+<li>Jinja2 </li>
+<li>Github </li>
+<li>Git </li>
+<li>Makefile </li>
+<li>Markdown </li>
+<li>Mou </li>
+<li>Google Analytics </li>
+<li>Google Custom Search </li>
+<li>Google Webmasters </li>
+<li>Picasa </li>
+<li>Disqus </li>
+<li>Rss </li>
+<li>Sitemap </li>
+<li>Godaddy </li>
+<li>Dnspod </li>
+<li>A记录</li>
+</ul>
+<p>若对任何一个技术名词有疑问，请翻墙<a href="https://www.google.com/ncr">Google</a> it.</p>
+<h2 id="_2">初见端倪</h2>
+<hr />
+<p>开始动手。</p>
+<h3 id="github">Github入门指南</h3>
+<p>请参考<a href="http://blog.csdn.net/duxinfeng2010/article/details/8654690">http://blog.csdn.net/duxinfeng2010/article/details/8654690</a></p>
+<h3 id="github-pages">使用Github Pages创建个人博客</h3>
+<p>Github为每一个用户分配了一个二级域名username.github.io，用户为自己的二级域名创建主页很简单，只需要在Github下创建一个名为username.github.io的版本库，并向其master分支提交网站静态页面即可。</p>
+<ul>
+<li>登陆Github，创建一个名为username.github.io的版本库（将username替换成自己的Github账户名）。</li>
+<li>点击Setting，选择一个自己喜欢的模板，最后点击发布public按钮。 </li>
+<li>耐心等待一段时间（不超过10分钟），登陆http://username.github.io，会发现自己的个人博客已经生成。</li>
+</ul>
+<h3 id="pelicanmarkdown">安装Pelican和Markdown</h3>
+<div class="hlcode"><pre><span class="n">pip</span> <span class="n">install</span> <span class="n">pelican</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">markdown</span>
+</pre></div>
+
+
+<h3 id="_3">搭建骨架</h3>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="n">blog</span>
+<span class="n">cd</span> <span class="n">blog</span>
+<span class="n">pelican</span><span class="o">-</span><span class="n">quickstart</span>
+</pre></div>
+
+
+<p>根据提示一步步输入相应的配置项，不知道如何设置的接受默认即可，后续可以通过编辑pelicanconf.py文件更改配置)</p>
+<p>以下是生成的目录结构：</p>
+<div class="hlcode"><pre><span class="n">blog</span><span class="o">/</span>
+<span class="err">├──</span> <span class="n">content</span>              <span class="err">#</span> <span class="err">存放输入的源文件</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="p">(</span><span class="n">pages</span><span class="p">)</span>          <span class="err">#</span> <span class="err">存放手工创建的静态页面</span>
+<span class="err">├──</span> <span class="n">output</span>               <span class="err">#</span> <span class="err">生成的输出文件</span>
+<span class="err">├──</span> <span class="n">develop_server</span><span class="p">.</span><span class="n">sh</span>    <span class="err">#</span> <span class="err">方便开启测试服务器</span>
+<span class="err">├──</span> <span class="n">Makefile</span>             <span class="err">#</span> <span class="err">方便管理博客的</span><span class="n">Makefile</span>
+<span class="err">├──</span> <span class="n">pelicanconf</span><span class="p">.</span><span class="n">py</span>       <span class="err">#</span> <span class="err">主配置文件</span>
+<span class="err">└──</span> <span class="n">publishconf</span><span class="p">.</span><span class="n">py</span>       <span class="err">#</span> <span class="err">主发布文件，可删除</span>
+</pre></div>
+
+
+<p>进入output把自己刚刚建好的username.github.io版本库clone下来：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="n">output</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">username</span><span class="o">/</span><span class="n">username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+
+
+<h3 id="_4">开始写博文</h3>
+<p>在content目录下用Markdown语法来写一篇文章，最好选择专业的Markdown编辑器，在Mac OS X下推荐使用Mou，在Linux/Windows下请Google。</p>
+<p>用Markdown写博文截图如下： <img alt="1" src="https://lh5.googleusercontent.com/-edzDa6ch3Jk/Ug5oATNTjsI/AAAAAAAAAKs/WIqU7KziyOA/w958-h599-no/%25E5%25B1%258F%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-17+%25E4%25B8%258A%25E5%258D%25881.57.09.png" /></p>
+<p>左半边是正在用markdown写的博文，右边是即时预览效果。</p>
+<p>写完后，执行以下命令，即可在本机<a href="http://127.0.0.1:8000/">http://127.0.0.1:8000</a>看到效果。</p>
+<div class="hlcode"><pre><span class="n">make</span> <span class="n">publish</span>
+<span class="n">make</span> <span class="n">serve</span>
+</pre></div>
+
+
+<p>若要一键上传到Github，需要修改Makefile两处地方：</p>
+<div class="hlcode"><pre><span class="nl">publish:</span>
+<span class="err">$</span><span class="p">(</span><span class="n">PELICAN</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">INPUTDIR</span><span class="p">)</span> <span class="o">-</span><span class="n">o</span> <span class="err">$</span><span class="p">(</span><span class="n">OUTPUTDIR</span><span class="p">)</span> <span class="o">-</span><span class="n">s</span> <span class="err">$</span><span class="p">(</span><span class="n">CONFFILE</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">PELICANOPTS</span><span class="p">)</span>
+
+<span class="nl">github:</span> <span class="n">publish</span>
+<span class="n">cd</span> <span class="n">OUTPUTDIR</span> <span class="p">;</span> <span class="n">git</span> <span class="n">add</span> <span class="p">.</span> <span class="p">;</span>  <span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">am</span> <span class="err">&#39;</span><span class="n">your</span> <span class="n">comments</span><span class="err">&#39;</span> <span class="p">;</span> <span class="n">git</span> <span class="n">push</span>
+</pre></div>
+
+
+<p>以后写完文章执行make github就可以一键部署了。</p>
+<h2 id="_5">如虎添翼</h2>
+<hr />
+<p>我们已经能成功地用markdown写出博文并部署到github了，但这远远不够。</p>
+<h3 id="_6">管理图片</h3>
+<p>我觉得使用云相册比本地图片要方便的多，我使用<a href="https://picasaweb.google.com/?noredirect=1">Picasa</a>来维护blog的所有图片。</p>
+<h3 id="_7">挑选主题</h3>
+<p>安装主题，比如bootstrap2：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/getpelican/pelican-themes.git</span>
+<span class="n">cd</span> <span class="n">pelican</span><span class="o">-</span><span class="n">themes</span>
+<span class="n">pelican</span><span class="o">-</span><span class="n">themes</span> <span class="o">-</span><span class="n">i</span> <span class="n">bootstrap2</span>
+</pre></div>
+
+
+<p>选择主题，在pelicanconf.py中添加</p>
+<div class="hlcode"><pre><span class="n">THEME</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">bootstrap2</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h3 id="_8">安装第三方评论系统</h3>
+<p>在<a href="https://disqus.com/admin/signup">Disqus</a>上申请一个站点，记牢Shortname。 在pelicanconf.py添加</p>
+<div class="hlcode"><pre><span class="n">DISQUS_SITENAME</span> <span class="o">=</span> <span class="n">Shortname</span>
+</pre></div>
+
+
+<h3 id="google-analytics">添加Google Analytics</h3>
+<p>去<a href="http://www.google.com/analytics">Google Analytics</a>申请账号，记下跟踪ID。 在pelicanconf.py添加</p>
+<div class="hlcode"><pre><span class="n">GOOGLE_ANALYTICS</span> <span class="o">=</span> <span class="err">跟踪</span><span class="n">ID</span>
+</pre></div>
+
+
+<p>Google Analytics极其强悍，截图说明一切： <img alt="2" src="https://lh6.googleusercontent.com/-9vXmIT6vXDo/Ug5wTSu4wMI/AAAAAAAAALM/5-VSrnXNGUU/w958-h599-no/%25E5%25B1%258F%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-17+%25E4%25B8%258A%25E5%258D%25882.31.26.png" /></p>
+<p><img alt="3" src="https://lh6.googleusercontent.com/-a4ZAnTD7F0I/Ug5wTX0w9nI/AAAAAAAAALI/x9J0atK3lpU/w958-h599-no/%25E5%25B1%258F%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-17+%25E4%25B8%258A%25E5%258D%25882.31.54.png" /></p>
+<h3 id="google-webmasters">使用Google Webmasters</h3>
+<p>在<a href="http://www.google.com/webmasters">Google Webmasters</a>上注册即可。</p>
+<p>这个就是Google站长工具，使用它的目的是为了让博客被Google更好的收录，比如手动让Googlebot抓取、提交Robots、更新Sitemap等等，各方面完爆百度站长工具。</p>
+<p>截图如下： <img alt="3" src="https://lh3.googleusercontent.com/-tYrEbXyx_5o/UhGS1C_lcYI/AAAAAAAAALk/H7X7MBjNkVY/w958-h599-no/%25E5%25B1%258F%25E5%25B9%2595%25E5%25BF%25AB%25E7%2585%25A7+2013-08-19+%25E4%25B8%258A%25E5%258D%258811.36.32.png" /></p>
+<h3 id="_9">添加插件</h3>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/getpelican/pelican-plugins.git</span>
+</pre></div>
+
+
+<p>比如我要使用sitemap，在pelicanconf.py里配置如下</p>
+<div class="hlcode"><pre><span class="n">PLUGIN_PATH</span> <span class="o">=</span> <span class="n">u</span><span class="s">&quot;pelican-plugins&quot;</span>
+<span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;sitemap&quot;</span><span class="p">]</span>
+<span class="n">SITEMAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;format&quot;</span><span class="o">:</span> <span class="s">&quot;xml&quot;</span><span class="p">,</span>
+    <span class="s">&quot;priorities&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s">&quot;articles&quot;</span><span class="o">:</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="s">&quot;indexes&quot;</span><span class="o">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s">&quot;pages&quot;</span><span class="o">:</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s">&quot;changefreqs&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s">&quot;articles&quot;</span><span class="o">:</span> <span class="s">&quot;monthly&quot;</span><span class="p">,</span>
+        <span class="s">&quot;indexes&quot;</span><span class="o">:</span> <span class="s">&quot;daily&quot;</span><span class="p">,</span>
+        <span class="s">&quot;pages&quot;</span><span class="o">:</span> <span class="s">&quot;monthly&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="google">使用Google站内搜索</h3>
+<p>请参考<a href="http://www.codenut.net/post/2013-06-30-cse">http://www.codenut.net/post/2013-06-30-cse</a></p>
+<h3 id="_10">申请独立域名</h3>
+<ul>
+<li>在<a href="https://www.godaddy.com/">Godaddy</a>上用支付宝花购买为期一年的顶级域名，并去修改Nameservers为这两个地址：f1g1ns1.dnspod.net、f1g1ns2.dnspod.net。</li>
+<li>在<a href="https://www.dnspod.cn/">Dnspod</a>上添加新域名，并申请一条A记录指向Github Pages的ip:207.97.227.245；</li>
+<li>在Pelican主目录新建CNAME文件，添上刚刚申请的域名，如我的www.lizherui.com</li>
+</ul>
+<h2 id="_11">登峰造极</h2>
+<hr />
+<p>最后，如果感觉还不够味儿，可以参考Pelican官方文档和这个博客的完整源码。</p>
+<p>Pelican : <a href="http://docs.getpelican.com/en/3.2">http://docs.getpelican.com/en/3.2</a></p>
+<p>Source Code : <a href="https://github.com/lizherui/lizherui.github.io">https://github.com/lizherui/lizherui.github.io</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

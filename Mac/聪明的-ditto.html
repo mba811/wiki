@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>聪明的 Ditto - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;聪明的 Ditto
+    <span class="updated">Page Updated&nbsp;
+      2015-02-26 21:10
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">聪明的 Ditto</div>
+
+  <p>大多数的 Win 用户一定对 Ditto 不陌生，它在 <a href="http://xbeta.info/ditto.htm">善用佳软</a> 中被奉为神器，而在 OS X 中大多数命令行重度「患者」会用 cp 命令处理文件（夹）的复制，但是 OS X 提供了另一命令：「ditto」。Ditto 比 cp 命令稍显高级和方便主要是基于以下几点：首先，它在复制过程中不仅能保留源文件（夹）的属性与权限，还能保留源文件的资源分支结构和文件夹的源结构。其次，此命令能确保文件（夹）被如实复制。另外，如果目标文件（夹）不存在，ditto 将直接复制过去或创建新的文件（夹），相反，对于已经存在的文件（夹），命令将与目标文件（夹）合并。最后 ditto 还提供符号链接，使命令行重度使用都用起来更顺手。</p>
+<p>为了更好的理解 ditto 命令，我们演示几个带参数的例子。</p>
+<h2 id="ditto">使用ditto复制文件（夹）</h2>
+<p>它最简单的使用方法与cp命令无异，基本参数如下：</p>
+<div class="hlcode"><pre><span class="n">ditto</span> <span class="n">source</span> <span class="n">destination</span>
+</pre></div>
+
+
+<p>如果你想复制 ~/Desktop/FluffyBackups 到 /Volumes/FluffyBackups/ 你只需键入：</p>
+<div class="hlcode"><pre><span class="n">ditto</span> <span class="o">~/</span><span class="n">Desktop</span><span class="o">/</span><span class="n">FluffyBackups</span> <span class="o">/</span><span class="n">Volumes</span><span class="o">/</span><span class="n">FluffyBackups</span><span class="o">/</span>
+</pre></div>
+
+
+<p>重复一下，这个命令将会保留下被复制文件（夹）的所有属性、权限甚至元数据细节，这在你正从一个用户目录向另外一个用户目录拷数据或者想保留一些诸如使用次数数据时尤其实用。</p>
+<p>如果你对源数据与目标数据差异没有印象时，在用 ditto 之前，你应该用 comm 或者 diff 命令来比较一下。</p>
+<h2 id="ditto_1">使用Ditto合并文件夹内容</h2>
+<p>在此重申，ditto 将会检查目标是否存在，如果是，它将会使二者合并，故此在命令行下合并文件目录 ditto 绝对是最简单的命令之一，当然现在也可以在 finder 下轻易完成这项工作。</p>
+<p>ditto ~/Pictures/Fall2015/  /Volumes/PhotoBackup/2015/</p>
+<p>此命令将会使「Fall2015」文件夹下所有图片复制到已经存在的「2015」文件夹下，有效的合并二者。如果文件夹原来没有，则会新建一个，名字为你命令行的预设或者与源文件夹名保持一致。</p>
+<p>如果你想从目录中从目录中复制数据的过程中显示过程信息，请添加 -V 参数，注意这里的 V 为大写，小写 -v 只会显示复制结果。</p>
+<h2 id="_1">无结构复制</h2>
+<p>如果你出于某种原因不想复制数据分支和其元结构请使用 -norsrc 参数：</p>
+<div class="hlcode"><pre><span class="n">ditto</span> <span class="o">-</span><span class="n">V</span> <span class="o">--</span><span class="n">norsrc</span> <span class="o">~/</span><span class="n">Sample</span><span class="o">/</span><span class="n">Folder</span> <span class="o">/</span><span class="n">Volumes</span><span class="o">/</span><span class="n">NoMetadataBackups</span>
+</pre></div>
+
+
+<p>，当然 你也可以在帮助页得到更多关于 ditto 的信息，其实你只需要键入：</p>
+<div class="hlcode"><pre><span class="n">man</span> <span class="n">ditto</span>
+</pre></div>
+
+
+<p><img alt="" src="http://ww3.sinaimg.cn/mw690/6a6fedfbgw1emiwmhvbmsj20i80eugph.jpg" /></p>
+<p>帮助页会显示 ditto 的基本用法及高级用法，在帮助界面通常用方向键来导航浏览。在你真正成为 ditto 重度依赖患者前，多拿那些无关紧要的文件（夹）练习一下，以确保你真正使用的时候操作的正确。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

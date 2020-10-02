@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Today Scripts：打造个性化 Yosemite 通知栏插件 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Today Scripts：打造个性化 Yosemite 通知栏插件
+    <span class="updated">Page Updated&nbsp;
+      2015-02-26 21:08
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Today Scripts：打造个性化 Yosemite 通知栏插件</div>
+
+  <p>iOS 8 的新一代通知中心自从引入了了 <a href="http://www.waerfa.com/ios-8-widgets">Today Widget</a> 后给了开发者不少扩展产品服务能力的机会，鼎盛时期你可以看到 「<a href="http://www.waerfa.com/launcher-for-ios-8-widget">Launcher</a>」这样的代表人物出现，其实 Yosemite 也有 Today Widget，那么为什么后者并没有激发开发者太大兴趣呢？Frank 猜测这与 Mac 用户长久以来的使用习惯有很大关系，平时获取系统、软件信息，或是快捷操作都有 Dock，Menubar，哪轮得到你去用双指滑动这么“麻烦”的操作？看来苹果想用 Today Widget 取代 Dashboard 开辟新场子的计划就快落空了。</p>
+<p>但 OS X 的 Today Widget 也并不是一无是处，像 <a href="http://www.waerfa.com/istat-menus-5-review">iStat Mini 或 Monity</a> 这样的系统信息监控软件就偏好于这里，不过大多数此类软件都收费，如果你想问有没有_<strong>免费的解决方案？</strong>__<strong> </strong>_那我就得恭喜您了，最近，美帝一名程序员就在 Github 公布了一个名为「<a href="https://github.com/SamRothCA/Today-Scripts">Today Scripts</a>」的开源软件，可在 Today Widget 中直接执行自定义脚本，显示任何你想设置的系统/第三方程序信息，如果你对 Code 玩的好，什么 MAS 上坑爹的收费软件都是浮云，因为你能比他们玩的更好更全面。从官方提供的脚本来看，可以显示日历，市区，剪切板文本，电池状态，内存分配状态等等。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/CfakepathToday-Scripts-1-1.png" /></p>
+<h2 id="today-scripts">Today Scripts 的操作方式</h2>
+<p>首先，我们需要到软件主页下载最新的程序压缩包，解压缩打开，再到调取出通知中心，在「今天」的界面底部点击「编辑」按钮进入 Widget 编辑模式：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathopentheeditmodeoftodayview.png" /></p>
+<p>在编辑模式下，你会在最右侧的 Widget 项目列表里找到「Scipts」这个选项，点击右侧的绿色加号，将其添加到「今天」列表里，再点击「完成」即可。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathaddtodayscriptstotodayview.png" /></p>
+<p>添加好「Today Scripts」后，按照下图示，开始加入脚本即可，脚本添加界面中的 「Label」代表脚本名称，「Program」默认，勾选「Run Automatically」和「Show status indicator」可让脚本每次展示的时候自动显示信息，并提供红绿两种颜色的指示灯（分别指示脚本运行是否成功）</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathaddscript.jpg" /></p>
+<h2 id="today-scripts_1">Today Scripts 脚本推荐</h2>
+<p>开发者已总结了一些<a href="https://github.com/SamRothCA/Today-Scripts/wiki">常用的脚本</a>，就像本文开头的首图一样，你可以看到这些：</p>
+<h3 id="_1">显示本月日历</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widget-month-calendar.png" /></p>
+<p>如果你对 Mac 命令行了解够足的话肯定会知道「cal」这个命令，她可以显示当前月份，下面的脚本就用到了「cal」</p>
+<div class="hlcode"><pre><span class="n">cal</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">--</span><span class="n">before</span><span class="o">-</span><span class="n">context</span> <span class="mi">6</span> <span class="o">--</span><span class="n">after</span><span class="o">-</span><span class="n">context</span> <span class="mi">6</span> <span class="o">--</span><span class="n">color</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot; $(date +%e)&quot;</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;^$(date +%e)&quot;</span>
+</pre></div>
+
+
+<p>将脚本填入「Program」下方的文本区，填写好「Label」保存即可，正常的话你会看到 Today View 上显示一个当月的日历，当天日期会被红色高亮。</p>
+<h3 id="_2">查看不同时区的时间</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widgets-time-zones.png" /></p>
+<p>Yosemite 虽然提供了世界城市时钟的 Widget，但模拟化表盘的设计看时间不直观，搞个数字会方便许多，脚本如下：</p>
+<div class="hlcode"><pre><span class="n">echo</span> <span class="s">&quot;Denver `export TZ=&#39;US/Mountain&#39;;date +&#39;%-l:%M %p&#39;;unset TZ`&quot;</span>
+<span class="n">echo</span> <span class="s">&quot;London `export TZ=&#39;Europe/London&#39;;date +&#39;%-l:%M %p&#39;;unset TZ`&quot;</span>
+<span class="n">echo</span> <span class="s">&quot;Paris `export TZ=&#39;Europe/Paris&#39;;date +&#39;%-l:%M %p&#39;;unset TZ`&quot;</span>
+<span class="n">echo</span> <span class="s">&quot;Mumbai `export TZ=&#39;Asia/Kolkata&#39;;date +&#39;%-l:%M %p&#39;;unset TZ`&quot;</span>
+<span class="n">echo</span> <span class="s">&quot;Sydney `export TZ=&#39;Australia/Sydney&#39;;date +&#39;%-l:%M %p&#39;;unset TZ`&quot;</span>
+</pre></div>
+
+
+<p>以上的代码格式中如果你想设定目标程序，只需到<a href="http://en.wikipedia.org/wiki/List_of_tz_database_time_zones">这里</a>，搞清城市的位置信息，比如「上海」，就是 <a href="http://en.wikipedia.org/wiki/Asia/Shanghai">Asia/Shanghai</a>，把她放入 「export TZ=」后面即可。</p>
+<h3 id="_3">显示当前剪切板的文本内容</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widget-clipboard.png" /></p>
+<p>这个脚本能显示最新的一条剪切板文本内容，命令很简单：</p>
+<div class="hlcode"><pre><span class="n">pbpaste</span>
+</pre></div>
+
+
+<h3 id="istats">利用 iStats 显示系统信息</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widgets-istatus.png" /></p>
+<p>本条脚本其实就是直接调用了另外一款开源命令行软件「<a href="https://github.com/Chris911/iStats">iStats</a>」显示 Mac 系统信息（CPU温度，风扇转速，电量状态信息等），注意，这款 iStats 与 iStat Menus ，iStat Mini 木有半毛钱关系，纯属赚噱头。</p>
+<p>本条脚本命令也很简单：</p>
+<div class="hlcode"><pre><span class="n">istats</span>
+</pre></div>
+
+
+<h3 id="_4">显示电量状态信息</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widgets-battery.png" /></p>
+<p>这条脚本非常实用，基本上你不用再需要其他软件的辅助了，不查充电器状态可显示剩余电量，剩余使用时间，插电下显示已充电量，还需多少时间充满等信息，脚本：</p>
+<div class="hlcode"><pre><span class="n">pmset</span> <span class="o">-</span><span class="n">g</span> <span class="n">batt</span> <span class="o">|</span> <span class="p">{</span> <span class="n">read</span><span class="p">;</span> <span class="n">read</span> <span class="n">n</span> <span class="n">status</span><span class="p">;</span> <span class="n">echo</span> <span class="s">&quot;$status&quot;</span><span class="p">;</span> <span class="p">}</span>
+</pre></div>
+
+
+<h3 id="5">显示占用内存最多的5个程序</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widgets-ram-usage.png" /></p>
+<p>这条脚本可以显示占用 RAM 最多的5条应用程序，有了她，还用打开监控器？</p>
+<div class="hlcode"><pre>ps xmo rss=,pmem=,comm= | while read rss pmem comm; ((n++<span class="nt">&lt;5</span><span class="err">));</span> <span class="err">do</span>
+
+<span class="na">size=</span><span class="s">&quot;</span><span class="err">$</span><span class="s">[rss/1024]&quot;;</span>
+<span class="na">short=</span><span class="s">$[4-${#size}];</span>
+<span class="na">size=</span><span class="s">&quot;(</span><span class="cp">${</span><span class="n">size</span><span class="cp">}</span><span class="s">M)&quot;;</span>
+<span class="na">i=</span><span class="s">0;</span>
+<span class="err">while</span> <span class="err">((i++</span> <span class="err">&lt;</span> <span class="err">short));</span> <span class="err">do</span> <span class="na">size=</span><span class="s">&quot; </span><span class="nv">$size</span><span class="s">&quot;;</span> <span class="err">done;</span>
+
+<span class="na">pmem=</span><span class="s">&quot;</span><span class="cp">${</span><span class="n">pmem</span><span class="o">%%.*</span><span class="cp">}</span><span class="s">&quot;</span>
+<span class="err">if</span>   <span class="err">(($pmem</span> <span class="nt">&gt;</span>= 20)); then color=$&#39;\e[31m&#39;;
+elif ((<span class="nv">$pmem</span> &gt;= 10)); then color=$&#39;\e[33m&#39;;
+else                       color=$&#39;\e[32m &#39;;
+fi;
+
+echo &quot;<span class="nv">$color$pmem</span>% <span class="nv">$size</span> $(basename &quot;<span class="nv">$comm</span>&quot;)&quot;$&#39;\e[0m&#39;&quot;&quot;;
+done
+</pre></div>
+
+
+<h3 id="cpu-5">显示占用 CPU 资源最多的5个程序</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathyosemite-widget-cpu-usage.png" /></p>
+<p>像上条一样，这里可以显示占用 CPU 资源最多的5个程序：</p>
+<div class="hlcode"><pre><span class="n">ps</span> <span class="n">xro</span> <span class="o">%</span><span class="n">cpu</span><span class="o">=</span><span class="p">,</span><span class="n">comm</span><span class="o">=</span> <span class="o">|</span> <span class="k">while</span> <span class="n">read</span> <span class="n">cpu</span> <span class="n">comm</span><span class="p">;</span> <span class="p">((</span><span class="n">i</span><span class="o">++&lt;</span><span class="mi">5</span><span class="p">));</span> <span class="k">do</span> <span class="n">echo</span> <span class="err">$</span><span class="n">cpu</span><span class="o">%</span> <span class="err">$</span><span class="p">(</span><span class="n">basename</span> <span class="s">&quot;$comm&quot;</span><span class="p">);</span> <span class="n">done</span>
+</pre></div>
+
+
+<h3 id="_5">显示硬盘用量</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathstorage.png" /></p>
+<p>添加这个脚本可以显示各个硬盘分区容量的占用情况：</p>
+<blockquote>
+<p>df -Hl | {</p>
+<p>read keys;</p>
+<p>keys=“${keys%% on}“;</p>
+<p>while read ${keys//%}; do</p>
+<p>echo “<code>basename “$Mounted“</code> – $Used/$Size ($Capacity)“;</p>
+<p>done</p>
+<p>}</p>
+</blockquote>
+<h3 id="5_1">显示一个网站最新的5篇文章标题</h3>
+<p><img alt="" src="http://pix.waerfa.com//2014/12/Cfakepathlast5itemsfromrssfeed.png" /></p>
+<p>这条脚本可根据设定的 RSS 地址提取最新的5篇网站文章标题，点击脚本标题还可以刷新：（将下列代码里的「RSS_URL_HERE」替换成目标网站的 RSS 地址）</p>
+<blockquote>
+<p>curl “RSS_URL_HERE“ 2&gt;/dev/null |</p>
+<p>grep -o “<title>[^&lt;]*</title>“ |</p>
+<p>grep -v “<title>FIRST_TITLE_REMOVER</title>“ |</p>
+<p>sed -e “s/.<em>\&lt;title>(.</em>)\&lt;\/title>.*/\1/g“ |</p>
+<p>nl -n rz -s “ » “ -w 2 |</p>
+<p>fold -s -w 80 |</p>
+<p>awk ‘!/^[0-9]+\ » / {$0=” “$0}1‘ |</p>
+<p>awk ‘/^[0-9]+\ » / {$0=”\n”$0}1‘ |</p>
+<p>head -10</p>
+</blockquote>
+<h2 id="_6">结语</h2>
+<p>看了上面一些脚本案例，就连我自己都对 Today Scripts 这款软件赞不绝口了，不禁让我想起了 <a href="http://www.waerfa.com/flashlight-the-third-party-workflows-for-spotlight">Flashlight</a>，可扩展性极强，如果你对脚本程序玩的好，那么 Today Scripts 绝对值得你去尝试，想了解更多的 Today 脚本，你可以看<a href="https://github.com/SamRothCA/Today-Scripts/wiki">这里</a>。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

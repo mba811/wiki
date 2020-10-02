@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>iPad通过uPnp协议播放MacBook里的视频文件 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#iOS">iOS</a>&nbsp;&#187;&nbsp;iPad通过uPnp协议播放MacBook里的视频文件
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 20:38
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">iPad通过uPnp协议播放MacBook里的视频文件</div>
+
+  <blockquote>
+<p>mac air里下载的电影通过开启upnp服务，然后iPad安装一个支持upnp服务的播放器可以直接播放电影，免去拷贝的过程。</p>
+</blockquote>
+<h1 id="mac-osmediatomb">Mac OS端安装Mediatomb</h1>
+<p>mediatomb是一个跨平台免费的upnp服务器，以web ui的方式管理，仅仅是一个命令行工具。</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">mediatomb</span>
+</pre></div>
+
+
+<p>安装完成以后执行命令<code>mediatomb</code>,如果遇到端口被占用的错误，需要重启一下机器。我重启两次就好了。</p>
+<h1 id="iosaceplayer">iOS端安装aceplayer</h1>
+<p><a href="https://itunes.apple.com/us/app/aceplayer-powerful-media-player/id540326056?mt=8">aceplayer</a>是一个近乎全能的播放器，支持upnp，可以直接播放或者下载upnp服务器里的视频文件。但是播放时色彩还原效果相对差一点。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

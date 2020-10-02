@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>安装 GitLab 需要注意的地方 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;安装 GitLab 需要注意的地方
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 18:24
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">安装 GitLab 需要注意的地方</div>
+
+  <h4 id="_1">系统与文档说明</h4>
+<blockquote>
+<p>主要的安装Gitlab的流程安装请参考原官方教程： <a href="https://github.com/gitlabhq/gitlabhq/blob/7-0-stable/doc/install/installation.md">https://github.com/gitlabhq/gitlabhq/blob/7-0-stable/doc/install/installation.md</a> 。描述的已经很清楚了。</p>
+</blockquote>
+<ul>
+<li>本教程是基于干净的512M（最低标配）阿里云服务器搭建。</li>
+<li>使用的是 7-0-stable 版本，即发贴前最新版本，绝对不推荐使用 6.4.3版本，bug太多。</li>
+</ul>
+<h4 id="swapgitlab">添加swap以满足Gitlab在运行中需要的“内存使用”（穷人家的孩子必读）</h4>
+<ul>
+<li>
+<p>如果你的内存超强大，请直接忽略此段介绍</p>
+</li>
+<li>
+<p>通常情况下，Swap空间应大于或等于物理内存的大小，最小不应小于64M，通常Swap空间的大小应是物理内存的2-2.5倍。</p>
+</li>
+<li>
+<p>参考添加swap的文章链接在此：<a href="https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-12-04">https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-12-04</a></p>
+</li>
+<li>
+<p>直接阅读链接原文章比自己再重复一遍可能更好，本人服务器上设置的swap为2G。:)</p>
+</li>
+</ul>
+<h4 id="_2">注意事项</h4>
+<ul>
+<li>
+<p>注意在git用户(/home/git)下使用的git版本必须是大于1.7.10，在gitlab的配置中：</p>
+<p>git:<br />
+   bin_path: /usr/local/bin/git</p>
+</li>
+</ul>
+<p>如果是编译安装git，一般是<code>/usr/local/bin</code>，偶尔一般是<code>/usr/bin</code>目录下， <strong>默认是/usr/bin</strong> ，特别需要小心。</p>
+<ul>
+<li>
+<p>内存小（比如512M），在 <strong>第一次访问gitlab</strong> 时，往往会报500的错误，可以从<code>/var/log/nginx/gitlab_error.log</code>，查找到具体的错误，这时需要把 <code>/home/git/gitlab/config/unicorn.rb</code>中的第一个 <code>timeout</code> 配置为 300（默认为30），因为第一次访问，会初始化很多任务，占用大量内存。</p>
+</li>
+<li>
+<p>不能正常的push或者合并MR（Merge Request）</p>
+</li>
+</ul>
+<blockquote>
+<p>浏览过很多有关于Gitlab的安装，很多人对gitlab在push代码时，都遇到类似说<br />
+lanrion test_me (master) $ git push -u origin master<br />
+fatal: 'root/test_me.git' does not appear to be a git repository<br />
+fatal: Could not read from remote repository.<br />
+Please make sure you have the correct access rights<br />
+and the repository exists.<br />
+特别是你在Web界面上操作合并MR时不成功，但就是没有错误信息或者其他提示。</p>
+</blockquote>
+<p><strong>Gitlab是通过发送API的形式通知 gitlab-shell（<a href="https://github.com/gitlabhq/gitlab-shell">https://github.com/gitlabhq/gitlab-shell</a> ）来执行git命令，所以在操作git相关的 操作时，除了本能的排除 <code>gitlab/log/</code> 和 <code>/var/log/nginx/</code> 的错误，一定要仔细检查 <code>/home/git/gitlab-shell</code> 下的 <code>gitlab-shell.log</code> 。</strong></p>
+<p>像上述举例的 <code>fatal: 'root/test_me.git' does not appear to be a git repository</code> 错误例子，需要理解，当你使用 <strong>test账号</strong>在gitlab web 界面时创建一个名为 <strong>test_gitlab</strong> 的repository时，gitlab的后台其实是在<code>/home/git/repositories/test</code>创建了两个文件：<code>test_gitlab.wiki.git和test_gitlab.git</code>，原因就是没有创建<code>test_gitlab.git</code>.</p>
+<p>解决方案：升级gitlab-shell是最佳解决方案。</p>
+<p>如果创建正常，相对应的在 <code>gitlab-shell.log</code>下会有如下正常的log：</p>
+<div class="hlcode"><pre><span class="nx">I</span><span class="p">,</span> <span class="err">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">28</span><span class="nx">T01</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">18.984690</span> <span class="vi">#31310</span><span class="cp">]</span>  INFO -- : Adding project test/test_gitlab.wiki.git at <span class="err">&lt;</span>/home/git/repositories/test/test_gitlabwiki.git&gt;.
+I, <span class="cp">[</span><span class="mi">2014</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">28</span><span class="nx">T01</span><span class="p">:</span><span class="mi">32</span><span class="p">:</span><span class="mf">18.986640</span> <span class="vi">#31311</span><span class="cp">]</span>  INFO -- : Adding project test/test_gitlab.git at <span class="err">&lt;</span>/home/git/repositories/test/test_gitlabgit&gt;.
+</pre></div>
+
+
+<p>当然，有些部分可能是因为 <strong>API传过来的参数</strong> 有问题，具体需要查看 <code>gitlab-shell.log</code> 的报错信息。</p>
+<p><strong>关注 <code>gitlab-shell.log</code> 能够帮你解决大部分的怪异问题。</strong></p>
+<ul>
+<li>
+<p>ssh key的问题：如果你为了方便，直接把gitlab的数据库drop掉了，然后重来，你可能会因此没有关联清空<code>/home/git/.ssh/authorized_keys</code>，如果你再重新运行gitlab并添加与之前相同的ssh key，可能会引用 <strong>Access denied</strong> ，很大原因在你所保存的最新的ssh key对就的数据库表记录与你之前在 <code>cat /home/git/.ssh/authorized_keys</code>的历史数据不一致引起，解决方案：直接清空<code>/home/git/.ssh/authorized_keys</code>，重新添加一次ssh key即可。</p>
+</li>
+<li>
+<p>创建数据库时，请务必支持中文 <img alt="" src="https://ruby-china-files.b0.upaiyun.com/assets/emojis/smile.png" /></p>
+<h1 id="for-mysql">for mysql</h1>
+<p>CREATE DATABASE IF NOT EXISTS <code>gitlabhq_production</code> DEFAULT CHARACTER SET <code>utf8</code> COLLATE <code>utf8_unicode_ci</code>;</p>
+</li>
+</ul>
+<h4 id="gitlab">实用Gitlab自身携带的检测错误命令</h4>
+<ul>
+<li>检查Gitlab环境是正确：</li>
+</ul>
+<p><code>sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production</code></p>
+<ul>
+<li>检查Gitlab每个组件是运行情况</li>
+</ul>
+<p><code>sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production</code></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

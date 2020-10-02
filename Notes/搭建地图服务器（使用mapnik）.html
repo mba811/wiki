@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>搭建地图服务器（使用Mapnik） - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;搭建地图服务器（使用Mapnik）
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 08:47
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">搭建地图服务器（使用Mapnik）</div>
+
+  <h4 id="mapnik">渲染引擎Mapnik</h4>
+<p><a href="http://icodeit.org/2014/04/intro-map-gis/">上一篇文章</a>中大概介绍了<a href="https://github.com/mapnik">Mapnik</a>，它是一个渲染引擎，一般开发中都会使用他的python的bind做开发。 </p>
+<p>Mapnik的文档写的比较详细，我们这里只是做一些必要的介绍，详细的细节可以参看Mapnik在<a href="https://github.com/mapnik/mapnik/wiki">Github上的文档</a>。 </p>
+<p>在Mac下，安装Mapnik十分容易，使用brew即可，注意我们在此处带上<code>--with-postgresql</code>选项，使得Mapnik可以通过PostGIS来访问数据库： </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">mapnik</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">postgresql</span>
+</pre></div>
+
+
+<p>安装完成之后，可以通过一个小的python脚本来测试： </p>
+<div class="hlcode"><pre><span class="n">import</span> <span class="n">mapnik</span>
+
+<span class="n">map</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
+<span class="n">map</span><span class="p">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="err">&#39;</span><span class="n">red</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">map</span><span class="p">.</span><span class="n">zoom_all</span><span class="p">()</span>
+
+<span class="n">mapnik</span><span class="p">.</span><span class="n">render_to_file</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">red</span><span class="p">.</span><span class="n">png</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">png</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>这段脚本可以在当前目录下生成一个红色的256x256的小图片。好了，有了渲染引擎，我们需要一些数据来进行渲染了。 </p>
+<h4 id="_1">数据源</h4>
+<p>最通用的数据格式为Shapefiles，目前有很多的免费地理信息供公共下载，我们可以从[Metro的站点][4]上下载一些小的数据文件。 </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//metro.teczno.com/</span>
+
+
+<span class="err">$</span> <span class="n">wget</span> <span class="n">http</span><span class="o">:</span><span class="c1">//osm-extracted-metros.s3.amazonaws.com/chengdu.osm2pgsql-shapefiles.zip</span>
+<span class="err">$</span> <span class="n">mkdir</span> <span class="n">chengdu</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="n">chengdu</span>
+<span class="err">$</span> <span class="n">unzip</span> <span class="n">chengdu</span><span class="p">.</span><span class="n">osm2pgsql</span><span class="o">-</span><span class="n">shapefiles</span><span class="p">.</span><span class="n">zip</span>
+</pre></div>
+
+
+<p>这样就得到了一组文件： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">find</span> <span class="p">.</span> <span class="o">-</span><span class="n">name</span> <span class="s">&quot;*.shp&quot;</span>
+<span class="p">.</span><span class="o">/</span><span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span><span class="o">-</span><span class="n">line</span><span class="p">.</span><span class="n">shp</span>
+<span class="p">.</span><span class="o">/</span><span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span><span class="o">-</span><span class="n">point</span><span class="p">.</span><span class="n">shp</span>
+<span class="p">.</span><span class="o">/</span><span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span><span class="o">-</span><span class="n">polygon</span><span class="p">.</span><span class="n">shp</span>
+</pre></div>
+
+
+<p>每一个shp文件都会对应几个其他类型的文件，比如投影信息，属性表等。仅仅查看shp的话，有表示所有点的文件chengdu.osm-line.shp，又表示所有线的chengdu.osm-line.shp，以及表示所有面（区域）的chengdu.osm-polygon.shp文件。 </p>
+<p>有了这些文件，我们就可以做一些测试了，比如我们首先加载所有的线条，并根据这些线条生成一个图层： </p>
+<div class="hlcode"><pre><span class="n">import</span> <span class="n">mapnik</span>
+
+<span class="n">map</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+<span class="n">map</span><span class="p">.</span><span class="n">background</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="err">&#39;#</span><span class="n">ffffff</span><span class="err">&#39;</span><span class="p">)</span>
+
+<span class="n">style</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Style</span><span class="p">()</span>
+<span class="n">rule</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Rule</span><span class="p">()</span>
+
+<span class="n">point_symbolizer</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">PointSymbolizer</span><span class="p">()</span>
+<span class="n">rule</span><span class="p">.</span><span class="n">symbols</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_symbolizer</span><span class="p">)</span>
+
+<span class="n">style</span><span class="p">.</span><span class="n">rules</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">rule</span><span class="p">)</span>
+
+<span class="n">map</span><span class="p">.</span><span class="n">append_style</span><span class="p">(</span><span class="err">&#39;</span><span class="k">default</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
+
+<span class="n">ds_point</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Shapefile</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="err">&#39;</span><span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span><span class="o">-</span><span class="n">point</span><span class="p">.</span><span class="n">shp</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Layer</span><span class="p">(</span><span class="err">&#39;</span><span class="n">point</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">point</span><span class="p">.</span><span class="n">datasource</span> <span class="o">=</span> <span class="n">ds_point</span>
+<span class="n">point</span><span class="p">.</span><span class="n">styles</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="err">&#39;</span><span class="k">default</span><span class="err">&#39;</span><span class="p">)</span>
+
+<span class="n">map</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+<span class="n">map</span><span class="p">.</span><span class="n">zoom_all</span><span class="p">()</span>
+
+<span class="n">mapnik</span><span class="p">.</span><span class="n">render_to_file</span><span class="p">(</span><span class="n">map</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">chengdu</span><span class="p">.</span><span class="n">png</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">png</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>可以得到： </p>
+<p><img alt="points" src="http://icodeit.org/images/2014/04/chengdu-point.png" /></p>
+<p>这里介绍一下Mapnik中的一些概念：一个Map可以包含若干个层（Layer），每个层可以独立着色，即可以为每个层定制样式（Style），每个样式由若干个规则组成（Rule）。每个规则由是由若干个符号定制。 </p>
+<p><img alt="lines" src="http://icodeit.org/images/2014/04/chengdu-line.png" /></p>
+<p>如果将两者重叠，则可以得到： </p>
+<p>![lines][7]</p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//icodeit.org/images/2014/04/chengdu-point-and-line.png</span>
+
+
+
+<span class="n">polygon_symbolizer</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">PolygonSymbolizer</span><span class="p">(</span><span class="n">mapnik</span><span class="p">.</span><span class="n">Color</span><span class="p">(</span><span class="err">&#39;#</span><span class="n">c8102e</span><span class="err">&#39;</span><span class="p">))</span>
+<span class="n">polygon_rule</span><span class="p">.</span><span class="n">symbols</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_symbolizer</span><span class="p">)</span>
+
+<span class="n">ds_polygon</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Shapefile</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="err">&#39;</span><span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span><span class="o">-</span><span class="n">polygon</span><span class="p">.</span><span class="n">shp</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">polygon</span> <span class="o">=</span> <span class="n">mapnik</span><span class="p">.</span><span class="n">Layer</span><span class="p">(</span><span class="err">&#39;</span><span class="n">polygon</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">polygon</span><span class="p">.</span><span class="n">datasource</span> <span class="o">=</span> <span class="n">ds_polygon</span>
+<span class="n">polygon</span><span class="p">.</span><span class="n">styles</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="err">&#39;</span><span class="n">polygon</span><span class="err">&#39;</span><span class="p">)</span>
+
+<span class="n">map</span><span class="p">.</span><span class="n">layers</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="image" src="http://icodeit.org/images/2014/04/chengdu-polygon.png" /></p>
+<p>将这三个层叠加在一起，会得到最终的结果： </p>
+<p><img alt="lines" src="http://icodeit.org/images/2014/04/chengdu-point-and-line-and-polygon.png" /></p>
+<h4 id="_2">数据转化</h4>
+<p>在进一步之前，我们需要将数据存储在数据库中。我们可以将shapefile通过转化存入到数据库中。PostGIS本身自带了一个用于此作用的工具：<code>shp2pgsql</code>。可以通过这个工具来先将shapefile导入到数据库中。也可以直接导入别的开放数据，比如很多OSM格式的数据源，我们此处仅仅简单的从别的数据源将OSM格式的数据下载并导入到PostGIS中。 </p>
+<p>创建数据库<code>chengdu</code>: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">createdb</span> <span class="n">chengdu</span> <span class="o">-</span><span class="n">O</span> <span class="n">gis</span> <span class="o">-</span><span class="n">E</span> <span class="n">UTF8</span> <span class="o">-</span><span class="n">e</span>
+<span class="n">CREATE</span> <span class="n">DATABASE</span> <span class="n">chengdu</span> <span class="n">OWNER</span> <span class="n">gis</span> <span class="n">ENCODING</span> <span class="err">&#39;</span><span class="n">UTF8</span><span class="err">&#39;</span><span class="p">;</span>
+
+<span class="err">$</span> <span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">gis</span> <span class="o">-</span><span class="n">d</span> <span class="n">chengdu</span>
+</pre></div>
+
+
+<p>登陆PostGres，然后为数据库<code>chengdu</code>启动PostGIS扩展： </p>
+<div class="hlcode"><pre><span class="o">--</span> <span class="n">Enable</span> <span class="n">PostGIS</span> <span class="p">(</span><span class="n">includes</span> <span class="n">raster</span><span class="p">)</span>
+<span class="n">CREATE</span> <span class="n">EXTENSION</span> <span class="n">postgis</span><span class="p">;</span>
+<span class="o">--</span> <span class="n">Enable</span> <span class="n">Topology</span>
+<span class="n">CREATE</span> <span class="n">EXTENSION</span> <span class="n">postgis_topology</span><span class="p">;</span>
+<span class="o">--</span> <span class="n">fuzzy</span> <span class="n">matching</span> <span class="n">needed</span> <span class="k">for</span> <span class="n">Tiger</span>
+<span class="n">CREATE</span> <span class="n">EXTENSION</span> <span class="n">fuzzystrmatch</span><span class="p">;</span>
+<span class="o">--</span> <span class="n">Enable</span> <span class="n">US</span> <span class="n">Tiger</span> <span class="n">Geocoder</span>
+<span class="n">CREATE</span> <span class="n">EXTENSION</span> <span class="n">postgis_tiger_geocoder</span><span class="p">;</span>
+
+
+
+<span class="err">$</span> <span class="n">wget</span> <span class="n">http</span><span class="o">:</span><span class="c1">//osm-extracted-metros.s3.amazonaws.com/chengdu.osm.bz2</span>
+<span class="err">$</span> <span class="n">bunzip2</span> <span class="o">-</span><span class="n">d</span> <span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span><span class="p">.</span><span class="n">bz2</span>
+<span class="err">$</span> <span class="n">osm2pgsql</span> <span class="o">-</span><span class="n">U</span> <span class="n">gis</span> <span class="o">-</span><span class="n">d</span> <span class="n">chengdu</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">S</span> <span class="p">.</span><span class="o">/</span><span class="k">default</span><span class="p">.</span><span class="n">style</span> <span class="n">chengdu</span><span class="p">.</span><span class="n">osm</span>
+</pre></div>
+
+
+<p>这个命令将chengdu.osm导入到了名称为<code>chengdu</code>的数据库中。 </p>
+<p>可以通过SQL命令查看其中的数据： </p>
+<div class="hlcode"><pre><span class="n">select</span> <span class="n">ST_Extent</span><span class="p">(</span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">way</span><span class="p">,</span><span class="mi">4326</span><span class="p">))</span> <span class="n">from</span> <span class="n">planet_osm_roads</span><span class="p">;</span>
+</pre></div>
+
+
+<p>结果如下： </p>
+<div class="hlcode"><pre>                            <span class="n">st_extent</span>
+<span class="o">--------------------------------------------------------------------------</span>
+ <span class="n">BOX</span><span class="p">(</span><span class="mf">103.564165069794</span> <span class="mf">30.3634139134986</span><span class="p">,</span><span class="mf">104.554549945024</span> <span class="mf">30.9869936005376</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">1</span> <span class="n">row</span><span class="p">)</span>
+</pre></div>
+
+
+<h4 id="wms">WMS服务器</h4>
+<p>生成图片之后，我们还需要将这些图片切成瓦片，然后公开给外部以便使用。Mapnik提供了切图的功能，并且还提供一个实现了<a href="https://github.com/mapnik/OGCServer">WMS协议的服务器</a>，以便使用。 </p>
+<p>安装这个OGCServer服务器非常容易： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">mapnik</span><span class="o">/</span><span class="n">OGCServer</span><span class="p">.</span><span class="n">git</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="n">OGCServer</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="p">.</span><span class="n">py</span> <span class="n">install</span>
+</pre></div>
+
+
+<p>但是OGCServer的启动，需要一个配置XML配置文件，这个配置文件可以由Mapnik提供的工具集生成： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">svn</span> <span class="n">co</span> <span class="n">http</span><span class="o">:</span><span class="c1">//svn.openstreetmap.org/applications/rendering/mapnik/</span>
+</pre></div>
+
+
+<p>这个svn仓库中包含了众多的小工具，generate_xml.py用于生成Mapnik的样式文件，generate_image.py用于生成图片，generate_tiles.py用于生成众多的瓦片。 </p>
+<p>此处我们将使用<code>generate_xml.py</code>来创建一个地图样式文件， </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cd</span> <span class="n">svn</span><span class="p">.</span><span class="n">openstreetmap</span><span class="p">.</span><span class="n">org</span><span class="o">/</span><span class="n">applications</span><span class="o">/</span><span class="n">rendering</span><span class="o">/</span><span class="n">mapnik</span><span class="o">/</span>
+<span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">generate_xml</span><span class="p">.</span><span class="n">py</span> <span class="n">osm</span><span class="p">.</span><span class="n">xml</span> <span class="n">chengdu</span><span class="p">.</span><span class="n">xml</span> <span class="o">--</span><span class="n">dbname</span> <span class="n">chengdu</span> <span class="o">--</span><span class="n">user</span> <span class="n">gis</span> <span class="o">--</span><span class="n">accept</span><span class="o">-</span><span class="n">none</span>
+</pre></div>
+
+
+<p>generate_xml.py根据osm.xml作为模板，生成<code>chengdu.xml</code>。这个文件即可用于测试OGCServer： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">OGCServer</span> <span class="n">chengdu</span><span class="p">.</span><span class="n">xml</span>
+<span class="n">Listening</span> <span class="n">at</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mf">8000.</span><span class="p">...</span>
+</pre></div>
+
+
+<p>然后在浏览器中查看： </p>
+<p><img alt="ogcserver" src="http://icodeit.org/images/2014/04/ogcserver-localhost-resized.png" /></p>
+<h4 id="openlayers">使用OpenLayers测试</h4>
+<p>有了一张图片，那么我们就需要有更多的图片组成的瓦片，这就需要使用引入GIS的前端利器OpenLayers了： </p>
+<div class="hlcode"><pre><span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">map</span><span class="p">,</span> <span class="nx">layer</span><span class="p">;</span>
+    <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="s1">&#39;map&#39;</span><span class="p">,</span> <span class="p">{});</span>
+
+    <span class="nx">layer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Layer</span><span class="p">.</span><span class="nx">WMS</span><span class="p">(</span><span class="s1">&#39;Tile Cache&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;http://localhost:8000/?&#39;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="nx">layers</span><span class="o">:</span> <span class="s1">&#39;__all__&#39;</span><span class="p">,</span>
+            <span class="nx">format</span><span class="o">:</span> <span class="s1">&#39;image/png&#39;</span>
+        <span class="p">});</span>
+
+    <span class="nx">map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">layer</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">map</span><span class="p">.</span><span class="nx">getCenter</span><span class="p">())</span> <span class="p">{</span>
+        <span class="nx">map</span><span class="p">.</span><span class="nx">zoomToMaxExtent</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<p><img alt="openlayers" src="http://icodeit.org/images/2014/04/openlayers-chengdu-resized.png" /></p>
+<p><img alt="openlayers" src="http://icodeit.org/images/2014/04/openlayers-chengdu-detail-resized.png" /></p>
+<p>应该注意的是，此处在OpenLayers中使用了来自与OSM导入的数据，而并非Shapefile中的数据（Shapefile中仅有三个层次，point, line, polygon）。而OSM的数据则丰富的多。 </p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

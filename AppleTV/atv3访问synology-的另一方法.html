@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>ATV3访问SYNOLOGY 的另一方法 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#AppleTV">AppleTV</a>&nbsp;&#187;&nbsp;ATV3访问SYNOLOGY 的另一方法
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:50
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">ATV3访问SYNOLOGY 的另一方法</div>
+
+  <p>一切荣耀归于YONSM和威布斯……</p>
+<p>YONSM公布出“劫持MLB.TV，打造自己的Apple TV本地媒体浏览器（1.3版支持SRT和连续播放）” ，原贴在此：<a href="http://bbs.weiphone.com/read-htm-tid-5460032.html">http://bbs.weiphone.com/read-htm-tid-5460032.html</a></p>
+<p>这个教程很详细了，但是以西数My Book Live(nas)为例写的，SYNOLOGY稍有不同，再结合威布斯“打开ATV3禁锢，全面分享NAS到ATV3（TT版）”总结如下：</p>
+<h1 id="_1">总体思路</h1>
+<ol>
+<li>
+<p>通过路由DNSMASQ功能，把ATV3主界面图标 MLB.TV图标指向的链接，劫持到SYNOLOGY上。</p>
+</li>
+<li>
+<p>在SYNOLOGY上开始WEB服务，并运行自定义的界面。</p>
+</li>
+</ol>
+<h1 id="_2">具体办法</h1>
+<ol>
+<li>在路由器上设置DNSMASQ，一般路由原厂固件没有此功能，第三方DDWRT、TOMATO都具有此功能）<br />
+DNSMASQ设置为：</li>
+</ol>
+<div class="hlcode"><pre><span class="n">address</span><span class="o">=/</span><span class="n">lws</span><span class="p">.</span><span class="n">mlb</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="p">(</span><span class="n">SYNOLOGY</span><span class="err">的</span><span class="n">IP</span><span class="err">，例如：</span><span class="mf">192.168.1.9</span><span class="err">）</span>
+</pre></div>
+
+
+<ol>
+<li>开启SYNOLOGY WEB服务<br />
+首先，打开DSM=》控制面板=》WEB服务（具体设置见威大的：<a href="http://www.chiphell.com/thread-580013-1-1.html%EF%BC%8C%E4%B8%AD%E5%85%B3%E4%BA%8EDSM">http://www.chiphell.com/thread-580013-1-1.html，中关于DSM</a> WEB STATION的部分），开启“WEB服务”后，“共享文件夹”下会自动生成一个“web”文件夹。<br />
+其次，打开“WEB服务”的目录列表权限，因为DSM的界面没有提供此功能，所以只有用命令配置。</li>
+<li>
+<p>把附件1放到“web”目录根目录下。</p>
+</li>
+<li>
+<p>TELNET到SYNOLOGY，如何TELNET见威大的：<a href="http://www.chiphell.com/thread-580013-1-1.html%EF%BC%8C%E4%B8%AD%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E3%80%82">http://www.chiphell.com/thread-580013-1-1.html，中第一部分。</a></p>
+</li>
+<li>
+<p>输入命令：</p>
+</li>
+</ol>
+<div class="hlcode"><pre>  <span class="n">vi</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">syno</span><span class="o">/</span><span class="n">apache</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">httpd</span><span class="p">.</span><span class="n">conf</span><span class="o">-</span><span class="n">user</span>
+</pre></div>
+
+
+<p>找到字段，增加Indexes选项，</p>
+<div class="hlcode"><pre><span class="nt">&lt;Directory</span> <span class="err">&quot;/var/services/web&quot;</span><span class="nt">&gt;</span>
+
+Options Indexes MultiViews
+
+<span class="nt">&lt;/Directory&gt;</span>
+</pre></div>
+
+
+<p>最后，下载附件2，解压到“web”目录下，即是“web/appletvv2”的结构，同时编辑applettvv2目录下的index.xml文件中以下字段（加黑为需要编辑的）：</p>
+<div class="hlcode"><pre><span class="nt">&lt;navigationItem</span> <span class="na">id=</span><span class="s">&quot;music&quot;</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;title&gt;</span>音乐<span class="nt">&lt;/title&gt;</span>
+
+<span class="nt">&lt;url&gt;</span>http://lws.mlb.com/atv/music/<span class="nt">&lt;/url&gt;</span>
+</pre></div>
+
+
+<p>解释：“<a href="http://lws.mlb.com/atv/music/">http://lws.mlb.com/atv/music/</a>”中“<a href="http://lws.mlb.com/%E2%80%9D%E5%85%B6%E5%AE%9E%E5%B7%B2%E9%80%9A%E8%BF%87%E8%B7%AF%E7%94%B1DNSMASQ%E5%8A%AB%E6%8C%81%EF%BC%8C%E7%AD%89%E5%90%8C%E4%BA%8E%E4%BD%A0%E7%9A%84SYNOLOGY">http://lws.mlb.com/”其实已通过路由DNSMASQ劫持，等同于你的SYNOLOGY</a> IP，不用管了。“/atv”指的是你的“共享文件夹”下“web”文件夹下的“atv”文件夹（这个是我自己设的）。也就是说，当你访问ATV3主界面图标MLB.TV时，会自动跳转到SYNOLOGY NAS上“web”文件夹下并分列显示“atv”文件平下的各个目录。</p>
+<p>追加说明，由于“WEB服务”的限制，只能访问“web”文件夹以下的文件，如果想直接访问“共享文件夹”下的其它文件夹，办法是把其它文件夹映射到“web”目录内。具体见威大的：<a href="http://www.chiphell.com/thread-602352-1-1.html%EF%BC%8C%E4%B8%AD%E5%85%B3%E4%BA%8EMOUNT%E6%96%87%E4%BB%B6%E5%A4%B9%E9%83%A8%E5%88%86%E3%80%82">http://www.chiphell.com/thread-602352-1-1.html，中关于MOUNT文件夹部分。</a></p>
+<p>附件1：<br />
+<a href="http://pan.baidu.com/s/1mgiIyTy">htaccess.rar</a></p>
+<p>附件2：<br />
+<a href="http://pan.baidu.com/s/1qWI2ilA">AppleTV Media Browser 1.3.zip</a></p>
+<blockquote>
+<p>这个是VI的模式问题，VI是多模式文本编辑器。打开VI默认是NORMAL模式，这个时候按键，相当于是WIN下一直按着CTRL+按键，都不是编辑用的。</p>
+</blockquote>
+<h4 id="_3">编辑注意大小写：</h4>
+<ol>
+<li>
+<p>先按 i ，进入编辑模式（就是WIN下记事本状态了）</p>
+</li>
+<li>
+<p>正常编辑</p>
+</li>
+<li>
+<p>编辑完成后 按ESC（退出编辑模式）</p>
+</li>
+<li>
+<p>按 ： （进入命令模式，底部会出现光标提示）</p>
+</li>
+<li>
+<p>输入wq（w是保存，q是退出，如果想不保存退出q!)</p>
+</li>
+</ol>
+<h4 id="vi">vi的搜索功能强大到无法想象。</h4>
+<p>打开VI，不要乱按，此时在NORMAL模式下</p>
+<ol>
+<li>
+<p>按 / (切入命令模式，底部出现光标）</p>
+</li>
+<li>
+<p>输入要搜索的内容</p>
+</li>
+<li>
+<p>回车 自动定位到搜索内容</p>
+</li>
+<li>
+<p>大写N，跳到搜索到的下一个</p>
+</li>
+<li>
+<p>ESC退出搜索</p>
+</li>
+</ol>
+<p>如何编辑见上一楼。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

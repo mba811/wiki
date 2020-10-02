@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>制作PostGIS的Dash文档 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Python">Python</a>&nbsp;&#187;&nbsp;制作PostGIS的Dash文档
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 18:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">制作PostGIS的Dash文档</div>
+
+  <h3 id="postgis">PostGIS介绍</h3>
+<p>PostGIS 是开源数据库 PostgreSQL 的空间数据支持扩展，PostGIS 实现了Open Geospatial Consortium所提供的Simple Features的SQL实现参考。对于GIS用户而言，PostGIS是一个重要的GIS基础软件，因为目前它是为数不多的开源空间数据库存储方案之一。在国内，由于其开源的特性， 近几年在多领域的GIS系统构建中得到了应用。</p>
+<h3 id="dash">制作Dash文档</h3>
+<p>对于GIS行业如此重要的基础软件文档，并未进入Dash官方的法眼，没有提供在线的文档更新源，这就要我们自己动手构建其Docset。下面请跟随我一步步开始<code>postgis.docset</code>制作。</p>
+<p>1.创建Docset文件目录</p>
+<p>Docset是Dash支持的一种目录结构包，首先为我们的构建目标<code>postgis.docset</code>创建其目录结构。 可以在终端中执行如下命令，也可以手工创建。</p>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">postgis</span><span class="p">.</span><span class="n">docset</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">Documents</span><span class="o">/</span>
+</pre></div>
+
+
+<p>2.拷贝PostGIS文档</p>
+<p>将下载的最新的PostGIS文档拷贝到目录<code>postgis.docset/Contents/Resources/Documents/</code>。</p>
+<p>3.创建Info.plist文件</p>
+<p>下载<a href="http://kapeli.com/dash_resources/Info.plist">Info.plist示例文件</a>，拷贝到目录 <code>postgis.docset/Contents/</code>下，并稍做修改，以下是本文的示例</p>
+<div class="hlcode"><pre><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;</span>
+<span class="nt">&lt;plist</span> <span class="na">version=</span><span class="s">&quot;1.0&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;dict&gt;</span>
+    <span class="nt">&lt;key&gt;</span>CFBundleIdentifier<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>postgis<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>CFBundleName<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>postgis<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>DocSetPlatformFamily<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>postgis<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>isDashDocset<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;true/&gt;</span>
+    <span class="nt">&lt;key&gt;</span>DashDocSetFamily<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>dashtoc<span class="nt">&lt;/string&gt;</span>
+    <span class="nt">&lt;key&gt;</span>dashIndexFilePath<span class="nt">&lt;/key&gt;</span>
+    <span class="nt">&lt;string&gt;</span>index.html<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;/dict&gt;</span>
+<span class="nt">&lt;/plist&gt;</span>
+</pre></div>
+
+
+<p>4.创建SQLite索引数据表</p>
+<p>创建SQLite索引数据库文件<code>postgis.docset/Contents/Resources/docSet.dsidx</code>，并在数据库中创建searchIndex数据表与索引anchor。</p>
+<div class="hlcode"><pre><span class="n">CREATE</span> <span class="n">TABLE</span> <span class="nf">searchIndex</span><span class="p">(</span><span class="n">id</span> <span class="n">INTEGER</span> <span class="n">PRIMARY</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">name</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">type</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">path</span> <span class="n">TEXT</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">UNIQUE</span> <span class="n">INDEX</span> <span class="n">anchor</span> <span class="n">ON</span> <span class="nf">searchIndex</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
+</pre></div>
+
+
+<p>5.添加索引记录</p>
+<p>根据postgis文档，为Class,Function或Attribute等提供Dash内搜索的项目创建索引，也就是， 使用如下SQL语句向<code>searchIndex</code>索引表插入一条记录。这个过程需要编写脚本执行。 后面会提供Python示例脚本。</p>
+<div class="hlcode"><pre><span class="n">INSERT</span> <span class="n">OR</span> <span class="n">IGNORE</span> <span class="n">INTO</span> <span class="nf">searchIndex</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="n">VALUES</span> <span class="p">(</span><span class="err">&#39;</span><span class="n">name</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">type</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">path</span><span class="err">&#39;</span><span class="p">);</span>
+</pre></div>
+
+
+<p>经过以上几步，<code>postgis.docset</code>文档便制作完成。双击加入Dash中即可使用。 相信一步步执行的朋友卡在了第5步，下面就是其Python脚本。</p>
+<ul>
+<li>Python脚本</li>
+</ul>
+<p>Dash网站上有使用Python生成<code>postgredql.docset</code>的脚本，使用<code>BeautifulSoup</code>解析<code>bookindex.html</code>生成。在生成<code>postgis.docset</code>时， 由于主要查看函数的用法，介绍文档并不关注，结合postgis文档特点，直接遍历Documents目录， 根据文档列表生成Functions列表。</p>
+<div class="hlcode"><pre> <span class="mi">1</span> <span class="n">import</span> <span class="n">os</span>
+ <span class="mi">2</span> <span class="n">import</span> <span class="n">sqlite3</span>
+ <span class="mi">3</span> 
+ <span class="mi">4</span> <span class="n">db</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="err">&#39;</span><span class="n">postgis</span><span class="p">.</span><span class="n">docset</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">docSet</span><span class="p">.</span><span class="n">dsidx</span><span class="err">&#39;</span><span class="p">)</span>
+ <span class="mi">5</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+ <span class="mi">6</span> 
+ <span class="mi">7</span> <span class="n">try</span><span class="o">:</span>
+ <span class="mi">8</span>     <span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="err">&#39;</span><span class="n">DROP</span> <span class="n">TABLE</span> <span class="n">searchIndex</span><span class="p">;</span><span class="err">&#39;</span><span class="p">)</span>
+ <span class="mi">9</span> <span class="n">except</span><span class="o">:</span>
+<span class="mi">10</span>     <span class="n">pass</span>
+<span class="mi">11</span> <span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="mi">12</span>     <span class="err">&#39;</span><span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">searchIndex</span><span class="p">(</span><span class="n">id</span> <span class="n">INTEGER</span> <span class="n">PRIMARY</span> <span class="n">KEY</span><span class="p">,</span> <span class="n">name</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">type</span> <span class="n">TEXT</span><span class="p">,</span> <span class="n">path</span> <span class="n">TEXT</span><span class="p">);</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="mi">13</span> 
+<span class="mi">14</span> <span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="err">&#39;</span><span class="n">CREATE</span> <span class="n">UNIQUE</span> <span class="n">INDEX</span> <span class="n">anchor</span> <span class="n">ON</span> <span class="n">searchIndex</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="mi">15</span> 
+<span class="mi">16</span> <span class="n">docpath</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">postgis</span><span class="p">.</span><span class="n">docset</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Resources</span><span class="o">/</span><span class="n">Documents</span><span class="err">&#39;</span>
+<span class="mi">17</span> 
+<span class="mi">18</span> <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="n">in</span> <span class="n">os</span><span class="p">.</span><span class="n">walk</span><span class="p">(</span><span class="n">docpath</span><span class="p">)</span><span class="o">:</span>
+<span class="mi">19</span>     <span class="k">for</span> <span class="n">path</span> <span class="n">in</span> <span class="n">files</span><span class="o">:</span>
+<span class="mi">20</span>         <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="mi">21</span>         <span class="k">if</span> <span class="n">ext</span><span class="p">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="err">&#39;</span><span class="p">.</span><span class="n">html</span><span class="err">&#39;</span><span class="o">:</span>
+<span class="mi">22</span>             <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="o">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="err">&#39;</span><span class="n">RT_</span><span class="err">&#39;</span><span class="o">:</span>
+<span class="mi">23</span>                 <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">3</span><span class="o">:</span><span class="p">]</span>
+<span class="mi">24</span>             <span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span>
+<span class="mi">25</span>                 <span class="err">&#39;</span><span class="n">INSERT</span> <span class="n">OR</span> <span class="n">IGNORE</span> <span class="n">INTO</span> <span class="n">searchIndex</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="n">VALUES</span> <span class="p">(</span><span class="o">?</span><span class="p">,</span><span class="o">?</span><span class="p">,</span><span class="o">?</span><span class="p">)</span><span class="err">&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">func</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span>
+<span class="mi">26</span>             <span class="n">print</span> <span class="err">&#39;</span><span class="n">name</span><span class="o">:</span> <span class="o">%</span><span class="n">s</span><span class="p">,</span> <span class="n">path</span><span class="o">:</span> <span class="o">%</span><span class="n">s</span><span class="err">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+<span class="mi">27</span> 
+<span class="mi">28</span> <span class="n">db</span><span class="p">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="mi">29</span> <span class="n">db</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+
+<h3 id="faq">FAQ</h3>
+<p>以下是本文的可能的FAQ(常见问题)。</p>
+<p>问：我不是程序员，看不懂怎么办？</p>
+<p>答：那说明您根本不需要这样一个docset。</p>
+<p>问：我知道怎么做，但你这里像Dash手册里一样，啰嗦这么多还是要我一步步自己操作，有什么用？</p>
+<p>答：嗯~，为了表示诚意，我还是提供了制作的<code>postgis.docset</code>文件下载的。 在我的github里，点一下<a href="https://github.com/sw897/docset_postgis">这里</a>就可以了。不定时更新，有最新版本强迫症的朋友请走开。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

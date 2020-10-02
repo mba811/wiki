@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 模板数据 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 模板数据
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 10:57
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 模板数据</div>
+
+  <blockquote>
+<p>原文地址：<a href="https://github.com/mojombo/jekyll/wiki/Template-Data">https://github.com/mojombo/jekyll/wiki/Template-Data</a></p>
+</blockquote>
+<p>Jekyll 会遍历你的站点，来寻找需要处理的文件。任何具有 <a href="http://havee.me/internet/2013-07/jekyll-yaml-front-matter.html">YAML 前置数据</a> 的文件都将会被处理，每一个这样的文件，<strong>Jekyll</strong> 都会通过 <a href="http://havee.me/internet/2013-11/jekyll-liquid-designers.html">Liquid 模板系统</a> 使用许多可用的页面变量。下面是一个可用变量的列表。</p>
+<h3 id="_1">全局变量</h3>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">site</td>
+<td align="left">全站的信息加 <code>_config.yml</code> 文件中的配置选项</td>
+</tr>
+<tr>
+<td align="left">page</td>
+<td align="left">这个变量中包含 <a href="http://havee.me/internet/2013-07/jekyll-yaml-front-matter.html">YAML 前置数据</a>，另外加上两个额外的变量值：url和content。</td>
+</tr>
+<tr>
+<td align="left">content</td>
+<td align="left">在布局模板文件中，这里变量包含了页面的子视图。这个变量将会把渲染后的内容插入到模板文件中。这个变量不能在文章和页面文件中使用。</td>
+</tr>
+<tr>
+<td align="left">paginator</td>
+<td align="left">一旦paginate配置选项被设置了，这个变量才能被使用。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="site">Site变量</h3>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">site.time</td>
+<td align="left">当前的时间（当你运行 Jekyll 时的时间）</td>
+</tr>
+<tr>
+<td align="left">site.posts</td>
+<td align="left">一个按时间逆序的文章列表。</td>
+</tr>
+<tr>
+<td align="left">site.related_posts</td>
+<td align="left">如果当前被处理的页面是一个文章文件，那这个变量是一个包含了最多 10 篇相关文章的列表。默认来说，这些相关文章是低质量但计算快的。为了得到高质量但计算慢的结果，运行 Jekyll 命令时可以加上 --lsi 选项。（潜在语意索引）</td>
+</tr>
+<tr>
+<td align="left">site.categories.CATEGORY</td>
+<td align="left">所有在 CATEGORY 分类中的文章列表</td>
+</tr>
+<tr>
+<td align="left">site.tags.TAG</td>
+<td align="left">所有拥有 TAG 标签的文章的列表</td>
+</tr>
+<tr>
+<td align="left">site.CONFIGURATION_DATA</td>
+<td align="left">截止 0.5.2 版本，所有在 <code>_config.yml</code> 中的数据都能够通过 site 变量调用。举例来说，如果你有一个这样的选项在你的配置文件中：url: http://mysite.com，那在文章和页面文件中可以这样调用 {{ site.url }} 。Jekyll 并不会自动解析修改过的 <code>_config.yml</code> 文件，你想要启用新的设置选项，你需要重启 Jekyll</td>
+</tr>
+</tbody>
+</table>
+<h3 id="page">Page变量</h3>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">page.content</td>
+<td align="left">页面中未渲染的内容</td>
+</tr>
+<tr>
+<td align="left">page.title</td>
+<td align="left">文章的标题</td>
+</tr>
+<tr>
+<td align="left">page.url</td>
+<td align="left">除去域名以外的URL，例子：/2008/12/14/my-post.html</td>
+</tr>
+<tr>
+<td align="left">page.date</td>
+<td align="left">指定每一篇文章的时间，这个选项能够覆盖一篇文章中前置数据设置的时间，它的格式是这样的：YYYY-MM-DD HH:MM:SS</td>
+</tr>
+<tr>
+<td align="left">page.id</td>
+<td align="left">每一篇文章的唯一标示符(在RSS中非常有用) 例子：/2008/12/14/my-post</td>
+</tr>
+<tr>
+<td align="left">page.categories</td>
+<td align="left">这篇文章隶属的分类的一个列表，分类是通过在 <code>_post</code> 目录中的目录结构推导而来的。举例来说，在路径 /work/code/_posts/2008-12-24-closures.textile 下的文件，这个变量将会是 [work,code]。这个变量也能在YAML前置数据中被指定。</td>
+</tr>
+<tr>
+<td align="left">page.tags</td>
+<td align="left">这篇文章的标签的列表。这些数据能够在 YAML 前置数据中指定</td>
+</tr>
+<tr>
+<td align="left">page.next</td>
+<td align="left">按时间序的下一篇文章</td>
+</tr>
+<tr>
+<td align="left">page.previous</td>
+<td align="left">按时间序的上一篇文章</td>
+</tr>
+<tr>
+<td align="left">page.path</td>
+<td align="left">页面源码的地址，可以链接到托管服务器上的md文件地址</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意</strong>:任何你自己指定的自定义前置数据都能够通过<code>page</code>调用。举例来说，如果你在页面的前置数据中设置了<code>custom_css: true</code>，那这个值可以在模板可以这样调用:<code>page.custom_css</code></p>
+<h3 id="paginator">Paginator变量</h3>
+<p><strong>注意</strong>:这个变量只能在索引文件中才能使用。</p>
+<table>
+<thead>
+<tr>
+<th align="left">变量</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">paginator.per_page</td>
+<td align="left">每一个页面上文章的数量</td>
+</tr>
+<tr>
+<td align="left">paginator.posts</td>
+<td align="left">当前页面上可用的文章</td>
+</tr>
+<tr>
+<td align="left">paginator.total_posts</td>
+<td align="left">所有文章的数量</td>
+</tr>
+<tr>
+<td align="left">paginator.total_pages</td>
+<td align="left">所有页面的数量</td>
+</tr>
+<tr>
+<td align="left">paginator.page</td>
+<td align="left">当前页面的数量</td>
+</tr>
+<tr>
+<td align="left">paginator.previous_page</td>
+<td align="left">前面的页面的数量</td>
+</tr>
+<tr>
+<td align="left">paginator.next_page</td>
+<td align="left">后面的页面的数量</td>
+</tr>
+</tbody>
+</table>
+<p>转自：<a href="http://zhouyichu.com/%E7%BF%BB%E8%AF%91/Jekyll-Wiki-Template-Data.html">【译文】Jekyll模板数据</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Docker 学习之命令详解 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Docker 学习之命令详解
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Docker 学习之命令详解</div>
+
+  <p>如果各位看官熟悉 <a href="http://git-scm.com/">Git</a> 和 <a href="https://github.com/">GitHub</a> ，可与 <a href="https://www.docker.com/">Docker</a> 做个类比，可更加容易理解 <a href="https://www.docker.com/">Docker</a> 和 <a href="https://hub.docker.com/">Docker Hub</a> 及两者关系。</p>
+<h2 id="1-docker-version">1. docker version</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">version</span>
+</pre></div>
+
+
+<p>显示 Docker 版本信息。</p>
+<h2 id="2-docker-info">2. docker info</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">info</span>
+</pre></div>
+
+
+<p>显示 Docker 系统信息，包括镜像和容器数。</p>
+<h2 id="3-docker-search">3. docker search</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">search</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="n">term</span>
+<span class="n">docker</span> <span class="n">search</span> <span class="o">-</span><span class="n">s</span> <span class="mi">10</span> <span class="n">django</span>
+</pre></div>
+
+
+<p>从 <a href="https://hub.docker.com/">Docker Hub</a> 中搜索符合条件的镜像。</p>
+<blockquote>
+<p><code>--automated</code> 只列出 <code>automated build</code> 类型的镜像；<br />
+<code>--no-trunc</code> 可显示完整的镜像描述；<br />
+<code>-s 40</code> 列出收藏数不小于40的镜像。</p>
+</blockquote>
+<h2 id="4-docker-pull">4. docker pull</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">pull</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span><span class="p">]</span> <span class="p">[</span><span class="n">user</span><span class="o">/</span><span class="p">]</span><span class="n">name</span><span class="p">[</span><span class="o">:</span><span class="n">tag</span><span class="p">]</span>
+<span class="n">docker</span> <span class="n">pull</span> <span class="n">laozhu</span><span class="o">/</span><span class="n">telescope</span><span class="o">:</span><span class="n">latest</span>
+</pre></div>
+
+
+<p>从 <a href="https://hub.docker.com/">Docker Hub</a> 中拉取或者更新指定镜像。</p>
+<blockquote>
+<p><code>-a</code> 拉取所有 <code>tagged</code> 镜像 。</p>
+</blockquote>
+<h2 id="5-docker-login">5. docker login</h2>
+<div class="hlcode"><pre><span class="n">root</span><span class="err">@</span><span class="n">moon</span><span class="o">:~</span><span class="err">#</span> <span class="n">docker</span> <span class="n">login</span>
+<span class="nl">Username:</span> <span class="n">username</span>
+<span class="nl">Password:</span> <span class="o">****</span>
+<span class="nl">Email:</span> <span class="n">user</span><span class="err">@</span><span class="n">domain</span><span class="p">.</span><span class="n">com</span>
+<span class="n">Login</span> <span class="n">Succeeded</span>
+</pre></div>
+
+
+<p>按步骤输入在 <a href="https://hub.docker.com/">Docker Hub</a> 注册的用户名、密码和邮箱即可完成登录。</p>
+<h2 id="6-docker-logout">6. docker logout</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">logout</span> <span class="p">[</span><span class="n">server</span><span class="p">]</span>
+</pre></div>
+
+
+<p>运行后从指定服务器登出，默认为官方服务器。</p>
+<h2 id="7-docker-images">7. docker images</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">images</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+
+
+<p>列出本地所有镜像。其中 <code>[name]</code> 对镜像名称进行关键词查询。</p>
+<blockquote>
+<p><code>-a</code> 列出所有镜像（含过程镜像）；<br />
+<code>-f</code> 过滤镜像，如： <code>-f ['dangling=true']</code> 只列出满足 <code>dangling=true</code> 条件的镜像；<br />
+<code>--no-trunc</code> 可显示完整的镜像ID；<br />
+<code>-q</code> 仅列出镜像ID。<br />
+<code>--tree</code> 以树状结构列出镜像的所有提交历史。</p>
+</blockquote>
+<h2 id="8-docker-ps">8. docker ps</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">ps</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+</pre></div>
+
+
+<p>列出所有运行中容器。</p>
+<blockquote>
+<p><code>-a</code> 列出所有容器（含沉睡镜像）；<br />
+<code>--before="nginx"</code> 列出在某一容器之前创建的容器，接受容器名称和ID作为参数；<br />
+<code>--since="nginx"</code> 列出在某一容器之后创建的容器，接受容器名称和ID作为参数；<br />
+<code>-f [exited=&lt;int&gt;]</code> 列出满足 <code>exited=&lt;int&gt;</code> 条件的容器；<br />
+<code>-l</code> 仅列出最新创建的一个容器；<br />
+<code>--no-trunc</code> 显示完整的容器ID；<br />
+<code>-n=4</code> 列出最近创建的4个容器；<br />
+<code>-q</code> 仅列出容器ID；<br />
+<code>-s</code> 显示容器大小。</p>
+</blockquote>
+<h2 id="9-docker-rmi">9. docker rmi</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nx">rmi</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;image&gt;</span> <span class="cp">[</span><span class="nx">image...</span><span class="cp">]</span>
+docker rmi nginx:latest postgres:latest python:latest
+</pre></div>
+
+
+<p>从本地移除一个或多个指定的镜像。</p>
+<blockquote>
+<p><code>-f</code> 强行移除该镜像，即使其正被使用；<br />
+<code>--no-prune</code> 不移除该镜像的过程镜像，默认移除。</p>
+</blockquote>
+<h2 id="10-docker-rm">10. docker rm</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nx">rm</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;container&gt;</span> <span class="cp">[</span><span class="nx">container...</span><span class="cp">]</span>
+docker rm nginx-01 nginx-02 db-01 db-02
+sudo docker rm -l /webapp/redis
+</pre></div>
+
+
+<blockquote>
+<p><code>-f</code> 强行移除该容器，即使其正在运行；<br />
+<code>-l</code> 移除容器间的网络连接，而非容器本身；<br />
+<code>-v</code> 移除与容器关联的空间。</p>
+</blockquote>
+<h2 id="11-docker-history">11. docker history</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nx">history</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;image&gt;</span>
+</pre></div>
+
+
+<p>查看指定镜像的创建历史。</p>
+<blockquote>
+<p><code>--no-trunc</code> 显示完整的提交记录；<br />
+<code>-q</code> 仅列出提交记录ID。</p>
+</blockquote>
+<h2 id="12-docker-startstoprestart">12. docker start|stop|restart</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nb">start</span><span class="o">|</span><span class="nb">stop</span><span class="o">|</span><span class="nb">restart</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;container&gt;</span> <span class="cp">[</span><span class="nx">container...</span><span class="cp">]</span>
+</pre></div>
+
+
+<p>启动、停止和重启一个或多个指定容器。</p>
+<blockquote>
+<p><code>-a</code> 待完成<br />
+<code>-i</code> 启动一个容器并进入交互模式；<br />
+<code>-t 10</code> 停止或者重启容器的超时时间（秒），超时后系统将杀死进程。</p>
+</blockquote>
+<h2 id="13-docker-kill">13. docker kill</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nb">kill</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;container&gt;</span> <span class="cp">[</span><span class="nx">container...</span><span class="cp">]</span>
+</pre></div>
+
+
+<p>杀死一个或多个指定容器进程。</p>
+<blockquote>
+<p><code>-s "KILL"</code> 自定义发送至容器的信号。</p>
+</blockquote>
+<h2 id="14-docker-events">14. docker events</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">events</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+<span class="n">docker</span> <span class="n">events</span> <span class="o">--</span><span class="n">since</span><span class="o">=</span><span class="s">&quot;20141020&quot;</span>
+<span class="n">docker</span> <span class="n">events</span> <span class="o">--</span><span class="n">until</span><span class="o">=</span><span class="s">&quot;20120310&quot;</span>
+</pre></div>
+
+
+<p>从服务器拉取个人动态，可选择时间区间。</p>
+<h2 id="15-docker-save">15. docker save</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">save</span> <span class="o">-</span><span class="n">i</span> <span class="s">&quot;debian.tar&quot;</span>
+<span class="n">docker</span> <span class="n">save</span> <span class="o">&gt;</span> <span class="s">&quot;debian.tar&quot;</span>
+</pre></div>
+
+
+<p>将指定镜像保存成 <code>tar</code> 归档文件， <code>docker load</code> 的逆操作。保存后再加载（saved-loaded）的镜像不会丢失提交历史和层，可以回滚。</p>
+<blockquote>
+<p><code>-o "debian.tar"</code> 指定保存的镜像归档。</p>
+</blockquote>
+<h2 id="16-docker-load">16. docker load</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">load</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+<span class="n">docker</span> <span class="n">load</span> <span class="o">&lt;</span> <span class="n">debian</span><span class="p">.</span><span class="n">tar</span>
+<span class="n">docker</span> <span class="n">load</span> <span class="o">-</span><span class="n">i</span> <span class="s">&quot;debian.tar&quot;</span>
+</pre></div>
+
+
+<p>从 <code>tar</code> 镜像归档中载入镜像， <code>docker save</code> 的逆操作。保存后再加载（saved-loaded）的镜像不会丢失提交历史和层，可以回滚。</p>
+<blockquote>
+<p><code>-i "debian.tar"</code> 指定载入的镜像归档。</p>
+</blockquote>
+<h2 id="17-docker-export">17. docker export</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nx">export</span> <span class="o">&lt;</span><span class="nx">container</span><span class="o">&gt;</span>
+<span class="nx">docker</span> <span class="nx">export</span> <span class="nx">nginx</span><span class="o">-</span><span class="mi">01</span> <span class="o">&gt;</span> <span class="nx">export.tar</span>
+</pre></div>
+
+
+<p>将指定的容器保存成 <code>tar</code> 归档文件， <code>docker import</code> 的逆操作。导出后导入（exported-imported)）的容器会丢失所有的提交历史，无法回滚。</p>
+<h2 id="18-docker-import">18. docker import</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">import</span> <span class="n">url</span><span class="o">|-</span> <span class="p">[</span><span class="n">repository</span><span class="p">[</span><span class="o">:</span><span class="n">tag</span><span class="p">]]</span>
+<span class="n">cat</span> <span class="n">export</span><span class="p">.</span><span class="n">tar</span> <span class="o">|</span> <span class="n">docker</span> <span class="n">import</span> <span class="o">-</span> <span class="n">imported</span><span class="o">-</span><span class="n">nginx</span><span class="o">:</span><span class="n">latest</span>
+<span class="n">docker</span> <span class="n">import</span> <span class="n">http</span><span class="o">:</span><span class="c1">//example.com/export.tar</span>
+</pre></div>
+
+
+<p>从归档文件（支持远程文件）创建一个镜像， <code>export</code> 的逆操作，可为导入镜像打上标签。导出后导入（exported-imported)）的容器会丢失所有的提交历史，无法回滚。</p>
+<h2 id="19-docker-top">19. docker top</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">top</span> <span class="o">&lt;</span><span class="n">running_container</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">ps</span> <span class="n">options</span><span class="p">]</span>
+</pre></div>
+
+
+<p>查看一个正在运行容器进程，支持 <code>ps</code> 命令参数。</p>
+<h2 id="20-docker-inspect">20. docker inspect</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">instpect</span> <span class="n">nginx</span><span class="o">:</span><span class="n">latest</span>
+<span class="n">docker</span> <span class="n">inspect</span> <span class="n">nginx</span><span class="o">-</span><span class="n">container</span>
+</pre></div>
+
+
+<p>检查镜像或者容器的参数，默认返回 <code>JSON</code> 格式。</p>
+<blockquote>
+<p><code>-f</code> 指定返回值的模板文件。</p>
+</blockquote>
+<h2 id="21-docker-pause">21. docker pause</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nb">pause</span> <span class="o">&lt;</span><span class="nx">container</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>暂停某一容器的所有进程。</p>
+<h2 id="22-docker-unpause">22. docker unpause</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nx">unpause</span> <span class="o">&lt;</span><span class="nx">container</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>恢复某一容器的所有进程。</p>
+<h2 id="23-docker-tag">23. docker tag</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="kt">tag</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;image&gt;</span><span class="cp">[</span><span class="p">:</span><span class="kt">tag</span><span class="cp">]</span> <span class="cp">[</span><span class="nx">repository</span><span class="o">/</span><span class="cp">][</span><span class="nx">username</span><span class="o">/</span><span class="cp">]</span>name<span class="cp">[</span><span class="p">:</span><span class="kt">tag</span><span class="cp">]</span>
+</pre></div>
+
+
+<p>标记本地镜像，将其归入某一仓库。</p>
+<blockquote>
+<p><code>-f</code> 覆盖已有标记。</p>
+</blockquote>
+<h2 id="24-docker-push">24. docker push</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">push</span> <span class="n">name</span><span class="p">[</span><span class="o">:</span><span class="n">tag</span><span class="p">]</span>
+<span class="n">docker</span> <span class="n">push</span> <span class="n">laozhu</span><span class="o">/</span><span class="n">nginx</span><span class="o">:</span><span class="n">latest</span>
+</pre></div>
+
+
+<p>将镜像推送至远程仓库，默认为 <a href="https://hub.docker.com/">Docker Hub</a> 。</p>
+<h2 id="25-docker-logs">25. docker logs</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nx">logs</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;container&gt;</span>
+docker logs -f -t --tail=&quot;10&quot; insane_babbage
+</pre></div>
+
+
+<p>获取容器运行时的输出日志。</p>
+<blockquote>
+<p><code>-f</code> 跟踪容器日志的最近更新；<br />
+<code>-t</code> 显示容器日志的时间戳；<br />
+<code>--tail="10"</code> 仅列出最新10条容器日志。</p>
+</blockquote>
+<h2 id="26-docker-run">26. docker run</h2>
+<div class="hlcode"><pre><span class="nx">docker</span> <span class="nb">run</span> <span class="err">[</span><span class="nx">options</span><span class="cp">]</span> <span class="nt">&lt;image&gt;</span> <span class="cp">[</span><span class="nb">command</span><span class="cp">]</span> <span class="cp">[</span><span class="nx">arg...</span><span class="cp">]</span>
+docker run -it --name=&quot;nginx-lb&quot; nginx /bin/bash
+docker run -d ubuntu /usr/bin/top
+</pre></div>
+
+
+<p>启动一个容器，在其中运行指定命令。</p>
+<blockquote>
+<p><code>-a stdin</code> 指定标准输入输出内容类型，可选 <code>STDIN</code>/ <code>STDOUT</code> / <code>STDERR</code> 三项；<br />
+<code>-d</code> 后台运行容器，并返回容器ID；<br />
+<code>-i</code> 以交互模式运行容器，通常与 <code>-t</code> 同时使用；<br />
+<code>-t</code> 为容器重新分配一个伪输入终端，通常与 <code>-i</code> 同时使用；<br />
+<code>--name="nginx-lb"</code> 为容器指定一个名称；<br />
+<code>--dns 8.8.8.8</code> 指定容器使用的DNS服务器，默认和宿主一致；<br />
+<code>--dns-search example.com</code> 指定容器DNS搜索域名，默认和宿主一致；<br />
+<code>-h "mars"</code> 指定容器的hostname；<br />
+<code>-e username="ritchie"</code> 设置环境变量；<br />
+<code>--env-file=[]</code> 从指定文件读入环境变量；<br />
+<code>--cpuset="0-2"</code> or <code>--cpuset="0,1,2"</code> 绑定容器到指定CPU运行；<br />
+<code>-c</code> 待完成<br />
+<code>-m</code> 待完成<br />
+<code>--net="bridge"</code> 指定容器的网络连接类型，支持 <code>bridge</code> / <code>host</code> / <code>none</code> <code>container:&lt;name|id&gt;</code> 四种类型；<br />
+<code>--link=[]</code> 待完成<br />
+<code>--expose=[]</code> 待完成</p>
+</blockquote>
+<h2 id="27-docker-attach">27. docker attach</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">attach</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">CONTAINER</span>
+<span class="n">ID</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="n">ubuntu</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">top</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>
+<span class="n">sudo</span> <span class="n">docker</span> <span class="n">attach</span> <span class="err">$</span><span class="n">ID</span>
+</pre></div>
+
+
+<p>将一个运行中的容器固定。</p>
+<h2 id="28-docker-build">28. docker build</h2>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">build</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="n">path</span> <span class="o">|</span> <span class="n">url</span> <span class="o">|</span> <span class="o">-</span>
+<span class="n">docker</span> <span class="o">-</span><span class="n">t</span> <span class="n">laozhu</span><span class="o">/</span><span class="n">nginx</span><span class="o">:</span><span class="mf">2.0</span> <span class="o">-</span> <span class="o">&lt;</span> <span class="n">Dockerfile</span>
+</pre></div>
+
+
+<p>以 <code>Dockerfile</code> 为模板构建容器。</p>
+<blockquote>
+<p><code>--force-rm=false</code> 构建失败后移除中间容器；<br />
+<code>--no-cache=false</code> 构建过程不适用缓存；<br />
+<code>--rm=true</code> 构建成功后移除中间容器；<br />
+<code>-t laozhu/nginx:2.0</code> 为创建的容器打上标签。</p>
+</blockquote>
+<h2 id="29-docker-commit">29. docker commit</h2>
+<h2 id="30-docker-cp">30. docker cp</h2>
+<h2 id="31-docker-create">31. docker create</h2>
+<h2 id="32-docker-diff">32. docker diff</h2>
+<h2 id="33-docker-exec">33. docker exec</h2>
+<h2 id="34-docker-port">34. docker port</h2>
+<h2 id="35-docker-run">35. docker run</h2>
+<h2 id="36-docker-wait">36. docker wait</h2>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

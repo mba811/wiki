@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Install Powerline (Fancy Status Line) for Vim in Mac OS - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Install Powerline (Fancy Status Line) for Vim in Mac OS
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 10:19
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Install Powerline (Fancy Status Line) for Vim in Mac OS</div>
+
+  <h3 id="powerline">Powerline</h3>
+<p><a href="https://github.com/Lokaltog/powerline">powerline</a>会将vim的status line变的非常漂亮，看起来像一个“主流”的编辑器那样，而又不会引入额外的“重量”。基本原理是使用字体将特殊字符展现成特殊形状（如三角形），额外的有一些漂亮的配色。</p>
+<h4 id="_1">效果</h4>
+<p><img alt="image" src="http://abruzzi.github.com/images/2013/02/vim-power-line-resized.png" /></p>
+<h4 id="_2">安装</h4>
+<p>有几个额外的点需要确保：</p>
+<h5 id="vimpython">保证你的vim包含了对python的支持</h5>
+<p><code>vim --version | grep python</code>的结果应该包含<code>+python</code>，如：</p>
+<div class="hlcode"><pre><span class="o">+</span><span class="n">path_extra</span> <span class="o">-</span><span class="n">perl</span> <span class="o">+</span><span class="n">persistent_undo</span> <span class="o">+</span><span class="n">postscript</span> <span class="o">+</span><span class="n">printer</span> <span class="o">-</span><span class="n">profile</span> <span class="o">+</span><span class="n">python</span><span class="o">/</span><span class="n">dyn</span>
+</pre></div>
+
+
+<p>如果没有的话，需要将vim重新编译，比如在Mac OS下：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">macvim</span> <span class="o">--</span><span class="n">env</span><span class="o">-</span><span class="n">std</span> <span class="o">--</span><span class="n">override</span><span class="o">-</span><span class="n">system</span><span class="o">-</span><span class="n">vim</span>
+</pre></div>
+
+
+<h5 id="powerline_1">安装powerline</h5>
+<p>最简单的方式是直接clone到本地，比如：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/Lokaltog/powerline.git ~/PowerLine/</span>
+</pre></div>
+
+
+<h5 id="vimrc">配置.vimrc</h5>
+<p>为你的vimrc添加下面的配置：</p>
+<div class="hlcode"><pre><span class="n">set</span> <span class="n">rtp</span><span class="o">+=</span><span class="p">{</span><span class="n">path_to_powerline</span><span class="p">}</span><span class="o">/</span><span class="n">powerline</span><span class="o">/</span><span class="n">bindings</span><span class="o">/</span><span class="n">vim</span>
+<span class="n">set</span> <span class="n">laststatus</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">set</span> <span class="n">noshowmode</span>
+</pre></div>
+
+
+<p>这时，如果你启动vim，应该已经可以看到powerline了，但是有可能有“乱码”的问题，幸运的是，已经有很多的预定义字体。</p>
+<h3 id="fonts">Fonts</h3>
+<p><a href="https://github.com/Lokaltog/powerline-fonts">这里</a>有许多额外的预定义fonts。选中需要的字体，安装到本地即可（双击字体文件或者拷贝到<code>~/Library/Fonts</code>下）。然后在.vimrc中使用这个字体，比如：</p>
+<div class="hlcode"><pre><span class="n">set</span> <span class="n">encoding</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">set</span> <span class="n">guifont</span><span class="o">=</span><span class="n">Menlo</span><span class="err">\</span> <span class="k">for</span><span class="err">\</span> <span class="n">Powerline</span><span class="o">:</span><span class="n">h14</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

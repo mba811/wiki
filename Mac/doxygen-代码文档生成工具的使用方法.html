@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Doxygen 代码文档生成工具的使用方法 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Doxygen 代码文档生成工具的使用方法
+    <span class="updated">Page Updated&nbsp;
+      2015-06-02 20:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Doxygen 代码文档生成工具的使用方法</div>
+
+  <p>为自己的工程建立文档是非常必要，这可以有效提高代码的开发和维护效率。</p>
+<p>Doxygen是一个便捷的文档生成工具，它是一个GPL开源工程，使用的比较普遍。</p>
+<p>它的特点是独立于特定的编程语言，支持C++、C、Java、Objective-C、Python等等，基本上可以满足所有编程语言。而且它有社区持续维护，我看到最近的版本更新时间是2012.08，就上个月。</p>
+<h2 id="mac">使用方法(Mac版)</h2>
+<ol>
+<li>去Doxygen官网下载需要的Doxygen版本，并且安装。</li>
+<li>运行Doxygen，按照提示使用，非常简单。</li>
+</ol>
+<h4 id="working-deirectory">指定working deirectory，选择工程的路径即可。</h4>
+<h4 id="wizard-tab">使用Wizard Tab中的选项进行设置</h4>
+<ul>
+<li>Project设置</li>
+</ul>
+<p>输入工程名。(显示为HTML文档中的主标题) <br />
+版本号 <br />
+logo图片 <br />
+选择代码目录 <br />
+选择文档的输出目录</p>
+<ul>
+<li>Mode设置</li>
+</ul>
+<p>选择All Entities Mode</p>
+<ul>
+<li>Output</li>
+</ul>
+<p>选择输出文档的类型，HTML即可。</p>
+<p>一切配置完成，选择Run Tab，Run doxygen输出文档即可。</p>
+<h2 id="_1">注释标准</h2>
+<ol>
+<li>类整体描述</li>
+</ol>
+<p>在头文件的开始处(前面没有任何doxygen注释)，格式如下:</p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm">@brief The HelloWorld Scene.</span>
+<span class="cm">注释 详细内容</span>
+<span class="cm">*/</span>
+</pre></div>
+
+
+<blockquote>
+<p>@brief 部分不是必须的，加入 @brief 可以在文档的最顶部加入简要的描述信息(The HelloWorld Scene.)，后面紧跟一个可以跳转到详细描述的超链接。</p>
+</blockquote>
+<ol>
+<li>成员变量注释</li>
+</ol>
+<p>在成员的上面一行，格式如下:</p>
+<div class="hlcode"><pre><span class="cm">/** 注释内容 */</span>
+</pre></div>
+
+
+<blockquote>
+<p>注意，文档中不会显示私有成员信息。public和protected成员都可以显示。</p>
+</blockquote>
+<p>下面这种格式的注释，也可以。</p>
+<div class="hlcode"><pre><span class="kt">int</span> <span class="n">button</span><span class="p">;</span> <span class="cm">/**&lt; &quot;Run Again&quot; button in GUI */</span>
+</pre></div>
+
+
+<ol>
+<li>成员函数注释</li>
+</ol>
+<p>在成员函数的上面一行，格式如下:</p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm">@brief 描述</span>
+<span class="cm">@param newNum 参数描述</span>
+<span class="cm">@return &quot;value&quot; 返回值描述</span>
+<span class="cm">*/</span>
+<span class="p">@</span><span class="n">brief</span><span class="err">同样为可选，可在文档的成员函数列表处做为简介显示。</span>
+<span class="p">@</span><span class="n">param</span><span class="err">参数描述</span>
+<span class="p">@</span><span class="n">return</span><span class="err">返回值描述</span>
+</pre></div>
+
+
+<p>具体可以去Doxygen Manual查，有非常非常多的针对各语言的注释方法，按自己喜好使用。</p>
+<ol>
+<li>大招来了</li>
+</ol>
+<p>Mac上使用Doxygen自动生成脚本，高效完成doxygen风格注释。非常好用，非常便捷。</p>
+<p><a href="http://blog.chukong-inc.com/index.php/2012/05/16/xcode4_fast_doxygen/">参考链接</a></p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">安装</span><span class="n">ThisService</span><span class="p">.</span><span class="n">app</span><span class="err">，</span><span class="n">Mac</span><span class="err">上可自定义系统服务的工具软件。</span>
+<span class="o">*</span> <span class="err">下载</span><span class="n">Doxygen</span><span class="p">.</span><span class="n">rb</span><span class="err">脚本，它可以把文字输入转为</span><span class="n">doxygen</span><span class="err">风格注释输出。</span>
+<span class="o">*</span> <span class="err">打开</span><span class="n">ThisService</span><span class="err">，输入服务名称，选择执行的脚本，还有一些选项可以设置，比如指定服务生效的应用程序。</span> <span class="p">(</span><span class="err">我做了在编辑器中有效的设置</span><span class="p">)</span>
+<span class="o">*</span> <span class="err">在系统偏好设置</span><span class="o">-&gt;</span><span class="err">键盘中选择</span><span class="n">Service</span><span class="err">标签，找到刚刚添加的服务，为其设置一个快捷键如</span><span class="o">:</span><span class="n">Command</span><span class="o">+</span><span class="n">option</span><span class="o">+/</span><span class="err">。</span> <span class="err">完成，在</span><span class="n">XCode</span><span class="err">中选中一行代码，按快捷键试试效果吧。</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

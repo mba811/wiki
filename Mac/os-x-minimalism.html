@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>OS X Minimalism - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;OS X Minimalism
+    <span class="updated">Page Updated&nbsp;
+      2015-05-26 19:14
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">OS X Minimalism</div>
+
+  <p>Out of the box Mac OS X scores pretty favourably from a minimalist’s point of view. That being said, there are still a few things one can do to further reduce clutter.</p>
+<p><a href="http://www.flickr.com/photos/chriskempson/8321788290/"><img alt="" src="http://farm9.staticflickr.com/8221/8321788290_6459bbf552_z.jpg" /></a></p>
+<h2 id="use-a-launcher">Use a Launcher</h2>
+<p>As well as providing a better way of starting your applications an application launcher can also boost productivity in other ways by providing a slew of handy shortcuts and functionality at your fingertips.</p>
+<p>I use <a href="http://www.alfredapp.com/">Alfred</a> and as a bonus I’m able to setup my own global hotkeys (shortcuts) for my favourite apps. <code>ctrl + cmd + w</code> launches my web browser, <code>ctrl + cmd + t</code> launches my terminal app and so on.</p>
+<p><a href="http://www.flickr.com/photos/chriskempson/8320770925/"><img alt="" src="http://farm9.staticflickr.com/8362/8320770925_9e25dbc1ef_z.jpg" /></a></p>
+<h2 id="clean-your-dock">Clean your dock</h2>
+<p>Now that we’ve got a great application launcher and can even shortcut our favourite apps, having all those icons in the dock makes little sense any more. My Dock has only two icons in it. Finder and Trash (I’d get rid of the Trash icon were there some easy way of doing so that worked well). From here on opening any application puts an icon on my dock so I can get rid of that “application running” status light too. Working in this manner gives a great way of creating a zone of focus by having only the apps open that I’m currently working with. As an additional benefit I’m noticing better performance (probably due to additional RAM I’ve freed up).</p>
+<p><a href="http://www.flickr.com/photos/chriskempson/8320771003/"><img alt="" src="http://farm9.staticflickr.com/8072/8320771003_f4ace91e83.jpg" /></a></p>
+<h2 id="remove-clutter">Remove Clutter</h2>
+<p>The need to jot down the odd bit of text arises from time to time. Previously I would have used the note widget on the Dashboard for this until I found something better. <a href="http://unclutterapp.com/">Unclutter</a> gives you a note taking area which you can pull down from the top of the screen. As well as this you get a clipboard preview, and most importantly, a file storage area.</p>
+<p>The file storage area is great when moving dragging files from folder to folder (OS X sadly lacks a cut and paste feature for file management). It also gives you a superior option to using your desktop as a temporary file storage area.</p>
+<p><a href="http://www.flickr.com/photos/chriskempson/8321838530/"><img alt="" src="http://farm9.staticflickr.com/8496/8321838530_5fe91e32e9_z.jpg" /></a></p>
+<h2 id="disable-the-dashboard">Disable the Dashboard</h2>
+<p>Now that the arguably most useful widgets functionality (calculator, and notes) is covered by <a href="http://www.alfredapp.com/">Alfred</a> and <a href="http://unclutterapp.com/">Unclutter</a> the Dashboard has even less justifying its existence. Thankfully iOS has never suffered from them so lets bring this “feature” back to OS X.</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dashboard</span> <span class="n">mcx</span><span class="o">-</span><span class="n">disabled</span> <span class="o">-</span><span class="n">boolean</span> <span class="n">YES</span>    
+<span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h2 id="hide-menu-bar-icons">Hide Menu Bar Icons</h2>
+<p>Menu bar icons aren’t that bad but they can introduce clutter when you have a too many of them. <a href="http://www.macbartender.com/">Bartender</a> allows one to hide some or all of the icons that appear in one’s menu bar. I chose to rid all of them but there’s nothing wrong with leaving a couple of useful ones.</p>
+<p><a href="http://www.flickr.com/photos/chriskempson/8320771155/"><img alt="" src="http://farm9.staticflickr.com/8220/8320771155_4474db8414.jpg" /></a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

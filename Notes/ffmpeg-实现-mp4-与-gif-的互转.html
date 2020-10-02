@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>ffmpeg 实现 MP4 与 GIF 的互转 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;ffmpeg 实现 MP4 与 GIF 的互转
+    <span class="updated">Page Updated&nbsp;
+      2015-05-13 17:22
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">ffmpeg 实现 MP4 与 GIF 的互转</div>
+
+  <p>在 Mac OSX 上使用 [Homebrew][1] 安装 <a href="https://www.ffmpeg.org/">ffmpeg</a>： </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//brew.sh/</span>
+</pre></div>
+
+
+<p>brew install ffmpeg</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">ffmpeg</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">fdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">ffplay</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">freetype</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">libquvi</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">opus</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">x265</span>
+
+<span class="n">brew</span> <span class="n">update</span> <span class="o">&amp;&amp;</span> <span class="n">brew</span> <span class="n">upgrade</span> <span class="n">ffmpeg</span>
+</pre></div>
+
+
+<h3 id="mp4-gif">将视频 MP4 转化为 GIF</h3>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">small</span><span class="p">.</span><span class="n">mp4</span> <span class="n">small</span><span class="p">.</span><span class="n">gif</span>
+</pre></div>
+
+
+<h4 id="gif">转化视频中的一部分为 GIF</h4>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">t</span> <span class="mi">3</span> <span class="o">-</span><span class="n">ss</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mo">02</span> <span class="o">-</span><span class="n">i</span> <span class="n">small</span><span class="p">.</span><span class="n">webm</span> <span class="n">small</span><span class="o">-</span><span class="n">clip</span><span class="p">.</span><span class="n">gif</span>
+</pre></div>
+
+
+<p>从视频中第二秒开始，截取时长为3秒的片段转化为 gif </p>
+<h4 id="gif_1">转化高质量 GIF</h4>
+<p>默认转化是中等质量模式，若要转化出高质量的 gif，可以修改比特率 </p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">small</span><span class="p">.</span><span class="n">mp4</span> <span class="o">-</span><span class="n">b</span> <span class="mi">2048</span><span class="n">k</span> <span class="n">small</span><span class="p">.</span><span class="n">gif</span>
+</pre></div>
+
+
+<h3 id="gif-mp4">将 GIF 转化为 MP4</h3>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">f</span> <span class="n">gif</span> <span class="o">-</span><span class="n">i</span> <span class="n">animation</span><span class="p">.</span><span class="n">gif</span> <span class="n">animation</span><span class="p">.</span><span class="n">mp4</span>
+</pre></div>
+
+
+<p>也可以将 gif 转为其他视频格式 </p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">f</span> <span class="n">gif</span> <span class="o">-</span><span class="n">i</span> <span class="n">animation</span><span class="p">.</span><span class="n">gif</span> <span class="n">animation</span><span class="p">.</span><span class="n">mpeg</span>
+
+<span class="n">ffmpeg</span> <span class="o">-</span><span class="n">f</span> <span class="n">gif</span> <span class="o">-</span><span class="n">i</span> <span class="n">animation</span><span class="p">.</span><span class="n">gif</span> <span class="n">animation</span><span class="p">.</span><span class="n">webm</span>
+</pre></div>
+
+
+<h3 id="gif_2">获取 GIF 的第一帧图片</h3>
+<p>使用 <a href="http://www.imagemagick.org/">ImageMagick</a> 可以方便第提取 gif 图片的第 N 帧图像。 </p>
+<p>安装 ImageMagick </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">imagemagick</span>
+</pre></div>
+
+
+<p>提取第一帧 </p>
+<div class="hlcode"><pre><span class="n">convert</span> <span class="err">&#39;</span><span class="n">animation</span><span class="p">.</span><span class="n">gif</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="err">&#39;</span> <span class="n">animation</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="n">frame</span><span class="p">.</span><span class="n">gif</span>
+</pre></div>
+
+
+<p>通过 <code>[0]</code> 就可以提取出 gif 的第一帧图像。 </p>
+<p>参考资料<br />
+<a href="https://trac.ffmpeg.org/wiki/CompilationGuide/MacOSX">FFmpeg CompilationGuide/MacOSX</a><br />
+<a href="http://davidwalsh.name/convert-video-gif">Convert Video to GIF or GIF to Video</a><br />
+<a href="http://davidwalsh.name/first-frame-animated-gif">Get the First Frame of an Animated GIF with ImageMagick</a><br />
+<a href="http://davidwalsh.name/create-image-preview-video">Create an Image Preview from a Video</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

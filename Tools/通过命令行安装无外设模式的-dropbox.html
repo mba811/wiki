@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>通过命令行安装无外设模式的 Dropbox - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;通过命令行安装无外设模式的 Dropbox
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 06:42
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">通过命令行安装无外设模式的 Dropbox</div>
+
+  <p>Dropbox 守护程序可在所有 32 位与 64 位 Linux 服务器上正常运行。若要安装，请在 Linux 终端运行下列命令。</p>
+<p><strong>32-bit</strong>:</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~</span> <span class="o">&amp;&amp;</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="s">&quot;https://www.dropbox.com/download?plat=lnx.x86&quot;</span> <span class="o">|</span> <span class="n">tar</span> <span class="n">xzf</span> <span class="o">-</span>
+</pre></div>
+
+
+<p><strong>64-bit</strong>:</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~</span> <span class="o">&amp;&amp;</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="s">&quot;https://www.dropbox.com/download?plat=lnx.x86_64&quot;</span> <span class="o">|</span> <span class="n">tar</span> <span class="n">xzf</span> <span class="o">-</span>
+</pre></div>
+
+
+<p>接着，从新建的 <code>.dropbox-dist</code> 文件夹运行 Dropbox 守护程序。</p>
+<div class="hlcode"><pre><span class="o">~/</span><span class="p">.</span><span class="n">dropbox</span><span class="o">-</span><span class="n">dist</span><span class="o">/</span><span class="n">dropboxd</span>
+</pre></div>
+
+
+<p>如果是首次在服务器上运行 Dropbox，系统会要求您将链接复制并粘贴到运行的浏览器中，以便创建一个新的帐户或将服务器附加到现有帐户上。操作完成后，系统会在您的主目录中创建 Dropbox 文件夹。下载这个<a href="https://www.dropbox.com/download?dl=packages/dropbox.py">Pythone 脚本</a>，通过命令行控制 Dropbox。为了方便访问，请在 PATH 中的任何地方放入此脚本的符号链接。</p>
+<p>下载 Dropbox</p>
+<blockquote>
+<p>让资料触手可及</p>
+</blockquote>
+<p>如果您想在 Linux 桌面上使用 Dropbox，请安装相应的程序包。 <br />
+如果未列出您的发行版，请选择“从源代码编译”。  </p>
+<p><img alt="" src="https://www.dropbox.com/static/images/icons/bullet_arrow_right.gif" /><br />
+<img alt="" src="https://www.dropbox.com/static/images/ubuntu-icon.png" /><br />
+Ubuntu (.deb)<br />
+<br />
+<a href="https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2015.02.12_amd64.deb">64-bit</a><br />
+<br />
+<a href="https://www.dropbox.com/download?dl=packages/ubuntu/dropbox_2015.02.12_i386.deb">32-bit</a></p>
+<p><img alt="" src="https://www.dropbox.com/static/images/icons/bullet_arrow_right.gif" /><br />
+<img alt="" src="https://www.dropbox.com/static/images/fedora-icon.png" /><br />
+Fedora (.rpm)<br />
+<br />
+<a href="https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-2015.02.12-1.fedora.x86_64.rpm">64-bit</a><br />
+<br />
+<a href="https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-2015.02.12-1.fedora.i386.rpm">32-bit</a></p>
+<p><img alt="" src="https://www.dropbox.com/static/images/icons/bullet_arrow_right.gif" /><br />
+<img alt="" src="https://www.dropbox.com/static/images/debian-icon.png" /><br />
+Debian (.deb)<br />
+<br />
+<a href="https://www.dropbox.com/download?dl=packages/debian/dropbox_2015.02.12_amd64.deb">64-bit</a><br />
+<br />
+<a href="https://www.dropbox.com/download?dl=packages/debian/dropbox_2015.02.12_i386.deb">32-bit</a></p>
+<p><img alt="" src="https://www.dropbox.com/static/images/icons/bullet_arrow_right.gif" /><br />
+<img alt="" src="https://www.dropbox.com/static/images/linux-icon.png" /><br />
+<a href="https://www.dropbox.com/help/247">从源代码编译</a></p>
+<p><strong>注意：</strong>这些程序包安装了一个开放源码的帮助应用。此应用的版本不像 Dropbox 主应用一样频繁地更改。这些程序包总会安装 Dropbox Linux 版的最新版本。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用Asciidoctor和reveal.js制作炫酷的幻灯片 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;使用Asciidoctor和reveal.js制作炫酷的幻灯片
+    <span class="updated">Page Updated&nbsp;
+      2015-05-27 20:08
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用Asciidoctor和reveal.js制作炫酷的幻灯片</div>
+
+  <p><a href="http://asciidoctor.org/docs/what-is-asciidoc/">AsciiDoc</a> 是又一种 <code>lightweight markup languages</code>，它比Markdown提供了更多的元素，这些元素提供的语义往往是出版写作里常用的，而且也很容易输出为HTML、PDF等多种格式，从这一点来看，AsciiDoc是用来替换DocBook的，非常适合写书，尤其是技术文档和指南，现在Spring Framework的文档全部用AsiiDoc来写作了(以前他们用的是DocBook)。 <code>lightweight markup languages</code>的一个核心理念就是<strong>内容为王</strong>，也就是你只关心你写的内容和结构而不用去关心 它的展现，对于我们这些美术基础极差但思维逻辑严谨的程序员来说这样是最好不过的做法了。 <a href="http://lab.hakim.se/reveal-js/">reveal.js</a>在现在流行的多个HTML5的slide里也是最炫酷的，而且有几个 功能非常实用（后面我们会讲到）。 但是，用HTML去写一个reveal.js的一个slide需要写很多的标签还是挺难也挺繁琐的。如果我们能用AsciiDoc去写的话就简单很多了。</p>
+<h2 id="asciidoctor">安装Asciidoctor</h2>
+<p><a href="http://asciidoctor.org/">Asciidoctor</a> 是一个用Ruby写的AsciiDoc的解析器，所以安装前需要安装<a href="https://www.ruby-lang.org/zh_cn/">Ruby</a> ，在Windows上推荐使用<a href="http://rubyinstaller.org/">RubyInstaller</a>来安装，本次安装的是1.9.3版本。</p>
+<p>然后可以安装Asciidoctor了：</p>
+<div class="hlcode"><pre> <span class="n">gem</span> <span class="n">install</span> <span class="n">asciidoctor</span>
+</pre></div>
+
+
+<p>如果不能安装可以先<a href="https://rubygems.org/gems/asciidoctor">下载gem</a>然后本地，用下面的命令安装：</p>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">install</span> <span class="o">--</span><span class="n">local</span> <span class="n">asciidoctor</span><span class="o">-</span><span class="mf">1.5.2</span><span class="p">.</span><span class="n">gem</span>
+</pre></div>
+
+
+<p>这样就可以了，写一个<code>README.adoc</code>内容如下：</p>
+<div class="hlcode"><pre><span class="o">=</span> <span class="n">Hello</span><span class="p">,</span> <span class="n">AsciiDoc</span><span class="o">!</span>
+<span class="n">Doc</span> <span class="n">Writer</span> <span class="o">&lt;</span><span class="n">doc</span><span class="err">@</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span>
+
+<span class="n">An</span> <span class="n">introduction</span> <span class="n">to</span> <span class="n">http</span><span class="o">:</span><span class="c1">//asciidoc.org[AsciiDoc].</span>
+
+<span class="o">==</span> <span class="n">First</span> <span class="n">Section</span>
+
+<span class="o">*</span> <span class="n">item</span> <span class="mi">1</span>
+<span class="o">*</span> <span class="n">item</span> <span class="mi">2</span>
+
+<span class="p">[</span><span class="n">source</span><span class="p">,</span><span class="n">ruby</span><span class="p">]</span>
+<span class="n">puts</span> <span class="s">&quot;Hello, World!&quot;</span>
+</pre></div>
+
+
+<p>在命令行运行：</p>
+<div class="hlcode"><pre><span class="n">asciidoctor</span> <span class="n">README</span><span class="p">.</span><span class="n">adoc</span>
+</pre></div>
+
+
+<p>就可以生成一个README.html文件了。</p>
+<h2 id="asciidoctor_1">用Asciidoctor制作幻灯片</h2>
+<h3 id="asciidoctor-revealjs">安装asciidoctor-reveal.js</h3>
+<p>在Asciidoctor下有个子项目<a href="https://github.com/asciidoctor/asciidoctor-reveal.js">asciidoctor-reveal.js</a> 可以利用AsciiDoc的语法制作reveal格式的幻灯片。</p>
+<p>首先需要安装slim：</p>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">install</span> <span class="n">slim</span> <span class="o">--</span><span class="n">version</span> <span class="mf">2.1.0</span>
+</pre></div>
+
+
+<p>同样，如果无法安装的话可以通过本地安装它和它的依赖:</p>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">install</span> <span class="o">--</span><span class="n">local</span> <span class="n">tilt</span><span class="o">-</span><span class="mf">2.0.1</span><span class="p">.</span><span class="n">gem</span>
+<span class="n">gem</span> <span class="n">install</span> <span class="o">--</span><span class="n">local</span> <span class="n">temple</span><span class="o">-</span><span class="mf">0.6.6</span><span class="p">.</span><span class="n">gem</span>
+<span class="n">gem</span> <span class="n">install</span> <span class="o">--</span><span class="n">local</span> <span class="n">slim</span><span class="o">-</span><span class="mf">2.0.1</span><span class="p">.</span><span class="n">gem</span>
+</pre></div>
+
+
+<h3 id="slide">创建slide项目</h3>
+<p>创建一个幻灯片项目：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/asciidoctor/asciidoctor-reveal.js.git</span>
+</pre></div>
+
+
+<p>然后，在这个目录下建一个adoc文档，比如<code>index.adoc</code>：</p>
+<div class="hlcode"><pre><span class="o">=</span> <span class="n">Title</span> <span class="n">Slide</span>
+
+<span class="o">==</span> <span class="n">Slide</span> <span class="n">One</span>
+
+<span class="o">*</span> <span class="n">Foo</span>
+<span class="o">*</span> <span class="n">Bar</span>
+<span class="o">*</span> <span class="n">World</span>
+
+<span class="o">==</span> <span class="n">Slide</span> <span class="n">Two</span>
+
+<span class="n">Hello</span> <span class="n">World</span> <span class="o">-</span> <span class="n">Good</span> <span class="n">Bye</span> <span class="n">Cruel</span> <span class="n">World</span>
+
+<span class="p">[</span><span class="n">NOTE</span><span class="p">.</span><span class="n">speaker</span><span class="p">]</span>
+<span class="o">--</span>
+<span class="n">Actually</span> <span class="n">things</span> <span class="n">aren</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">that</span> <span class="n">bad</span>
+<span class="o">--</span>
+</pre></div>
+
+
+<p>然后在命令行执行：</p>
+<div class="hlcode"><pre><span class="n">asciidoctor</span> <span class="o">-</span><span class="n">T</span> <span class="n">templates</span><span class="o">/</span><span class="n">slim</span> <span class="n">index</span><span class="p">.</span><span class="n">adoc</span>
+</pre></div>
+
+
+<p>这样就生成一个index.html文件。</p>
+<p>但这时候还不能运行，因为还没有reveal.js的文件，在当前目录用git下载一个：</p>
+<div class="hlcode"><pre> <span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/hakimel/reveal.js.git</span>
+</pre></div>
+
+
+<p>但这时还是不能正常运行，这是因为最新的reveal.js较之前有了一些变化，asciidoctor-reveal.js还没有做相应的改动，需要：</p>
+<ul>
+<li>
+<p><code>reveal.js\js\reveal.js</code>复制一份为<code>reveal.js\js\reveal.min.js</code></p>
+</li>
+<li>
+<p><code>reveal.js\css\reveal.css</code>复制一份为<code>reveal.js\css\reveal.min.css</code></p>
+</li>
+<li>
+<p><code>reveal.js\css\theme\black.css</code>复制一份为<code>reveal.js\css\theme\default.css</code></p>
+</li>
+</ul>
+<p>这样就可以了。</p>
+<p>如果想动态改变皮肤可以在js控制台里执行：</p>
+<div class="hlcode"><pre><span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="err">&#39;</span><span class="n">theme</span><span class="err">&#39;</span><span class="p">).</span><span class="n">setAttribute</span><span class="p">(</span><span class="err">&#39;</span><span class="n">href</span><span class="sc">&#39;,&#39;</span><span class="n">reveal</span><span class="p">.</span><span class="n">js</span><span class="o">/</span><span class="n">css</span><span class="o">/</span><span class="n">theme</span><span class="o">/</span><span class="n">sky</span><span class="p">.</span><span class="n">css</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>更多的语法的介绍参考<a href="https://github.com/asciidoctor/asciidoctor-reveal.js">asciidoctor-reveal.js</a>的项目文档吧。</p>
+<h3 id="_1">示例</h3>
+<p>我做了一个<a href="http://yanhua365.com/slide-reviewboard/">介绍ReviewBoard的幻灯片</a>，里面涵盖了常用的一些功能，可以<a href="https://github.com/yanhua365/slide-reviewboard">查看源代码</a>来学习这些常用的特性。 你也可以直接clone这个项目，在此基础上修改制作自己的幻灯片:</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/yanhua365/slide-reviewboard.git</span>
+</pre></div>
+
+
+<h2 id="revealjs">reveal.js最好用的几个特性</h2>
+<p>除了炫酷的效果和多样的皮肤外，reveal.js下面几个特性我觉得也十分实用。</p>
+<h3 id="_2">多级结构</h3>
+<p>用两个等号开头(<code>==</code>)代表一张幻灯片的开始，比如：</p>
+<div class="hlcode"><pre><span class="o">==</span> <span class="n">Review</span> <span class="n">Board</span><span class="err">功能概览</span>
+
+<span class="err">是一套用</span><span class="n">python</span><span class="err">编写的用于代码审查的</span><span class="n">Web</span><span class="err">程序，支持以下的浏览器：</span>
+
+<span class="o">*</span> <span class="n">Firefox</span> <span class="mf">3.0</span><span class="o">+</span>
+<span class="o">*</span> <span class="n">Internet</span> <span class="n">Explorer</span> <span class="mi">9</span><span class="o">+</span>
+<span class="o">*</span> <span class="n">Google</span> <span class="n">Chrome</span>
+</pre></div>
+
+
+<p>在演示的时候多张幻灯片可以通过左右箭头来切换。reveal.js独特的地方在于他支持两级目录结构，如果在上面的幻灯片下紧接着放一个三个等号开头的幻灯片，那么代表它的下级页面或者代表了更详细的信息，在演示的时候用向下的箭头才能导航到它。比如：</p>
+<div class="hlcode"><pre><span class="k">[data-background=&quot;green&quot;]</span>
+<span class="o">=</span><span class="s">== 任务列表</span>
+
+<span class="err">image::img/task-list.png</span><span class="k">[审查任务列表]</span>
+</pre></div>
+
+
+<p>这样做的好处是结构清晰，详略得当，在演示的时候可以根据时间等实际情况来觉得是否演示这些细节页面。</p>
+<blockquote>
+<p>在这些细节页面上，我使用了<code>[data-background="green"]</code>来为这个细节页面指定了一个不同的背景，在演示的时候这有利于提醒观众我们在进行更细节的展示。</p>
+</blockquote>
+<h3 id="_3">注释功能</h3>
+<p>使用<code>[NOTE.speaker]</code>可以指定下面的内容是本张幻灯片的注释，注释在演示时观众是看不到的。</p>
+<div class="hlcode"><pre><span class="o">==</span> <span class="err">代码审查</span>
+
+<span class="p">[,</span> <span class="n">Yahoo</span><span class="o">!</span> <span class="n">Web</span> <span class="n">Search</span><span class="p">]</span>
+<span class="s">&quot;&quot;</span>
+<span class="n">Review</span> <span class="n">Board</span> <span class="err">已经改变了代码评审的方式，其可以强迫高质量的代码标准和风格，并可以成为程序员编程的指导者。</span>
+<span class="err">当你访问</span><span class="n">search</span><span class="p">.</span><span class="n">yahoo</span><span class="p">.</span><span class="n">com</span> <span class="err">时，其代码都是使用</span> <span class="n">Review</span> <span class="n">board</span><span class="err">工具</span><span class="n">Review</span><span class="err">过的。</span>
+<span class="s">&quot;&quot;</span>
+
+<span class="p">[</span><span class="n">NOTE</span><span class="p">.</span><span class="n">speaker</span><span class="p">]</span>
+<span class="o">--</span>
+<span class="err">雅虎搜索使用</span><span class="n">Review</span> <span class="n">Board</span><span class="err">作为他们的代码审查工具。</span>
+<span class="o">--</span>
+</pre></div>
+
+
+<p>但演示者可以通过在页面上按一下<code>s</code>键，弹出一个窗口看到这些注释：</p>
+<p><img alt="查看注释的窗口" src="http://yanhua365.com/img/posts/revealjs-notes-demo.png" /></p>
+<p>除了能看到本张幻灯的内容和注释，还能看到一个计时器以及下一张幻灯的缩略图。</p>
+<h3 id="_4">其他功能</h3>
+<p>还有很多其它实用的小功能，比如可以用<code>[%step]</code>来指定列表是一步步显示的，可以通过<code>ESC</code>键查看所有幻灯片的大纲概览等等。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Bundler 的作用及原理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;Bundler 的作用及原理
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 17:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Bundler 的作用及原理</div>
+
+  <p>首先，你要在你应用根目录下一个叫<code>Gemfile</code>文件里声明这些依赖，它看起来是这个样子的：</p>
+<div class="hlcode"><pre><span class="n">source</span> <span class="err">&#39;</span><span class="n">https</span><span class="o">:</span><span class="c1">//rubygems.org&#39;</span>
+
+<span class="n">gem</span> <span class="err">&#39;</span><span class="n">rails</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span><span class="err">&#39;</span>
+<span class="n">gem</span> <span class="err">&#39;</span><span class="n">rack</span><span class="o">-</span><span class="n">cache</span><span class="err">&#39;</span>
+<span class="n">gem</span> <span class="err">&#39;</span><span class="n">nokogiri</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="o">~&gt;</span> <span class="mf">1.6.1</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>这个<code>Gemfile</code>说明了这些事情：</p>
+<p>首先，他告诉 bundler 默认是在<code>Gemfile</code>里指定的<code>https://rubygems.org</code>上来找 gem。如果你的一些 gem 需要从一个私有的 gem 服务器上获取，那么你可以为这些 gem 覆盖掉这个默认的源设置。</p>
+<p>接着，你声明了一些依赖：</p>
+<ul>
+<li>版本是<code>4.1.0.rc2</code>的<code>rails</code></li>
+<li>任意版本的<code>rack-cache</code></li>
+<li>版本是<code>&gt;= 1.6.1</code>但是<code>&lt; 1.7.0</code>的<code>nokogiri</code></li>
+</ul>
+<p>在你第一次声明完依赖后，你要告诉 bundler 去获取它们：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">bundle</span> <span class="n">install</span>    <span class="err">#</span> <span class="err">也可以直接运行</span> <span class="err">&#39;</span><span class="n">bundle</span><span class="err">&#39;，相当于</span> <span class="err">&#39;</span><span class="n">bundle</span> <span class="n">install</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>Bundler 会连接<code>rubygems.org</code>（或者其他你声明的源），然后列出所有你指定的符合你需要的 gem。因为所有你在<code>Gemfile</code>里的依赖有它们自己的依赖，所以基于上面的<code>Gemfile</code>运行<code>bundle install</code>会安装相当多的的 gem。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">bundle</span> <span class="n">install</span>
+<span class="n">Fetching</span> <span class="n">gem</span> <span class="n">metadata</span> <span class="n">from</span> <span class="n">https</span><span class="o">:</span><span class="c1">//rubygems.org/.........</span>
+<span class="n">Fetching</span> <span class="n">additional</span> <span class="n">metadata</span> <span class="n">from</span> <span class="n">https</span><span class="o">:</span><span class="c1">//rubygems.org/..</span>
+<span class="n">Resolving</span> <span class="n">dependencies</span><span class="p">...</span>
+<span class="n">Using</span> <span class="n">rake</span> <span class="mf">10.3.1</span>
+<span class="n">Using</span> <span class="n">json</span> <span class="mf">1.8.1</span>
+<span class="n">Installing</span> <span class="n">minitest</span> <span class="mf">5.3.3</span>
+<span class="n">Installing</span> <span class="n">i18n</span> <span class="mf">0.6.9</span>
+<span class="n">Installing</span> <span class="n">thread_safe</span> <span class="mf">0.3.3</span>
+<span class="n">Installing</span> <span class="n">builder</span> <span class="mf">3.2.2</span>
+<span class="n">Installing</span> <span class="n">rack</span> <span class="mf">1.5.2</span>
+<span class="n">Installing</span> <span class="n">erubis</span> <span class="mf">2.7.0</span>
+<span class="n">Installing</span> <span class="n">mime</span><span class="o">-</span><span class="n">types</span> <span class="mf">1.25.1</span>
+<span class="n">Using</span> <span class="n">bundler</span> <span class="mf">1.6.2</span>
+<span class="n">Installing</span> <span class="n">polyglot</span> <span class="mf">0.3.4</span>
+<span class="n">Installing</span> <span class="n">arel</span> <span class="mf">5.0.1.20140414130214</span>
+<span class="n">Installing</span> <span class="n">hike</span> <span class="mf">1.2.3</span>
+<span class="n">Installing</span> <span class="n">mini_portile</span> <span class="mf">0.5.3</span>
+<span class="n">Installing</span> <span class="n">multi_json</span> <span class="mf">1.9.3</span>
+<span class="n">Installing</span> <span class="n">thor</span> <span class="mf">0.19.1</span>
+<span class="n">Installing</span> <span class="n">tilt</span> <span class="mf">1.4.1</span>
+<span class="n">Installing</span> <span class="n">tzinfo</span> <span class="mf">1.1.0</span>
+<span class="n">Installing</span> <span class="n">rack</span><span class="o">-</span><span class="n">test</span> <span class="mf">0.6.2</span>
+<span class="n">Installing</span> <span class="n">rack</span><span class="o">-</span><span class="n">cache</span> <span class="mf">1.2</span>
+<span class="n">Installing</span> <span class="n">treetop</span> <span class="mf">1.4.15</span>
+<span class="n">Installing</span> <span class="n">sprockets</span> <span class="mf">2.12.1</span>
+<span class="n">Installing</span> <span class="n">activesupport</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">mail</span> <span class="mf">2.5.4</span>
+<span class="n">Installing</span> <span class="n">actionview</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">activemodel</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">actionpack</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">activerecord</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">actionmailer</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">sprockets</span><span class="o">-</span><span class="n">rails</span> <span class="mf">2.0.1</span>
+<span class="n">Installing</span> <span class="n">railties</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">rails</span> <span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span>
+<span class="n">Installing</span> <span class="n">nokogiri</span> <span class="mf">1.6.1</span>
+<span class="n">Your</span> <span class="n">bundle</span> <span class="n">is</span> <span class="n">complete</span><span class="o">!</span>
+<span class="n">Use</span> <span class="err">`</span><span class="n">bundle</span> <span class="n">show</span> <span class="p">[</span><span class="n">gemname</span><span class="p">]</span><span class="err">`</span> <span class="n">to</span> <span class="n">see</span> <span class="n">where</span> <span class="n">a</span> <span class="n">bundled</span> <span class="n">gem</span> <span class="n">is</span> <span class="n">installed</span><span class="p">.</span>
+</pre></div>
+
+
+<p>如果任何需要的 gem 已经被安装了，bundler 会直接使用它们。在你的系统上安装完所有的 gem 后，bundler 会写一个所有这些 gem 和它们的版本号的快照到 Gemfile.lock 里。</p>
+<h4 id="bundler">配置你的应用使用 Bundler</h4>
+<p>Bundler 保证 Ruby 能找到<code>Gemfile</code>里的所有 gem 和这些 gem 自己的依赖。如果你的应用是个 Rails 3 以上的应用的话，你的应用默认已经有运行 bundler 的代码了。如果是 Rails 2.3 的应用，可以看<a href="http://bundler.io/rails23.html">在 Rails 2.3 中设置 Bundler</a>。</p>
+<p>对于另外的应用来说（比如说基于 Sinatra 的应用），你需要在你引用任何 gem 之前配置一下 bundler。在你应用加载的第一个文件的第一行（对于 Sinatra, 就是写着<code>require 'sinatra'</code>的那个文件）加入以下下代码：</p>
+<div class="hlcode"><pre><span class="n">require</span> <span class="err">&#39;</span><span class="n">rubygems</span><span class="err">&#39;</span> <span class="err">#</span> <span class="n">Ruby</span> <span class="mf">1.8</span> <span class="err">以后的版本不再需要这句（楼主注）</span>
+<span class="n">require</span> <span class="err">&#39;</span><span class="n">bundle</span><span class="o">/</span><span class="n">setup</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>这样 bundler 就能自动找到你的<code>Gemfile</code>，并且让你<code>Gemfile</code>里的所有 gem 是可用的（从技术上讲，就是把这些 gem 放到<code>$LOAD_PATH</code>里）。</p>
+<p>现在你的代码就可以运行了，你可以引用你需要的 gem。比如说你可以<code>require 'sinatra'</code>。如果你有很多依赖，你可能希望“引用所有我<code>Gemfile</code>的 gem”。如果要这样做的话，可以把下面这行代码放到<code>require 'bundler/setup'</code>的下一行：</p>
+<div class="hlcode"><pre><span class="n">Bundler</span><span class="p">.</span><span class="n">require</span><span class="p">(</span><span class="o">:</span><span class="k">default</span><span class="p">)</span>
+</pre></div>
+
+
+<p>对于我们刚才的<code>Gemfile</code>来说，这行代码相当于：</p>
+<div class="hlcode"><pre><span class="n">require</span> <span class="err">&#39;</span><span class="n">rails</span><span class="err">&#39;</span>
+<span class="n">require</span> <span class="err">&#39;</span><span class="n">rack</span><span class="o">-</span><span class="n">cache</span><span class="err">&#39;</span>
+<span class="n">require</span> <span class="err">&#39;</span><span class="n">nokogiri</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>精明的读者会发现正确引用<code>rack-cache</code>的方式是<code>rake/cache</code>，而不是<code>require 'rack-cache</code>'。为了告诉 bundler 使用<code>require 'rack/cache'</code>，只要更新你的<code>Gemfie</code>:</p>
+<div class="hlcode"><pre><span class="n">source</span> <span class="err">&#39;</span><span class="n">https</span><span class="o">:</span><span class="c1">//rubygems.org&#39;</span>
+
+<span class="n">gem</span> <span class="err">&#39;</span><span class="n">rails</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="mf">4.1.0</span><span class="p">.</span><span class="n">rc2</span><span class="err">&#39;</span>
+<span class="n">gem</span> <span class="err">&#39;</span><span class="n">rack</span><span class="o">-</span><span class="n">cache</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">require</span><span class="o">:</span> <span class="err">&#39;</span><span class="n">rack</span><span class="o">/</span><span class="n">cache</span><span class="err">&#39;</span>
+<span class="n">gem</span> <span class="err">&#39;</span><span class="n">nokogiri</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="o">~&gt;</span> <span class="mf">1.6.1</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>对于这么小的一个<code>Gemfile</code>来说，我们建议你跳过<code>Bundler.require</code>而是手动引用这些 gem（特别是你还需要在<code>Gemfile</code>里写一个<code>:require</code>配置）。对于很大的<code>Gemfile</code>来说，使用<code>Bundler.require</code>让你省略了大量重复的依赖引用。</p>
+<h4 id="_1">把你的代码放进版本库</h4>
+<p>在你开发你的应用一段时间后，把应用跟<code>Gemfile</code>和<code>Gemfile.lock</code>一起放到版本库里。这样，你的版本库里就有了你的应用最后一次你确定能正常工作时所有的 gem 以及版本号的记录。要记住，尽管你的<code>Gemfile</code>里只有三个 gem，但是当你去考虑你依赖的 gem 也依赖其他 gem 时，你的应用实际上依赖了大量的 gem，</p>
+<p>这个非常重要：<strong><code>Gemfile.lock</code>把你的应用变成一个你的代码跟第三方代码最后一次你确定能正常工作的包。</strong> 在<code>Gemfile</code>里确切指定你依赖的第三方代码的版本并不能提供同样的保证，因为 gem 通常给它们自己的依赖声明一个版本号的范围。</p>
+<p>你在同一台机器上再次运行<code>bundle install</code>的时候，bundler 会发现系统上已经有了你需要的依赖，然后就会跳过安装的过程。</p>
+<p>不要把<code>.bundle</code>目录放入版本库，以及所有它里面的文件。这些文件在不同的机器上是不同的，主要是用来保存运行<code>bundle install</code>时的参数。</p>
+<p>如果你运行了<code>bundle pack</code>，你需要的 gem （除了来源是 git 仓库的 gem 以外）都会被下载到<code>vendor/cache</code>目录。如果所有你需要的 gem 都在那个目录里而且你把它放进了版本库里，bundler 运行的时候就不需要联网了。这是一个<strong>可选</strong>的步骤，因为这样做你的版本库就会变得很大。</p>
+<h4 id="_2">与其他开发者共享你的应用</h4>
+<p>当你的同事（或者你在另外一台机器上）获取你的代码的时候，它会包含你最近开发时使用的所有第三方代码的确切版本。当<strong>他们</strong>运行<code>bundle install</code>，bundler 会找到<code>Gemfile.lock</code>并跳过解决依赖的步骤，改为安装所有你原来机器上一样的 gem。</p>
+<p>换句话说，你不需要去猜你需要安装什么版本的依赖。在我们刚才用过的栗子里，尽管<code>rake-cache</code>声明了依赖<code>rack &gt;= 0.4</code>，但是我们确定他能正常工作在<code>rack 1.5.2</code>下。即使 Rack 的团队发布了<code>rack 1.5.3</code>，bundler 还是会安装<code>1.5.2</code>这个我们已经知道的确切的版本。这为开发者减轻了大量的维护负担，因为所有机器上都运行着同样的第三方代码。</p>
+<h4 id="_3">更新依赖</h4>
+<p>当然，有时候你可能要更新你的应用依赖的部分 gem。比如说，你想要把<code>rails</code>升级到<code>4.1.0</code>。重点是，你只想要升级一个依赖，而不是要重新解决你的所有依赖并且使用所有 gem 最新的版本。在我们栗子里，你只有3个依赖，但是即使在这个栗子里，更新任何一个东西都会变得复杂。</p>
+<p>比如说，<code>rails 4.1.0.rc2</code>依赖<code>actionpack 4.1.0.rc2</code>，而<code>actionpack</code>又依赖<code>rack ~&gt; 1.5.2</code>（意思是<code>&gt;= 1.5.2</code>且<code>&lt; 1.6.0</code>)。<code>rack-cache</code>又依赖<code>rack &gt;= 0.4</code>。我们假设<code>rails 4.1.0</code>也依赖<code>rack ~&gt; 1.5.2</code>，并且在<code>rails 4.1.0</code>发布后 Rack 团队发布了<code>rack 1.5.3</code>。</p>
+<p>如果我们为了更新 Rails，天真地更新了所有它依赖的 gem，我们得到了<code>rack 1.5.3</code>，这刚好满足<code>rails 4.1.0</code>和<code>rack-cache</code>的要求。然而我们并没有特别说要更新<code>rack-cache</code>，它就可能跟<code>rack 1.5.3</code>不兼容（不管什么原因）。虽然把<code>rack 1.5.2</code>升级到<code>rack 1.5.3</code>不会搞坏什么东西，但是类似这种导致更大版本跨度的更新场景也会发生（见下面[1]更多讨论）。</p>
+<p>为了避免这个问题，当你更新一个 gem 时，如果有其他 gem 有与它相同的依赖，bundler 就不会更新那个相同的依赖。在上面的栗子里，由于<code>rack-cache</code>依然依赖<code>rack</code>，bundler 不会更新<code>rack</code>。这样保证了更新<code>rails</code>不会不小心搞坏<code>rack-cache</code>。由于<code>rails 4.1.0</code>的依赖<code>actionpack 4.1.0</code>保留了<code>rack 1.5.2</code>的兼容，bundler 就不会管它，<code>rack-cache</code>就会继续工作，尽管它可能面临跟<code>rack 1.5.3</code>的不兼容。</p>
+<p>由于你一开始声明了依赖<code>rails 4.1.0.rc2</code>，如果你想要更新到<code>rails 4.1.0</code>，只要简单地在<code>Gemfile</code>里更新成<code>gem 'rails', '4.1.0'</code>并且运行：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">bundle</span> <span class="n">install</span>
+</pre></div>
+
+
+<p>根据上面地描述，<code>bundle install</code>总是执行保守地升级，不会更新你没有在<code>Gemfile</code>里显式更改的 gem（或者它们的依赖）。也就是说你不修改<code>Gemfile</code>里的<code>rack-cache</code>，bundler 就会把它 <strong>和它的依赖（rack）</strong> 当成一个不可修改的整体。如果<code>rails 3.0.0</code>跟<code>rack-cache</code>不兼容，bundler 就会显示你的依赖快照（<code>Gemfile.lock</code>）跟你更新后的<code>Gemfile</code>之间的冲突。</p>
+<p>如果你更新了你的<code>Gemfile</code>，并且你的系统上已经有你所有需要的依赖了，当你启动应用的时候 bundler 会透明地更新<code>Gemfile.lock</code>。举个栗子，如果你把<code>mysql</code>加到你的<code>Gemfile</code>里，并且已经在你的系统上安装了，你可以不需要运行<code>bundle install</code>就能启动你的应用，并且 bundler 会把最近一次正确的配置写到<code>Gemfile.lock</code>里</p>
+<p>这个功能在你添加或更新依赖很少的 gem 时就会比较方便。在你更新一些比较重要的 gem（比如 <code>rails</code>）或者有被很多 gem 依赖的 gem（比如<code>rack</code>）它就可能失败。如果透明更新失败了，你的应用就会启动失败，bundler 会显示错误引导你运行<code>bundle install</code>。</p>
+<h4 id="gemfile-gem">不修改 Gemfile 来更新 Gem</h4>
+<p>有时候，你想要不修改 Gemfile 来更新一个依赖。比如说，你想要更新到最新版本的<code>rack-cache</code>。而你又没有在<code>Gemfie</code>里指定<code>rack-cache</code>的版本，你可能想要周期性地获取<code>rakc-cache</code>地最新版。那么你可以使用<code>bundle update</code>命令：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">bundle</span> <span class="n">update</span> <span class="n">rack</span><span class="o">-</span><span class="n">cache</span>
+</pre></div>
+
+
+<p>这个命令会更新<code>rack-cache</code>和它地依赖更新到<code>Gemfile</code>里允许地最新版本（在这个栗子里就是更新到最新版本）。它不会修改其地依赖。</p>
+<p>但是它会在需要地时候更新其他 gem 的依赖。举个栗子，如果最新版的<code>rack-cache</code>指定了依赖<code>rack &gt;= 1.5.2</code>，bundler 会更新<code>rack</code>到<code>1.5.2</code>尽管你没有要求 bundler 更新 <code>rack</code>。如果 bundler 需要更新一个其他的 gem 依赖的 gem，那么它会在更新完成后告诉你这件事。</p>
+<p>如果你要更新所有 Gemfile 里的 gem 到最新的能用的版本，运行：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">bundle</span> <span class="n">update</span>
+</pre></div>
+
+
+<p>这个命令会从头开始解决依赖并忽略掉<code>Gemfile.lock</code>。如果你这么做了，你要准备好<code>git reset --hard</code>和测试用例。从头解决依赖会有意想不到的结果，特别是一部分你依赖的第三方库在你上一次更新的时候发布了新的版本。</p>
+<h4 id="_4">总结</h4>
+<h4 id="bundler_1">一个简单的 Bundler 流程</h4>
+<ul>
+<li>
+<p>当你第一次创建 Rails 应用的时候，它已经包含了<code>Gemfile</code>。其他的应用可以运行：</p>
+<p>$ bundle init</p>
+</li>
+</ul>
+<p><code>bundle init</code>命令会创建一个简单的<code>Gemfile</code>让你编辑。</p>
+<ul>
+<li>
+<p>下面，添加你的应用需要的 gem。如果你关心部分你需要的 gem 的版本，可以加一个合适的版本约束：</p>
+<p>source 'https://rubygems.org'</p>
+<p>gem 'sinatra', '~&gt; 1.3.6'<br />
+gem 'rack-cache'<br />
+gem 'rack-bug'</p>
+</li>
+<li>
+<p>如果你有 gem 没在你的系统上安装，运行：</p>
+<p>$ bundle install</p>
+</li>
+<li>
+<p>更新一个 gem 的版本，首先修改 Gemfile：</p>
+<p>source 'https://rubygems.org'</p>
+<p>gem 'sinatra', '~&gt; 1.4.5'<br />
+gem 'rack-cache'<br />
+gem 'rack-bug'</p>
+</li>
+</ul>
+<p>然后运行：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">bundle</span> <span class="n">install</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>如果<code>bundle install</code>说你的<code>Gemfile</code>跟<code>Gemfie.lock</code>之间有冲突，运行：</p>
+<p>$ bundle update sinatra</p>
+</li>
+</ul>
+<p>这个会升级 Sinatra 这个 gem，以及它所有的依赖。</p>
+<ul>
+<li>
+<p>更新所有你<code>Gemfile</code>里的 gem 到最新可用的版本，运行：</p>
+<p>$ bundle update</p>
+</li>
+<li>
+<p>每当你的<code>Gemfile.lock</code>变化的时候，把它放入你的版本库。它保存了你的应用能成功运行所依赖的所有第三方代码的确切版本的历史。</p>
+</li>
+<li>
+<p>当部署你的代码到测试或者生产服务器的时候，首先运行你的测试（或启动你的本地开发服务器），确定你把<code>Gemfile.lock</code>放到了版本库里。在远程服务器上，运行：</p>
+<p>$ bundle install --deployment</p>
+</li>
+</ul>
+<h4 id="_5">备注</h4>
+<p>[1] 举个栗子，如果<code>rails 4.1.0</code>依赖<code>rack 2.0</code>，这个<code>rack 2.0</code>满足<code>rack-cache</code>的依赖，因为它声明了<code>&gt;= 0.4</code>的依赖。当然你能指责说<code>rack-cache</code>不指定依赖的最高版本很愚蠢，但是这种情况确实是普遍存在的，而且很多项目声明依赖的时候会发现它们处在一个很尴尬的场面。依赖限制太严（<code>rack = 1.5.1</code>）就会让你的项目很难兼容其他项目。依赖限制太宽（rack &gt;= 1.0）会在 Rack 发布新版本的时候可能搞坏你的代码。使用这样的依赖声明<code>rack ~&gt; 1.5.2</code>和 SemVer 兼容的版本号基本上能解决这个问题，但是这也只是一个普遍能接受的方案。由于 RubyGems 有超过十万个库，这个假设在实际应用中可能并不成立。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

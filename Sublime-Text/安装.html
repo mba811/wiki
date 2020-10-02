@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>安装 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Sublime-Text">Sublime-Text</a>&nbsp;&#187;&nbsp;安装
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 13:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">安装</div>
+
+  <h1 id="_1">安装</h1>
+<p>安装卓异文本的过程是为每个平台不同。</p>
+<p>请务必阅读<a href="http://www.sublimetext.com/buy">使用条件</a>的官方网站。崇高的文字是不是免费的。</p>
+<h2 id="3264">32位或64位？</h2>
+<p>如果您正在运行的是64位操作系统，否则32位版本的64位版本。</p>
+<p><strong>Windows</strong>，如有疑问，请选择32位版本。现代的64位版本的Windows可以运行32位软件。</p>
+<p>对<strong>Linux</strong>在终端运行这个命令来检查您的操作系统的类型：</p>
+<div class="hlcode"><pre><span class="n">uname</span> <span class="o">-</span><span class="n">m</span>
+</pre></div>
+
+
+<p>对于<strong>OS X</strong>，你可以忽略此节：只有一个版本的崇高文字的OS X.</p>
+<h2 id="windows">Windows</h2>
+<h3 id="_2">便携式或无法移植？</h3>
+<p>崇高的文本提供了两种不同的Windows：正常，便于携带。如果您需要便携式安装，你可能已经知道。否则，请与正常之一。</p>
+<p><strong>正常的安装</strong>两个文件夹之间单独的数据：安装文件夹正确，以及_数据目录_。这些概念在本指南后面解释。正常的安装还集成了崇高的文本与Windows右键菜单。</p>
+<p><strong>便携式装置</strong>将保持崇高的文本需要在一个单一的文件夹中运行的所有文件。然后，您可以将这个文件夹四周，编辑器仍然可以工作。</p>
+<h3 id="sublime-text">如何安装Sublime Text的普通版</h3>
+<p>下载安装程序，双击它，然后按照屏幕上的说明。</p>
+<h3 id="sublime-text_1">如何安装Sublime Text的便携版</h3>
+<p>下载包并解压到您选择的文件夹。你会发现_sublime_text.exe_该文件夹内的可执行文件。</p>
+<h2 id="os-x">OS X</h2>
+<p>下载并打开_的.dmg_文件，然后拖动文本崇高2捆到_应用程序_文件夹中。</p>
+<h2 id="linux">Linux的</h2>
+<p>您可以下载包并手动解压。另外，您也可以使用命令行。</p>
+<p><strong>对于I386</strong></p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~</span>
+<span class="n">wget</span> <span class="n">http</span><span class="o">:</span><span class="c1">//c758482.r82.cf2.rackcdn.com/Sublime\ Text\ 2.0.1.tar.bz2</span>
+<span class="n">tar</span> <span class="n">vxjf</span> <span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="err">\</span> <span class="mf">2.0.1</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">bz2</span>
+</pre></div>
+
+
+<p><strong>对于x64</strong></p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~</span>
+<span class="n">wget</span> <span class="n">http</span><span class="o">:</span><span class="c1">//c758482.r82.cf2.rackcdn.com/Sublime Text 2.0.1 x64.tar.bz2</span>
+<span class="n">tar</span> <span class="n">vxjf</span> <span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="err">\</span> <span class="mf">2.0.1</span><span class="err">\</span> <span class="n">x64</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">bz2</span>
+</pre></div>
+
+
+<p>现在，我们应该将未压缩的文件到合适的位置。</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">mv</span> <span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="err">\</span> <span class="mi">2</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span>
+</pre></div>
+
+
+<p>最后，我们创建了一个符号链接在命令行中使用。</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="err">\</span> <span class="mi">2</span><span class="o">/</span><span class="n">sublime_text</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sublime</span>
+</pre></div>
+
+
+<p>在Ubuntu的，如果你也想崇高的文本添加到团结luncher，请继续阅读。</p>
+<p>首先，我们需要创建一个新的文件。</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">sublime</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">applications</span><span class="o">/</span><span class="n">sublime</span><span class="p">.</span><span class="n">desktop</span>
+</pre></div>
+
+
+<p>复制以下进去。</p>
+<div class="hlcode"><pre><span class="k">[Desktop Entry]</span>
+<span class="na">Version</span><span class="o">=</span><span class="s">2.0.1</span>
+<span class="na">Name</span><span class="o">=</span><span class="s">Sublime Text 2</span>
+<span class="c1"># Only KDE 4 seems to use GenericName, so we reuse the KDE strings.</span>
+<span class="c1"># From Ubuntu&#39;s language-pack-kde-XX-base packages, version 9.04-20090413.</span>
+<span class="na">GenericName</span><span class="o">=</span><span class="s">Text Editor</span>
+
+<span class="na">Exec</span><span class="o">=</span><span class="s">sublime</span>
+<span class="na">Terminal</span><span class="o">=</span><span class="s">false</span>
+<span class="na">Icon</span><span class="o">=</span><span class="s">/opt/Sublime Text 2/Icon/48x48/sublime_text.png</span>
+<span class="na">Type</span><span class="o">=</span><span class="s">Application</span>
+<span class="na">Categories</span><span class="o">=</span><span class="s">TextEditor;IDE;Development</span>
+<span class="na">X-Ayatana-Desktop-Shortcuts</span><span class="o">=</span><span class="s">NewWindow</span>
+
+<span class="k">[NewWindow Shortcut Group]</span>
+<span class="na">Name</span><span class="o">=</span><span class="s">New Window</span>
+<span class="na">Exec</span><span class="o">=</span><span class="s">sublime -n</span>
+<span class="na">TargetEnvironment</span><span class="o">=</span><span class="s">Unity</span>
+</pre></div>
+
+
+<p>如果您已经注册了崇高的文本复印件，但每次你打开它时你输入的许可证要求，你应该尝试运行此命令。</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">username</span><span class="o">:</span><span class="n">username</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">username</span><span class="o">/</span><span class="p">.</span><span class="n">config</span> <span class="o">/</span><span class="n">sublime</span><span class="o">-</span><span class="n">text</span><span class="o">-</span><span class="mi">2</span>
+</pre></div>
+
+
+<p>只需更换用户名与您帐户的用户名。这应该可以解决的，你打开了崇高的文本以root当您第一次输入的许可证的情况下，允许误差。</p>
+<h2 id="_3">危险之中......或者不</h2>
+<p>sublime-text有三种版本：</p>
+<ul>
+<li><a href="http://www.sublimetext.com/2">稳定Stable</a>（默认）</li>
+<li><a href="http://www.sublimetext.com/dev">开发Dev</a></li>
+<li><a href="http://www.sublimetext.com/nightly">每夜Nightly</a></li>
+</ul>
+<p>此外，还有为sublime-text3测试版是只提供给谁拥有许可证的用户单独通道：</p>
+<ul>
+<li><a href="http://www.sublimetext.com/3">3-β</a>（相当于_每晚_）</li>
+<li><a href="http://www.sublimetext.com/3dev">3-DEV</a></li>
+</ul>
+<p>如果你正在一个NASA项目或在紧张的最后期限，继续使用稳定版本，并停止阅读这里<strong>的稳定版本</strong>是更好的测试和更可靠的比别人日常使用。<strong>大多数用户将要使用的稳定版本而已。</strong></p>
+<p>在_开发_和_夜间_的渠道是不稳定的，这可能意味着构建通过他们发布的包含错误，并不能可靠地工作。他们更新往往比稳定版本。</p>
+<p><strong>开发版本</strong>可供大家和发布插图中的稳定版本。虽然没有完全准备好但日常使用，他们展示的新功能的大多是不间断的方式。</p>
+<p>最后，<strong>每晚构建</strong>的最前沿，与频繁的更新，也不同严重程度的频繁问题。他们是有趣的尝试，但这样做需要您自担风险。Nighlty版本是<strong>只对注册用户</strong>。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

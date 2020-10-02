@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac下安装GraphicsMagick - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac下安装GraphicsMagick
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 11:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac下安装GraphicsMagick</div>
+
+  <h2 id="_1">下载依赖</h2>
+<p>GraphicsMagic根据使用功能的不同，依赖不同的组件，我需要的只是对jpeg和png进行简单的图片处理（缩放、裁剪啊什么的，不过它的功能可以更加强大），主要依赖了两个组件:</p>
+<h3 id="libjpeg">libjpeg</h3>
+<p><a href="ftp://ftp.graphicsmagick.org/pub/GraphicsMagick/delegates/libjpeg-6b.tar.gz">libjpeg-6b.tar.gz</a></p>
+<h3 id="libpng">libpng</h3>
+<p><a href="http://sourceforge.net/projects/libpng/files/libpng14/1.4.7/libpng-1.4.7.tar.gz/download">libpng-1.4.7.tar.gz</a></p>
+<h3 id="graphicsmagic">GraphicsMagic</h3>
+<p><a href="http://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/">GraphicsMagic</a><br />
+<a href="http://www.graphicsmagick.org/">GraphicsMagic 官网</a></p>
+<h2 id="_2">安装</h2>
+<h3 id="_3">解压</h3>
+<p>进入下载目录解压。例如我下载的是<code>libpng-1.6.17.tar.xz</code> 就是下面的方法解压</p>
+<div class="hlcode"><pre><span class="n">tar</span> <span class="n">jxvf</span> <span class="n">libpng</span><span class="o">-</span><span class="mf">1.6.17</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">xz</span>
+</pre></div>
+
+
+<h3 id="_4">运行</h3>
+<p>进入解压的目录，运行三条命令，然后就安装好了。</p>
+<ol>
+<li><code>./configure</code></li>
+<li><code>make</code></li>
+<li><code>sudo make install</code></li>
+</ol>
+<h2 id="_5">然后</h2>
+<p>然后按照上面步骤安装 <code>GraphicsMagic</code></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

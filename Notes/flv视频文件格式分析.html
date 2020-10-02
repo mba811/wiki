@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>FLV视频文件格式分析 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;FLV视频文件格式分析
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 09:33
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">FLV视频文件格式分析</div>
+
+  <p><img alt="" src="http://www.liaoxuefeng.com/files/attachments/001384778298496809c1509949d42f09db8547675d9d226000/l" /></p>
+<p><a href="http://www.liaoxuefeng.com/user/001383729881018b677b2776c24451e9b5f30a03ea5d73c000">廖雪峰</a> / <a href="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a> / 2012-2-2 7:02 / 阅读: 14</p>
+<p>FLV视频格式是Adobe推出的Flash可直接播放的视频流。需要注意的概念是编码格式和文件封装格式。编码格式是指编码器输出的“裸”的视频流或音频流，常见的视频编码格式就是H.264，常见的音频编码格式是AAC和MP3。FLV是一种文件封装格式，它可以封装H264和AAC，其他常见的文件封装格式还有MP4、TS、MKV等等。不同的文件封装格式可以相互转换，只要把一种文件封装格式拆包，解出“裸”的视频流和音频流，再按另一种文件封装格式打包，就可以完成转换，不需要重新编码，因此速度非常快。</p>
+<p>本文讨论FLV的文件封装格式，FLV的文件格式定义最权威的就是Adobe的官方文档：</p>
+<p><a href="http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf"></a></p>
+<p>该文档的Annex E列出了FLV的详细封装格式。FLV采用网络字节序（高字节在前），无符号整数。</p>
+<p>我们先找一个FLV文件，包含H264视频和AAC音频：</p>
+<div class="hlcode"><pre><span class="mi">464</span><span class="n">c</span> <span class="mi">5601</span> <span class="mo">0500</span> <span class="mo">0000</span> <span class="mi">0900</span> <span class="mo">0000</span> <span class="mo">0012</span> <span class="mo">0000</span>
+<span class="mf">3f</span><span class="mo">00</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0200</span> <span class="mi">0</span><span class="n">a6f</span> <span class="mf">6e4</span><span class="n">d</span> <span class="mi">6574</span>
+<span class="mi">6144</span> <span class="mi">6174</span> <span class="mi">6108</span> <span class="mo">0000</span> <span class="mo">0002</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">6475</span> <span class="mi">7261</span>
+<span class="mi">7469</span> <span class="mf">6f</span><span class="mi">6</span><span class="n">e</span> <span class="mo">0040</span> <span class="mi">27</span><span class="n">c8</span> <span class="n">b439</span> <span class="mi">5810</span> <span class="mi">6200</span> <span class="mi">0</span><span class="n">c76</span>
+<span class="mi">6964</span> <span class="mf">656f</span> <span class="mf">636f</span> <span class="mi">6465</span> <span class="mi">6369</span> <span class="mi">6400</span> <span class="mi">4000</span> <span class="mo">0000</span>
+<span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mi">0900</span> <span class="mo">0000</span> <span class="mi">4</span><span class="n">a08</span> <span class="mo">0000</span> <span class="mo">0400</span>
+<span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="n">af00</span> <span class="mi">1208</span> <span class="mo">0000</span> <span class="mf">000f</span> <span class="mi">0900</span>
+<span class="mo">0043</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0017</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0142</span>
+<span class="mf">001f</span> <span class="mo">0301</span> <span class="mf">002f</span> <span class="mi">6742</span> <span class="mf">801f</span> <span class="mi">9652</span> <span class="mo">02</span><span class="mi">83</span> <span class="n">f602</span>
+<span class="n">a100</span> <span class="mo">0003</span> <span class="mo">0001</span> <span class="mo">0000</span> <span class="mo">0300</span> <span class="mf">32e0</span> <span class="mi">6003</span> <span class="mi">0</span><span class="n">d40</span>
+<span class="mo">0046</span> <span class="mf">30ff</span> <span class="mf">18e3</span> <span class="mo">0300</span> <span class="mi">186</span><span class="n">a</span> <span class="mo">0002</span> <span class="mi">3187</span> <span class="n">f8c7</span>
+<span class="mi">0</span><span class="n">ed0</span> <span class="n">a152</span> <span class="mi">4001</span> <span class="mo">0004</span> <span class="mi">68</span><span class="n">cb</span> <span class="mi">8</span><span class="n">d48</span> <span class="mo">0000</span> <span class="mo">004</span><span class="n">e</span>  
+<span class="mi">0900</span> <span class="mi">0</span><span class="n">d1c</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0000</span> <span class="mo">0017</span> <span class="mo">0100</span> <span class="mo">02</span><span class="mi">9</span><span class="n">d</span>
+<span class="mo">0000</span> <span class="mi">0</span><span class="n">d13</span> <span class="mi">6588</span> <span class="mi">8040</span> <span class="mi">0</span><span class="n">db1</span> <span class="mi">185</span><span class="n">c</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">2</span><span class="n">d1f</span>
+<span class="mi">7893</span> <span class="n">de24</span> <span class="n">f789</span> <span class="n">f785</span> <span class="n">c2c4</span> <span class="n">f8a6</span> <span class="n">d3e2</span> <span class="mf">43f</span><span class="n">a</span>
+<span class="n">f177</span> <span class="mi">85</span><span class="n">ea</span> <span class="n">f377</span> <span class="n">a930</span> <span class="n">f991</span> <span class="n">ea7c</span> <span class="mf">4f</span><span class="mi">2</span><span class="n">a</span> <span class="n">f0b9</span>
+</pre></div>
+
+
+<p>FLV的封装格式比较简单，文件开头3个标识字节“FLV”标识文件类型，紧跟一个version字节，当前版本始终是0x01，然后紧跟的一个字节0x05从低位开始第一位表示是否有视频流，第三位表示是否有音频流，最高5位保留，因此，判断是否有视频和音频：</p>
+<div class="hlcode"><pre><span class="n">has_video</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x01</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span>
+<span class="n">has_audio</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x04</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span>
+</pre></div>
+
+
+<p>上例中0x05说明该文件既含有视频又含有音频。随后4个字节表示FLV文件头的长度，一般是9，因为从文件头到此正好是9个字节，表示FLV文件头结束。</p>
+<p>剩下的部分全部是FLV Body内容。FLV Body由一个一个的Tag构成，格式为：</p>
+<div class="hlcode"><pre><span class="n">Tag0</span><span class="err">的长度</span> <span class="o">|</span> <span class="n">Tag1</span> <span class="o">|</span> <span class="n">tag1</span><span class="err">的长度</span> <span class="o">|</span> <span class="n">tag2</span> <span class="o">|</span> <span class="n">tag2</span><span class="err">的长度</span> <span class="o">|</span> <span class="p">...</span> <span class="o">|</span> <span class="n">tagN</span> <span class="o">|</span> <span class="n">tagN</span><span class="err">的长度</span>
+</pre></div>
+
+
+<p>第0个Tag也就是Tag0不存在，因此长度总是0，然后是Tag1的内容，紧跟Tag1的长度……Tag长度为4字节无符号整数。</p>
+<p>tag有3类，ScriptTag = 0x12，又称Metadata Tag，存放视频元数据，如高、宽和关键帧等信息，VideoTag = 0x09，存放Video，AudioTag = 0x08，存放Audio。</p>
+<p>Tag的结构如下：</p>
+<div class="hlcode"><pre><span class="n">Field</span><span class="o">:</span> <span class="n">Type</span>
+<span class="n">Reseved</span><span class="o">:</span> <span class="n">UB</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+<span class="n">Filter</span><span class="o">:</span> <span class="n">UB</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+<span class="n">TagType</span><span class="o">:</span> <span class="n">UB</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+<span class="n">DataSize</span><span class="o">:</span> <span class="n">UI24</span>
+<span class="n">Timestamp</span><span class="o">:</span> <span class="n">UI24</span>
+<span class="n">TimestampExtended</span><span class="o">:</span> <span class="n">UI8</span>
+<span class="n">StreamID</span><span class="o">:</span> <span class="n">UI24</span>
+<span class="k">if</span> <span class="n">TagType</span><span class="o">==</span><span class="mi">8</span><span class="o">:</span>
+    <span class="n">AudioTagHeader</span><span class="o">:</span> <span class="err">不定长</span>
+<span class="k">if</span> <span class="n">TagType</span><span class="o">==</span><span class="mi">9</span><span class="o">:</span>
+    <span class="n">VideoTagHeader</span><span class="o">:</span> <span class="err">不定长</span>
+<span class="k">if</span> <span class="n">Filter</span><span class="o">==</span><span class="mi">1</span><span class="o">:</span>
+    <span class="n">EncryptionTagHeader</span><span class="o">:</span> <span class="err">不定长</span>
+<span class="n">Data</span><span class="o">:</span> <span class="err">不定长</span>
+</pre></div>
+
+
+<p>Adobe的规范中，UB表示Unsigned Bit，UB(2)表示2个bit，UI表示Unsigned Integer，UI24表示24位整数，也就是3个Byte。</p>
+<p>第一个字节的高2位bit保留，filter bit通常为0，低5位表示TagType，判断TagType的代码就是：</p>
+<div class="hlcode"><pre><span class="n">tagType</span> <span class="o">=</span> <span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x1f</span>
+</pre></div>
+
+
+<p>紧跟的3个byte是Tag数据的长度，即StreamID后面的数据长度，正好等于Tag的总长度减去11字节。</p>
+<p>紧跟的3个byte是时间戳，后面再接一个byte的扩展时间戳。计算时间按如下公式计算：</p>
+<div class="hlcode"><pre><span class="err">扩展时间戳</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span> <span class="o">+</span> <span class="err">时间戳</span>
+</pre></div>
+
+
+<p>单位是毫秒。</p>
+<p>紧跟的3个byte是StreamID，当前规范中始终为0。</p>
+<p>根据TagType，紧跟的是AudioTagHeader或VideoTagHeader，剩下的就是真正的数据了。</p>
+<p>解析FLV的Python代码如下：</p>
+<div class="hlcode"><pre><span class="n">def</span> <span class="n">parse_flv</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span><span class="o">:</span>
+    <span class="k">if</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_bytes</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">!=</span><span class="err">&#39;</span><span class="n">FLV</span><span class="err">&#39;</span><span class="o">:</span>
+        <span class="n">raise</span> <span class="n">StandardError</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Bad</span> <span class="n">FLV</span> <span class="n">header</span><span class="err">&#39;</span><span class="p">)</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_byte</span><span class="p">()</span> <span class="err">#</span> <span class="n">should</span> <span class="n">be</span> <span class="mh">0x01</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_byte</span><span class="p">()</span>
+    <span class="n">has_video</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x01</span><span class="p">)</span><span class="o">==</span><span class="mh">0x01</span>
+    <span class="n">has_audio</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0x04</span><span class="p">)</span><span class="o">==</span><span class="mh">0x04</span>
+    <span class="n">reader</span><span class="p">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="err">#</span> <span class="n">skip</span> <span class="n">length</span>
+    <span class="n">reader</span><span class="p">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="err">#</span> <span class="n">skip</span> <span class="n">tag</span> <span class="mi">0</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">length</span>
+    <span class="k">while</span> <span class="n">not</span> <span class="n">reader</span><span class="p">.</span><span class="n">eof</span><span class="p">()</span><span class="o">:</span>
+        <span class="n">tag_type</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">parse_tag</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tag_type</span><span class="o">==</span><span class="mh">0x12</span><span class="o">:</span>
+            <span class="n">parse_script_tag</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">elif</span> <span class="n">tag_type</span><span class="o">==</span><span class="mh">0x08</span><span class="o">:</span>
+            <span class="n">parse_audio_tag</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="n">elif</span> <span class="n">tag_type</span><span class="o">==</span><span class="mh">0x09</span><span class="o">:</span>
+            <span class="n">parse_video_tag</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="nl">else:</span>
+            <span class="n">raise</span> <span class="n">StandardError</span><span class="p">(</span><span class="err">&#39;</span><span class="n">Bad</span> <span class="n">tag</span> <span class="n">type</span><span class="err">&#39;</span><span class="p">)</span>
+
+<span class="n">def</span> <span class="n">parse_tag</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">tag_type</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_byte</span><span class="p">()</span> <span class="o">&amp;</span> <span class="mh">0x1f</span>
+    <span class="n">data_size</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_int24</span><span class="p">()</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_int24</span><span class="p">()</span>
+    <span class="n">timestamp_ext</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read_int8</span><span class="p">()</span>
+    <span class="n">reader</span><span class="p">.</span><span class="n">skip</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="err">#</span> <span class="n">skip</span> <span class="n">stream</span> <span class="n">id</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">reader</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="n">data_size</span><span class="p">)</span>
+    <span class="n">reader</span><span class="p">.</span><span class="n">read_int32</span><span class="p">()</span> <span class="err">#</span> <span class="n">tag</span> <span class="n">size</span><span class="p">,</span> <span class="n">should</span> <span class="n">be</span> <span class="n">data_size</span> <span class="o">+</span> <span class="mi">11</span>
+    <span class="k">return</span> <span class="n">tag_type</span><span class="p">,</span> <span class="p">(</span><span class="n">timestamp_ext</span> <span class="o">&lt;&lt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">data</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

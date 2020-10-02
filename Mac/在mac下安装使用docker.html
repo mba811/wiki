@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>在Mac下安装使用Docker - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;在Mac下安装使用Docker
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 06:58
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">在Mac下安装使用Docker</div>
+
+  <h2 id="_1">安装</h2>
+<p>Docker暂时并不支持原生的Mac系统，所以Mac下的Docker实际上是依赖一个很小的linux虚拟机来实现的。</p>
+<h3 id="virtualbox">安装Virtualbox</h3>
+<p>Vagrant依赖现有的虚拟机软件来管理虚拟机，如Virtualbox, Vmware Fusion, Parallel Desktop等，其中最方便的是VirtualBox，所以我选择了Virtualbox。</p>
+<p>下载地址在<a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a>。下载好后直接安装。</p>
+<h3 id="boot2docker">安装Boot2Docker</h3>
+<p><a href="https://github.com/boot2docker/boot2docker">Boot2Docker</a>是帮助控制虚拟机中Docker的工具，它会下载一个安装好docker的虚拟机，并控制其实现docker功能。</p>
+<p>在mac下安装boot2docker只要执行</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">boot2docker</span>
+</pre></div>
+
+
+<p>即可。</p>
+<h3 id="docker-client">安装docker client</h3>
+<p>要想在mac下直接执行docker命令，需要安装一个适合mac的docker client，安装方法如下</p>
+<div class="hlcode"><pre><span class="c1"># Get the docker client file</span>
+<span class="nv">DIR</span><span class="s-Atom">=</span><span class="err">$</span><span class="p">(</span><span class="s-Atom">mktemp</span> <span class="o">-</span><span class="s-Atom">d</span> <span class="err">$</span><span class="p">{</span><span class="nv">TMPDIR</span><span class="p">:-</span><span class="o">/</span><span class="s-Atom">tmp</span><span class="p">}</span><span class="o">/</span><span class="s-Atom">dockerdl</span><span class="p">.</span><span class="nv">XXXXXXX</span><span class="p">)</span> <span class="s-Atom">&amp;&amp;</span> <span class="s-Atom">\</span>
+<span class="s-Atom">curl</span> <span class="o">-</span><span class="s-Atom">f</span> <span class="o">-</span><span class="s-Atom">o</span> <span class="err">$</span><span class="nv">DIR</span><span class="o">/</span><span class="s-Atom">ld</span><span class="p">.</span><span class="s-Atom">tgz</span> <span class="nn">https</span><span class="p">:</span><span class="o">//</span><span class="s-Atom">get</span><span class="p">.</span><span class="s-Atom">docker</span><span class="p">.</span><span class="s-Atom">io</span><span class="o">/</span><span class="s-Atom">builds</span><span class="o">/</span><span class="nv">Darwin</span><span class="o">/</span><span class="s-Atom">x86_64</span><span class="o">/</span><span class="s-Atom">docker</span><span class="o">-</span><span class="s-Atom">latest</span><span class="p">.</span><span class="s-Atom">tgz</span> <span class="s-Atom">&amp;&amp;</span> <span class="s-Atom">\</span>
+<span class="s-Atom">gunzip</span> <span class="err">$</span><span class="nv">DIR</span><span class="o">/</span><span class="s-Atom">ld</span><span class="p">.</span><span class="s-Atom">tgz</span> <span class="s-Atom">&amp;&amp;</span> <span class="s-Atom">\</span>
+<span class="s-Atom">tar</span> <span class="s-Atom">xvf</span> <span class="err">$</span><span class="nv">DIR</span><span class="o">/</span><span class="s-Atom">ld</span><span class="p">.</span><span class="s-Atom">tar</span> <span class="o">-</span><span class="nv">C</span> <span class="err">$</span><span class="nv">DIR</span><span class="o">/</span> <span class="s-Atom">&amp;&amp;</span> <span class="s-Atom">\</span>
+<span class="s-Atom">cp</span> <span class="err">$</span><span class="nv">DIR</span><span class="o">/</span><span class="s-Atom">usr</span><span class="o">/</span><span class="s-Atom">local</span><span class="o">/</span><span class="s-Atom">bin</span><span class="o">/</span><span class="s-Atom">docker</span> <span class="p">.</span><span class="o">/</span><span class="s-Atom">docker</span>
+
+<span class="s-Atom">#</span> <span class="nv">Set</span> <span class="s-Atom">the</span> <span class="s-Atom">environment</span> <span class="s-Atom">variable</span> <span class="s-Atom">for</span> <span class="s-Atom">the</span> <span class="s-Atom">docker</span> <span class="s-Atom">daemon</span>
+<span class="s-Atom">export</span> <span class="nv">DOCKER_HOST</span><span class="o">=</span><span class="nn">tcp</span><span class="p">:</span><span class="o">//</span><span class="m">127</span><span class="p">.</span><span class="m">0</span><span class="p">.</span><span class="m">0</span><span class="p">.</span><span class="m">1</span><span class="s-Atom">:</span><span class="m">4243</span>
+
+<span class="s-Atom">#</span> <span class="nv">Copy</span> <span class="s-Atom">the</span> <span class="s-Atom">executable</span> <span class="s-Atom">file</span>
+<span class="s-Atom">sudo</span> <span class="s-Atom">cp</span> <span class="s-Atom">docker</span> <span class="o">/</span><span class="s-Atom">usr</span><span class="o">/</span><span class="s-Atom">local</span><span class="o">/</span><span class="s-Atom">bin</span><span class="o">/</span>
+</pre></div>
+
+
+<p>这样就有一个docker命令了</p>
+<h2 id="_2">使用</h2>
+<p>使用docker安装需要先启动boot2docker虚拟机</p>
+<div class="hlcode"><pre><span class="cp"># Initiate the VM</span>
+<span class="n">boot2docker</span> <span class="n">init</span>
+
+<span class="cp"># Run the VM (the docker daemon)</span>
+<span class="n">boot2docker</span> <span class="n">up</span>
+
+<span class="cp"># To see all available commands:</span>
+<span class="n">boot2docker</span>
+</pre></div>
+
+
+<p>之后就可以使用docker命令了</p>
+<div class="hlcode"><pre><span class="n">docker</span> <span class="n">version</span>
+</pre></div>
+
+
+<h2 id="_3">参考</h2>
+<ol>
+<li><a href="http://docs.docker.io/en/latest/installation/mac/">How To Install Docker On Mac OS X</a></li>
+<li><a href="https://github.com/boot2docker/boot2docker">boot2docker</a></li>
+</ol>
+<hr />
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

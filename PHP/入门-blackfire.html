@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>入门 Blackfire - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#PHP">PHP</a>&nbsp;&#187;&nbsp;入门 Blackfire
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:10
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">入门 Blackfire</div>
+
+  <p>入门Blackfire应该少于<strong>5分钟</strong> 而这个文件将指导您完成安装步骤：</p>
+<ol>
+<li><a href="https://blackfire.io/getting-started#pre-requisites">请检查您的系统满足Blackfire的要求;</a></li>
+<li><a href="https://blackfire.io/getting-started#installation">安装PHP扩展和代理;</a></li>
+<li><a href="https://blackfire.io/doc/configuration">配置系统;</a></li>
+<li><a href="https://blackfire.io/doc/web-page">开始分析您的应用程序。</a></li>
+</ol>
+<p>如果停留在这个过程中，有一个看<a href="https://blackfire.io/doc/troubleshooting"> 故障排除</a>部分或联系<a href="https://blackfire.io/getting-started#feedback">我们的支持</a>。</p>
+<p>在我们开始之前，一定要明白，Blackfire是由重要的是<strong>五个主要部分组成</strong>：</p>
+<ul>
+<li>该<strong>探测器</strong>是一个PHP扩展，它收集的原始性能曲线;</li>
+<li>该<strong>代理</strong>是一个服务器端的守护进程，汇聚和转发配置文件blackfire.io;</li>
+<li>的<strong>伴侣</strong>是主要用于触发从您的浏览器评测一个网页浏览器的扩展;</li>
+<li>该<strong>客户端</strong>是命令行等效的同伴，它可以从任何地方，即使它被打包与代理在默认情况下使用;</li>
+<li>该<strong>网站</strong>被用于可视化的轮廓。</li>
+</ul>
+<h2 id="_1">先决条件</h2>
+<p>在安装之前Blackfire，请确保您的系统满足以下<strong>技术要求</strong>：</p>
+<ul>
+<li>该<strong>探头</strong>的<strong>代理</strong>，并在<strong>客户端</strong>上工作<strong>的Linux</strong> 和<strong>MacOS X的</strong>。</li>
+<li>该<strong>探头</strong>可以与<strong>PHP 5.3，5.4，5.5，和5.6</strong>。</li>
+<li>的<strong>伴侣</strong>是目前仅适用于<strong>谷歌Chrome浏览器</strong>。</li>
+<li>该<strong>网站</strong>适用于所有浏览器，但IE浏览器。</li>
+</ul>
+<h2 id="_2">安装</h2>
+<p>Blackfire是本身可以在很多<a href="https://blackfire.io/partners">平台上</a> ; 配置是他们更容易：</p>
+<ul>
+<li><a href="https://devcenter.heroku.com/articles/blackfire"><img alt="" src="https://d2vqbs7xgyce6n.cloudfront.net/assets/vd419c36a56/bundles/blackfire/img/partners/heroku.png" /></a><br />
+</li>
+<li><a href="https://docs.platform.sh/integration/blackfire/"><img alt="" src="https://d2vqbs7xgyce6n.cloudfront.net/assets/vd419c36a56/bundles/blackfire/img/partners/platform.png" /></a><br />
+</li>
+<li><a href="http://fortrabbit.com/docs/how-to/misc/blackfire"><img alt="" src="https://d2vqbs7xgyce6n.cloudfront.net/assets/vd419c36a56/bundles/blackfire/img/partners/fortrabbit.png" /></a><br />
+</li>
+<li><a href="https://forge.laravel.com/"><img alt="" src="https://d2vqbs7xgyce6n.cloudfront.net/assets/vd419c36a56/bundles/blackfire/img/partners/laravel-forge.svg" /></a><br />
+</li>
+<li>
+<p><a href="https://www.cloudcontrol.com/add-ons/blackfire"><img alt="" src="https://d2vqbs7xgyce6n.cloudfront.net/assets/vd419c36a56/bundles/blackfire/img/partners/cloudcontrol.png" /></a></p>
+</li>
+<li>
+<p>[Debian的</p>
+</li>
+</ul>
+<p>Ubuntu的/薄荷</p>
+<p>](https://blackfire.io/getting-started#installation)<br />
+  * [红帽</p>
+<p>Fedora的/ CentOS的</p>
+<p>](https://blackfire.io/getting-started#installation)<br />
+  * [MacOS的</p>
+<p>](https://blackfire.io/getting-started#installation)<br />
+  * [视窗</p>
+<p>](https://blackfire.io/getting-started#installation)<br />
+  * [码头工人</p>
+<p>](https://blackfire.io/getting-started#installation)<br />
+  * [厨师<br />
+</p>
+<p>](https://blackfire.io/getting-started#installation)<br />
+  * [手动安装</p>
+<p>](https://blackfire.io/getting-started#installation)</p>
+<h3 id="debianblackfire">在Debian使用Blackfire</h3>
+<p>快速链接：</p>
+<ul>
+<li><a href="https://blackfire.io/getting-started#config-repo-debian">配置Debian的仓库</a></li>
+<li><a href="https://blackfire.io/getting-started#install-agent-debian">安装代理</a></li>
+<li><a href="https://blackfire.io/getting-started#install-cli-debian">安装CLI工具</a></li>
+<li><a href="https://blackfire.io/getting-started#install-probe-debian">安装PHP探头</a></li>
+</ul>
+<h3 id="debian">配置Debian的仓库</h3>
+<p>Blackfire使用自定义库的Debian发行自己的包; 它是一个像Ubuntu和Linux的薄荷大多数基于Debian的发行版兼容。</p>
+<p>注册<strong>packagecloud</strong>关键：</p>
+<p>wget -O - https://packagecloud.io/gpg.key | sudo apt-key add -</p>
+<p>Add <code>deb http://packages.blackfire.io/debian any main</code> to<code>/etc/apt/sources.list.d/blackfire.list</code>:</p>
+<div class="hlcode"><pre><span class="n">echo</span> <span class="s">&quot;deb http://packages.blackfire.io/debian any main&quot;</span> <span class="o">|</span> <span class="n">sudo</span> <span class="n">tee</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="p">.</span><span class="n">list</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">blackfire</span><span class="p">.</span><span class="n">list</span>
+</pre></div>
+
+
+<p>更新资料库：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+</pre></div>
+
+
+<h3 id="_3">安装代理</h3>
+<p>安装<code>blackfire-agent</code>包装：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">blackfire</span><span class="o">-</span><span class="n">agent</span>
+</pre></div>
+
+
+<p>一旦代理已经安装，配置Blackfire凭据：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">blackfire</span><span class="o">-</span><span class="n">agent</span> <span class="o">-</span><span class="k">register</span>
+</pre></div>
+
+
+<p>此命令会询问你的Blackfire <strong>服务器凭据</strong>，请登录或注册现在：</p>
+<p><a href="https://blackfire.io/session/login?target=/getting-started">登录</a> 或 <a href="https://blackfire.io/signup?target=/getting-started">注册</a></p>
+<h4 id="_4">代理服务</h4>
+<p>在代理安装，一个新的<code>/etc/init.d/blackfire-agent</code> 服务的创建启动，停止和重新启动它。</p>
+<p>注册的代理，只要您修改其配置后，必须重新启动它的服务：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">blackfire</span><span class="o">-</span><span class="n">agent</span> <span class="n">restart</span>
+</pre></div>
+
+
+<p>如果出现问题，请在默认情况下生成的日志文件<code>/var/log/blackfire/agent.log</code>（您可以更改日志文件和日志级别<a href="https://blackfire.io/doc/configuration#agent-configuration"> 代理配置</a>。）</p>
+<h3 id="blackfire-cli">安装Blackfire CLI工具</h3>
+<p>安装<code>blackfire-agent</code>包装：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">blackfire</span><span class="o">-</span><span class="n">agent</span>
+</pre></div>
+
+
+<p>运行<code>配置</code>命令初始化客户端</p>
+<div class="hlcode"><pre><span class="n">blackfire</span> <span class="n">config</span>
+</pre></div>
+
+
+<p>此命令会询问你的Blackfire <strong>客户端凭据</strong>，登录或注册现在：</p>
+<p><a href="https://blackfire.io/session/login?target=/getting-started">登录</a> 或 <a href="https://blackfire.io/signup?target=/getting-started">注册</a></p>
+<h3 id="php">安装PHP探头</h3>
+<h4 id="_5">已知的不兼容</h4>
+<p>请注意编译在PHP <code>调试</code>不支持，而且探头可与冲突<code>了XDebug</code>或 <code>XHProf的</code> ; 使探头时禁用这些扩展。</p>
+<h4 id="zendzts">Zend的线程安全（ZTS）</h4>
+<p>探头现已与兼容<code>特稿</code>版本的Linux上，但支持是目前<strong>实验</strong>。千万<strong>不能</strong>使用它在生产和<a href="https://blackfire.io/getting-started#feedback">请报告任何问题</a>。</p>
+<p>安装<code>blackfire-PHP</code>包：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">blackfire</span><span class="o">-</span><span class="n">php</span>
+</pre></div>
+
+
+<p>要完成探头安装，重新启动您的Web服务器或PHP-FPM，检查有没有错误消息。为了调试问题，您可以更改日志级别和日志文件<a href="https://blackfire.io/doc/configuration#probe-configuration">探头配置</a>。）</p>
+<h2 id="_6">下一步是什么？</h2>
+<p>现在安装了一切，你可以开始使用Blackfire; 有<strong>没有必要改变你的代码</strong>，Blackfire在需要时自动插装只有它：</p>
+<ul>
+<li><a href="https://blackfire.io/doc/web-page">个人网页</a></li>
+<li><a href="https://blackfire.io/doc/cli-tutorial">简介CLI脚本</a></li>
+<li><a href="https://blackfire.io/doc/web-services">配置文件API / Web服务调用</a></li>
+<li><a href="https://blackfire.io/doc/manual-instrumentation">手册仪表</a></li>
+<li><a href="https://blackfire.io/doc/upload-profile">上传现有的配置文件</a></li>
+<li><a href="https://blackfire.io/doc/first-profile">分析你的第一个个人资料</a></li>
+<li><a href="https://blackfire.io/doc/configuration">配置 </a>- 反向代理，内容安全策略等。</li>
+<li><a href="https://blackfire.io/doc/troubleshooting">故障排除常见错误</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

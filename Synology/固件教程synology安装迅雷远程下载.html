@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>固件教程Synology安装迅雷远程下载 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Synology">Synology</a>&nbsp;&#187;&nbsp;固件教程Synology安装迅雷远程下载
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:58
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">固件教程Synology安装迅雷远程下载</div>
+
+  <p><strong>迅雷官方已经公布了原厂迅雷远程下载的固件，那么我们现在不多说就来看看如何安装吧。</strong></p>
+<ol>
+<li>
+<p>先去迅雷固件看下你相应的NAS的CPU型号，并<a href="http://luyou.xunlei.com/thread-4410-1-1.html">下载相应的固件</a></p>
+</li>
+<li>
+<p>找到相应的文件名并下载</p>
+</li>
+<li>
+<p>登陆你的nas，进入控制面板选择web服务，将Web Station打勾，点击应用</p>
+</li>
+<li>
+<p>打开File Station，打开web文件夹，将刚下载的迅雷固件拉到web文件夹下，点击覆盖即可</p>
+</li>
+<li>
+<p>右击那个固件，并解压缩（删除原固件文件）</p>
+</li>
+<li>
+<p>修改文件夹为xunlei</p>
+</li>
+<li>
+<p>下载<a href="http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe">PUTTY ssh工具 </a>打开SSH命令行窗口</p>
+</li>
+<li>
+<p>运行PUTTY，输入IP地址点Open</p>
+</li>
+<li>
+<p>用户名输入root，密码输入与admin一样的登录后可以看到DiskStation&gt;</p>
+</li>
+<li>
+<p>输入cd /（注意空格）回车，再输入 ./volume1/web/xunlei/portal（注意./)回车，看到激活码代表运行成功，关闭PUTTY对话框即可</p>
+</li>
+<li>
+<p>输入<a href="http://xn--ip-im8ckc:9000/getsysinfo">http://IP地址:9000/getsysinfo</a></p>
+</li>
+<li>
+<p>添加迅雷远程到计划任务<strong>（当机器重启或者升级后，请手动运行一下这个脚本，否则迅雷远程无法启动）</strong>将任务名称更改为xunlei，并在用户定义的脚本处写入/volume1/web/xunlei/portal然后选择计划并将运行平率更改为1小时一次，点击确定。</p>
+</li>
+<li>
+<p>勾选xunlei任务点击保存。</p>
+</li>
+<li>
+<p>登录<a href="http://yuancheng.xunlei.com/login.html%E5%B0%86%E8%8E%B7%E5%8F%96%E7%9A%84%E6%BF%80%E6%B4%BB%E7%A0%81%E6%B7%BB%E5%8A%A0%E5%88%B0%E8%BF%85%E9%9B%B7%E8%BF%9C%E7%A8%8B%E3%80%82">http://yuancheng.xunlei.com/login.html将获取的激活码添加到迅雷远程。</a></p>
+</li>
+<li>
+<p>添加成功后会在控制界面中看到</p>
+</li>
+<li>
+<p>迅雷下载会存储在TDDOWNLOAD下，但是这个文件夹在没有第一次迅雷下载之前是隐藏的，必须用迅雷远程下载一个文件后才并重启才可以在共享文件夹中看到。请设定相应用户可以访问。</p>
+</li>
+</ol>
+<blockquote>
+<p>第11操作备注：</p>
+</blockquote>
+<ul>
+<li>第一项：0表示返回结果成功</li>
+<li>第二项： 1表示检测网络正常，0表示检测网络异常</li>
+<li>第四项： 1表示已绑定成功，0表示未绑定</li>
+<li>第五项： 未绑定的情况下，为绑定的需要的激活码<strong>（这里获得的激活码呆会绑定要用，激活码不需要购买，ps迅雷远程下载不是破解的，是官方发布的）</strong></li>
+<li>第六项： 1表示磁盘挂载检测成功，0表示磁盘挂载检测失败</li>
+</ul>
+<blockquote>
+<p>使用迅雷帐号登录迅雷远<a href="http://yuancheng.xunlei.com/">程下载页面</a>，点【添加】，选择【路由器】并填入激活码，点【确定】即绑定成功。当绑定成功后红色叉处即可解除绑定。</p>
+</blockquote>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

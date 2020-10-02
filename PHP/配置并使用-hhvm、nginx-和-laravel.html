@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>配置并使用 HHVM、Nginx 和 Laravel - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#PHP">PHP</a>&nbsp;&#187;&nbsp;配置并使用 HHVM、Nginx 和 Laravel
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 23:57
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">配置并使用 HHVM、Nginx 和 Laravel</div>
+
+  <blockquote>
+<p>014年3月31日根据 <a href="http://hhvm.com/">HHVM 3.0</a> 做了更新！</p>
+</blockquote>
+<h2 id="_1">前提条件</h2>
+<p>此文章适用于 <strong>Ubuntu 12.04 LTS</strong> 和 <strong>14.04 LTS</strong> 。</p>
+<p>在你的 Mac 上通过 Brew （<a href="http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/">在 Mac 上安装 nginx</a> and <a href="https://github.com/facebook/hhvm/wiki/Building-and-installing-HHVM-on-OSX-10.8">在 Mac 上安装 hhvm</a>） 也可以安装。</p>
+<p>关于如何在其他发行版或版本的服务器上安装 HHVM 可以看 <a href="http://docs.hhvm.com/manual/en/install.php">这里</a> -- 译者注：HHVM 官网需要翻墙。</p>
+<p>OK，我们开始吧！</p>
+<h2 id="_2">安装基本组件</h2>
+<p>首先，我们先安装一些后续过程需要的基本组件：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">unzip</span> <span class="n">vim</span> <span class="n">git</span><span class="o">-</span><span class="n">core</span> <span class="n">curl</span> <span class="n">wget</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="n">python</span><span class="o">-</span><span class="n">software</span><span class="o">-</span><span class="n">properties</span>
+</pre></div>
+
+
+<h2 id="nginx">安装 Nginx</h2>
+<p>接下来我们安装 <code>Nginx</code>。由于 <code>hhvm</code> 包会检测系统中是否已经安装了 Nginx（或者 Apache），并对其配置做一些修改，所以我将先安装 Ngin。我们还需要添加 <code>ppa:nginx/stable</code> 仓库来获取最新版本的 Nginx，一般最新版本都会包含一些安全方面的更新。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="o">-</span><span class="n">y</span> <span class="n">ppa</span><span class="o">:</span><span class="n">nginx</span><span class="o">/</span><span class="n">stable</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">nginx</span>
+</pre></div>
+
+
+<h2 id="hhvm">安装 HHVM</h2>
+<p>现在轮到 HHVM 了，我们将参照 <a href="https://github.com/facebook/hhvm/wiki/Prebuilt-Packages-on-Ubuntu-12.04">官方文档</a> 来安装 HHVM，包括以 FashCGI 模式启动 HHVM。</p>
+<blockquote>
+<p>在此之前，HHVM-Fastcgi 是一个单独的安装包。现在不是了。</p>
+</blockquote>
+<h3 id="ubuntu-1204">Ubuntu 12.04:</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="o">-</span><span class="n">y</span> <span class="n">ppa</span><span class="o">:</span><span class="n">mapnik</span><span class="o">/</span><span class="n">boost</span>
+<span class="err">$</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="n">http</span><span class="o">:</span><span class="c1">//dl.hhvm.com/conf/hhvm.gpg.key | sudo apt-key add -</span>
+<span class="err">$</span> <span class="n">echo</span> <span class="n">deb</span> <span class="n">http</span><span class="o">:</span><span class="c1">//dl.hhvm.com/ubuntu precise main | sudo tee /etc/apt/sources.list.d/hhvm.list</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">hhvm</span>
+</pre></div>
+
+
+<h3 id="ubuntu-1404">Ubuntu 14.04:</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="o">-</span> <span class="n">http</span><span class="o">:</span><span class="c1">//dl.hhvm.com/conf/hhvm.gpg.key | sudo apt-key add -</span>
+<span class="err">$</span> <span class="n">echo</span> <span class="n">deb</span> <span class="n">http</span><span class="o">:</span><span class="c1">//dl.hhvm.com/ubuntu trusty main | sudo tee /etc/apt/sources.list.d/hhvm.list</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">hhvm</span>
+</pre></div>
+
+
+<h2 id="hhvm_1">配置 HHVM</h2>
+<p>HHVM 安装完成之后，你会看到输出的一些重要信息，注意看一下：</p>
+<div class="hlcode"><pre><span class="o">********************************************************************</span>
+<span class="o">*</span> <span class="n">HHVM</span> <span class="n">is</span> <span class="n">installed</span><span class="p">.</span> <span class="n">Here</span> <span class="n">are</span> <span class="n">some</span> <span class="n">more</span> <span class="n">things</span> <span class="n">you</span> <span class="n">might</span> <span class="n">want</span> <span class="n">to</span> <span class="k">do</span><span class="o">:</span>
+<span class="o">*</span> 
+<span class="o">*</span> <span class="n">Configure</span> <span class="n">your</span> <span class="n">webserver</span> <span class="n">to</span> <span class="n">use</span> <span class="n">HHVM</span><span class="o">:</span>
+<span class="o">*</span> <span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">hhvm</span><span class="o">/</span><span class="n">install_fastcgi</span><span class="p">.</span><span class="n">sh</span>
+<span class="o">*</span> <span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">nginx</span> <span class="n">restart</span>
+<span class="o">*</span> <span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">apache</span> <span class="n">restart</span>
+<span class="o">*</span> <span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">hhvm</span> <span class="n">restart</span>
+<span class="o">*</span> 
+<span class="o">*</span> <span class="n">Run</span> <span class="n">command</span> <span class="n">line</span> <span class="n">scripts</span> <span class="n">with</span> <span class="n">HHVM</span><span class="o">:</span>
+<span class="o">*</span> <span class="err">$</span> <span class="n">hhvm</span> <span class="n">whatever</span><span class="p">.</span><span class="n">php</span>
+<span class="o">*</span> 
+<span class="o">*</span> <span class="n">Use</span> <span class="n">HHVM</span> <span class="k">for</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">php</span> <span class="n">even</span> <span class="k">if</span> <span class="n">you</span> <span class="n">have</span> <span class="n">php</span><span class="o">-</span><span class="n">cli</span> <span class="n">installed</span><span class="o">:</span>
+<span class="o">*</span> <span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">update</span><span class="o">-</span><span class="n">alternatives</span> <span class="o">--</span><span class="n">install</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">php</span> <span class="n">php</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">hhvm</span> <span class="mi">60</span>
+<span class="o">********************************************************************</span>
+</pre></div>
+
+
+<p>HHVM 自带了一个脚本来帮我们安装并配置 FastCGI！我们来运行这个脚本：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">hhvm</span><span class="o">/</span><span class="n">install_fastcgi</span><span class="p">.</span><span class="n">sh</span> <span class="err">#</span> <span class="n">This</span> <span class="n">restarts</span> <span class="n">Nginx</span> <span class="k">for</span> <span class="n">us</span>
+
+<span class="cp"># Set this to start on system bootup</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">update</span><span class="o">-</span><span class="n">rc</span><span class="p">.</span><span class="n">d</span> <span class="n">hhvm</span> <span class="n">defaults</span>
+
+<span class="cp"># Restart the service now</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">service</span> <span class="n">hhvm</span> <span class="n">restart</span>                      <span class="err">#</span> <span class="n">We</span><span class="err">&#39;</span><span class="n">ll</span> <span class="n">also</span> <span class="n">restart</span> <span class="n">HHVM</span>
+</pre></div>
+
+
+<h2 id="php">运行 PHP</h2>
+<p>现在，HHVM 本质上就是一个完整的 PHP 代码的运行环境了，因此我们没有必要安装 PHP 了。</p>
+<p>安装之后，你就可以像使用 PHP 一样使用 <code>hhvm</code>。比如，你可以像下面这样运行 PHP 源码文件：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">hhvm</span> <span class="n">some_file</span><span class="p">.</span><span class="n">php</span>
+</pre></div>
+
+
+<p>由于某些组件(composer, phpunit) 默认还是会依赖 "php" (其实是 <code>php-cli</code>) ，我们需要找一种方式让他们运行 HHVM 而不是 PHP。回顾一下上面 HHVM 安装完之后输出的一些信息，那里面已经告诉你如何实现这个需求了：is</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">update</span><span class="o">-</span><span class="n">alternatives</span> <span class="o">--</span><span class="n">install</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">php</span> <span class="n">php</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">hhvm</span> <span class="mi">60</span>
+</pre></div>
+
+
+<p>现在就可以像往常一样运行 "php" 了！</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">php</span> <span class="o">-</span><span class="n">v</span>
+<span class="n">HipHop</span> <span class="n">VM</span> <span class="mf">3.0.0</span> <span class="p">(</span><span class="n">rel</span><span class="p">)</span>  
+<span class="nl">Compiler:</span> <span class="n">tags</span><span class="o">/</span><span class="n">HHVM</span><span class="o">-</span><span class="mf">3.0.0</span><span class="o">-</span><span class="mi">0</span><span class="o">-</span><span class="n">g59a8db46e4ebf5cfd205fadc12e27a9903fb7aae</span>  
+<span class="n">Repo</span> <span class="n">schema</span><span class="o">:</span> <span class="mi">48906</span><span class="n">efe08d29a403bbe13414f32ccd256708e0b</span>
+</pre></div>
+
+
+<h2 id="fast-cgi">Fast-CGI</h2>
+<p>HHVM 其实已经帮我们配置好 Nginx 了。注意到 <code>/etc/nginx/hhvm.conf</code> 这个文件了吗。如果你以前使用过 PHP-FPM ， <code>hhvm.conf</code> 也是类似的内容：</p>
+<div class="hlcode"><pre><span class="cp"># Note this will work with &quot;hack&quot; files as well as php files!</span>
+<span class="n">location</span> <span class="o">~</span> <span class="err">\</span><span class="p">.(</span><span class="n">hh</span><span class="o">|</span><span class="n">php</span><span class="p">)</span><span class="err">$</span> <span class="p">{</span>  
+    <span class="n">fastcgi_keep_conn</span> <span class="n">on</span><span class="p">;</span>
+    <span class="n">fastcgi_pass</span>   <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">9000</span><span class="p">;</span>
+    <span class="n">fastcgi_index</span>  <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+    <span class="n">fastcgi_param</span>  <span class="n">SCRIPT_FILENAME</span> <span class="err">$</span><span class="n">document_root</span><span class="err">$</span><span class="n">fastcgi_script_name</span><span class="p">;</span>
+    <span class="n">include</span>        <span class="n">fastcgi_params</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>打开 Nginx 自带的 <code>/etc/nginx/sites-available/default</code> 文件，你将看到这里面已经将 <code>hhvm.conf</code> 文件引入了：</p>
+<div class="hlcode"><pre><span class="p">...</span> <span class="n">Stuff</span> <span class="n">above</span> <span class="n">this</span> <span class="n">omitted</span> <span class="p">...</span>
+    <span class="err">#</span> <span class="n">Make</span> <span class="n">site</span> <span class="n">accessible</span> <span class="n">from</span> <span class="n">http</span><span class="o">:</span><span class="c1">//localhost/</span>
+    <span class="n">server_name</span> <span class="n">localhost</span><span class="p">;</span>
+    <span class="n">include</span> <span class="n">hhvm</span><span class="p">.</span><span class="n">conf</span><span class="p">;</span>  <span class="err">#</span> <span class="err">就是这里</span><span class="o">!!!</span>
+
+    <span class="n">location</span> <span class="o">/</span> <span class="p">{</span>
+<span class="p">...</span> <span class="n">Stuff</span> <span class="n">below</span> <span class="n">this</span> <span class="n">omitted</span> <span class="p">...</span>
+</pre></div>
+
+
+<p>HHVM 的开发者很 Nice，帮我们做了很多工作，让 HHVM 的使用异常傻瓜化！</p>
+<h2 id="php_1">跑一把 PHP 代码</h2>
+<p>接下来我们就来玩一把吧！注意 Nginx 默认的文档根目录是 <code>root/usr/share/nginx/html</code>，这里包含了一个 <code>index.html</code> 文件，如果我们访问本地服务器，将看到如下文件内容：</p>
+<div class="hlcode"><pre><span class="nx">vagrant</span><span class="p">@</span><span class="nx">vaprobash</span><span class="p">:</span><span class="err">~$</span> <span class="nb">curl</span> <span class="nx">localhost</span>  
+<span class="o">&lt;!</span><span class="nb">DOCTYPE</span> <span class="nx">html</span><span class="o">&gt;</span>  
+<span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>  
+<span class="o">&lt;</span><span class="nb">head</span><span class="o">&gt;</span>  
+<span class="o">&lt;</span><span class="nb">title</span><span class="o">&gt;</span><span class="nx">Welcome</span> <span class="k">to</span> <span class="nx">nginx</span><span class="o">!&lt;/</span><span class="nb">title</span><span class="o">&gt;</span>  
+<span class="nx">...</span> <span class="nx">More</span> <span class="nx">stuff</span> <span class="nx">omitted</span> <span class="nx">...</span>
+</pre></div>
+
+
+<p>下面我们就来创建一个 <code>index.php</code> 文件测试一下吧。下面这一样代码就是 <code>index.php</code>文件中的所有内容，也就是仅仅调用了 <code>phpinfo()</code> 函数：</p>
+<div class="hlcode"><pre><span class="nx">$</span> <span class="nx">echo</span> <span class="err">&quot;</span><span class="cp">&lt;?php</span> <span class="nb">phpinfo</span><span class="p">();</span><span class="s2">&quot; | sudo tee  /usr/share/nginx/html/index.php</span>
+</pre></div>
+
+
+<p>试着运行一下：</p>
+<div class="hlcode"><pre><span class="n">vagrant</span><span class="err">@</span><span class="n">vaprobash</span><span class="o">:~</span><span class="err">$</span> <span class="n">curl</span> <span class="n">localhost</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span>  
+<span class="n">HipHop</span>
+</pre></div>
+
+
+<p>太棒了！<code>phpinfo()</code> 函数在 HHVM 环境中输出了 "HipHop"，我们知道这样就运行成功了！</p>
+<h2 id="laravel">Laravel</h2>
+<p>通过上面的设置，安装 Laravel 其实就和平时的做法一样。由于我们为 HHVM 建了一个软连接到 php 命令，所以只要像平时一样执行其他安装任务即可。</p>
+<h2 id="nginx_1">配置 Nginx</h2>
+<p>我们来为 Laravel 快速创建一个 Nginx 配置。我们假定 Laravel 项目在 <code>/vagrant</code> 目录下面（网站的根目录就要设置为 <code>/vagrant/laravel/public</code> 了）。现在创建 <code>/etc/nginx/sites-available/laravel</code> 文件如下：</p>
+<div class="hlcode"><pre><span class="n">server</span> <span class="p">{</span>  
+    <span class="n">listen</span> <span class="mi">80</span> <span class="n">default_server</span><span class="p">;</span>
+
+    <span class="n">root</span> <span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">laravel</span><span class="o">/</span><span class="n">public</span><span class="p">;</span>
+    <span class="n">index</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span> <span class="n">index</span><span class="p">.</span><span class="n">htm</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+
+    <span class="n">server_name</span> <span class="n">localhost</span><span class="p">;</span>
+
+    <span class="n">access_log</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">localhost</span><span class="p">.</span><span class="n">laravel</span><span class="o">-</span><span class="n">access</span><span class="p">.</span><span class="n">log</span><span class="p">;</span>
+    <span class="n">error_log</span>  <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">locahost</span><span class="p">.</span><span class="n">laravel</span><span class="o">-</span><span class="n">error</span><span class="p">.</span><span class="n">log</span> <span class="n">error</span><span class="p">;</span>
+
+    <span class="n">charset</span> <span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="p">;</span>
+
+    <span class="n">location</span> <span class="o">/</span> <span class="p">{</span>
+        <span class="n">try_files</span> <span class="err">\$</span><span class="n">uri</span> <span class="err">\$</span><span class="n">uri</span><span class="o">/</span> <span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">?</span><span class="err">\$</span><span class="n">query_string</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">location</span> <span class="o">=</span> <span class="o">/</span><span class="n">favicon</span><span class="p">.</span><span class="n">ico</span> <span class="p">{</span> <span class="n">log_not_found</span> <span class="n">off</span><span class="p">;</span> <span class="n">access_log</span> <span class="n">off</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="o">/</span><span class="n">robots</span><span class="p">.</span><span class="n">txt</span>  <span class="p">{</span> <span class="n">log_not_found</span> <span class="n">off</span><span class="p">;</span> <span class="n">access_log</span> <span class="n">off</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="n">error_page</span> <span class="mi">404</span> <span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+
+    <span class="n">include</span> <span class="n">hhvm</span><span class="p">.</span><span class="n">conf</span><span class="p">;</span>  <span class="err">#</span> <span class="n">The</span> <span class="n">HHVM</span> <span class="n">Magic</span> <span class="n">Here</span>
+
+    <span class="err">#</span> <span class="n">Deny</span> <span class="p">.</span><span class="n">htaccess</span> <span class="n">file</span> <span class="n">access</span>
+    <span class="n">location</span> <span class="o">~</span> <span class="o">/</span><span class="err">\</span><span class="p">.</span><span class="n">ht</span> <span class="p">{</span>
+        <span class="n">deny</span> <span class="n">all</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>此配置将替代 Nginx 自带的 <code>default</code> 配置文件。为了我们的讲解方面，我们将删除 <code>default</code> 文件的软连接，使其不起作用，并且启用刚才创建的 <code>laravel</code> 配置文件：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">rm</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">enabled</span><span class="o">/</span><span class="k">default</span>   <span class="err">#</span> <span class="n">Remove</span> <span class="n">the</span> <span class="n">sym</span><span class="o">-</span><span class="n">linked</span> <span class="k">default</span> <span class="n">config</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">available</span><span class="o">/</span><span class="n">laravel</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">enabled</span><span class="o">/</span><span class="n">laravel</span>    <span class="err">#</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">sym</span><span class="o">-</span><span class="n">link</span> <span class="n">to</span> <span class="n">the</span> <span class="n">laravel</span> <span class="n">config</span>
+</pre></div>
+
+
+<p>然后让 Nginx 重新加载配置文件：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">service</span> <span class="n">nginx</span> <span class="n">reload</span>
+</pre></div>
+
+
+<h2 id="composer">安装 Composer</h2>
+<p>按照平时的方式在全局环境中安装 composer 即可：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">curl</span> <span class="o">-</span><span class="n">sS</span> <span class="n">https</span><span class="o">:</span><span class="c1">//getcomposer.org/installer | php</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">mv</span> <span class="n">composer</span><span class="p">.</span><span class="n">phar</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">composer</span>
+</pre></div>
+
+
+<h2 id="laravel_1">安装 Laravel</h2>
+<p>然后我们就可以利用 Composer 来创建一个新的 Laravel 项目了。我们就把这个新项目叫做 <code>laravel</code> 吧，那么, 根据上面的目录安排，我们执行如下指令：</p>
+<div class="hlcode"><pre><span class="cp"># Move to /vagrant so we install Laravel</span>
+<span class="cp"># into /vagrant/laravel</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="o">/</span><span class="n">vagrant</span>
+<span class="err">$</span> <span class="n">composer</span> <span class="n">create</span><span class="o">-</span><span class="n">project</span> <span class="n">laravel</span><span class="o">/</span><span class="n">laravel</span> <span class="n">laravel</span>
+</pre></div>
+
+
+<p>稍等一会儿，Composer 将自动安装 Laravel 所依赖的扩展包。接下来就可以在浏览器中看到 Laravel 的启动画面了！</p>
+<h2 id="_3">注意</h2>
+<p>请多留意错误日志。HHVM 默认并不会通过浏览器输出错误信息。</p>
+<p>请检查 Laravel 的日志：</p>
+<div class="hlcode"><pre><span class="cp"># Show last 50 lines written out to laravel log</span>
+<span class="err">$</span> <span class="n">tail</span> <span class="o">-</span><span class="n">n</span> <span class="mi">50</span> <span class="o">-</span><span class="n">f</span> <span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">hhlaravel</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">logs</span><span class="o">/</span><span class="n">laravel</span><span class="p">.</span><span class="n">log</span>
+</pre></div>
+
+
+<p>检查 HHVM 的日志。</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">tail</span> <span class="o">-</span><span class="n">n</span> <span class="mi">50</span> <span class="o">-</span><span class="n">f</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">hhvm</span><span class="o">/</span><span class="n">error</span><span class="p">.</span><span class="n">log</span>
+</pre></div>
+
+
+<p>你还可以在 <a href="http://docs.hhvm.com/manual/en/configuration.php">运行时和其他配置</a> 文档中了解更多关于 HHVM 的信息。</p>
+<blockquote>
+<p>我觉得 <a href="https://github.com/facebook/hhvm/wiki/_pages">Github Wiki</a> 和 <a href="http://docs.hhvm.com/manual/en/index.php">HHVM 官网</a> 上的信息会随着项目的推进而快速更新。幸好关于错误报告和设置方面的文档也将逐步完善。不过目前的文档要么就是不全，要么就是太旧了。如果你找到更好的文档，别忘了通知我一声！</p>
+</blockquote>
+<h2 id="vaprobash">Vaprobash</h2>
+<p><a href="https://github.com/fideloper/Vaprobash">Vaprobash</a> 目前已经有了针对 ubuntu 14.04 LTS 的版本，并且正在朝着稳定版推进。更多信息请参考 <a href="http://fideloper.com/on-vaprobash">Vaprobash 的发展方向</a> 。只要在 Vagrantfile 文件中设置了 <code>hhvm = "true"</code> 参数就可以很方便的使用 HHVM 和 Hack 了！</p>
+<hr />
+<p>英文原文地址：<a href="http://fideloper.com/hhvm-nginx-laravel">http://fideloper.com/hhvm-nginx-laravel</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

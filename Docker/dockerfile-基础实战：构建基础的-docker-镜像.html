@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Dockerfile 基础实战：构建基础的 Docker 镜像 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Dockerfile 基础实战：构建基础的 Docker 镜像
+    <span class="updated">Page Updated&nbsp;
+      2015-06-04 12:46
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Dockerfile 基础实战：构建基础的 Docker 镜像</div>
+
+  <p>我们可以从Docker Hub上下载官方仓库中的镜像，我自己就下载了ubuntu镜像，只有 <code>188M</code> 左右，很小巧了。但是看了下，里面的软件源还是官方的，而且没有安装 <code>vim</code> ，所以就打算自己写一个 <code>Dockerfile</code> ，用它来构建适合自己的ubuntu基础镜像。</p>
+<div class="hlcode"><pre><span class="n">languagedeb</span> <span class="n">http</span><span class="o">:</span><span class="c1">//archive.ubuntu.com/ubuntu/ trusty main restricted</span>
+<span class="n">deb</span><span class="o">-</span><span class="n">src</span> <span class="n">http</span><span class="o">:</span><span class="c1">//archive.ubuntu.com/ubuntu/ trusty main restricted</span>
+<span class="p">...................</span>
+</pre></div>
+
+
+<h2 id="_1">构建上下文</h2>
+<p><code>build context</code> ，一个自定义的文件夹，里面放置Dockerfile和一些需要的文件。比如我的：</p>
+<ul>
+<li>Dockerfile...这个是必须的</li>
+<li>sources.list...自己在官方社区找的 <a href="http://wiki.ubuntu.org.cn/Template:14.04source">ubuntu14.04</a> 的源</li>
+<li>
+<p>vimrc...安装好vim后用到的配置文件。我事先配置好的，都是些基础的配置。</p>
+<p>language.<br />
+├── baseimage<br />
+│   ├── Dockerfile<br />
+│   ├── README.md<br />
+│   ├── sources.list<br />
+│   └── vimrc</p>
+</li>
+</ul>
+<h2 id="dokerfile">Dokerfile</h2>
+<p>制作image有两种方法：</p>
+<ul>
+<li>
+<p>从现有容器通过 <code>commit</code> 命令创建   </p>
+<ul>
+<li>dockerfile中不方便的操作可以在容器中操作然后提交</li>
+<li>没有批量启动容器的需要</li>
+<li>自己学、习练习，不需要移植</li>
+<li>
+<p>利用Dockerfile构建   </p>
+</li>
+<li>
+<p>方便，灵活，可移植</p>
+</li>
+<li>适合部署大量的镜像和容器</li>
+</ul>
+</li>
+</ul>
+<h3 id="dockerfile">Dockerfile基础</h3>
+<ul>
+<li>'#'表示注释，一般Dockerfile第一行注释容器的基本信息和版本。</li>
+<li>Dockerfile以 <code>命令：参数</code> 为基本构建语句，命令全部大写，后面的参数视命令而定</li>
+<li>
+<p>FROM，必须是第一个命令项，表示我的镜像是以哪个镜像为基础构建的</p>
+<p>languageFROM ubuntu</p>
+</li>
+<li>
+<p>MAINTAINER，后面接构建这的姓名和邮箱，方便联系</p>
+<p>languageMAINTAINER adolphlwq <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#107;&#101;&#110;&#97;&#110;&#51;&#48;&#49;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#107;&#101;&#110;&#97;&#110;&#51;&#48;&#49;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></p>
+</li>
+<li>
+<p>LABEL，用键值对的方式来指定image的元数据</p>
+<p>languageLABEL Description="it is used as a basic image for DuoHuoStudio and my study.I will update and install vim." Vendor="Basic image"</p>
+</li>
+<li>
+<p>ADD，在构建时向Docker daemon传递文件</p>
+<p>languageADD sources.list /etc/apt/</p>
+</li>
+<li>
+<p>RUN，接操作和命令 <code>sudo apt-get install -y vim</code> 等</p>
+<p>languageADD sources.list /etc/apt/ </p>
+</li>
+<li>
+<p>CMD，构建成功的镜像第一次启动时默认启动的命令</p>
+<ul>
+<li>CMD只有1条，一般默认在Dockerfile的最后</li>
+<li>如果有多个CMD，只有最后一个起作用</li>
+<li>CMD会被 <code>docker run ..</code> 后面的命令覆盖</li>
+</ul>
+<p>languageCMD ["/bin/bash"]</p>
+</li>
+<li>
+<p>ENV，设置环境变量</p>
+<p>languageENV REFRESHED_AT 2015-05-18</p>
+</li>
+</ul>
+<h3 id="_2">构建命令</h3>
+<div class="hlcode"><pre><span class="n">languagecd</span> <span class="n">baseimage</span><span class="p">(</span><span class="err">构建上下文文件夹</span><span class="p">)</span>
+<span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span><span class="o">=</span><span class="s">&quot;duohuosrudio/ubuntu:14.04_64_base_image&quot;</span> <span class="p">.</span>
+</pre></div>
+
+
+<p><code>docker build</code> 中 <code>-t</code> 表示容器的名字</p>
+<p><code>duohuosrudio/ubuntu</code> 中 <code>duohuostudio</code> 表示仓库名（不允许大写）， <code>ubuntu</code> 表示镜像名。</p>
+<p><code>ubuntu:14.04_64_base_image</code> 后的 <code>14.04_64_base_image</code> 是标签，如果没有指定，默认的是 <code>latest</code></p>
+<p>构建过程：</p>
+<p><img alt="" src="http://img1.tuicool.com/ueMb6b.gif" /></p>
+<h3 id="_3">实践中遇到的错误</h3>
+<ul>
+<li><code>apt-get upgrade</code> 和 <code>apt-get install vim</code> 都要加上<strong> -y</strong>选项，不然会报错</li>
+<li>ADD后面必须接两个参数， <code>ADD &lt;src&gt;... &lt;dest&gt;</code> 表示要添加的文件，表示文件添加到哪里。</li>
+<li>ADD添加的文件必须以 <code>构建上下文</code> 为根目录来找，不能超出构建上下文的范围。</li>
+</ul>
+<p>如果除错停止构建了也不要担心，Docker会把构建过程中的文件都缓存起来，再次构建时会从缓存的地方开始，节省时间。</p>
+<p>除错停止后 <code>docker images</code> 会出现一个只有 <code>IMAGE ID</code> 的镜像，这个就是构建失败后留下的缓存，我们可以通过image id来运行这个镜像，然后执行除错的命令来检查为什么出错！（下图的最后1行）</p>
+<div class="hlcode"><pre><span class="nx">languageadolph</span><span class="p">@</span><span class="nx">geek</span><span class="p">:</span><span class="err">~</span><span class="p">/</span><span class="nx">programs</span><span class="p">/</span><span class="nx">DockerWorkspace</span><span class="p">/</span><span class="nx">dockerfile</span><span class="p">/</span><span class="nx">baseimage</span><span class="err">$</span> <span class="nx">docker</span> <span class="nx">images</span>
+<span class="nx">REPOSITORY</span>               <span class="kt">TAG</span>                   <span class="nb">IMAGE</span> <span class="nb">ID</span>            <span class="nx">CREATED</span>             <span class="nx">VIRTUAL</span> <span class="nb">SIZE</span>
+<span class="nx">test</span><span class="p">/</span><span class="nx">ubuntu</span>              <span class="mf">14.04</span><span class="nx">_64_base_image</span>   <span class="nx">e9390454465c</span>        <span class="mi">14</span> <span class="nx">hours</span> <span class="nx">ago</span>        <span class="mf">269.1</span> <span class="nx">MB</span>
+<span class="nx">test2</span><span class="p">/</span><span class="nx">ubuntu</span>             <span class="mf">14.04</span><span class="nx">_64_base_image</span>   <span class="nx">e9390454465c</span>        <span class="mi">14</span> <span class="nx">hours</span> <span class="nx">ago</span>        <span class="mf">269.1</span> <span class="nx">MB</span>
+<span class="nx">duohuostudio</span><span class="p">/</span><span class="nx">ubuntu</span>      <span class="mf">14.04</span><span class="nx">_64_base_image</span>   <span class="nx">e9390454465c</span>        <span class="mi">14</span> <span class="nx">hours</span> <span class="nx">ago</span>        <span class="mf">269.1</span> <span class="nx">MB</span>
+<span class="o">&lt;</span><span class="kc">none</span><span class="o">&gt;</span>                   <span class="o">&lt;</span><span class="kc">none</span><span class="o">&gt;</span>                <span class="nx">f6efc4dac25a</span>        <span class="mi">16</span> <span class="nx">hours</span> <span class="nx">ago</span>        <span class="mf">269.1</span> <span class="nx">MB</span>
+</pre></div>
+
+
+<h2 id="_4">总结</h2>
+<div class="hlcode"><pre><span class="n">languagedocker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span><span class="o">=</span><span class="s">&quot;duohuostudio/ubuntu:14.04_64_base_image&quot;</span> <span class="p">.</span>
+</pre></div>
+
+
+<p>这条命令的 <strong>最后一个参数是用来指定Dockerfile的路径</strong> ，千万不要忘记。</p>
+<p>dockerfile已经上传到 <a href="https://github.com/adolphlwq/DockerfileHub">github 地址</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

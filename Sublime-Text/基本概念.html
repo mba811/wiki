@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>基本概念 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Sublime-Text">Sublime-Text</a>&nbsp;&#187;&nbsp;基本概念
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 23:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">基本概念</div>
+
+  <p>本指南是从Windows用户的角度写的，但大多数指令应该只需要一些简单的改变，以工作在其他平台上。</p>
+<p>相对路径（例如，<code>Packages/User</code>）开始<a href="http://sublime-text-unofficial-documentation.readthedocs.org/en/sublime-text-2/basic_concepts.html#the-data-directory">的数据目录</a> ，除非另有说明。</p>
+<p>我们假设默认键绑定，表示键盘快捷键的时候。由于这样崇高的文本键映射到相应的命令，<strong>一些关键的绑定将不匹配您的区域设置的键盘布局</strong>。</p>
+<h2 id="_1">问题</h2>
+<p>Sublime Text是一个非常可扩展和可定制的编辑器。它做了很多东西开箱即用，但如果你花一些时间它剪裁您的具体需求，它会给你超级大国。本指南将教你所有你需要知道的配置崇高的文本。</p>
+<p>在下面的文章中，我们将概述一些方面会不会在你的心中点击，直到你已经花了一些时间用崇高的文本。不断探索的编辑器和东张西望本指南中，一切将水到渠成在一些点。</p>
+<p>崇高的文本肯定是一个多功能的工具，程序员，但你并不需要成为一个使用它，甚至将其配置，使之成为你的写作的完美工具。如果你是一名黑客，但是，你要花费你一天用这个编辑器玩弄的剩余部分。</p>
+<h2 id="__">该_数据_目录</h2>
+<p>崇高文本2店几乎所有的数据目录下用户感兴趣的文件。这是一个依赖于平台的位置：</p>
+<ul>
+<li><strong>窗户</strong>：<code>%APPDATA%\Sublime Text 2</code></li>
+<li><strong>OS X</strong>：<code>~/Library/Application Support/Sublime Text 2</code></li>
+<li><strong>Linux</strong>：<code>~/.config/sublime-text-2</code></li>
+</ul>
+<p>对于<strong>便携式设备</strong>，看看里面<code>sublime.packages_path()</code>。在这里，_崇高文本2_部分是指目录，你已经提取含崇高文本2的压缩文件的内容。</p>
+<p>请注意，只有在便携式装置确实命名的目录_数据_存在。对于其他类型的安装中，数据目录是上面所指出的位置。</p>
+<h2 id="the-user-package">The <code>User</code> Package</h2>
+<p>这是一个<strong>关键的目录</strong>：为支持的编程和标记语言的所有资源都存储在这里。一_包_是包含具有特殊意义的崇高文本相关文件的目录。</p>
+<p>您可以从崇高文本菜单访问包目录（<strong>Preferences | Browse Packages...</strong><br />
+），或者通过API调用的方式：<code>sublime.packages_path（）</code>。在本指南中，我们指的这个位置是 Packages, packages path, packages或packages directory。</p>
+<h3 id="_2">在<code>用户</code>套餐</h3>
+<p><code>Packages/User</code>是一个包罗万象的目录自定义插件，片段，宏等考虑你的个人区域在包文件夹中。崇高的文字绝不会覆盖的内容<code>Packages/User</code>在升级过程中。</p>
+<h2 id="pythonpythonapi">Python的控制台和Python的API</h2>
+<p>这些信息对于程序员特别有趣。对于崇高文本用户的休息，你只需要知道，它使用户与编程技巧给自己加功能的编辑器。（所以，去学习如何编程，这是非常有趣！）</p>
+<p>Sublime Text带有一个嵌入式Python解释器。这是一个有用的工具来检查崇高文本设置和你写的插件，而快速测试API调用。</p>
+<p>要打开Python的控制台，请按`Ctrl键+``或者选择<strong>View | Show Console</strong>  菜单。</p>
+<p>困惑？让我们再试一次较为​​缓慢：</p>
+<p>_蟒蛇_是一种编程语言称为是方便初学者和非常强大的同时，_API_是短期的“应用编程接口”，这句话的意思是崇高的文本编写的用户编程一个奇特的方式。换句话说，崇高文字给人的Python通过其内部的用户访问。最后，一_台_是崇高的文本里面一个小窗口，它可以让你键入Python代码片段很短，并运行它们。控制台还显示了崇高的文本或它的插件文本输出。</p>
+<h3 id="python-vs-sublime-textpython">你的系统的Python VS Sublime Text嵌入式Python</h3>
+<p><strong>Windows</strong>和<strong>Linux</strong>，Sublime Text本身自带的Python解释器和它的独立于系统的Python安装。</p>
+<p>在<strong>OS X</strong>中，系统的Python来代替。修改的Python系统的版本，如与MacPorts的版本替换它，可能会导致卓异文本问题。</p>
+<p>嵌入的解释只是为了与插件API进行交互，而不是一般的发展。一些插件可能会遇到的问题，因为嵌入式或使用口译不是每个操作系统上是相同的。</p>
+<h2 id="_3">包，插件，资源和其他东西，可能没有什么意义，你现在</h2>
+<p>现在，只需记住，几乎所有的崇高文本可以适应您的需求。这个巨大的灵活性就是为什么你会了解这么多的设置文件的原因：有简单的必须是指定所有你的喜好的地方。</p>
+<p>在崇高的文本配置文件，您可以更改编辑器的行为，加宏，片段或创建新的功能-where <em>配备_的意思是“任何你能想到的”。好吧，也许不是_什么</em>，但崇高的文本肯定递给你在一个很好的协议控制。</p>
+<p>这些设置文件根本就下列特殊的结构或文本文件 <em>格式</em>：JSON占主导地位，但你会发现XML文件了。</p>
+<p>在本指南中，我们指集体所有这些不同的配置文件作为_资源_。崇高的文本将寻找包目录内的资源。为了保持整洁，编辑具有的概念_包装_，这是一个包含属于一个整体的资源目录（也许他们更快或代码，都有助于写电子邮件在一定的编程语言）。</p>
+<h2 id="textmate">TextMate的兼容性</h2>
+<p>这些信息主要是针对谁是现在使用的崇高文字TextMate的外籍人士非常有用。TextMate的是一个编辑器为Mac。</p>
+<p>崇高的文字是对TextMate捆绑带命令的例外相当兼容。此外，崇高文本要求所有的语法定义有_.tmLanguage_扩展，和所有的喜好文件有_.tmPreferences_扩展。这意味着它们_的.plist_文件将被忽略，即使它们位于下一个_语法_或_偏好_ 子目录。</p>
+<h2 id="vi-emulation">VI Emulation</h2>
+<p>这些信息主要是为恐龙和人谁喜欢砸的长期RSI在谈话中非常有用。六是一种古老的模式编辑器，让用户从键盘执行的所有操作。VIM，一个现代版的六，仍在广泛使用。</p>
+<p>Sublime Text通过提供VI Vintage package。在复古包_忽略_默认。了解更多关于<a href="http://www.sublimetext.com/docs/2/vintage.html">Vintage</a>的官方文档。</p>
+<h2 id="emacs">Emacs的</h2>
+<p>此信息的人几乎没有用处。Emacs是......嗯，没有人真正知道什么Emacs是，但有些人用它编辑文本。</p>
+<p>如果你是一个Emacs用户，你可能不读了。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

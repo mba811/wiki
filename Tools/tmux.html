@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>tmux - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;tmux
+    <span class="updated">Page Updated&nbsp;
+      2015-02-09 05:52
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">tmux</div>
+
+  <h2 id="tmux">tmux是什么</h2>
+<p><a href="http://tmux.sourceforge.net/">tmux</a> 是什么？我们先来看看官网的解释：</p>
+<p>tmux is a terminal multiplexer</p>
+<p>What is a terminal multiplexer? It lets you switch easily between several programs in one terminal, detach them (they keep running in the background) and reattach them to a different terminal. And do a lot more.</p>
+<p>简单来说就是一个终端多开工具，能让你同时运行多个终端会话，在这些会话之间随意切换。</p>
+<h2 id="_1">特色功能</h2>
+<h2 id="_2">终端会话多开</h2>
+<p>平常在终端的使用过程中，一次只能运行一个会话。 当然你也可以通过终端程序的多开标签页来解决，但是使用了tmux，你就可以在一个终端中同时运行多个会话，只需开启一个终端。<a href="http://lszb811.qiniudn.com/tmux1.png"><img alt="终端会话多开" src="http://lszb811.qiniudn.com/tmux1.png" /></a>终端会话多开</p>
+<h2 id="detachattach">会话的分离（detach）与连接（attach）</h2>
+<p>我们在使用终端的过程中，总会遇到过类似场景：</p>
+<ul>
+<li>用终端运行了一个测试代码的HTTP服务（如rails、django），想要关闭终端程序窗口，但又不想让服务停掉</li>
+<li>用ssh连接到服务器，正在编辑文件或修改配置，突然断网了，网络重新连通后再连接上服务器，又要重新进入刚才的工作目录、找到要编辑的文件、找到刚才修改的那一行……</li>
+<li>在公司用ssh连接到服务器，打开了多个文件，回家后想继续干活，但是还要再凭记忆把文件逐一打开</li>
+</ul>
+<p>使用tmux会话的分离与连接就可以轻松解决以上问题，分离（detach）可以使终端会话在后台运行，连接（attach）可以重新打开在后台运行的会话，也可以多个终端连接同一会话。这些都会在后续详细描述。</p>
+<p>tmux是什么 <a href="http://t.cn/Rv6DnPb">http://t.cn/Rv6DnPb</a> 平常在终端的使用过程中，一次只能运行一个会话。 当然你也可以通过终端程序的多开标签页来解决，但是使用了tmux，你就可以在一个终端中同时运行多个会话，只需开启一个终端。</p>
+<h2 id="_3">安装</h2>
+<p>tmux 的安装比较简单，以下分别介绍 linux、Mac、FreeBSD、Windows系统下的安装方法</p>
+<h2 id="linux">linux</h2>
+<p>linux 用户只要使用系统自带的包管理器来安装就行了</p>
+<h3 id="debian">Debian 系</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">tmux</span>
+</pre></div>
+
+
+<h3 id="_4">红帽系</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">tmux</span>
+</pre></div>
+
+
+<h3 id="arch-linux">Arch Linux</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">pacman</span> <span class="o">-</span><span class="n">S</span> <span class="n">tmux</span>
+</pre></div>
+
+
+<h2 id="mac">Mac</h2>
+<p>Mac 用户可以通过 <a href="http://brew.sh/">Homebrew</a> 或 <a href="http://www.macports.org/">Macports</a> 来进行安装</p>
+<h3 id="homebrew">Homebrew</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">tmux</span>
+</pre></div>
+
+
+<h3 id="macports">Macports</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">tmux</span>
+</pre></div>
+
+
+<h2 id="freebsd">FreeBSD</h2>
+<p>FreeBSD可以使用自带的port进行安装</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">ports</span><span class="o">/</span><span class="n">sysutil</span><span class="o">/</span><span class="n">tmux</span>
+<span class="err">$</span> <span class="n">make</span> <span class="n">install</span> <span class="n">clean</span>
+</pre></div>
+
+
+<h2 id="windows">Windows</h2>
+<p>Windows下可以使用 <a href="http://cygwin.com/">cygwin</a> 来安装 cygwin，cygwin是图形安装界面，请确保在 Select Packages 界面出现时，选中 tmux 即可。</p>
+<p>最后，为了确保 tmux 正确安装，可以在命令行里输入以下命令，来查看 tmux 的版本号</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="o">-</span><span class="n">V</span>
+</pre></div>
+
+
+<p><em>注意是大写的V</em></p>
+<p>如果出现类似以下字符串，就已经安装成功了</p>
+<div class="hlcode"><pre><span class="n">tmux</span> <span class="mf">1.8</span>
+</pre></div>
+
+
+<p>目前最新版本为 1.9a，随后的章节将使用 1.8 版本做解说，请确保你安装的 tmux 版本要在 1.8 或以上，以免缺少某些必要的功能。</p>
+<h2 id="_5">会话</h2>
+<p>上一节我们已经将 tmux 安装好了，现在就可以通过以下命令来启动它：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span>
+</pre></div>
+
+
+<p>启动之后，可以看到命令行最底部多了一条绿色的状态条，上面显示了一些信息，比如计算机名和时间等。 要退出 tmux，可以输入<code>exit</code> 回车或者按下组合键 <code>[Ctrl+d]</code> 。</p>
+<p>其实刚才我们启动 tmux 之后，它已经自动创建了一个会话（Session），会话是 tmux 的最主要的功能，接下来我们将介绍会话的一些功能。</p>
+<h2 id="_6">新建会话</h2>
+<p>启动 tmux 会自动创建会话，但并没有为会话命名。为了以后使用方便，我们来创建一个自己命名的会话，命令如下：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">tmux</span> <span class="nb">new</span><span class="na">-session</span> <span class="na">-s</span> <span class="o">&lt;</span><span class="nx">会话名称</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>现在我们来创建一个会话，取名为 <code>dev</code> ，命令为：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">new</span><span class="o">-</span><span class="n">session</span> <span class="o">-</span><span class="n">s</span> <span class="n">dev</span>
+</pre></div>
+
+
+<p>创建完成之后，可以看到底部状态条左边标示出了当前的会话名为 <code>dev</code> 。</p>
+<p>这个命令还有一个缩写版本， <code>new-session</code> 缩写成 <code>new</code> ，也就是上述命令可以简写成：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">new</span> <span class="o">-</span><span class="n">s</span> <span class="n">dev</span>
+</pre></div>
+
+
+<p>新建会话还可以带上一个初始命令：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">tmux</span> <span class="nb">new</span> <span class="na">-s</span> <span class="o">&lt;</span><span class="nx">会话名称</span><span class="o">&gt;</span> <span class="nx">初始命令</span>
+</pre></div>
+
+
+<p>比如创建一个名为 <strong>monitor</strong> 的会话，初始命令为 <strong>top</strong> ：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">new</span> <span class="o">-</span><span class="n">s</span> <span class="n">monitor</span> <span class="n">top</span>
+</pre></div>
+
+
+<p>可以看到会话创建后，会自动运行 <strong>top</strong> 命令。但是一旦退出 <strong>top</strong> 程序 (按 <code>[q]</code> )，会话也会自动退出，所以在实际应用中，初始命令几乎不会用到。</p>
+<h2 id="detach">分离会话（detach）</h2>
+<p>之前已经说过，退出 tmux 可以使用 <code>exit</code> 命令或者 <code>[Ctrl+d]</code> 组合键，退出 tmux 会把会话结束掉，就像平常关闭终端程序一样。但是在实际应用中，可能你并不希望这样，因为有些程序是要保持运行的，例如 rails 的测试服务、telnet连接远程服务器等等。</p>
+<p>这时候分离会话就可以派上用场了，分离后的会话并不会把运行中的程序结束掉，而是会保持运行，你还可以稍后重新连接上这些会话。</p>
+<p>分离会话之前，我们先来启动一个需要保持运行的程序，这里用 python 2.x 的 SimpleHTTPServer 为例， 当然你也可以选择启动 rails 或 django 的测试服务、telnet 连接或者更简单的 top 命令。</p>
+<p>先在之前创建的会话中运行一下命令来启动一个简单的 HTTP 服务：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">SimpleHTTPServer</span>
+<span class="n">Serving</span> <span class="n">HTTP</span> <span class="n">on</span> <span class="mf">0.0.0.0</span> <span class="n">port</span> <span class="mi">8000</span> <span class="p">...</span>
+</pre></div>
+
+
+<p>这时候 HTTP 服务已经运行起来了，接下来就要做分离会话的操作了，快捷键是：</p>
+<p><code>[Ctrl+b]</code> <code>[d]</code></p>
+<p>也就是先按下组合键 <code>[Ctrl+b]</code> 然后再接着按 <code>[d]</code> 。d 代表了 detach，而 <code>[Ctrl+b]</code> 是一个命令前缀（官方称之为 prefix），这个命令前缀是告诉终端程序，接下来的命令是针对 tmux 使用的。在之后的描述中，都将采用 <code>[前缀]</code> 来代替 tmux 的命令前缀。</p>
+<p>可以看到，在按下快捷键之后，tmux 已经退出并回到平常的终端中，并带着 <strong>[detached]</strong> 字样的提示。</p>
+<p>这时候可以在浏览器访问一下刚才启动的 HTTP 服务 <a href="http://localhost:8000%EF%BC%8C%E7%A1%AE%E5%AE%9E%E5%8F%AF%E4%BB%A5%E6%AD%A3%E5%B8%B8%E8%AE%BF%E9%97%AE%EF%BC%8C%E8%AF%81%E6%98%8E%E5%88%9A%E6%89%8D%E7%9A%84%E7%A8%8B%E5%BA%8F%E8%BF%98%E5%9C%A8%E4%BF%9D%E6%8C%81%E8%BF%90%E8%A1%8C%E4%B8%AD%EF%BC%8C%E5%B9%B6%E6%B2%A1%E6%9C%89%E8%A2%AB%E7%BB%93%E6%9D%9F%EF%BC%8C%E7%94%9A%E8%87%B3%E4%BD%A0%E8%BF%98%E5%8F%AF%E4%BB%A5%E6%8A%8A%E6%95%B4%E4%B8%AA%E7%BB%88%E7%AB%AF%E7%A8%8B%E5%BA%8F%E5%85%B3%E9%97%AD%E3%80%82/">http://localhost:8000，确实可以正常访问，证明刚才的程序还在保持运行中，并没有被结束，甚至你还可以把整个终端程序关闭。</a></p>
+<p><em>可能有人会很不习惯这个默认的命令前缀，包括我自己在内，因为 <code>[Ctrl+b]</code> 是一个 Emacs 或 Vim 的快捷键，甚至是命令行本身的快捷键。在 Emacs 或者命令行中，它是后退一个字符的操作；而在 Vim 中，它是一个向上翻页的操作。不过不用担心，先忍耐忍耐，稍后的章节将讲述如何配置 tmux，那时就可以摆脱快捷键冲突的困扰了。</em></p>
+<h2 id="attach">连接会话（attach）</h2>
+<p>被分离的会话，还可以重新连接上，就让我们来实践一下，命令为：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">tmux</span> <span class="nx">attach</span><span class="na">-session</span> <span class="na">-t</span> <span class="o">&lt;</span><span class="nx">目标会话名</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>简写为</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">tmux</span> <span class="nx">attach</span> <span class="na">-t</span> <span class="o">&lt;</span><span class="nx">目标会话名</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>或</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">tmux</span> <span class="nx">a</span> <span class="na">-t</span> <span class="o">&lt;</span><span class="nx">目标会话名</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>之前我们创建的会话名叫 <strong>dev</strong> ，所以命令就可以这样写：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">a</span> <span class="o">-</span><span class="n">t</span> <span class="n">dev</span>
+</pre></div>
+
+
+<p>因为我们只创建了一个会话，所以可以忽略 <strong>-t</strong> 的参数，直接写成：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">a</span>
+</pre></div>
+
+
+<p>如果不指定目标会话名，tmux 将会连接你上次使用的会话。连接上 <strong>dev</strong> 会话之后，可以看到程序还在运行中，而且终端里显示的内容跟会话分离前没什么两样，只是多了几行 HTTP 请求的日志。</p>
+<p>这时候，你还可以在多个终端，甚至是多台电脑通过 ssh 连接上同一个会话，可以实现共同操作，非常强大，具体的感受可以自己体会。</p>
+<p>接下来我们多创建几个 tmux 会话，在这之前先把当前会话分离掉：</p>
+<ol>
+<li>分离当前会话： <code>[前缀]</code> <code>d</code></li>
+<li>新建一个名为 <strong>edit</strong> 的会话： <code>$ tmux new -s edit</code></li>
+<li>分离 <strong>edit</strong> 会话： <code>[前缀]</code> <code>d</code></li>
+<li>新建一个名为 <strong>telnet</strong> 的会话： <code>$ tmux new -s telnet</code></li>
+<li>分离 <strong>telnet</strong> 会话： <code>[前缀]</code> <code>d</code></li>
+</ol>
+<p>现在，会话已经足够多了，接下来登场的就是列出所有会话的命令：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">list</span><span class="o">-</span><span class="n">sessions</span>
+</pre></div>
+
+
+<p>可以简写成</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">ls</span>
+</pre></div>
+
+
+<p>屏幕上将会显示出所有创建的会话，比如：</p>
+<div class="hlcode"><pre><span class="n">dev</span><span class="o">:</span> <span class="mi">1</span> <span class="n">windows</span> <span class="o">(</span><span class="n">created</span> <span class="n">Tue</span> <span class="n">Jun</span> <span class="mi">10</span> <span class="mi">15</span><span class="o">:</span><span class="mi">10</span><span class="o">:</span><span class="mi">32</span> <span class="mi">2014</span><span class="o">)</span> <span class="o">[</span><span class="mi">80</span><span class="n">x24</span><span class="o">]</span>
+<span class="n">edit</span><span class="o">:</span> <span class="mi">1</span> <span class="n">windows</span> <span class="o">(</span><span class="n">created</span> <span class="n">Tue</span> <span class="n">Jun</span> <span class="mi">10</span> <span class="mi">16</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">20</span> <span class="mi">2014</span><span class="o">)</span> <span class="o">[</span><span class="mi">80</span><span class="n">x24</span><span class="o">]</span>
+<span class="n">telnet</span><span class="o">:</span> <span class="mi">1</span> <span class="n">windows</span> <span class="o">(</span><span class="n">created</span> <span class="n">Tue</span> <span class="n">Jun</span> <span class="mi">10</span> <span class="mi">16</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">53</span> <span class="mi">2014</span><span class="o">)</span> <span class="o">[</span><span class="mi">80</span><span class="n">x24</span><span class="o">]</span>
+</pre></div>
+
+
+<p>这时候连接会话的 <strong>-t</strong> 参数就派上用场了，你可以选择连接到哪一个会话。</p>
+<p>如果没有创建会话或者会话都全已退出，那么列出所有会话的命令将会提示一个 <strong>failed to connect to server</strong> 的信息，可以看得出来 tmux 是有运行一个服务的，这个服务管理着所有的会话，并让他们持续运行。</p>
+<h3 id="_7">小结</h3>
+<p>通过创建多会话，以及分离/连接的功能，还能实现多终端连接同一会话，已经完全可以轻松应付许多平常很以实现的功能。在下一章节中，我们将讨论 tmux 里窗口（Window）的功能。</p>
+<h2 id="_8">窗口</h2>
+<p>上一章节介绍了 tmux 的会话，接下来就要讲到 tmux 中窗口的使用。</p>
+<p>其实当你新建一个会话的时候，tmux 已经自动给你在新会话中自动创建了一个窗口(Window)，窗口的编号从0开始，名称则默认为 <strong>当前工作目录</strong> 或者 <strong>当前运行的程序</strong> ，都显示在下方的状态条中。如下图所示，我将工作目录切换到了 <code>~/Documents</code> ，窗口0的名称也随之变换。</p>
+<p><a href="http://lszb811.qiniudn.com/tmux2.png"><img alt="默认窗口名" src="http://lszb811.qiniudn.com/tmux2.png" /></a>默认窗口名</p>
+<p>我们也可以在创建会话的时候附上 <code>-n</code> 参数，来给窗口制定一个名称</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">tmux</span> <span class="nb">new</span> <span class="na">-n</span> <span class="o">&lt;</span><span class="nx">窗口名</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p><code>-n</code> 参数可以和之前介绍过的 <code>-s</code> 参数一同使用，现在我们来创建一个名为 <strong>demo</strong>的新会话，新建窗口取名为 <strong>worldcup</strong> 吧。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tmux</span> <span class="n">new</span> <span class="o">-</span><span class="n">s</span> <span class="n">demo</span> <span class="o">-</span><span class="n">n</span> <span class="n">worldcup</span>
+</pre></div>
+
+
+<p><em>[注意] 装了 oh-my-zsh 的话，自定义窗口名不起作用，无论如何设置或更改窗口名，敲入命令之后窗口名都会变成当前工作目录或者当前运行的程序，希望新版本能修复这个问题</em></p>
+<h2 id="_9">新建窗口</h2>
+<p>新建窗口比较简单，只要执行以下组合键即可。</p>
+<p><code>[前缀]</code> <code>c</code></p>
+<p><strong>c</strong> 代表了 <strong>create</strong> ，一个会话可以创建多个窗口，但是为了窗口之间切换的方便，建议将窗口个数保持在个位数。</p>
+<h2 id="_10">切换窗口</h2>
+<p>切换窗口有好几种方式，我们先来说说最常用的两种。</p>
+<p>上一个窗口（previous）： <code>[前缀]</code> <code>p</code> 下一个窗口（next）： <code>[前缀]</code> <code>n</code></p>
+<p>使用这两种方式，就可以在所有窗口中按顺序切换。如果在第一个窗口执行上一个窗口的操作，则会跳转到最后一个窗口，同样的在最后一个窗口执行下一个窗口的操作，则会跳到第一个。</p>
+<p>当然每个窗口都有一个编号，你也可以通过以下简单的操作，来跳转到制定编号的窗口。</p>
+<p>跳转到指定窗口： <code>[前缀]</code> <code>0-9的数字</code></p>
+<p>由于这个指令只能在 0-9 号的窗口之间跳转，所以建议窗口个数保持在个位数。</p>
+<p>但是如果窗口个数实在太多，还可以用以下方法来呼出窗口列表，用上下键就可以进行选择，然后回车。</p>
+<p>窗口列表： <code>[前缀]</code> <code>w</code></p>
+<p><a href="http://lszb811.qiniudn.com/tmux3.png"><img alt="窗口列表" src="http://lszb811.qiniudn.com/tmux3.png" /></a>窗口列表</p>
+<h2 id="_11">更改窗口名称</h2>
+<p>更改窗口名称也比较简单，首先要先切换到需要修改的窗口下，执行以下操作，就可以进行修改了。</p>
+<p>更改窗口名称： <code>[前缀]</code> <code>,</code></p>
+<p>这时，底部的状态条会变成黄色，只要输入想要取的名字，回车即可。</p>
+<p><a href="http://lszb811.qiniudn.com/tmux4.png"><img alt="更改窗口名称" src="http://lszb811.qiniudn.com/tmux4.png" /></a>更改窗口名称</p>
+<h2 id="_12">关闭窗口</h2>
+<p>当窗口不再需要时，也可以进行关闭，以下是操作指令。</p>
+<p>关闭窗口： <code>[前缀]</code> <code>&amp;</code></p>
+<p>这个命令确实不太好用，还要用到 <code>Shift</code> 键，但是别着急，讲到自定义配置的时候，就可以对默认的组合键进行更改了。关闭窗口之前，状态条也会有黄色的确认提示，输入 <code>y</code> 确认或者 <code>n</code> 取消。</p>
+<p><a href="http://lszb811.qiniudn.com/tmux5.png"><img alt="关闭窗口" src="http://lszb811.qiniudn.com/tmux5.png" /></a>关闭窗口</p>
+<p>当会话中所有的窗口都关闭之后，会话也会随着退出。</p>
+<h3 id="_13">小结</h3>
+<p>本章讲述了 tmux 中如何使用窗口，窗口是会话的子元素，当然窗口还能再分，也就是下一章讲述的面板。</p>
+<h2 id="_14">窗格</h2>
+<p>上一章已经介绍了 tmux 里的窗口，窗口也可以再分，也就是接下来要说的窗格（pane）。我们已经知道，tmux 下可以有多个会话，会话下又可以有多个窗口，那么同样，窗口下还可以有多个窗格，其结构如下。</p>
+<div class="hlcode"><pre><span class="n">tmux</span>
+<span class="err">├──</span> <span class="err">会话</span><span class="n">a</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="err">窗口</span><span class="n">a</span>
+<span class="err">│</span>   <span class="err">│</span>   <span class="err">├──</span> <span class="err">窗格</span><span class="n">a</span>
+<span class="err">│</span>   <span class="err">│</span>   <span class="err">└──</span> <span class="err">窗格</span><span class="n">b</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="err">窗口</span><span class="n">b</span>
+<span class="err">│</span>       <span class="err">└──</span> <span class="err">窗格</span><span class="n">c</span>
+<span class="err">└──</span> <span class="err">会话</span><span class="n">b</span>
+    <span class="err">├──</span> <span class="err">窗口</span><span class="n">c</span>
+    <span class="err">│</span>   <span class="err">└──</span> <span class="err">窗格</span><span class="n">d</span>
+    <span class="err">└──</span> <span class="err">窗口</span><span class="n">d</span>
+        <span class="err">└──</span> <span class="err">窗格</span><span class="n">e</span>
+</pre></div>
+
+
+<h2 id="_15">切分窗格</h2>
+<p>一个窗口可以切分成多个窗格，主要的切分方法有两种，垂直切分和水平切分。</p>
+<p>垂直切分（把窗口垂直切分成左右两等分）： <code>[前缀]</code> <code>%</code><a href="http://lszb811.qiniudn.com/tmux6.png"><img alt="垂直切分" src="http://lszb811.qiniudn.com/tmux6.png" /></a>垂直切分</p>
+<p>水平切分（把窗口水平切分成上下两等分）： <code>[前缀]</code> <code>"</code><a href="http://lszb811.qiniudn.com/tmux7.png"><img alt="水平切分" src="http://lszb811.qiniudn.com/tmux7.png" /></a>水平切分</p>
+<p>以上两种切分方法还可以混合使用，比如先进行水平切分再进行垂直切分，我们会得到类似以下的3个窗格。</p>
+<p><a href="http://lszb811.qiniudn.com/tmux8.png"><img alt="水平切分+垂直切分" src="http://lszb811.qiniudn.com/tmux8.png" /></a>水平切分+垂直切分</p>
+<h2 id="_16">切换工作窗格</h2>
+<p>把窗口切分成多个窗格以后，就需要在各个窗格直接进行切换，以便对不同的窗格进行不同的操作。</p>
+<p>窗格切换： <code>[前缀]</code> <code>o</code></p>
+<p>这个指令会在当前窗口的所有窗格中轮流切换，如果窗格比较少的情况下，非常实用。但是如果窗格太多，就比较麻烦了，可以用以下指令来制定切换的方向，自己体会一下吧。</p>
+<p>按制定方向切换窗格： <code>[前缀]</code> <code>方向键</code></p>
+<h2 id="_17">更改窗格布局</h2>
+<p>tmux 有五个默认的窗格布局，可以满足基本的工作需要。</p>
+<ol>
+<li>水平平分（even-horizontal）</li>
+<li>垂直平分（even-vertical）</li>
+<li>主窗格最大化，其他窗格水平平分（main-horizontal）</li>
+<li>主窗格最大化，其他窗格垂直平分（main-vertical）</li>
+<li>平铺，窗格均等分（tiled）</li>
+</ol>
+<p>以下操作指令，可以在这五个默认的窗格布局之中轮流切换。</p>
+<p>更换窗格布局： <code>[前缀]</code> <code>空格</code></p>
+<h2 id="_18">小结</h2>
+<p>到本章为止，tmux 最基本的操作已经讲述完，在接下来的章节中，要给大家介绍一下 tmux 的命令（command）</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

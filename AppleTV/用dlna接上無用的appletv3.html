@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>用DLNA接上無用的AppleTV3 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#AppleTV">AppleTV</a>&nbsp;&#187;&nbsp;用DLNA接上無用的AppleTV3
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:53
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">用DLNA接上無用的AppleTV3</div>
+
+  <p>Apple TV 是賈伯斯在位期間所開發出來還蠻無用的多媒體裝置。除了它是台小小的用一隻手就可以抓起，以及可用HDMI 1080p 的高畫質電視輸出之外，裡頭的節目內容都必需要收費服務。欣賞高畫質影片本來就是大家就會著迷的東西，只是要享受就要付錢，要看名影集陰屍路與賣座電影鋼鐵人3，你就要付給 Apple 幾塊錢的美金從網路上播放欣賞。</p>
+<p>而像我這樣只肯買它的產品卻不肯買它的影片，這個市價$3690的黑盒子就只有放在桌上裝飾或是當墊桌腳的了。不過呢，近期的 IOS 跟 Mac OS X 都有優秀的 AirPlay 的功能，但你必須要多開一台 iPhone 、 iPad 或是電腦的 iTunes 跟 Apple TV 連線才能投放到40吋的大電視觀賞高畫質影片。</p>
+<p>然而，這些可以用 AirPlay 播放的電腦裝置，其限制就是「容量」問題，市面上目前的 iPhone、iPad 最大容量各別只到 64G 與 128G ，完全無法滿足想要長期並且大量儲存影片的需求，因此我們可以用電腦的硬碟來儲放上百部的影片。</p>
+<p>這次的做法必需要用到一台硬碟容量較大的電腦，而且，最好是用它拿來當伺服器使用或是 NAS ，所以預設的作業系統就必須是使用 Linux 來操作。</p>
+<p>除了運用 IOS 裝置來連結 AirPlay 之外，還必需利用 DLNA 的機制來傳輸從 NAS 來的檔案。因此，在這篇的開板圖上，我在筆電上接了一台 650GB 的隨身碟，同時也要讓這台電腦能擁有 DLNA 的服務，然後我在 iPhone 安裝能連結此機制的客端 APP ，同時也要能 AirPlay ，此次用的是 MoliPlayer 。</p>
+<p>NAS 的電腦所服務 DLNA 機制的程式，我使用的是 uShare 。</p>
+<p>在 Ubuntu 安裝很簡單，執行以下的命令：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libupnp3</span> <span class="n">libdlna0</span> <span class="n">ushare</span>
+</pre></div>
+
+
+<p>完裝完之後，設定它的組態：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">vim</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ushare</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>亮點為以下設定：</p>
+<div class="hlcode"><pre><span class="n">USHARE_NAME</span><span class="o">=</span><span class="n">ushare</span> <span class="c1">//設定伺服器名稱</span>
+<span class="n">USHARE_IFACE</span><span class="o">=</span><span class="n">eth0</span> <span class="c1">//網卡介面通常是設eth0，如果是用無線網路，請改變設定</span>
+<span class="n">USHARE_PORT</span><span class="o">=</span><span class="mi">49200</span> <span class="c1">//預設的 port 是49200</span>
+<span class="n">USHARE_DIR</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">xxx</span><span class="o">/</span><span class="p">,</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">xxxxx</span> <span class="c1">//分享的資料夾路徑，可以有多個，需要逗號分開</span>
+<span class="n">ENABLE_WEB</span><span class="o">=</span><span class="n">yes</span> <span class="c1">// 網路管理介面，網址：http://你的ip:49200/web/ushare.html</span>
+<span class="n">ENABLE_DLNA</span><span class="o">=</span><span class="n">yes</span> <span class="c1">// 允許DLNA</span>
+</pre></div>
+
+
+<p>啟動方式有兩種，第一種</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">init</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">ushare</span> <span class="n">start</span>
+</pre></div>
+
+
+<p>第二種</p>
+<div class="hlcode"><pre><span class="n">ushare</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+
+
+<p>影片的格式支援最好是用 MP4 ，若用 RMVB 則只能播放聲音，若用 MKV 在 iPhone 它沒有硬解的能力，會卡卡卡卡……。</p>
+<p>接下來用 iPhone 的 MoliPlayer 來試看看是否有找到，然後享受一下 40 吋大畫面的宅動畫吧！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

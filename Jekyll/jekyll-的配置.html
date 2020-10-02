@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 的配置 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 的配置
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 11:19
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 的配置</div>
+
+  <blockquote>
+<p>原文地址：<a href="https://github.com/mojombo/jekyll/wiki/configuration">https://github.com/mojombo/jekyll/wiki/configuration</a></p>
+</blockquote>
+<p>Jekyll 能够让你用你能想象出的任何方式来构造你的网站。下面是一个现在所支持的配置选项的列表。这些设置均能够通过在根目录下的 <code>_config.yml</code> 文件指定。<strong>Jekyll</strong> 同样可以在命令行中指定这些选项。当配置出现矛盾时，它们的优先关系是：</p>
+<ol>
+<li>命令行中的参数</li>
+<li>配置文件中的设置</li>
+<li>默认选项</li>
+</ol>
+<h3 id="_1">配置选项</h3>
+<table>
+<thead>
+<tr>
+<th align="left">设置</th>
+<th align="left">配置选项</th>
+<th align="left">命令行参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">安全设置</td>
+<td align="left">safe:[boolean]</td>
+<td align="left">--safe</td>
+<td align="left">禁用定制插件</td>
+</tr>
+<tr>
+<td align="left">重新生成</td>
+<td align="left">auto:[boolean]</td>
+<td align="left">--no-auto --auto</td>
+<td align="left">当文件发生更改时，禁用或启用Jekyll的重新生成功能</td>
+</tr>
+<tr>
+<td align="left">本地服务器</td>
+<td align="left">server:[boolean]</td>
+<td align="left">--server</td>
+<td align="left">启动一个用于托管你_site目录的服务器</td>
+</tr>
+<tr>
+<td align="left">本地服务器端口</td>
+<td align="left">server_port:[integer]</td>
+<td align="left">--server:[port]</td>
+<td align="left">改变Jekyll服务的端口</td>
+</tr>
+<tr>
+<td align="left">基准网址</td>
+<td align="left">baseurl:[BASE_URL]</td>
+<td align="left">--base-url [url]</td>
+<td align="left">使用指定的基准网址来运行网站</td>
+</tr>
+<tr>
+<td align="left">网址</td>
+<td align="left">url:[URL]</td>
+<td align="left">--url [url]</td>
+<td align="left">设置站点的网址，这对环境改变时很有用</td>
+</tr>
+<tr>
+<td align="left">站点路径</td>
+<td align="left">destination:[dir]</td>
+<td align="left">jekyll [dest]</td>
+<td align="left">更改Jekyll的写入目录</td>
+</tr>
+<tr>
+<td align="left">站点源路径</td>
+<td align="left">source:[dir]</td>
+<td align="left">jekyll [source] [dest]</td>
+<td align="left">更改Jekyll处理文件的目录</td>
+</tr>
+<tr>
+<td align="left">Markdown渲染引擎</td>
+<td align="left">markdown:[engine]</td>
+<td align="left">--rdiscount或--kramdown或--redcarpet</td>
+<td align="left">使用RDiscout或者[engine]指定的渲染引擎代替Markdown默认引擎</td>
+</tr>
+<tr>
+<td align="left">Pygments</td>
+<td align="left">pygments:[boolean]</td>
+<td align="left">--pygments</td>
+<td align="left">启用Pygments来处理代码高亮</td>
+</tr>
+<tr>
+<td align="left">提前发布</td>
+<td align="left">future:[boolean]</td>
+<td align="left">--no-future或--future</td>
+<td align="left">在发布文章时使用一个未来的日期</td>
+</tr>
+<tr>
+<td align="left">LSI</td>
+<td align="left">lis:[boolean]</td>
+<td align="left">--lsi</td>
+<td align="left">产生相关页面的索引</td>
+</tr>
+<tr>
+<td align="left">固定链接</td>
+<td align="left">permalink:[style]</td>
+<td align="left">--permalink=[style]</td>
+<td align="left">控制文章的固定链接地址</td>
+</tr>
+<tr>
+<td align="left">分页</td>
+<td align="left">paginate:[per_page]</td>
+<td align="left">--paginate [per_page]</td>
+<td align="left">将你的博客文章分成多个子目录:”page2”,”page3”,…“pageN”</td>
+</tr>
+<tr>
+<td align="left">排除</td>
+<td align="left">exlcude:[dir1,file1,dir2]</td>
+<td align="left"></td>
+<td align="left">不需要进行转换的文件列表</td>
+</tr>
+<tr>
+<td align="left">包括</td>
+<td align="left">include:[dir1,file1,dir2]</td>
+<td align="left"></td>
+<td align="left">指定需要转换的特殊文件和目录列表。因为所有以”.”开始的文件默认都不会进行转换，就像. htaccess文件</td>
+</tr>
+<tr>
+<td align="left">文章限制</td>
+<td align="left">limit_posts:[max_posts]</td>
+<td align="left">--limit_posts:[max_posts]</td>
+<td align="left">限制博客文章发布的数量</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_2">默认选项</h3>
+<p>注意：在配置文件中你不能使用tabs键，这将会要么导致解析错误，要么将会使用默认设置。</p>
+<div class="hlcode"><pre><span class="n">safe</span><span class="o">:</span><span class="kc">false</span>
+<span class="n">auto</span><span class="o">:</span><span class="kc">false</span>
+<span class="n">server</span><span class="o">:</span><span class="kc">false</span>
+<span class="n">server_port</span><span class="o">:</span><span class="mi">4000</span>
+<span class="n">baseurl</span><span class="o">:/</span><span class="n">jekyll_demo</span>
+<span class="n">url</span><span class="o">:</span><span class="n">http</span><span class="o">://</span><span class="n">localhost</span><span class="o">:</span><span class="mi">4000</span>
+
+<span class="n">source</span><span class="o">:.</span>
+<span class="n">destination</span><span class="o">:./</span><span class="n">_site</span>
+<span class="n">plugins</span><span class="o">:./</span><span class="n">_plugins</span>
+
+<span class="n">future</span><span class="o">:</span><span class="kc">true</span>
+<span class="n">lsi</span><span class="o">:</span><span class="kc">false</span>
+<span class="n">pygments</span><span class="o">:</span><span class="kc">false</span>
+<span class="n">markdown</span><span class="o">:</span><span class="n">maruku</span>
+<span class="n">permalink</span><span class="o">:</span><span class="n">date</span>
+
+<span class="n">maruku</span><span class="o">:</span>
+    <span class="n">use_tex</span><span class="o">:</span><span class="kc">false</span>
+    <span class="n">use_divs</span><span class="o">:</span><span class="kc">false</span>
+    <span class="n">use_engine</span><span class="o">:</span><span class="n">blathtex</span>
+    <span class="n">png_dir</span><span class="o">:</span><span class="n">images</span><span class="o">/</span><span class="n">latex</span>
+    <span class="n">png_url</span><span class="o">:/</span><span class="n">images</span><span class="o">/</span><span class="n">latex</span>
+
+<span class="n">rediscount</span><span class="o">:</span>
+    <span class="n">extension</span><span class="o">:[]</span>
+
+<span class="n">kramdown</span><span class="o">:</span>
+    <span class="n">auto_ids</span><span class="o">:</span><span class="n">treu</span><span class="o">,</span>
+    <span class="n">footnote_nr</span><span class="o">:</span><span class="mi">1</span>
+    <span class="n">entity_output</span><span class="o">:</span><span class="n">as_char</span>
+    <span class="n">toc_levels</span><span class="o">:</span><span class="mi">1</span><span class="o">..</span><span class="mi">6</span>
+    <span class="n">use_coderay</span><span class="o">:</span><span class="kc">false</span>
+
+<span class="n">coderat</span><span class="o">:</span>
+    <span class="n">caderay_wrap</span><span class="o">:</span><span class="n">div</span>
+    <span class="n">caderay_line_numbers</span><span class="o">:</span><span class="n">inline</span>
+    <span class="n">caderay_line_numbers_start</span><span class="o">:</span><span class="mi">1</span>
+    <span class="n">caderay_tab_width</span><span class="o">:</span><span class="mi">4</span>
+    <span class="n">caderay_bold_every</span><span class="o">:</span><span class="mi">10</span>
+    <span class="n">caderay_css</span><span class="o">:</span><span class="n">style</span>
+</pre></div>
+
+
+<p>转自：<a href="http://zhouyichu.com/%E7%BF%BB%E8%AF%91/Jekyll-Wiki-Configuration.html">【译文】Jekyll的配置</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

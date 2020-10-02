@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Docker 入门 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Docker 入门
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 18:41
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Docker 入门</div>
+
+  <h4 id="docker">Docker是什么</h4>
+<p>Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</p>
+<p>上面是官方的解释，用通俗一点的话来形容就是用下面这样的一个集装箱(container)把运行的程序装进去，放到任何 Linux 机器上都可以。<br />
+[</p>
+<p><img alt="" src="https://ruby-china-files.b0.upaiyun.com/photo/2015/1d1dc201701c3716d80b3016f8ae546f.png" /></p>
+<p>](https://ruby-china-files.b0.upaiyun.com/photo/2015/1d1dc201701c3716d80b3016f8ae546f.png)</p>
+<h4 id="docker-virtual-machine">docker 和 virtual machine不一样的地方</h4>
+<p>docker 更加轻量，需要更少的资源。<br />
+但是vm的隔离更加好。</p>
+<h4 id="_1">优点</h4>
+<ul>
+<li>快速交付和部署</li>
+<li>更容易扩展</li>
+<li>更高效的虚拟化</li>
+<li>更加简单的管理</li>
+</ul>
+<h4 id="docker_1">docker 的架构</h4>
+<ul>
+<li>Daemon</li>
+<li>Client</li>
+<li>Docker.io Registry</li>
+</ul>
+<h4 id="docker_2">Docker的几个重要概念</h4>
+<ul>
+<li>镜像(Image)<ul>
+<li>Docker 镜像就是一个可读的模板。</li>
+</ul>
+</li>
+<li>容器(Container)<ul>
+<li>Docker 利用容器来运行应用。</li>
+<li>容器是从镜像创建的运行实例。它可以被启动、开始、停止、删除。每个容器都是相互隔离的、保证安全的平台。</li>
+</ul>
+</li>
+<li>仓库(Repository)<ul>
+<li>仓库是集中存放镜像文件的场所。</li>
+</ul>
+</li>
+</ul>
+<h4 id="_2">安装</h4>
+<p>ubuntu14.04 默认的源有docker，但是版本太老了，我们演示下通过 Docker 源安装最新版本:<br />
+首先确认你的 APT 系统能够处理 https 的 URLs：如果你的主机不存在 /usr/lib/apt/methods/https 这个文件，先安装 apt-transport-https 包：</p>
+<div class="hlcode"><pre><span class="p">[</span> <span class="o">-</span><span class="n">e</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">methods</span><span class="o">/</span><span class="n">https</span> <span class="p">]</span> <span class="o">||</span> <span class="p">{</span>
+  <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+  <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">apt</span><span class="o">-</span><span class="n">transport</span><span class="o">-</span><span class="n">https</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>然后添加 Docker 镜像的key到你的本地local keychain。</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">key</span> <span class="n">adv</span> <span class="o">--</span><span class="n">keyserver</span> <span class="n">hkp</span><span class="o">:</span><span class="c1">//keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9</span>
+</pre></div>
+
+
+<p>添加 Docker 镜像到 apt 软件源,更新和安装 lxc-docker 包。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;echo deb https://get.docker.com/ubuntu docker main\</span>
+<span class="s">&gt; /etc/apt/sources.list.d/docker.list&quot;</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">lxc</span><span class="o">-</span><span class="n">docker</span>
+</pre></div>
+
+
+<p>然后使用下面的命令查看是否安装成功。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">docker</span> <span class="n">version</span>
+</pre></div>
+
+
+<h4 id="docker_3">Docker起步</h4>
+<p>如果搞明白 Docker 的基本概念，使用起来非常简单。下面我们开始创建我们的第一个容器:</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">echo</span> <span class="err">&#39;</span><span class="n">Hello</span> <span class="n">world</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>如果是第一次使用的话，应该会出现如下类似的输出:</p>
+<div class="hlcode"><pre><span class="n">Unable</span> <span class="n">to</span> <span class="n">find</span> <span class="n">image</span> <span class="err">&#39;</span><span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span><span class="err">&#39;</span> <span class="n">locally</span>
+<span class="mi">511136</span><span class="n">ea3c5a</span><span class="o">:</span> <span class="n">Pull</span> <span class="n">complete</span>
+<span class="mi">511136</span><span class="n">ea3c5a</span><span class="o">:</span> <span class="n">Download</span> <span class="n">complete</span>
+<span class="nl">f3c84ac3a053:</span> <span class="n">Download</span> <span class="n">complete</span>
+<span class="nl">a1a958a24818:</span> <span class="n">Download</span> <span class="n">complete</span>
+<span class="mf">9f</span><span class="n">ec74352904</span><span class="o">:</span> <span class="n">Download</span> <span class="n">complete</span>
+<span class="nl">d0955f21bf24:</span> <span class="n">Download</span> <span class="n">complete</span>
+<span class="nl">Status:</span> <span class="n">Downloaded</span> <span class="n">newer</span> <span class="n">image</span> <span class="k">for</span> <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span>
+<span class="n">Hello</span> <span class="n">world</span>
+</pre></div>
+
+
+<p>来解释一下这个其中的过程，docker run 的作用是创建一个容器。如果不熟悉一个命令的作用可以使用 --help 参数。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">--</span><span class="n">help</span>
+<span class="nl">Usage:</span> <span class="n">docker</span> <span class="n">run</span> <span class="p">[</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="n">IMAGE</span> <span class="p">[</span><span class="n">COMMAND</span><span class="p">]</span> <span class="p">[</span><span class="n">ARG</span><span class="p">...]</span>
+
+<span class="n">Run</span> <span class="n">a</span> <span class="n">command</span> <span class="n">in</span> <span class="n">a</span> <span class="n">new</span> <span class="n">container</span>
+</pre></div>
+
+
+<p>ubuntu:14.04 是我们的镜像，docker 会先去本地查找是否有 docker 镜像，如果没有会去 docker 仓库下载。</p>
+<div class="hlcode"><pre><span class="n">Unable</span> <span class="n">to</span> <span class="n">find</span> <span class="n">image</span> <span class="err">&#39;</span><span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span><span class="err">&#39;</span> <span class="n">locally</span> <span class="err">#</span> <span class="err">本地没有找到</span>
+
+<span class="nl">Status:</span> <span class="n">Downloaded</span> <span class="n">newer</span> <span class="n">image</span> <span class="k">for</span> <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span> <span class="err">#</span> <span class="err">成功下载</span> <span class="err">可以使用</span><span class="n">docker</span> <span class="n">images</span> <span class="err">来查看本地已经有的</span>
+</pre></div>
+
+
+<p><code>/bin/echo 'Hello world'</code> 是我们想在容器运行的命令。如果我们看到终端输出 Hello world.</p>
+<h4 id="docker_4">守护进程 docker</h4>
+<p>我们上一个 docker 容器运行echo命令后就停掉了，这一般都不用于现实生活中。我们创建一个容器让它以守护进程的模式运行。</p>
+<p>我们可以这样运行<code>docker run</code>命令:</p>
+<div class="hlcode"><pre>    <span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">d</span> <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="s">&quot;while true; do echo hello world; sleep 1; done&quot;</span>
+    <span class="mf">3f5f9f</span><span class="mi">691</span><span class="n">bcc8fc509e5844ca4e9ad1fcbdd59279505b24d74722da9f7dce547</span>
+</pre></div>
+
+
+<p>我们运行docker但是我们指定了一个<code>-d</code>标识。<code>-d</code>标识告诉docker运行容器在后台模式运行。所以返回了这个container的id。</p>
+<p>我们也指定了一个相同的镜像:ubuntu:14.04</p>
+<p>我们指定命令行运行:</p>
+<p>/bin/sh -c "while true; do echo hello world; sleep 1; done"</p>
+<p>这是一个输出的hello word进程：一个脚本会一直输出"hello word"</p>
+<p><code>docker ps</code>命令可以查询docker进程的所有容器。</p>
+<div class="hlcode"><pre>    <span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">ps</span>
+    <span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>               <span class="n">COMMAND</span>                <span class="n">CREATED</span>              <span class="n">STATUS</span>              <span class="n">PORTS</span>               <span class="n">NAMES</span>
+<span class="mf">3f5f9f</span><span class="mi">691</span><span class="n">bcc</span>        <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span>        <span class="s">&quot;/bin/sh -c &#39;while t   About a minute ago   Up About a minute                       nostalgic_perlman</span>
+</pre></div>
+
+
+<p>现在我们知道它运行。我们需要在我们容器内使用<code>docker logs</code>命令来查看产生的log。</p>
+<div class="hlcode"><pre>    <span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">logs</span> <span class="n">insane_babbage</span>
+    <span class="n">hello</span> <span class="n">world</span>
+    <span class="n">hello</span> <span class="n">world</span>
+    <span class="n">hello</span> <span class="n">world</span>
+    <span class="p">.</span> <span class="p">.</span> <span class="p">.</span>
+</pre></div>
+
+
+<p>这样不断的出现hello world，我们可以推断出刚才那个那个容器一直在运行。</p>
+<h4 id="docker_5">Docker 在中国</h4>
+<p>下载 docker 镜像的时候可能比较慢，可以考虑使用 daocloud 来加速。</p>
+<h4 id="_3">总结</h4>
+<p>docker 的镜像(image) 就像一个一个的集装箱，容器(container)基于镜像运行的进程，</p>
+<h4 id="_4">推荐阅读</h4>
+<p><a href="http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine">http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine</a><br />
+<a href="https://docs.docker.com/">https://docs.docker.com/</a></p>
+<p>原文链接: <a href="http://blog.bringstudio.com/dockerru-men/">http://blog.bringstudio.com/dockerru-men/</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>CDDB - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;CDDB
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:12
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">CDDB</div>
+
+  <h1 id="_1">概述</h1>
+<p>CDDB的全称是CD database，翻译过来就是“CD数据库”。正如字面意思一样，CDDB其实就是一个网络数据库，世界各地的音乐爱好者、CD出版商都可以通过网络向这个数据库提交CD信息，也可以通过网络从这个数据库查询CD信息，包括CD的专辑（Album）名称、演奏者（Artist）、出版年份（Year）、曲风（Genre）、每条音轨的标题（Title）等。</p>
+<p>CDDB的作用包括，但是不限于：</p>
+<p>方便网络音乐共享，甚至可以说CDDB是随着网上音乐共享而发展起来的。想象一下，如果人人都去买CD来听，CD封面上自然印刷有CD的全部信息（请不要用无良D商出的东西来反驳我的观点！），还有必要上网查询吗？但是网络共享音乐就不同了，不论通过P2P、FTP还是其它协议下载到一张CD的镜像，如果共享者即忘记扫描CD封面，又忘记把CD信息敲进一个文本文件里和镜像文件一起共享，您会不会有点找不着北的感觉？这个时候有点动手精神的人，自然就会想到上网搜一下。</p>
+<p>方便CD播放。在用电脑上的软件播放CD时，有些人并不仅仅是听听音乐就算，还希望在听的同时能够看到每一条音轨的标题。foobar、Windows Media Player、Real Player等软件在播放CD时，都可以通过在线查询CDDB显示CD信息。</p>
+<p>方便MP3、WMA等音乐文件的制作、播放。抓轨以后的文件名如果都是Track01、Track02之类的无聊东西，多了以后恐怕管理就会有麻烦，所以EAC在抓轨的时候就会从CDDB查询CD信息，然后自动生成有意义的文件名，看着都爽。foobar也可以将从CDDB查询到的信息写入MP3，这样单独播放MP3文件时，在MP3播放器（不论硬件还是软件，支持ID3v1/2格式的MP3 tag就行）上就可以显示出音乐标题、专辑名称、演唱者等信息。<br />
+方便建立、管理自己的媒体库。硬盘上收藏的媒体文件多了，管理是一个麻烦。如果每个镜像、每首MP3都去手工录入信息，至少我自己是绝对不会去干的。而如果能够在线查询、填写相关信息，自然就会轻松许多。<br />
+我写这篇文章的目的，当然不可能是希望促进音乐D版事业的发展，只是希望通过对常见CDDB的介绍，让大家对它们的特点及查询方法有所了解，在需要的时候能够及时从CDDB获取有用的信息，当然这些信息必须也只能用于合法的目的。</p>
+<h1 id="cddb">常见CDDB</h1>
+<h2 id="freedb">freedb</h2>
+<p>官方网站：<a href="http://www.freedb.org/">http://www.freedb.org</a></p>
+<p>查询页面：<a href="http://www.freedb.org/freedb_search.php">http://www.freedb.org/freedb_search.php</a></p>
+<p>中文支持：很烂<br />
+著名用户：EAC（Exact Audio Copy），foobar</p>
+<p>freedb是一个非盈利性组织，该组织维护freedb网站及其CD数据库，供大家免费查询CD信息。如果您发现freedb的CD数据库里没有的CD，也可以手工输入信息提交给freedb，充实它的数据库，体现“人人为我，我为人人”的原则。</p>
+<p>freedb不仅可以免费查询，而且它的所有查询协议都是公开的，在其网站上有详细的说明，因此使用freedb的免费软件很多，包括EAC、foobar在内的一些软件都用它查询CD信息，所以人气较旺。</p>
+<p>除了协议公开外，freedb甚至连数据库内容都公开了：从这里可以免费下载到freedb的完整数据库供离线查询使用。这种事情大概只有以free开头的网站才会做，.com网站是做不出来的。</p>
+<p>不过freedb这种完全靠音乐爱好者提交信息的运行模式也给它的内容带来了一些限制。从我自己使用的情况看，freedb查询国外版权的CD（包括国内从国外引进版权的CD）基本上问题不大，但是国内版权的基本上就没有了，可能和国内音乐爱好者较少向freedb提供信息有关。</p>
+<p>另外我对它的中文支持评价为“很烂”，是指：</p>
+<p>在它的查询页面上，如果直接输入中文作为关键字，什么也查不到。</p>
+<p>从它提供的开发文档看，从CDDB Protocol Level 6开始支持UTF-8编码，但是目前大多数软件都采用CDDB Protocol Level 6以前版本的协议，所以目前支持中文关键字查询freedb的软件还没看到。</p>
+<p>如果按照CDID（从CD各音轨起始位置、长度计算出来的CD标识，相当于CD的“指纹”，在CDDB里通常用来标识每张CD）查询，可以查询出freedb里有的中文CD信息，但是由于计算CDID需要读取光盘，因此这个只能在软件里实现（如foobar等），在查询网页上很难做到。</p>
+<h2 id="gracenote">Gracenote</h2>
+<p>官方网站：<a href="http://www.gracenote.com/">http://www.gracenote.com</a></p>
+<p>查询页面：<a href="http://www.gracenote.com/music/">http://www.gracenote.com/music/</a></p>
+<p>中文支持：很好</p>
+<p>著名用户：Real Player</p>
+<p>Gracenote这个名字对某些人来说可能有点陌生，但是它的前身cddb.org却是大名鼎鼎，号称网上最早、最大、最全的CDDB。不过cddb.org代表的是充满理想的免费共享主义时代，现在已经改成商业化运营模式的.com，所以干脆连名字都改成专有的了。</p>
+<p>如果想在软件中集成查询Gracenote的CDDB功能，必须取得Gracenote的许可。免费许可比较难申请，至少我的申请就没有得到回应，所以Gracenote在免费软件中很少见，多用于商业软件，如Real Player。<br />
+Gracenote对中文的支持很好：</p>
+<p>通过网页查询时，不仅支持中文关键字，而且输入简体关键字，连繁体CD信息都能查出来。</p>
+<p>在通过Gracenote提供的控件编程查询某些欧洲发行的CD信息时，如果遇到特殊西欧字符，Gracenote会自动转换成带声调的汉语拼音字符，方便在中文环境下显示。这个功能似乎是Gracenote独有，在其它地方我还没有见过。后来俺在写解决cue文件乱码的软件CueCode时，把这招学了过来，嘿嘿……</p>
+<p>从我个人使用的情况看，Gracenote的数据量无疑超过freedb，和微软的CDDB相比则各有千秋：国外的CD可能两个都差不多，国内的有时Gracenote查得出，微软查不出，有时则相反。</p>
+<h2 id="cddb_1">微软CDDB</h2>
+<p>官方网站：据说正在建设中，尚未正式公布，估计是<a href="http://metaservices.windowsmedia.com/">http://metaservices.windowsmedia.com</a></p>
+<p>查询页面：未正式公布，下面URL是我从Windows Media Player里抓出来的，有效期不敢保证：<br />
+<a href="http://metaservices.windowsmedia.com/CDWizard/CDWizard1.asp">http://metaservices.windowsmedia.com/CDWizard/CDWizard1.asp</a></p>
+<p>中文支持：很好</p>
+<p>著名用户：Windows Media Player</p>
+<p>这个是微软自己的CD数据库，Windows Media Player就是从这上面查找CD信息的。有钱人做事毕竟不同，感觉微软的数据库比freedb全多了，而且时常可以查到CD的封面图片，估计是直接从CD厂商获取的数据。不过到目前为止，微软尚未公布CD查询的接口规范，也没有说是否允许免费使用，因此除了微软自己的Windows Media Player外，还没有见过哪个公开发表的软件使用这个CDDB。</p>
+<p>在中文支持方面，微软的CDDB也不错：</p>
+<p>通过网页查询时，不仅支持中文关键字，连页面都是中文的，这点比Gracenote强。</p>
+<p>偶尔能查到中文CD的封面。</p>
+<h1 id="_2">编程相关</h1>
+<p>上面说的都是直接通过IE查询，但是有些查询是不能通过IE进行的，只能按照CDDB的查询协议开发专门的查询软件。下面讨论的就是这方面的技术，仅供有兴趣的人参考。</p>
+<h2 id="_3">查询过程</h2>
+<p>通常通过网页查询CDDB，都是先输入某些关键字，如歌曲或专辑名称、歌手或乐队名称等，然后点“查询”，等待进入查询结果页面后，再点击列出的专辑名称，查看专辑内容。</p>
+<p>在编程实现CD查询时，按照上述关键字进行查询只是部分情况，大多数软件是按照光盘本身的信息进行查询，如EAC、foobar、Real Player、Windows Media Player，都是在用户将CD插入光驱后，自动读取光盘信息，组合成CDID，然后提交给CDDB进行查询，很少有需要用户自己输入关键字的时候。</p>
+<p>对于freedb和Gracenote来说，由于CD专辑信息都是网友自己上传的（Gracenote商业化运作后可能直接从CD出版商获取数据，但是免费时代的底子应该还有保留），难免会出现重复，并且CDID算法本身也可能产生碰撞，因此在freedb和Gracenote的开发文档中，都要求开发者必须处理“模糊（fuzzy）”——其实就是重复的查询结果。通常的处理方式就是象EAC一样，弹出一个列表让用户自己选。查询freedb的软件可能要自己写这段代码，Gracenote提供的控件本身就包含了对重复结果的选择界面。<br />
+对于微软CDDB来说，我还没有发现过有重复的现象。可能是因为微软直接从原始CD出版商那里拿数据，CDID算法也比较严格，所以查询结果比较精确吧，Maybe……</p>
+<h2 id="toccdid">TOC和CDID</h2>
+<p>前面说过，按照CD本身的信息查询CDDB，需要读取光盘信息，产生一个CDID（CD 的唯一标识号），然后以此为关键字进行查询。<br />
+在freedb的开发文档中，CDID被称为DISCID，在这里有详细的算法说明。在看过这个算法后，我又分析过Gracenote、微软CDDB的CDID算法，发现他们的算法都差不多：</p>
+<p>通过光驱读取CD的TOC（table of contents，目录表），从中获取CD的音轨数、每条音轨的长度、音轨起始时间。</p>
+<p>循环TOC项，从音轨长度、起始时间运算出最终CDID。</p>
+<p>虽然算法大同小异，但是计算出来的结果不太一样：freedb的CDID只有32位，Gracenote、微软CDDB的都长达128位！俺曾经怀疑这可能也是freedb的查询结果重复率比较高、查询结果不甚准确的原因之一，不过很难证实。另外从TOC映射到CDID明显是一个不对称hash过程，难免有碰撞，因此也就需要允许模糊查询。</p>
+<p>那么如果手上没有CD，只有从CD抓出来的APE和cue文件，能不能计算CDID并且据此查询CDDB呢？</p>
+<p>答案是：多数情况下可以，少数情况下不行。</p>
+<p>原因就在于按照目前cue文件格式的规定，cue文件中缺少两样关键的东西：<br />
+第一条音轨的起始位置。在真正的CD中，第一条音轨不可能从00:00:00处开始，而在cue文件中（其实是在抓轨过程中），这些空白处都被跳过了，所以cue文件中第一条音轨永远从00:00:00开始。</p>
+<p>最后一条音轨的长度（精确到1/75秒）。其它音轨的长度都可以通过下一条音轨开始时间，减去本条音轨开始时间计算出来，最后一条音轨的长度就没法这样计算了。</p>
+<p>第一个不足会影响CD刻录，两个不足合起来则会影响CDID的计算，从而影响CDDB查询。</p>
+<p>为了解决这个问题，通常的做法是：</p>
+<p>假设第一条音轨从2秒开始。</p>
+<p>从APE文件计算最后一条音轨长度。</p>
+<p>在做出这两个假设后，大多数情况下就能按照APE+cue从CDDB查询到CD信息，毕竟就算有点走样，还有模糊查询在支撑，但是少数情况下还是会出问题：</p>
+<p>虽然大多数CD的第一条音轨都是从2秒开始，但是并非所有CD都是如此，我手上有一张CD，就是第一轨的起始位置错了1/75秒，在微软的CDDB上就已经查不到了，但是手工输入关键字查询却能查到。</p>
+<p>从APE计算最后一条音轨时，如果APE已经分轨，甚至转换成MP3又转换回来，往往造成计算结果不准。比如我试了一下查询10CD的“邓丽君音乐手札”，没有分轨、整张盘一个ape文件的查询起来问题不大，除第9、10张外都查到了，而分轨的第1、3张就全查不到，估计是最后一轨的长度变了。<br />
+所以在能够生成、识别cue文件的软件全面改进以补全上面说的两个信息之前，只能祈祷下载到的盘都是从2秒处开始，ape文件也是从真正的原盘，而不是转换出来的刻录盘上抓出来的（转换刻盘可能改变最后一轨长度）。</p>
+<p>这个问题也可以这样描述：假设您买到一张CD，把CD插进光驱后如果能用Windows Media Player直接查到它的信息，俺不敢肯定这张CD是不是D出来的；但是如果从光盘直接查查不到，但是在Windows Media Player里输入专辑名称、演奏者、歌曲名称等等却能查到这张CD，那么俺敢和您打赌一分钱：这张CD十之八九是J商自己从APE，甚至MP3翻刻的。freedb、Gracenote由于有模糊查询，不太精确的翻刻还有可能蒙混过去，微软CDDB则很难混过去。</p>
+<p>关于cue文件的问题，我以前曾写过一篇《cue文件的不足》，发布在伊美姬网怡红快绿音乐论坛，不过似乎应者寥寥。</p>
+<h2 id="_4">编程接口</h2>
+<p>freedb的查询协议是完全公开的，相关技术文档见这里。已经有很多人按照协议写过相关的查询代码了，有些还开源，可以直接拿来用。如俺写FreeMP3Tag时，就用了PJ Naughter的MfcCDDB，不过对其中socket连接部分做了改进，以增加连接的成功率。</p>
+<p>Gracenote的编程接口更简单：到这里申请一个Non-Commercial ID，即可下载一个ActiveX控件，并且附带各种开发语言的使用例子，将这个控件嵌入您自己的运用，再仿照例子调用一下查询接口就可以了。麻烦的是在开发完成后，如果要正式发行您开发出来的软件，还需要另外再申请正式的发行ID。不知道别人有没有申请到，反正我的申请是一直没有回音。</p>
+<p>微软的查询接口一直没有公开，所以也没有什么直接相关的文档或代码可供参考。不过对于任何一个能够看懂HTML源代码的人来说，只要看一下Windows Media Player和服务器的交互过程，要猜出来也不是很难。</p>
+<h2 id="_5">中文支持探讨</h2>
+<p>如果按CDID查询CD，当然不存在中文问题，因为CDID只是从TOC计算出来的一堆数字。但是按照关键字（专辑名称、歌曲名称、演奏者等）查询时，如前所述，三个CDDB的支持程度有所不同。在这里我想探讨一下其原因。<br />
+我个人认为中文问题的核心是编码问题：用户输入的中文关键字必须发送给CDDB服务器，IE在发送中文关键字的时候，因为中文编码的高位为1，因此必须先对中文进行编码，服务器收到查询请求后，再对IE的编码进行解码。这样一个编码-&gt;解码的过程，要求解码器必须确切知道编码器所使用的代码页。很不幸的是，freedb在这方面做得并不好，所以解码后就全乱套了。举个简单的例子，用户输入“邓丽君”，IE按照简体中文编码成UTF8发送出去，但是freedb服务器在收到这个查询请求后，并不知道这个UTF8字符串是从简体中文编码得来的，因此只能按照它自己设定的一个代码页进行解码，比如说按日语进行解码，解出来的还会是“邓丽君”这三个字吗？如果关键字错误，自然查询不到。</p>
+<p>下面是三个CDDB查询“邓丽君”的结果URL：</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//www.freedb.org/freedb_search.php?words=邓丽君&amp;allfields=NO&amp;fields=artist&amp;fields=title&amp;allcats=YES&amp;grouping=none</span>
+
+
+<span class="nl">http:</span><span class="c1">//www.gracenote.com/music/search-adv.html?q=&amp;qartist=邓丽君&amp;qdisc=&amp;qtrack=&amp;n=10&amp;x=49&amp;y=15</span>
+
+
+<span class="nl">http:</span><span class="c1">//metaservices.windowsmedia.com/CDWizard/CDWizard2.asp?WMPFriendly=true&amp;locale=804&amp;SearchType=Artist&amp;SearchString=-28525,20029,21531&amp;MODE=DISPLAYARTISTALBUMS&amp;AlbumID=&amp;ArtistID={B50F45AB-1870-480A-B1E6-6C626B98709B}&amp;Version=1.0&amp;sVolume=1&amp;sCDTOC=</span>
+</pre></div>
+
+
+<p>微软SearchString中的内容是“邓丽君”三个字的十进制unicode编码，gracenote的qartist的内容为“邓丽君”的3字节UTF-8编码，掩码位为：</p>
+<div class="hlcode"><pre><span class="n">U</span><span class="o">-</span><span class="mo">00000</span><span class="mi">800</span> <span class="o">-</span> <span class="n">U</span><span class="o">-</span><span class="mf">0000FF</span><span class="n">FF</span><span class="o">:</span> <span class="mi">1110</span><span class="n">xxxx</span> <span class="mi">10</span><span class="n">xxxxxx</span> <span class="mi">10</span><span class="n">xxxxxx</span>
+</pre></div>
+
+
+<p>freedb的编码就猜不出来了。</p>
+<p>其实通过网页查询的时候，IE在发送给CDDB服务器的HTTP请求头中都会包含下面这一行：</p>
+<div class="hlcode"><pre><span class="n">Accept</span><span class="o">-</span><span class="n">Language</span><span class="o">:</span> <span class="n">zh</span><span class="o">-</span><span class="n">cn</span>
+</pre></div>
+
+
+<p>我猜微软、gracenote就是据此判断查询请求来自简体中文页面，而freedb没有做这个判断。微软在判断出来后，干脆把简体中文的LCID（804）放到URL的locale字段（简体中文版Windows XP注册表HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Nls\Language项下的Default值就是804）。</p>
+<h2 id="_6">后记</h2>
+<p>曾经疯狂迷恋MP3（现在根本就不屑一顾），FreeMP3Tag：一个兼容ID3v1和ID3v2格式的免费MP3 tag编辑器，能够从freedb、Gracenote、微软获取CD信息（史上第一个能同时查询三大CDDB的免费MP3 tag编辑器？）。这篇文章的主要内容，其实来自FreeMP3Tag的使用说明书，及使用这个软件过程中的一些感受。但由于申请Gracenote客户端控件的免费发行ID一直没有回音（现在用的是见光就死的developer’s ID），而微软CDDB的查询协议也是从Windows Media Player里抓出来的，微软从来没有正式公布过，所以这个软件始终只能我自己留着用，公开发表是不可能的。但是就此无下文又有点可惜，于是就有了这篇文章。如果您对CDDB有兴趣，又正好是一个合格的programmer，相信这篇文章所给出的提示，已经足够让您开发一个类似的CDDB查询工具了。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

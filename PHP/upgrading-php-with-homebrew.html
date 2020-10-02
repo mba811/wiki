@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Upgrading PHP with Homebrew - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#PHP">PHP</a>&nbsp;&#187;&nbsp;Upgrading PHP with Homebrew
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 10:33
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Upgrading PHP with Homebrew</div>
+
+  <p>Are you using <a href="https://github.com/josegonzalez/homebrew-php">josegonzalez brew repository</a> according my <a href="http://www.nabito.net/hot-to-install-nginx-php-fpm-5-5-6-mongo-and-mysql-on-mac-with-homebrew/">previous blog post</a>? You will need switch your brew to an <a href="https://github.com/Homebrew/homebrew-php">official PHP repository</a>.</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">untap</span> <span class="n">josegonzalez</span><span class="o">/</span><span class="n">homebrew</span><span class="o">-</span><span class="n">php</span>
+  <span class="mf">2.</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">dupes</span>
+  <span class="mf">3.</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">versions</span>
+  <span class="mf">4.</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">homebrew</span><span class="o">-</span><span class="n">php</span>
+</pre></div>
+
+
+<p>Then you can exec upgrade everything:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">update</span> <span class="o">&amp;&amp;</span> <span class="n">brew</span> <span class="n">upgrade</span>
+</pre></div>
+
+
+<p>Do not forgot change your shortcut in your <a href="https://github.com/OzzyCzech/dotfiles/blob/master/.bash_profile">bash profile</a>:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">alias</span> <span class="n">php</span><span class="o">-</span><span class="n">start</span><span class="o">=</span><span class="s">&quot;sudo launchctl load ~/Library/LaunchAgents/homebrew.mxcl.php55.plist&quot;</span>
+  <span class="mf">2.</span> <span class="n">alias</span> <span class="n">php</span><span class="o">-</span><span class="n">stop</span><span class="o">=</span><span class="s">&quot;sudo launchctl unload ~/Library/LaunchAgents/homebrew.mxcl.php55.plist&quot;</span>
+  <span class="mf">3.</span> <span class="n">alias</span> <span class="n">php</span><span class="o">-</span><span class="n">restart</span><span class="o">=</span><span class="s">&quot;php-stop &amp;&amp; php-start&quot;</span>
+</pre></div>
+
+
+<p>You can also getting an error <strong>Dubious ownership on file…</strong> then change *.<em>plists</em> rights:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">sudo</span> <span class="n">chown</span> <span class="n">root</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/*</span>
+  <span class="mf">2.</span> <span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">644</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/*</span>
+</pre></div>
+
+
+<p><a href="http://www.nabito.net/tag/brew">#brew</a> <a href="http://www.nabito.net/tag/php">#php</a> <a href="http://www.nabito.net/tag/osx">#osx</a> <a href="http://www.nabito.net/tag/mac">#mac</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

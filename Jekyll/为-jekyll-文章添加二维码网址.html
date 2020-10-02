@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>为 Jekyll 文章添加二维码网址 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;为 Jekyll 文章添加二维码网址
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 10:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">为 Jekyll 文章添加二维码网址</div>
+
+  <p>朋友问起，可以给 Jekyll 的每篇文章添加二维码显示吗？</p>
+<p>想了下，Jekyll 生成的博客是纯静态的网页，如果要为每篇文章添加二维码的话，似乎也只有 JavaScript，或干脆为 Jekyll 写一个 plugin 了。</p>
+<p>找了下 jQuery，已经有现成的 <a href="https://github.com/jeromeetienne/jquery-qrcode">QR Code</a> 了，按照说明，一步一步做下去。</p>
+<p>每个 Jekyll 的模板不太一样，所以做法也不太一样，主要的就是在模板的相关区域添加：</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;/assets/js/jquery.qrcode.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>然后再需要生成二维码的页面模板中的相关部分，添加：</p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;code&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+  $(&quot;#code&quot;).qrcode({
+    width: 150,
+    height: 150,
+    text: &quot;http:{{ site.url }}{{ page.url }}&quot;
+  });
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>默认的参数</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">render</td>
+<td align="left">canvas、table，默认以 canvas 渲染</td>
+</tr>
+<tr>
+<td align="left">width</td>
+<td align="left">宽度，默认256px</td>
+</tr>
+<tr>
+<td align="left">height</td>
+<td align="left">高度，默认256px</td>
+</tr>
+<tr>
+<td align="left">background</td>
+<td align="left">背景色</td>
+</tr>
+<tr>
+<td align="left">foreground</td>
+<td align="left">前景色</td>
+</tr>
+</tbody>
+</table>
+<p>说明下，<code>text: http:{{ site.url }}{{ page.url }}</code>，我这里只所以加上 <code>http:</code>，是因为很多手机无法识别 <code>//</code> 开头的网址，而我的 <strong>_config.yml</strong> 中的 <strong>url</strong> 是 <code>url: "//havee.me"</code>，所以看情况填写 <strong>text</strong> 变量吧。</p>
+<p>完了，就那么简单。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

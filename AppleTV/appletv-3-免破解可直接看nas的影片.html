@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>AppleTV 3 免破解可直接看NAS的影片 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#AppleTV">AppleTV</a>&nbsp;&#187;&nbsp;AppleTV 3 免破解可直接看NAS的影片
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:49
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">AppleTV 3 免破解可直接看NAS的影片</div>
+
+  <p>解決 Apple TV 3 於 IOS6.0 版本無法看大陸片源的方法。</p>
+<p>從 Apple TV 3 開始，似乎就沒有人想要去 jb 它了，這讓我等了又等，不知要等到何年何月。買了它也有一年半，能看的節目也只有 youtube 看看周董的 MV ，我想要追的動畫也不可能會在上面出現。</p>
+<p>然後，對岸的同胞們發明一個服務能讓這台黑盒子發揮最大效用，就是利用 DNS hijack 原理，改變位在美國 Apple 所服務的 IP 位址，然後再用相同的 token 打造一個符合播放影片的環境。</p>
+<p>改變的方法很簡單，如下圖，將 Apple TV 的 DNS 改對岸的 DNS 為 210.129.145.150 。</p>
+<p>完成設定之後，進入「預告片」就可以看到平常在網路上看韓劇的 pptv 、風行網等大陸片源，如下圖。</p>
+<p>所以，就這樣很高興的看了二三天之後，覺的它的菊花越跑越久，而且也有時段，半夜到早上才比較順利，熱門時段就像是板南線的忠孝新生，人潮擁擠之外連網路都是靜止不動的。</p>
+<p>然後，我又把它冷凍在冰箱裡了。</p>
+<p>直到近日，我有個剛搬了新家的表弟常常邀我去他家做客，有一台32吋的 SONY BRAVIA，他們家沒看 Cable 的習慣，也沒有裝 Cable ，所以在沒 Cable 的無聊狀態下，我就帶這個小盒子去接他們家的電視，又帶台 iPad 去看 PPS 。但是， PPS 要用 AirPlay 也是很 lag ，也不穩定。並且更又不能全螢幕。</p>
+<p>因此，我對於這個很想看高清影片的欲望驅使下，想要對 Apple TV 做些對我合理的用途。</p>
+<p>在上篇文章，我用 uShare 實現用 Apple TV 連結 AirPlay 欣賞影片的做法，但這個必需要開一支 IOS 的設備才能實現，如果是用 iPhone 的話看到一半還會有人打電話中斷看影片的興致。所以我也希望能弄一個讓它直接連接 NAS 不必透過其它裝置做中介。來完成類似看「預告片」的做法。</p>
+<p>在我想了幾個月之後，總算有高手把它給實現了。</p>
+<p>同樣也是用 DNS hijack 的方法，把「預告片」的功能導向 NAS Server ，做法如下：</p>
+<p>作業系統為任何的 Linux ，到 plex 的官方網站下載 plex media server 並安裝。另外你也可以透過 apt 來安裝：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">plexmediaserver</span>
+</pre></div>
+
+
+<p>安裝完成之後啥事都不用啟動，直接去這個網址：<a href="http://xn--nasip-n22hhe841ecm0e:32400/manage/index.html">http://你nas的ip位址:32400/manage/index.html</a></p>
+<p>只要看到網頁，表示 plex server 已經開始運作，接下來還要再安裝由社群高手所寫的中介程式，它可以偽裝成「預告片」的服務介面，將電腦裡的影片的列表出來。</p>
+<p>做法如下：</p>
+<p>到 githut clone 這位高手的程式碼</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/iBaa/PlexConnect.git</span>
+</pre></div>
+
+
+<p>這個程式是用 Python 所寫的，所以你的 NAS 必需要有能執行 Python 的環境( 這應該是多慮的)</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="p">.</span><span class="o">/</span><span class="n">PlexConnect</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+
+
+<p>這樣就開始執行 DNS hijack 的機制，然後在你的 Apple TV 把 DNS 設定成遠端電腦(NAS)的 IP ，如下圖。</p>
+<p>之後執行「預告片」只要看到下面的畫面，恭喜，你的 Apple TV 總算是有價值的了！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>AsciiDoc 简介 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;AsciiDoc 简介
+    <span class="updated">Page Updated&nbsp;
+      2015-05-27 20:05
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">AsciiDoc 简介</div>
+
+  <p>Markdown 是现在最流行的轻量级标记语言，Github、Stack Overflow、Smashing Magazine 等网站都使用 Markdown。Markdown 格式简单，纯文本具有很好的可读性。但它对复杂格式（例如表格、图片标题）支持不够，也没有预留扩展语法，不同网站各自扩展产生了很多方言。</p>
+<p>社区有不少人意识到问题，其中就有 <a href="http://blog.codinghorror.com/about-me/">Jeff Atwood</a> 牵头，联合 Stack Overflow、Github、reddit 的一些员工发起了 <a href="http://blog.codinghorror.com/standard-flavored-markdown/">Standard Markdown</a> 项目，希望将 Markdown 标准化。 没想到项目起步遇到的最大阻力是 Markdown 的创建者 John Gruber，John 很不满意 Jeff 在未充分沟通的情况下宣称自己的项目是“Standard”，经过一番争吵，Jeff 把项目改名为 <a href="http://blog.codinghorror.com/standard-markdown-is-now-common-markdown/">Common Markdown</a>，John 也没有加入项目。</p>
+<p>这场争吵让我不太看好 Markdown 的前景，没有创建者的支持，Common Markdown 可能又成为一个方言，Markdown 的混乱状况还要继续下去。</p>
+<p><img alt="standards" src="http://chloerei.com/images/posts/2014-10-16-asciidoc-vs-markdown/standards.png" /></p>
+<p>（图片出处：<a href="http://xkcd.com/927/">http://xkcd.com/927/</a> ）</p>
+<p>最近我在摸索制作电子书制作方案，需要一种更严谨、功能更丰富的标记语言，便开始寻找比 Markdown 更好的选择。 现行的轻量级标记语言并不少，<a href="http://en.wikipedia.org/wiki/Lightweight_markup_language">Wikipedia 上列出了 17 种</a> （有三种是 Markdown 方言）。经过一些研究之后，我比较看好 AsciiDoc，它的设计初衷就是为了解决写书规模的问题，并且是 O'Reilly 的在线出版平台 <a href="http://chimera.labs.oreilly.com/">Atlas</a> 的推荐语言。经过一番学习，我觉得 Asciidoc 确实很适合电子书制作。</p>
+<h2 id="_1">第一印象</h2>
+<p>AsciiDoc 基本语法跟 Markdown 类似，例如以 = 号开头作为标题、以 * 号开头作为列表项、以空行分割段落等，下面是一段 AsciiDoc 文本：</p>
+<div class="hlcode"><pre><span class="o">=</span> <span class="n">Hello</span><span class="p">,</span> <span class="n">AsciiDoc</span><span class="o">!</span>
+<span class="n">Doc</span> <span class="n">Writer</span> <span class="o">&lt;</span><span class="n">doc</span><span class="err">@</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="o">&gt;</span>
+
+<span class="n">An</span> <span class="n">introduction</span> <span class="n">to</span> <span class="n">http</span><span class="o">:</span><span class="c1">//asciidoc.org[AsciiDoc].</span>
+
+<span class="o">==</span> <span class="n">First</span> <span class="n">Section</span>
+
+<span class="o">*</span> <span class="n">item</span> <span class="mi">1</span>
+<span class="o">*</span> <span class="n">item</span> <span class="mi">2</span>
+
+<span class="p">[</span><span class="n">source</span><span class="p">,</span><span class="n">ruby</span><span class="p">]</span>
+<span class="n">puts</span> <span class="s">&quot;Hello, World!&quot;</span>
+</pre></div>
+
+
+<p>如果学会了 Markdown，再学 AsciiDoc 应该不难。详细的语法说明可以看这份文档：<a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/</a> 。</p>
+<h2 id="_2">内置更多特性</h2>
+<p>AsciiDoc 相比 Markdown 支持更多的格式，包括而不限于：</p>
+<ul>
+<li>文档属性，设置作者、版本信息等。</li>
+<li>语法高亮。</li>
+<li>表格。</li>
+<li>Include 功能，将大文档拆分几个文件。</li>
+<li>自定义块语法，可扩展性。</li>
+</ul>
+<p>Markdown 通过自行扩展语法或者使用 HTML 可以实现这些格式，但前者造成文档不通用的问题，后者则直接把展示结构硬编码到了文档中，将来修改会很麻烦。</p>
+<p>当然， 更多的特性带来更多的学习成本，对于博客等简单文档，这些特性并不是必须的，但对于电子书等大型文档，标准内提供丰富的特性就很有必要，否则就需要自己实现不成熟、不兼容的扩展。</p>
+<h2 id="asciidoctor">AsciiDoctor</h2>
+<p><a href="http://asciidoctor.org/">AsciiDoctor</a> 是 AsciiDoc 的 Ruby 实现，也是一个工具链，实现了 AsciiDoc 对 HTML5/DocBook/EPUB/PDF/MOBI 的转换（有的需要借助第三方工具例如 Kindlegen）。相比原版 Python 实现，AsciiDoctor 作了以下改进：</p>
+<ul>
+<li>添加模板引擎，可以用 Ruby 的模板语言（例如 erb）自定义输出格式。</li>
+<li>处理过程分成解析和生成两步，在解析之后文档转化为 Ruby 对象，可供编程处理。</li>
+<li>性能和安全性提升。</li>
+<li>通过 JRuby 提供 Java 版本；通过转编译提供 JavaScript 版本。</li>
+</ul>
+<p>AsciiDoctor 是一个很宏伟的项目，还有很多子项目在开发中，例如我比较关注的 Asciidoctor PDF 和 Asciidoctor EPUB3，这两个项目用于去掉现有工具链中对 DocBook 的依赖，由原文档直译目标文档。工具链层次的减少可以增加定制便利性，也更方便用户安装。</p>
+<p>因为有 AsciiDoctor 这样设计精良的实现，我才决定把精力放到 AsciiDoc 上。</p>
+<h2 id="_3">编辑器</h2>
+<p>轻量级标记语言不依赖编辑器，但好的编辑器会让写作过程更愉快。现在 AsciiDoc 的专用编辑器还不多，我推荐的编辑器是 <a href="http://atom.io/">Atom</a>，并且加装以下插件：</p>
+<ul>
+<li>zen，全屏居中的写作布局。</li>
+<li>language-asciidoc，语法高亮。</li>
+<li>asciidoc-preview，实时预览。</li>
+</ul>
+<p>打开预览窗口的效果图如下：</p>
+<p><img alt="Atom" src="http://chloerei.com/images/posts/2014-10-16-asciidoc-vs-markdown/atom.png" /></p>
+<p>配色之类可以根据个人喜好配置，Atom 是一个可塑性很强的编辑器。</p>
+<h2 id="_4">为什么不用……</h2>
+<p>我可以估计到有人会向我发问，为什么不用某某标记语言？这里简要回答一下：</p>
+<ul>
+<li>LaTex：语法太复杂，导致写作没有乐趣可言。LaTex 适合用于数学公式这类专门场合。</li>
+<li>Org mode：基本上是 Emacs 用户在用。</li>
+<li>reStructuredText：基本上是 Python 开发者在用。</li>
+<li>其他类似。</li>
+</ul>
+<p>综合功能、易用性、社区氛围、配套工具来看，目前我觉得 AsciiDoc 最好。</p>
+<h2 id="_5">总结</h2>
+<p>AsciiDoc 是一个成熟的、为大型文档设计的标记语言。如果你在搭建复杂的文档环境，并且认为 Markdown 已经不能满足需求，那么可以试试 AsciiDoc。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

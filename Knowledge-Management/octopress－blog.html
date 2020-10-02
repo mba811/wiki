@@ -1,0 +1,1514 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>octopress－blog - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Knowledge-Management">Knowledge-Management</a>&nbsp;&#187;&nbsp;octopress－blog
+    <span class="updated">Page Updated&nbsp;
+      2015-02-09 18:32
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">octopress－blog</div>
+
+  <h1 id="_1">博客基础</h1>
+<p>Octopress提供一些创建文章和页面的rake任务，而这些文章和页面会根据jekyll的命名规则和元数据预先装载。它也会为你的文章生成基于feed的分类和全局(你能在<code>atom.xml</code>以及<code>blog/categories/&lt;category&gt;/atom.xml</code>发现他们)。</p>
+<h2 id="_2">博客文章</h2>
+<p>博客文章必须被保存在<code>source/_posts</code>文件夹，而且必须按照jekyll的命名规则来命名：<code>YYYY-MM-DD-post-title.markdown</code>。这个文件的名字将被解析做为url的级数，（译者注：例如文件名字是<code>2014-10-10-test.markdown</code>，url将是：<code>/blog/2014/10/10/test</code>,其实这个url解析设置是可以修改的），文章名称中间的时间帮助文件区别和决定对文章排序顺序。</p>
+<p>Octopress 提供一个rake任务，这个任务使用一个正确的命名约定以及合理的yaml元数据来创建新的文章。</p>
+<p><strong>语法</strong></p>
+<p>new_post</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">new_post</span><span class="p">[</span><span class="s">&quot;title&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<p><code>new_post</code>当创建一个文件名时，需要一个自然的文件名，同时会剥离不良的url字符。新文章的默认文件扩展名是<code>markdown</code>，但是你能在<code>Rakefile</code>里配置它。</p>
+<p><strong>例子</strong></p>
+<p>new_post</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">new_post</span><span class="p">[</span><span class="s">&quot;Zombie Ninjas Attack: A survivor&#39;s retrospective&quot;</span><span class="p">]</span>
+<span class="cp"># 创建 source/_posts/2011-07-03-zombie-ninjas-attack-a-survivors-retrospective.markdown</span>
+</pre></div>
+
+
+<p>文件名决定你的访问url。使用默认的<a href="http://jekyllcn.com/docs/permalinks/">永久链接</a>设置，访问地址会像如下：<code>http://site.com/blog/2011/07/03/zombie-ninjas-attack-a-survivors-retrospective/index.html</code>。</p>
+<p>在一个文本编辑器里打开一篇文章，你会在文章最前面看到一块<a href="http://jekyllcn.com/docs/frontmatter/">yaml头信息</a>，这块代码告诉Jekyll如何处理文章和页面。</p>
+<p>yaml头信息</p>
+<div class="hlcode"><pre><span class="n">layout</span><span class="o">:</span> <span class="n">post</span>
+<span class="n">title</span><span class="o">:</span> <span class="s2">&quot;Zombie Ninjas Attack: A survivor&#39;s retrospective&quot;</span>
+<span class="n">date</span><span class="o">:</span> <span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span> <span class="mi">5</span><span class="o">:</span><span class="mi">59</span>
+<span class="n">comments</span><span class="o">:</span> <span class="kc">true</span>
+<span class="n">external</span><span class="o">-</span><span class="n">url</span><span class="o">:</span>
+<span class="n">categories</span><span class="o">:</span>
+</pre></div>
+
+
+<p>在这里，你可以给你的文章关掉评论或者分类。假如你的文章有多个作者，你可以加<code>author: Your Name</code>到头信息的元数据。假如你正在做草稿，你能加<code>published: false</code>到头信息，预防在生成博客的时候，也将草稿生成文章。假如你想发布一个<code>linklog</code>形式的文章(博客条目指向外部链接)，只需简单的加一个<code>external-url</code>到你的文章。</p>
+<p>你能加一个或者多个分类：</p>
+<p>yaml头信息</p>
+<div class="hlcode"><pre><span class="cp"># One category</span>
+<span class="nl">categories:</span> <span class="n">Sass</span>
+
+<span class="cp"># Multiple categories example 1</span>
+<span class="nl">categories:</span> <span class="p">[</span><span class="n">CSS3</span><span class="p">,</span> <span class="n">Sass</span><span class="p">,</span> <span class="n">Media</span> <span class="n">Queries</span><span class="p">]</span>
+
+<span class="cp"># Multiple categories example 2</span>
+<span class="nl">categories:</span>
+<span class="o">-</span> <span class="n">CSS3</span>
+<span class="o">-</span> <span class="n">Sass</span>
+<span class="o">-</span> <span class="n">Media</span> <span class="n">Queries</span>
+</pre></div>
+
+
+<h2 id="_3">新页面</h2>
+<p>你能在你博客源目录的任何地方加一个新页面，它们都会被jekyll解析。URL将正确的指向文件路径，所以<code>about.markdown</code>将变成<code>site.com/about.html</code>。假如你喜欢你的url是<code>site.com/about/</code>，那么你要创建的页面为<code>about/index.markdown</code>。也有一个很简单的rake任务来生成页面。</p>
+<p>new_page</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">new_page</span><span class="p">[</span><span class="n">super</span><span class="o">-</span><span class="n">awesome</span><span class="p">]</span>
+<span class="cp"># creates /source/super-awesome/index.markdown</span>
+
+<span class="n">rake</span> <span class="n">new_page</span><span class="p">[</span><span class="n">super</span><span class="o">-</span><span class="n">awesome</span><span class="o">/</span><span class="n">page</span><span class="p">.</span><span class="n">html</span><span class="p">]</span>
+<span class="cp"># creates /source/super-awesome/page.html</span>
+</pre></div>
+
+
+<p>跟创建新文章的任务一样，默认的扩展名也是<code>markdown</code>，但是你能在<code>Rakefile</code>文件里配置它。一个刚生成的页面可能是这样子的：</p>
+<p>new_page</p>
+<div class="hlcode"><pre><span class="n">layout</span><span class="o">:</span> <span class="n">page</span>
+<span class="n">title</span><span class="o">:</span> <span class="s2">&quot;Super Awesome&quot;</span>
+<span class="n">date</span><span class="o">:</span> <span class="mi">2011</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">03</span> <span class="mi">5</span><span class="o">:</span><span class="mi">59</span>
+<span class="n">comments</span><span class="o">:</span> <span class="kc">true</span>
+<span class="n">sharing</span><span class="o">:</span> <span class="kc">true</span>
+<span class="n">footer</span><span class="o">:</span> <span class="kc">true</span>
+</pre></div>
+
+
+<p>标题是从文件名衍生出来的，所以你可能想改变它。这根生成一个新文章是一样的，除了不包含分类，你可以切换分享以及评论或者干脆移除底部。假如你不想在页面显示时间，你从<code>yaml</code>移除它就是了。</p>
+<h2 id="_4">内容</h2>
+<p>网页和文章将被你网站配置文件指定的markup引擎渲染。此外你能使用在 <a href="http://jekyllcn.com/docs/variables/">Jekyll 文章</a>里描述的任何 <a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">liquid模板功能</a>。</p>
+<p>插入一个<code>&lt;!-- more --&gt;</code>标签到你的文章，将会预防这篇文章这个标签底下的部分显示在你的博客首页。一个<code>Continue →</code>的按钮链接到整篇文章。</p>
+<h2 id="_5">生成和预览</h2>
+<p>生成和预览</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate</span>   <span class="err">#</span> <span class="n">Generates</span> <span class="n">posts</span> <span class="n">and</span> <span class="n">pages</span> <span class="n">into</span> <span class="n">the</span> <span class="n">public</span> <span class="n">directory</span>
+<span class="n">rake</span> <span class="n">watch</span>      <span class="err">#</span> <span class="n">Watches</span> <span class="n">source</span><span class="o">/</span> <span class="n">and</span> <span class="n">sass</span><span class="o">/</span> <span class="k">for</span> <span class="n">changes</span> <span class="n">and</span> <span class="n">regenerates</span>
+<span class="n">rake</span> <span class="n">preview</span>    <span class="err">#</span> <span class="n">Watches</span><span class="p">,</span> <span class="n">and</span> <span class="n">mounts</span> <span class="n">a</span> <span class="n">webserver</span> <span class="n">at</span> <span class="n">http</span><span class="o">:</span><span class="c1">//localhost:4000</span>
+</pre></div>
+
+
+<p>假如你不想发布这篇文章，而又想生成博客。你可以加<code>published: false</code>，到你文章的YAML头。你可以通过<code>rake preview</code>在你本地服务器预览这篇文章，但是不会被发布，通过<code>rake generate</code>这个命令。</p>
+<p>使用<code>rake preview</code>命令是很棒的，因为可以预览。但是假如你有一个<a href="http://pow.cx/">POW</a>服务，你能像下面这样设置Octopress：</p>
+<p>POW设置Octopress</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~/</span><span class="p">.</span><span class="n">pow</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">octopress</span> <span class="n">octopress</span>
+<span class="n">cd</span> <span class="o">-</span>
+</pre></div>
+
+
+<p>现在你安装好POW，你只要运行<code>rake watch</code>和装载<code>http://octopress.dev</code>就可以了，代替使用<code>rake preview</code>命令。</p>
+<p>也可以看<a href="http://octopress.org/docs/blogging/code/">分享代码片段</a>和<a href="http://octopress.org/docs/blogging/plugins/">博客插件</a>。</p>
+<h1 id="octopress">Octopress配置</h1>
+<p>我尝试着让octopress的配置尽量简单，你很可能只需要修改<code>rakefile</code>以及<code>_config.yml</code>。底下是octopress配置文件的列表：</p>
+<p>octopress配置文件列表</p>
+<div class="hlcode"><pre>    <span class="n">_config</span><span class="p">.</span><span class="n">yml</span>       <span class="err">#</span> <span class="err">主要配置文件</span> <span class="p">(</span><span class="n">Jekyll</span><span class="err">的设置</span><span class="p">)</span>
+    <span class="n">Rakefile</span>          <span class="err">#</span> <span class="err">部署配置</span>
+    <span class="n">config</span><span class="p">.</span><span class="n">rb</span>         <span class="err">#</span> <span class="n">Compass</span><span class="err">配置</span>
+    <span class="n">config</span><span class="p">.</span><span class="n">ru</span>         <span class="err">#</span> <span class="n">Rack</span> <span class="n">config</span>
+</pre></div>
+
+
+<p>Rakefile文件里面的配置关联的几乎都是部署，你甚至都不需要接触他们，除非你使用rsync。</p>
+<h2 id="_6">博客配置</h2>
+<p>在<code>_config.yml</code>有三个部分是用于配置你的octopress博客。注意：你必须改变<code>url</code>,你很可能改变<code>title</code>,<code>subtitle</code>以及使用第三方服务。</p>
+<p>octopress配置文件</p>
+<div class="hlcode"><pre>    <span class="nl">url:</span>                <span class="err">#</span> <span class="err">为</span><span class="n">RSS</span><span class="err">重新</span><span class="n">url</span><span class="p">,</span> <span class="err">等等。</span>
+    <span class="nl">title:</span>              <span class="err">#</span> <span class="err">在页的头和标题标签使用</span>
+    <span class="nl">subtitle:</span>           <span class="err">#</span> <span class="err">在头里面的描述</span>
+    <span class="nl">author:</span>             <span class="err">#</span> <span class="err">为</span><span class="n">RSS</span><span class="err">的作者</span><span class="p">,</span> <span class="n">Copyright</span><span class="p">,</span> <span class="n">Metadata</span>
+    <span class="nl">simple_search:</span>      <span class="err">#</span> <span class="err">简单的搜索引擎</span>
+    <span class="nl">description:</span>        <span class="err">#</span> <span class="err">为你的站点默认的描述</span>
+    <span class="nl">date_format:</span>        <span class="err">#</span> <span class="err">使用</span><span class="n">ruby</span><span class="err">的时间格式化</span>
+    <span class="nl">subscribe_rss:</span>      <span class="err">#</span> <span class="err">你的博客源订阅</span><span class="n">url</span><span class="err">，默认是到</span><span class="o">/</span><span class="n">atom</span><span class="p">.</span><span class="n">xml</span>
+    <span class="nl">subscribe_email:</span>    <span class="err">#</span> <span class="err">邮件订阅</span><span class="n">email</span>
+    <span class="nl">category_feeds:</span>     <span class="err">#</span> <span class="err">使用每一个类别</span><span class="n">rss</span><span class="err">源订阅</span>
+    <span class="nl">email:</span>              <span class="err">#</span> <span class="n">Email</span> <span class="n">address</span> <span class="k">for</span> <span class="n">the</span> <span class="n">RSS</span> <span class="n">feed</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">it</span><span class="p">.</span>
+</pre></div>
+
+
+<p>注意：假如你的站点是多作者，你也许想要设置配置文件里面的<code>author</code>为你们项目或者公司的名称，然后加作者元数据到文章或者页面，为这些工作添加合适的属性。</p>
+<h2 id="jekyll-plugins">Jekyll &amp; Plugins</h2>
+<p>这些配置被 Jekyll以及插件使用。假如你不熟悉Jekyll，你也许需要看一下<a href="https://github.com/jekyll/jekyll/wiki/Configuration">配置文档</a>，这个文档列出了这儿没有覆盖的更多属性。</p>
+<p>octopress配置文件</p>
+<div class="hlcode"><pre>    <span class="nl">root:</span>               <span class="err">#</span> <span class="n">Mapping</span> <span class="k">for</span> <span class="n">relative</span> <span class="n">urls</span> <span class="p">(</span><span class="k">default</span><span class="o">:</span> <span class="o">/</span><span class="p">)</span>
+    <span class="nl">permalink:</span>          <span class="err">#</span> <span class="n">Permalink</span> <span class="n">structure</span> <span class="k">for</span> <span class="n">blog</span> <span class="n">posts</span>
+    <span class="nl">source:</span>             <span class="err">#</span> <span class="n">Directory</span> <span class="k">for</span> <span class="n">site</span> <span class="n">source</span> <span class="n">files</span>
+    <span class="nl">destination:</span>        <span class="err">#</span> <span class="n">Directory</span> <span class="k">for</span> <span class="n">generated</span> <span class="n">site</span> <span class="n">files</span>
+    <span class="nl">plugins:</span>            <span class="err">#</span> <span class="n">Directory</span> <span class="k">for</span> <span class="n">Jekyll</span> <span class="n">plugins</span>
+    <span class="nl">code_dir:</span>           <span class="err">#</span> <span class="n">Directory</span> <span class="k">for</span> <span class="n">code</span> <span class="n">snippets</span> <span class="p">(</span><span class="k">for</span> <span class="n">include_code</span> <span class="n">plugin</span><span class="p">)</span>
+    <span class="nl">category_dir:</span>       <span class="err">#</span> <span class="n">Directory</span> <span class="k">for</span> <span class="n">generated</span> <span class="n">blog</span> <span class="n">category</span> <span class="n">pages</span>
+
+    <span class="nl">pygments:</span>           <span class="err">#</span> <span class="n">Toggle</span> <span class="n">python</span> <span class="n">pygments</span> <span class="n">syntax</span> <span class="n">highlighting</span>
+    <span class="nl">paginate:</span>           <span class="err">#</span> <span class="n">Posts</span> <span class="n">per</span> <span class="n">page</span> <span class="n">on</span> <span class="n">the</span> <span class="n">blog</span> <span class="n">index</span>
+    <span class="nl">pagination_dir:</span>     <span class="err">#</span> <span class="n">Directory</span> <span class="n">base</span> <span class="k">for</span> <span class="n">pagination</span> <span class="n">URLs</span> <span class="n">eg</span><span class="p">.</span> <span class="o">/</span><span class="n">blog</span><span class="o">/</span><span class="n">page</span><span class="o">/</span><span class="mi">2</span><span class="o">/</span>
+    <span class="nl">recent_posts:</span>       <span class="err">#</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">recent</span> <span class="n">posts</span> <span class="n">to</span> <span class="n">appear</span> <span class="n">in</span> <span class="n">the</span> <span class="n">sidebar</span>
+
+    <span class="nl">default_asides:</span>     <span class="err">#</span> <span class="n">Configure</span> <span class="n">what</span> <span class="n">shows</span> <span class="n">up</span> <span class="n">in</span> <span class="n">the</span> <span class="n">sidebar</span> <span class="n">and</span> <span class="n">in</span> <span class="n">what</span> <span class="n">order</span>
+    <span class="nl">blog_index_asides:</span>  <span class="err">#</span> <span class="n">Optional</span> <span class="n">sidebar</span> <span class="n">config</span> <span class="k">for</span> <span class="n">blog</span> <span class="n">index</span> <span class="n">page</span>
+    <span class="nl">post_asides:</span>        <span class="err">#</span> <span class="n">Optional</span> <span class="n">sidebar</span> <span class="n">config</span> <span class="k">for</span> <span class="n">post</span> <span class="n">layout</span>
+    <span class="nl">page_asides:</span>        <span class="err">#</span> <span class="n">Optional</span> <span class="n">sidebar</span> <span class="n">config</span> <span class="k">for</span> <span class="n">page</span> <span class="n">layout</span>
+</pre></div>
+
+
+<p>假如你想改变为你的博客文章所设置的永久链接方式，请看<a href="http://jekyllcn.com/docs/permalinks/">Jekyll的永久链接文档</a>。</p>
+<p><strong>注意</strong>：Jekyll有一个<code>baseurl</code>配置，这个配置通过加一个重定向到Jekyll的WEBrick服务提供模拟子目录发布支持。<strong>请不要使用这个</strong>。假如你想要发布你的站点到二级目录，请看<a href="http://http//www.twalksong.com/blog/2014/10/04/deploying-to-a-subdirectory/">部署octopress到子目录</a>。</p>
+<h2 id="_7">第三方服务设置</h2>
+<p>这里已经为你设置了第三方集成。简单的填写配置，就会在你的博客展现效果。</p>
+<ul>
+<li><strong>Github</strong> - 在侧边栏列出你的github库</li>
+<li><strong>Twitter</strong> - 在文章或者页面加一个分享到Twitter的按钮</li>
+<li><strong>Google Plus One</strong> - 为google+社交网络加分享按钮</li>
+<li><strong>Pinboard</strong> - 在侧边栏分享你最近的Pinboard记录</li>
+<li><strong>Delicious</strong> - 在侧边栏分享你最近的Delicious记录</li>
+<li><strong>Disqus Comments</strong> - 加你的Disqus短名使你可以使用评论</li>
+<li><strong>Google Analytic</strong> - 加你的谷歌记录id，开启谷歌分析追踪。</li>
+<li><strong>Facebook</strong> - 加一个facebook喜欢按钮。</li>
+</ul>
+<p>octopress布局将读取这些配置，以及仅仅为可以使用的第三方服务加载需要的js和html。</p>
+<h1 id="_8">部署</h1>
+<p>这里有一些很漂亮和简单的方法部署你的octopress博客。</p>
+<h2 id="github-pages">GitHub Pages</h2>
+<p>使用github’s Pages服务建立你的博客是免费且允许你自定义你的域名。部署只需要将你的库推送到gitHub。这是一种你建立自己的博客的伟大的方法，或者甚至是一个多作者博客，可以通过拉请求和控制权限处理每个人的贡献。</p>
+<p><a href="http://http//www.twalksong.com/blog/2014/10/03/deploying-to-github-pages/">部署到GitHub Pages »</a></p>
+<h2 id="heroku">Heroku</h2>
+<p>像GitHub Pages, Heroku也是免费的，也允许自定义域名。也使用基于git部署工作流。Heroku使用起来很简单，且你的库仍然保持私有。</p>
+<p><a href="http://http//www.twalksong.com/blog/2014/10/03/using-octopress-with-heroku/">部署到Heroku »</a></p>
+<h2 id="rsync">Rsync</h2>
+<p>假如你有web主机服务，你能很简单的使用rsync部署，rsync通过SSH同步文件以及修改文件是不可思议的快。假如你的主机不提供SSH服务，你可以寻找一个替代它，试试<a href="http://www.dreamhost.com/">DreamHost</a>，我从2005年一来就一直使用它。</p>
+<h1 id="_9">部署到子目录</h1>
+<p>假如你部署一个子目录到你的网站，你可以使用github的项目页，确信你正确配置好了你的urls。你几乎可以自动化实现：</p>
+<p>配置urls</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">set_root_dir</span><span class="p">[</span><span class="n">your</span><span class="o">/</span><span class="n">path</span><span class="p">]</span>
+
+<span class="cp"># To go back to publishing to the document root</span>
+<span class="n">rake</span> <span class="n">set_root_dir</span><span class="p">[</span><span class="o">/</span><span class="p">]</span>
+</pre></div>
+
+
+<p>然后如下更新你的<code>_config.xml</code>以及<code>Rakefile</code>:</p>
+<p>_config.xml</p>
+<div class="hlcode"><pre><span class="cp"># _config.yml</span>
+<span class="nl">url:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//yoursite.com/your/path</span>
+
+<span class="cp"># Rakefile (if deploying with rsync)</span>
+<span class="n">document_root</span> <span class="o">=</span> <span class="s">&quot;~/yoursite.com/your/path&quot;</span>
+</pre></div>
+
+
+<p>要手动配置部署到子目录，你将改变<code>_config.yml</code>，<code>config.rb</code> 以及<code>Rakefile</code>。底下是一个部署站点到<code>/awesome</code>子目录的例子：</p>
+<p>_config.xml，config.rb，Rakefile</p>
+<div class="hlcode"><pre><span class="cp"># _config.yml</span>
+<span class="nl">destination:</span> <span class="n">public</span><span class="o">/</span><span class="n">awesome</span>
+<span class="nl">url:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//example.com/awesome</span>
+<span class="nl">subscribe_rss:</span> <span class="o">/</span><span class="n">awesome</span><span class="o">/</span><span class="n">atom</span><span class="p">.</span><span class="n">xml</span>
+<span class="nl">root:</span> <span class="o">/</span><span class="n">awesome</span>
+
+<span class="cp"># config.rb - for Compass &amp; Sass</span>
+<span class="n">http_path</span> <span class="o">=</span> <span class="s">&quot;/awesome&quot;</span>
+<span class="n">http_images_path</span> <span class="o">=</span> <span class="s">&quot;/awesome/images&quot;</span>
+<span class="n">http_fonts_path</span> <span class="o">=</span> <span class="s">&quot;/awesome/fonts&quot;</span>
+<span class="n">css_dir</span> <span class="o">=</span> <span class="s">&quot;public/awesome/stylesheets&quot;</span>
+
+<span class="cp"># Rakefile</span>
+<span class="n">public_dir</span> <span class="o">=</span> <span class="s">&quot;public/awesome&quot;</span>
+<span class="cp"># If deploying with rsync, update your Rakefile path</span>
+<span class="n">document_root</span> <span class="o">=</span> <span class="s">&quot;~/yoursite.com/awesome&quot;</span>
+</pre></div>
+
+
+<h1 id="rsync_1">部署到Rsync</h1>
+<h2 id="sshrsync">通过SSH部署rsync</h2>
+<p>将你的服务器配置加到Rsync部署配置目录的<code>rakefile</code>文件下。部署到rsync，确认你的公钥在文件<code>~/.ssh/authorized_keys</code>文件里列出来了。</p>
+<p>authorized_keys</p>
+<div class="hlcode"><pre><span class="n">ssh_user</span>       <span class="o">=</span> <span class="s">&quot;user@domain.com&quot;</span>
+<span class="n">document_root</span>  <span class="o">=</span> <span class="s">&quot;~/website.com/&quot;</span>
+<span class="n">rsync_delete</span>   <span class="o">=</span> <span class="nb">true</span>
+<span class="n">deploy_default</span> <span class="o">=</span> <span class="s">&quot;rsync&quot;</span>
+</pre></div>
+
+
+<p>下一步运行</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate</span>   <span class="err">#</span> <span class="n">If</span> <span class="n">you</span> <span class="n">haven</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">generated</span> <span class="n">your</span> <span class="n">blog</span> <span class="n">yet</span>
+<span class="n">rake</span> <span class="n">deploy</span>     <span class="err">#</span> <span class="n">Syncs</span> <span class="n">your</span> <span class="n">blog</span> <span class="n">via</span> <span class="n">ssh</span>
+</pre></div>
+
+
+<p>在你的终端，你的<code>public</code>目录将被同步到你服务器帐号的根目录。</p>
+<h2 id="rsync_2">关于rsync删除</h2>
+<p>假如在同步中选择删除，rsync将创建一个1:1的比对。文件将被添加，修改以及删除从你部署目录到你的本地复制镜像。</p>
+<p>假如没有选择删除：</p>
+<ul>
+<li>你能存储文件在你的网站部署目录，而这个部署目录还没有被本地版本发现。</li>
+<li>你本地网站删除的文件必须手动移除服务器端的文件。</li>
+</ul>
+<h2 id="_10">从同步中排除文件</h2>
+<p>假如你想保持octopress文件同步，但是同时你也想很方便的排除一些文件或者目录不跟服务器同步，你可以在rsync中排除他们。</p>
+<p>当同步的时候，rsync可以排除服务器或者本地的文件或者目录。简单的加一个<code>rsync-exclude</code>文件，到你项目的根目录，像这样：</p>
+<p>rsync-exclude</p>
+<div class="hlcode"><pre><span class="n">some</span><span class="o">-</span><span class="n">file</span><span class="p">.</span><span class="n">txt</span>
+<span class="n">some</span><span class="o">-</span><span class="n">directory</span><span class="o">/</span>
+<span class="o">*</span><span class="p">.</span><span class="n">mp4</span>
+</pre></div>
+
+
+<p>注意：使用排除将防止rsync上传本地文件，或者假如你指定了删除选项，它将防止rsync从服务器删除排除列表里面的文件。</p>
+<h2 id="_11">版本控制</h2>
+<p>你想要在远程git库同步你的博客源。所以设置一个<a href="https://github.com/new">github库</a>或者<a href="http://www.twalksong.com/blog/2014/10/03/deploying-with-rsync/#section-2">建立一个你自己的主机</a>，然后运行如下命令：</p>
+<p>配置远程点</p>
+<div class="hlcode"><pre><span class="cp"># Since you cloned Octopress, you&#39;ll need to change the origin remote</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">rename</span> <span class="n">origin</span> <span class="n">octopress</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="p">(</span><span class="n">your</span> <span class="n">repository</span> <span class="n">url</span><span class="p">)</span>
+<span class="cp"># set your new origin as the default branch</span>
+<span class="n">git</span> <span class="n">config</span> <span class="n">branch</span><span class="p">.</span><span class="n">master</span><span class="p">.</span><span class="n">remote</span> <span class="n">origin</span>
+</pre></div>
+
+
+<h2 id="_12">建立你自己的远程仓库</h2>
+<p>假如你想设置在你自己服务器的私人git仓库，底下是怎么做。你需要ssh维持访问。</p>
+<p>git ssh</p>
+<div class="hlcode"><pre><span class="n">ssh</span> <span class="n">user</span><span class="err">@</span><span class="n">host</span><span class="p">.</span><span class="n">com</span>
+<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">git</span><span class="o">/</span><span class="n">octopress</span><span class="p">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">git</span><span class="o">/</span><span class="n">octopress</span><span class="p">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">init</span> <span class="o">--</span><span class="n">bare</span>
+<span class="n">pwd</span>  <span class="err">#</span> <span class="n">print</span> <span class="n">the</span> <span class="n">working</span> <span class="n">directory</span><span class="p">,</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">ll</span> <span class="n">need</span> <span class="n">it</span> <span class="n">below</span><span class="p">.</span>
+<span class="n">logout</span>
+</pre></div>
+
+
+<p>你远程访问库的url是：<code>ssh://user@host.com/(output of pwd above)</code>。</p>
+<h2 id="_13">部署到子目录</h2>
+<p>假如你想要建立一个博客在<code>http://yoursite.com/blog/</code>,你将需要为<a href="http://http//www.twalksong.com/blog/2014/10/04/deploying-to-a-subdirectory/">部署到子目录</a>配置octopress。</p>
+<h1 id="heroku_1">部署到Heroku</h1>
+<h1 id="heroku_2">部署到Heroku</h1>
+<p>假如你还没有heroku帐号，<a href="https://api.heroku.com/signup">创建一个</a>，它是免费的。然后安装the Heroku gem。</p>
+<h2 id="octopress_1">基本的Octopress安装</h2>
+<p>第一步确定你安装好了the Heroku gem。</p>
+<p>安装heroku gem</p>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">install</span> <span class="n">heroku</span>
+</pre></div>
+
+
+<p>下一步为你的部署创建应用。假如你是第一次使用heroku,底下的命令将询问你的帐号密码，并自动上传你的ssh的公钥。假如你还没有一个公钥，请点击：<a href="https://help.github.com/articles/set-up-git/">github的向导并创建一个</a>。</p>
+<p>heroku create</p>
+<div class="hlcode"><pre><span class="n">heroku</span> <span class="n">create</span>
+</pre></div>
+
+
+<p>这个命令将为你的部署创建一个heroku应用，然后创建一个名字叫做“heroku”的git远程点。</p>
+<p>git远程点</p>
+<div class="hlcode"><pre><span class="cp"># Set heroku to be the default remote for push/fetch</span>
+<span class="n">git</span> <span class="n">config</span> <span class="n">branch</span><span class="p">.</span><span class="n">master</span><span class="p">.</span><span class="n">remote</span> <span class="n">heroku</span>
+</pre></div>
+
+
+<p>编辑库根目录下的<code>.gitignore</code>文件，并移除<code>public</code>。这个让你将生成后的内容部署到Heroku。</p>
+<p>部署</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate</span>
+<span class="n">git</span> <span class="n">add</span> <span class="p">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">&#39;</span><span class="n">site</span> <span class="n">updated</span><span class="err">&#39;</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">heroku</span> <span class="n">master</span>
+</pre></div>
+
+
+<p>这样你就会部署到HeroKu。假如你想配置自己的域名，请看<a href="https://devcenter.heroku.com/articles/custom-domains">HeroKu的文档</a>。</p>
+<h1 id="github-pages_1">部署到Github Pages</h1>
+<ul>
+<li><a href="http://www.twalksong.com/blog/2014/10/03/deploying-to-github-pages/#github">使用github的用户或者组织页</a></li>
+<li><a href="http://www.twalksong.com/blog/2014/10/03/deploying-to-github-pages/#githubgh-pages">使用github项目页（gh-pages）</a></li>
+<li><a href="http://www.twalksong.com/blog/2014/10/03/deploying-to-github-pages/#section">自定义域名</a></li>
+</ul>
+<h2 id="github">使用github的用户或者组织页</h2>
+<p>假如你想要从<code>http://username.github.io</code>拥有一个博客(虽然你也有<a href="http://http//www.twalksong.com/blog/2014/10/03/deploying-to-github-pages/#section">自己的域名</a>)，就使用这个方法。在过去github使用<code>http://username.github.com</code>作为域名,但是正在使用io扩展代替Pages。</p>
+<p>创建一个<a href="https://github.com/new">新的github库</a>，将这个库的名字命名为这种格式的：<code>username.github.io</code>，username是你的github用户名或者组织名。</p>
+<p>Github Pages为用户以及组织使用主分支就像web服务器使用公共目录，在你的http://username.github.io网页提供文件。但是你想要在source分支下工作，例如编辑博客文章，然后提交生成后的博客内容到主分支。Octopress有一个帮助你这样设置好的配置命令。</p>
+<p>github pages配置 </p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">setup_github_pages</span>
+</pre></div>
+
+
+<p>这个rake命令将询问你的github库url。复制来自于你新创建好的库的ssl或者https的url(例如：<code>git@github.com:username/username.github.io.git</code>)，然后作为回应粘贴到里面。</p>
+<p>这个命令将会做如下动作：</p>
+<ol>
+<li>询问以及存储你的github pages的库url。</li>
+<li>将imathis/octopress远程点的名称’origin’修改为’octopress’。</li>
+<li>加入你的github pages库作为默认的origin远程点。</li>
+<li>切换活动分支从主分支到源分支。</li>
+<li>根据你的库url配置你的博客url。</li>
+<li>在_deploy文件夹设置一个主分支用于部署。</li>
+</ol>
+<p>下一步运行：</p>
+<p>github rake deploy</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate</span>
+<span class="n">rake</span> <span class="n">deploy</span>
+</pre></div>
+
+
+<p>这个将生成你的博客，复制生成好的文件到<code>_deploy/</code>,然后将他们加入到git，提交以及推送他们到github的主分支。在之后几秒钟之内，你会收到一封来自与github的email，告诉你你的提交已经被接收以及将被部署到你的站点。</p>
+<p><strong>不要忘记</strong>将你的博客开发代码提交到源分支。</p>
+<p>github 提交到源分支</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">add</span> <span class="p">.</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">&#39;</span><span class="n">your</span> <span class="n">message</span><span class="err">&#39;</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">source</span>
+</pre></div>
+
+
+<p>注意：使用新库，github会设置基于你第一次推送的分支作为你的默认的分支，然后它将存放你生成的内容。假如你使用github部署你的博客出现问题，点击你库的管理面板，然后确认主分支是默认的分支。</p>
+<p>更多关于你第一篇文章的信息，请阅读<a href="http://octopress.org/docs/blogging/">博客基本设置</a>。</p>
+<h2 id="githubgh-pages">使用github项目页（gh-pages）</h2>
+<p>github项目页服务允许你为你的开源项目形成一个站点。github将寻找你库里面的<code>gh-pages</code>分支，然后确定在url（例如：<code>http://username.github.io/project</code>）的内容是可用的。</p>
+<p>底下能设置octopress站点到gh-pages库：</p>
+<p>github pages配置</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">setup_github_pages</span>
+</pre></div>
+
+
+<p>有如下几个步骤：</p>
+<ol>
+<li>询问你项目库的url。</li>
+<li>将imathis/octopress远程点的名称’origin’修改为’octopress’。</li>
+<li>在_deploy文件夹设置一个gh-pages分支用于部署。</li>
+</ol>
+<p>下一步运行：</p>
+<p>github rake deploy</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate</span>
+<span class="n">rake</span> <span class="n">deploy</span>
+</pre></div>
+
+
+<p>这个将生成你的博客，复制生成好的文件到<code>_deploy/</code>,然后将他们加入到git，提交以及推送他们到github的主分支。在之后几秒钟之内，你会收到一封来自与github的email，告诉你你的提交已经被接收以及将被部署到你的站点。</p>
+<p>现在你已经有一个地方用于提交生成好的内容，但是你也应该设置一个库用于存储博客的源代码。在你为博客源代码设置好一个库之后，把如下加到origin的远程点。</p>
+<p>添加origin远程点</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="p">(</span><span class="n">your</span> <span class="n">repo</span> <span class="n">url</span><span class="p">)</span>
+<span class="cp"># set your new origin as the default branch</span>
+<span class="n">git</span> <span class="n">config</span> <span class="n">branch</span><span class="p">.</span><span class="n">master</span><span class="p">.</span><span class="n">remote</span> <span class="n">origin</span>
+</pre></div>
+
+
+<p>目前位置你可以推送你所有的改变了。</p>
+<h2 id="_14">自定义域名</h2>
+<p>第一步在你的博客源代码路径新建一个名为cname的文件。</p>
+<p>新建cname</p>
+<div class="hlcode"><pre><span class="n">echo</span> <span class="err">&#39;</span><span class="n">your</span><span class="o">-</span><span class="n">domain</span><span class="p">.</span><span class="n">com</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="n">source</span><span class="o">/</span><span class="n">CNAME</span>
+<span class="cp"># OR</span>
+<span class="n">echo</span> <span class="err">&#39;</span><span class="n">www</span><span class="p">.</span><span class="n">your</span><span class="o">-</span><span class="n">domain</span><span class="p">.</span><span class="n">com</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="n">source</span><span class="o">/</span><span class="n">CNAME</span>
+</pre></div>
+
+
+<p>下一步你需要访问你的域名注册商或者DNS主机，然后在你的域名字加一条记录。</p>
+<ul>
+<li>创建一个子域名，例如：<code>www.example.com</code>,你应该很简单的创建一个cname记录点到<code>charlie.github.io.</code>。</li>
+<li>假如你使用顶级域名，例如：<code>example.com</code>，你必须使用一个A记录到<code>192.30.252.153</code>或者<code>192.30.252.154</code>。</li>
+</ul>
+<p><strong>不要使用顶级域名创建一条CNAME记录</strong>！！它也许在其他服务例如邮件有不良的副作用。许多DNS服务允许你在TLD上创建CNAME,虽然你不会。记住dns的改变也许需要一整天才会生效，所以需要耐心。</p>
+<p>源：<a href="https://help.github.com/categories/github-pages-basics/">github pages向导</a></p>
+<h1 id="ctopress">ctopress安装</h1>
+<h2 id="octopress_2">Octopress安装</h2>
+<p>首先我想要强调Octopress是一个为骇客准备的博客框架。你应该很自然的运用shell命令以及很熟悉git的基本知识。假如那听起来让人为难的，可能octopress不适合你。</p>
+<h3 id="_15">在你开始之前</h3>
+<ol>
+<li><a href="http://git-scm.com/">安装git</a></li>
+<li>安装ruby 1.9.3或者很熟练的使用<a href="http://http//www.twalksong.com/blog/2014/10/03/installing-ruby-with-rbenv/">rbenv</a>或者<a href="http://http//www.twalksong.com/blog/2014/10/03/installing-ruby-with-rvm/">RVM</a>。</li>
+</ol>
+<p>假如<code>ruby --version</code>没有告诉你正在使用ruby至少1.9.3版本，重新审视你安装<a href="http://http//www.twalksong.com/blog/2014/10/03/installing-ruby-with-rbenv/">rbenv</a>或者<a href="http://http//www.twalksong.com/blog/2014/10/03/installing-ruby-with-rvm/">RVM</a>的过程。</p>
+<h3 id="octopress_3">安装Octopress</h3>
+<p>安装octopress</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/imathis/octopress.git octopress</span>
+<span class="n">cd</span> <span class="n">octopress</span>
+</pre></div>
+
+
+<p>下一步安装依赖</p>
+<p>安装依赖</p>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">install</span> <span class="n">bundler</span>
+<span class="n">rbenv</span> <span class="n">rehash</span>    <span class="err">#</span> <span class="n">If</span> <span class="n">you</span> <span class="n">use</span> <span class="n">rbenv</span><span class="p">,</span> <span class="n">rehash</span> <span class="n">to</span> <span class="n">be</span> <span class="n">able</span> <span class="n">to</span> <span class="n">run</span> <span class="n">the</span> <span class="n">bundle</span> <span class="n">command</span>
+<span class="n">bundle</span> <span class="n">install</span>
+</pre></div>
+
+
+<p>安装octopress默认主题</p>
+<p>安装默认主题</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">install</span>
+</pre></div>
+
+
+<h1 id="_16">目录结构</h1>
+<h1 id="_17">一、缘起</h1>
+<p>总感觉还得写一篇进阶版，将octopress的原理说一说、与jekyll的关系说一说。我觉得应该先说明jekyll是什么，毕竟octopress的精髓是jekyll。</p>
+<h1 id="jekyll">二、jekyll</h1>
+<p>其实一直是想要搭建一个博客，但是碍于最流行的wordperss实在是太过复杂，我只是想要发布我的内容而已，为什么还要干这么多事？要安装php、要安装mysql，还有各种配置，为啥？后来不了了知。<br />
+<strong>其实还是创造力不够？遇到困难是退缩，而不是迎难而上。如果迎难而上，应该想市面上既然没有这么简单的博客系统，那为什么你不做一个，自己开发一个？</strong><br />
+但是github的创始人之一<a href="http://en.wikipedia.org/wiki/Tom_Preston-Werner"> Tom Preston-Werner </a>创建了jekyll静态博客生成系统。它的特点是基于内容的博客发布系统而不是数据库。所以安装简单、部署简单、发布简单。所以我一接触到这个系统就对它着迷，立马浮上心头要创建一个自己的博客网站的想法。</p>
+<h2 id="21jekyll">2.1、jekyll描述</h2>
+<p><a href="http://jekyllcn.com/docs/home/">jekyll</a>是Tom Preston-Werner使用ruby写的开放源码的程序，Tom Preston-Werner是GitHub网站的创始人。<a href="https://github.com/">GitHub</a>是Git仓库网络托管服务，提供所有的分布式版本控制和源代码管理（SCM）功能。Jekyll 是一个简单的博客形态的静态站点生产机器，生成的静态站点可以用于个人、项目、或者组织的网站。它是基于文件的内容管理系统而不是数据库，它有一个模版目录，其中包含原始文本格式的文档，通过 Markdown （或者 Textile） 以及 Liquid 转化成一个完整的可发布的静态网站，你可以发布在任何你喜爱的web服务器上，例如apache、Nginx。Jekyll 也可以运行在 GitHub Page 上，也就是说，你可以使用 GitHub 的服务来搭建你的项目页面、博客或者网站，而且是完全免费的。</p>
+<h2 id="22jekyll">2.2、jekyll目录结构</h2>
+<p>Jekyll的核心其实是一个文本转换引擎。它的概念其实就是：你用你最喜欢的标记语言来写文章，可以是 Markdown, 也可以是 Textile, 或者就是简单的 HTML, 然后 Jekyll 就会帮你套入一个或一系列的布局中。在整个过程中你可以设置 URL 路径，你的文本在布局中的显示样式等等。这些都可以通过纯文本编辑来实现，最终生成的静态页面就是你的成品了。</p>
+<p>一个基本的 Jekyll 网站的目录结构一般是像这样的：</p>
+<p>Jekyll网站的目录结构</p>
+<div class="hlcode"><pre><span class="p">.</span>
+<span class="err">├──</span> <span class="n">_config</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">├──</span> <span class="n">_drafts</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">begin</span><span class="o">-</span><span class="n">with</span><span class="o">-</span><span class="n">the</span><span class="o">-</span><span class="n">crazy</span><span class="o">-</span><span class="n">ideas</span><span class="p">.</span><span class="n">textile</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="n">on</span><span class="o">-</span><span class="n">simplicity</span><span class="o">-</span><span class="n">in</span><span class="o">-</span><span class="n">technology</span><span class="p">.</span><span class="n">markdown</span>
+<span class="err">├──</span> <span class="n">_includes</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">footer</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="n">header</span><span class="p">.</span><span class="n">html</span>
+<span class="err">├──</span> <span class="n">_layouts</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="k">default</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="n">post</span><span class="p">.</span><span class="n">html</span>
+<span class="err">├──</span> <span class="n">_posts</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="mi">2007</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="n">why</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="n">programmer</span><span class="o">-</span><span class="n">should</span><span class="o">-</span><span class="n">play</span><span class="o">-</span><span class="n">nethack</span><span class="p">.</span><span class="n">textile</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="mi">2009</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">barcamp</span><span class="o">-</span><span class="n">boston</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">roundup</span><span class="p">.</span><span class="n">textile</span>
+<span class="err">├──</span> <span class="n">_site</span>
+<span class="err">└──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+
+
+<ol>
+<li>_config.yml:保存配置数据。很多配置选项都可以直接在命令行中进行设置，但是如果你把那些配置写在这儿，你就不用非要去记住那些命令了。</li>
+<li>_drafts :drafts 是未发布的文章。这些文件的格式中都没有 title.MARKUP 数据。</li>
+<li>_includes :你可以加载这些包含部分到你的布局或者文章中以方便重用。可以用这个标签 {% include file.ext %} 来把文件includes/file.ext 包含进来。本身Jekyll会带博客的头文件和尾部文件。</li>
+<li>_layouts :layouts 是包裹在文章外部的模板。布局可以在 YAML 头信息中根据不同文章进行选择。 这将在下一个部分进行介绍。标签 {{ content }} 可以将content插入页面中。</li>
+<li>_posts :这里放的就是你的文章了。文件格式很重要，必须要符合: YEAR-MONTH-DAY-title.MARKUP。 The permalinks 可以在文章中自己定制，但是数据和标记语言都是根据文件名来确定的。</li>
+<li>_site :一旦 Jekyll 完成转换，就会将生成的页面放在这里（默认）。最好将这个目录放进你的 .gitignore 文件中。</li>
+<li>index.html :如果这些文件中包含 YAML 头信息 部分，Jekyll 就会自动将它们进行转换。当然，其他的如 .html, .markdown, .md, 或者 .textile 等在你的站点根目录下或者不是以上提到的目录中的文件也会被转换。</li>
+<li>Other Files/Folders :其他一些未被提及的目录和文件如 css 还有 images 文件夹， favicon.ico 等文件都将被完全拷贝到生成的 site 中。</li>
+</ol>
+<h2 id="23">2.3、配置</h2>
+<p>Jekyll允许你很轻松的设计你的网站，这很大程度上归功于灵活强大的配置功能。既可以配置在网站根目录下的 _config.yml 文件，也可以作为命令行的标记来配置。</p>
+<p>默认配置</p>
+<p>yaml头信息</p>
+<div class="hlcode"><pre><span class="nl">source:</span>      <span class="p">.</span>                         <span class="err">#</span><span class="n">Jekyll</span> <span class="err">读取文件的路径</span>
+<span class="nl">destination:</span> <span class="p">.</span><span class="o">/</span><span class="n">_site</span>                   <span class="err">#</span><span class="n">Jekyll</span> <span class="err">写入文件的路径</span>
+<span class="nl">plugins:</span>     <span class="p">.</span><span class="o">/</span><span class="n">_plugins</span>
+<span class="nl">layouts:</span>     <span class="p">.</span><span class="o">/</span><span class="n">_layouts</span>
+<span class="nl">include:</span>     <span class="p">[</span><span class="err">&#39;</span><span class="p">.</span><span class="n">htaccess</span><span class="err">&#39;</span><span class="p">]</span>             <span class="err">#转换时强制包含某些文件、文件夹。</span><span class="p">.</span><span class="n">htaccess</span> <span class="err">是个典型的例子，因为默认排除</span> <span class="p">.</span> <span class="err">开头的文件。</span>
+<span class="nl">exclude:</span>     <span class="p">[]</span>
+<span class="nl">keep_files:</span>  <span class="p">[</span><span class="err">&#39;</span><span class="p">.</span><span class="n">git</span><span class="sc">&#39;,&#39;</span><span class="p">.</span><span class="n">svn</span><span class="err">&#39;</span><span class="p">]</span>
+<span class="nl">timezone:</span>    <span class="n">nil</span>
+<span class="nl">encoding:</span>    <span class="n">nil</span>
+
+<span class="nl">future:</span>      <span class="nb">true</span>
+<span class="nl">show_drafts:</span> <span class="n">nil</span>
+<span class="nl">limit_posts:</span> <span class="mi">0</span>
+<span class="nl">pygments:</span>    <span class="nb">true</span>
+
+<span class="nl">relative_permalinks:</span> <span class="nb">true</span>
+
+<span class="nl">permalink:</span>     <span class="n">date</span>
+<span class="nl">paginate_path:</span> <span class="err">&#39;</span><span class="n">page</span><span class="o">:</span><span class="n">num</span><span class="err">&#39;</span>
+
+<span class="nl">markdown:</span>      <span class="n">maruku</span>
+<span class="nl">markdown_ext:</span>  <span class="n">markdown</span><span class="p">,</span><span class="n">mkd</span><span class="p">,</span><span class="n">mkdn</span><span class="p">,</span><span class="n">md</span>
+<span class="nl">textile_ext:</span>   <span class="n">textile</span>
+
+<span class="nl">excerpt_separator:</span> <span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span>
+
+<span class="nl">safe:</span>        <span class="nb">false</span>
+<span class="nl">watch:</span>       <span class="nb">false</span>    <span class="err">#</span> <span class="n">deprecated</span>
+<span class="nl">server:</span>      <span class="nb">false</span>    <span class="err">#</span> <span class="n">deprecated</span>
+<span class="nl">host:</span>        <span class="mf">0.0.0.0</span>                           <span class="err">#监听所给的主机名</span>
+<span class="nl">port:</span>        <span class="mi">4000</span>                              <span class="err">#监听所给的端口</span>
+<span class="nl">baseurl:</span>     <span class="o">/</span>                                 <span class="err">#网站的根路径</span>
+<span class="nl">url:</span>         <span class="n">http</span><span class="o">:</span><span class="c1">//localhost:4000</span>
+<span class="nl">lsi:</span>         <span class="nb">false</span>
+
+<span class="nl">maruku:</span>
+  <span class="nl">use_tex:</span>    <span class="nb">false</span>
+  <span class="nl">use_divs:</span>   <span class="nb">false</span>
+  <span class="nl">png_engine:</span> <span class="n">blahtex</span>
+  <span class="nl">png_dir:</span>    <span class="n">images</span><span class="o">/</span><span class="n">latex</span>
+  <span class="nl">png_url:</span>    <span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">latex</span>
+
+<span class="nl">rdiscount:</span>
+  <span class="nl">extensions:</span> <span class="p">[]</span>
+
+<span class="nl">redcarpet:</span>
+  <span class="nl">extensions:</span> <span class="p">[]</span>
+
+<span class="nl">kramdown:</span>
+  <span class="nl">auto_ids:</span> <span class="nb">true</span>
+  <span class="nl">footnote_nr:</span> <span class="mi">1</span>
+  <span class="nl">entity_output:</span> <span class="n">as_char</span>
+  <span class="nl">toc_levels:</span> <span class="mf">1..6</span>
+  <span class="nl">smart_quotes:</span> <span class="n">lsquo</span><span class="p">,</span><span class="n">rsquo</span><span class="p">,</span><span class="n">ldquo</span><span class="p">,</span><span class="n">rdquo</span>
+  <span class="nl">use_coderay:</span> <span class="nb">false</span>
+
+  <span class="nl">coderay:</span>
+    <span class="nl">coderay_wrap:</span> <span class="n">div</span>
+    <span class="nl">coderay_line_numbers:</span> <span class="kr">inline</span>
+    <span class="nl">coderay_line_numbers_start:</span> <span class="mi">1</span>
+    <span class="nl">coderay_tab_width:</span> <span class="mi">4</span>
+    <span class="nl">coderay_bold_every:</span> <span class="mi">10</span>
+    <span class="nl">coderay_css:</span> <span class="n">style</span>
+
+<span class="nl">redcloth:</span>
+  <span class="nl">hard_breaks:</span> <span class="nb">true</span>
+</pre></div>
+
+
+<h2 id="24">2.4、头信息</h2>
+<p>正是头信息开始让 Jekyll 变的很酷。任何只要包含 <a href="http://yaml.org/">YAML</a> 头信息的文件在 Jekyll 中都能被当做一个特殊的文件来处理。头信息必须在文件的开始部分，并且需要按照 YAML 的格式写在两行三虚线之间。下面是一个基本的例子：</p>
+<p>yaml头信息</p>
+<div class="hlcode"><pre><span class="n">layout</span><span class="o">:</span> <span class="n">post</span>
+<span class="n">title</span><span class="o">:</span> <span class="s2">&quot;Octopress知识进阶&quot;</span>
+<span class="n">date</span><span class="o">:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">21</span> <span class="mi">00</span><span class="o">:</span><span class="mi">28</span><span class="o">:</span><span class="mi">13</span> <span class="o">+</span><span class="mi">0800</span>
+<span class="n">comments</span><span class="o">:</span> <span class="kc">true</span>
+<span class="n">categories</span><span class="o">:</span> <span class="o">[</span><span class="n">octopress</span><span class="o">]</span>
+<span class="n">description</span><span class="o">:</span> <span class="s2">&quot;Octopress知识进阶&quot;</span>
+<span class="n">keywords</span><span class="o">:</span> <span class="n">octopress</span>
+</pre></div>
+
+
+<p>在这两行的三虚线之间，你可以设置一些预定义的变量（下面这个例子可以作为参考）或者甚至创建一个你自己定义的变量。这样在接下来的文件和任意模板中或者在包含这些页面或博客的模板中都可以通过使用 Liquid 标签来访问这些变量。</p>
+<h1 id="octopress_4">三、octopress</h1>
+<p>现在知道有这么一个静态网站生成器叫jekyll，但是这个还是有点复杂，因为你在写博客之前，你需要先设计你博客的样式，例如头显示什么，尾巴显示什么，边框是什么样子，然后用什么技术，写大量的js大量的css。我们还是要过多关注于博客的样子，博客的目录，而不是内容。所以我想有没有一个托管程序，可以先都帮我们设置好了，安装样式也很简单，不需要过多设置，我拿过来直接写文章就可以。所以网上搜，还真有，而且挺多，最终选择使用<a href="http://octopress.org/">octopress</a>。</p>
+<h2 id="31octopress">3.1、octopress描述</h2>
+<p>octopress是Brandon Mathis为jekyll而设计的一个框架。使用jekyll你不得不写你自己的html模板，css,js,设置好自己的配置，但是octopress托管所有，简单的安装依赖软件，然后你就可以开始写文章了。</p>
+<h2 id="32octopress">3.2、octopress目录结构</h2>
+<p>octopress目录结构</p>
+<div class="hlcode"><pre><span class="n">octopress</span>
+<span class="err">├──</span> <span class="p">.</span><span class="n">themes</span>
+<span class="o">|</span>    <span class="err">└──</span><span class="n">classic</span>
+<span class="o">|</span>        <span class="err">├──</span> <span class="n">sass</span>  
+<span class="o">|</span>        <span class="err">└──</span> <span class="n">source</span>     
+<span class="err">├──</span> <span class="n">_deploy</span>
+<span class="err">├──</span> <span class="n">assets</span>
+<span class="err">├──</span> <span class="n">blog</span>
+<span class="err">├──</span> <span class="n">images</span>
+<span class="err">├──</span> <span class="n">javascripts</span>
+<span class="err">├──</span> <span class="n">plugins</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">blockquote</span><span class="p">.</span><span class="n">rb</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">config_tag</span><span class="p">.</span><span class="n">rb</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">haml</span><span class="p">.</span><span class="n">rb</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="p">.....</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="n">video_tag</span><span class="p">.</span><span class="n">rb</span>
+<span class="err">├──</span> <span class="n">public</span>
+<span class="err">├──</span> <span class="n">sass</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">base</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">custom</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">partials</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">parts</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">plugins</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_base</span><span class="p">.</span><span class="n">scss</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_partials</span><span class="p">.</span><span class="n">scss</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_parts</span><span class="p">.</span><span class="n">scss</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_plugins</span><span class="p">.</span><span class="n">scss</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="n">screen</span><span class="p">.</span><span class="n">scss</span>
+<span class="err">├──</span> <span class="n">source</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">about</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">└──</span> <span class="n">index</span><span class="p">.</span><span class="n">markdown</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_includes</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">asides</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">custom</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>    <span class="err">├──</span> <span class="n">asides</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>    <span class="o">|</span>    <span class="err">└──</span> <span class="n">aboutme</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>    <span class="err">├──</span> <span class="n">footer</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>    <span class="err">├──</span> <span class="n">head</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>    <span class="err">├──</span> <span class="n">navigation</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>    <span class="err">└──</span> <span class="n">header</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">post</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">date</span><span class="p">.</span><span class="n">html</span>  
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">categories</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="o">|</span>   <span class="err">└──</span> <span class="n">duoshuo</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">after_footer</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">archive_post</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">article</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">footer</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">google_analytics</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">head</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">header</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">└──</span> <span class="n">navigation</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_layouts</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">category_index</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="k">default</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="n">post</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">└──</span> <span class="n">page</span><span class="p">.</span><span class="n">html</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">_posts</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">├──</span> <span class="mi">2007</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">29</span><span class="o">-</span><span class="n">why</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="n">programmer</span><span class="o">-</span><span class="n">should</span><span class="o">-</span><span class="n">play</span><span class="o">-</span><span class="n">nethack</span><span class="p">.</span><span class="n">textile</span>
+<span class="o">|</span>   <span class="o">|</span>   <span class="err">└──</span> <span class="mi">2009</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">26</span><span class="o">-</span><span class="n">barcamp</span><span class="o">-</span><span class="n">boston</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">roundup</span><span class="p">.</span><span class="n">textile</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">images</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">javascripts</span>
+<span class="o">|</span>   <span class="err">├──</span> <span class="n">stylesheets</span>
+<span class="o">|</span>   <span class="err">└──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>   
+<span class="err">├──</span> <span class="n">_config</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">├──</span> <span class="n">config</span><span class="p">.</span><span class="n">rb</span>
+<span class="err">├──</span> <span class="n">Gemfile</span>
+<span class="err">└──</span> <span class="n">Rakefile</span>
+</pre></div>
+
+
+<p>对比jekyll的目录结构，发现是将jekyll的目录结构包含与octopress的目录结构中，并增加了布局、包含、js、css文件。<br />
+以下是octopress目录结构的一些总结：</p>
+<ol>
+<li>jekyll中的_config.yml文件移到octopress的根目录下，且增加了新内容。在Octopress 的_config.yml中有三个部分的<a href="http://octopress.org/docs/configuring/">配置</a>。我自己博客的配置如下(只展示我修改过的地方)：</li>
+</ol>
+<p>_config.yml</p>
+<div class="hlcode"><pre><span class="cp">#第一部分主要配置</span>
+<span class="nl">url:</span> <span class="n">twalksong</span><span class="p">.</span><span class="n">com</span>
+<span class="nl">title:</span> <span class="err">寧靜致遠</span>
+<span class="nl">subtitle:</span> <span class="err">焚膏油以繼晷，恆兀兀以窮年。</span>
+<span class="nl">author:</span> <span class="n">songyj</span>
+<span class="nl">simple_search:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//www.baidu.com/</span>
+<span class="nl">description:</span> <span class="err">这是知识积累与生命哲思一同迸发的地方。</span>
+<span class="nl">email:</span> <span class="n">picnic106</span><span class="err">@</span><span class="mf">163.</span><span class="n">com</span>
+
+<span class="cp">#第二部分插件</span>
+<span class="nl">markdown:</span> <span class="n">kramdown</span>
+<span class="nl">kramdown:</span>
+<span class="cp"># toc_levels: 1..3</span>
+  <span class="nl">use_coderay:</span> <span class="nb">true</span>
+  <span class="nl">coderay:</span>
+    <span class="nl">coderay_line_numbers:</span> <span class="n">table</span>
+    <span class="nl">coderay_css:</span> <span class="n">class</span>
+
+<span class="nl">excerpt_link:</span> <span class="s">&quot;阅读全文 &amp;rarr;&quot;</span>  <span class="err">#</span> <span class="s">&quot;Continue reading&quot;</span> <span class="n">link</span> <span class="n">text</span> <span class="n">at</span> <span class="n">the</span> <span class="n">bottom</span> <span class="n">of</span> <span class="n">excerpted</span> <span class="n">articles</span>
+
+<span class="cp">#第三部分社交帐号配置，例如Github ，Twitter ，Facebook 等</span>
+<span class="nl">github_user:</span> <span class="n">picnic106</span>
+<span class="nl">github_repo_count:</span> <span class="mi">1</span>
+<span class="nl">github_show_profile_link:</span> <span class="nb">true</span>
+<span class="nl">github_skip_forks:</span> <span class="nb">true</span>
+<span class="nl">google_analytics_tracking_id:</span>
+<span class="nl">duoshuo_comments:</span> <span class="nb">true</span>
+<span class="nl">duoshuo_short_name:</span>
+</pre></div>
+
+
+<ol>
+<li>.themes文件夹用于放置从github库下载下来的octopress的皮肤。这个文件夹下具体的作用还没有做详细的调查，这里暂且不说。</li>
+<li>_deploy文件夹放置部署到github或者其他托管网站的源文件。即使用·rake deploy·命令之后，会同步更新此文件夹。</li>
+<li>plugins文件夹放置ruby插件</li>
+<li>public文件夹放置本地预览所用的源代码。即用·rake preview·命令之后，会在此文件夹生成源代码。</li>
+<li>sass文件夹用于放置样式表，目前对这个文件夹没有研究，暂且不说，只知道当安装.themes中的皮肤时会覆盖此文件夹相关文档。</li>
+<li>source文件夹放置如同jekyll的目录。平常撰写博客，基本上在source文件夹下的_post文件夹下写，即运行·rake new_post·命令会在source/_post文件夹下生成文件。</li>
+<li>Rakefile文件用于编写Ruby的make命令。基本上cotopress有如下命令：install、generate、preview、new_post、new_page、isolate、update_style、update_source、deploy、rsync、push、set_root_dir、setup_github_pages。</li>
+</ol>
+<h1 id="_18">个性化设置</h1>
+<h2 id="_19">一、缘起</h2>
+<p>虽然octopress博客架起来了，但是一些个人设置或者自己不满意的地方还需要修改呢，例如中文设置、时间设置、性能优化等等。我博客主题为<a href="https://github.com/shashankmehta/greyshade">“Greyshade”</a>。</p>
+<h2 id="_20">二、性能优化</h2>
+<p>最近打开个人网站觉得太慢了，使用浏览器的f12，发现打开谷歌的js很慢，所以想办法来替换这些js。在网上搜到这篇博客:<a href="http://droidyue.com/blog/2014/06/22/fix-octopress-slow-loading-speed-issue-in-china-mainland/">“解决Octopress博客访问慢的问题”</a>，很感谢这篇博客，文章详细写了如何替换google的js。</p>
+<h3 id="1fontsgoogleapiscom">1，解决fonts.googleapis.com访问慢</h3>
+<p>首先使用f12发现有一段获取fonts.googleapis.com的字体js,是因为greyshade主题使用了谷歌的字体的api，<a href="http://redstarofsleep.iteye.com/blog/832047">谷歌字体（Google Font）初探</a>这篇文章对谷歌字体的作用有大体介绍。大家都知道googleappis在内地的访问不是很稳定，很慢。将这些链接修改成国内的360网站卫士常用前端公共库CDN服务(http://libs.useso.com/)以提高访问性能。经过查找这段代码在<code>/source/_includes/head.html</code>:</p>
+<p>修改谷歌提供的字体服务</p>
+<div class="hlcode"><pre><span class="o">&lt;!--&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="err">&#39;</span><span class="n">http</span><span class="o">:</span><span class="c1">//fonts.googleapis.com/css?family=Nunito:400,300,700&#39; rel=&#39;stylesheet&#39; type=&#39;text/css&#39;&gt;--&gt;</span>
+<span class="o">&lt;</span><span class="n">link</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;http://fonts.useso.com/css?family=Nunito:400,300,700&quot;</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="n">type</span><span class="o">=</span><span class="s">&quot;text/css&quot;</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<h3 id="2ajaxgoogleapiscom">2，解决ajax.googleapis.com访问慢</h3>
+<p>使用f12也发现有一段代码访问了谷歌服务的jquery库,360网站也提供jquery库cdn服务。经过查找这段代码也在<code>/source/_includes/head.html</code>:</p>
+<p>修改谷歌提供的jquery库</p>
+<div class="hlcode"><pre><span class="c">&lt;!--&lt;link href=&#39;http://fonts.googleapis.com/css?family=Nunito:400,300,700&#39; rel=&#39;stylesheet&#39; type=&#39;text/css&#39;&gt;--&gt;</span>
+<span class="c">&lt;!--&lt;script&gt;!window.jQuery &amp;&amp; document.write(unescape(&#39;%3Cscript src=&quot;./javascripts/libs/jquery.min.js&quot;%3E%3C/script%3E&#39;))&lt;/script&gt;--&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://ajax.useso.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>至于为啥要用谷歌的jquery库，<a href="http://blog.csdn.net/jkwmscq/article/details/7365066">“为什么推荐使用谷歌加载jquery库文件”</a>这个网址里有说明。</p>
+<h3 id="3google-analytics">3，解决Google Analytics访问慢</h3>
+<p>如果octoperss开启了谷歌的访问数据统计服务，在网站会加载谷歌的ga.js。大家肯定知道谷歌在中国被墙。所以可以修改成放在国内提供的cdn服务器的ga.js。这里我使用的是<a href="http://droidyue.com/blog/2014/06/22/fix-octopress-slow-loading-speed-issue-in-china-mainland/">droidyue博主</a>存放在七牛CDN上的js：<code>http://droidyue-tools.qiniudn.com/ga.js</code>已验证，完全可以正常收集数据。经过查找加载ga.js的代码<code>source/_includes/google_analytics.html</code>:</p>
+<p>(google_analytics.html)<a href="http://www.twalksong.com/downloads/code/google_analytics.html">download</a></p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.google_analytics_tracking_id</span> <span class="cp">%}</span>
+    <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+        var _gaq = _gaq || [];
+        _gaq.push([&#39;_setAccount&#39;, &#39;<span class="cp">{{</span> <span class="nv">site.google_analytics_tracking_id</span> <span class="cp">}}</span>&#39;]);
+        _gaq.push([&#39;_trackPageview&#39;]);
+
+        (function() {
+            var ga = document.createElement(&#39;script&#39;); ga.type = &#39;text/javascript&#39;; ga.async = true;
+            //ga.src = (&#39;https:&#39; == document.location.protocol ? &#39;https://ssl&#39; : &#39;http://www&#39;) + &#39;.google-analytics.com/ga.js&#39;;
+            ga.src=&#39;http://droidyue-tools.qiniudn.com/ga.js&#39;;
+            var s = document.getElementsByTagName(&#39;script&#39;)[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    <span class="nt">&lt;/script&gt;</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<h2 id="_21">三、更换主题</h2>
+<p>如果在网上找到一个比较好的主题，可以先找个这个主题的库地址，然后安装。例如我这个greyshade主题，使用如下脚本安装主题：</p>
+<p>安装greyshade主题windos脚本</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">shashankmehta</span><span class="o">/</span><span class="n">greyshade</span><span class="p">.</span><span class="n">git</span> <span class="p">.</span><span class="n">themes</span><span class="o">/</span><span class="n">greyshade</span>
+<span class="n">rake</span> <span class="s">&quot;install[greyshade]&quot;</span>
+<span class="n">rake</span> <span class="n">generate</span>
+</pre></div>
+
+
+<h2 id="_22">四、修改个人网站中文</h2>
+<p>greyshade主题都是英文的，例如标题啊，侧边栏。</p>
+<h3 id="1">1,侧边栏中文</h3>
+<p><img alt="" src="http://www.twalksong.com/images/pz/cbl.jpg" /></p>
+<p>如图红圈里的”博客、关于我、存档”，之前都是英文，如果要修改成中文，文件路径在<code>/source/_includes/navigation.html</code>：</p>
+<p>navigation.htm</p>
+<div class="hlcode"><pre><span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>博客<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/about/&quot;</span><span class="nt">&gt;</span>关于我<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/blog/archives&quot;</span><span class="nt">&gt;</span>存档<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</pre></div>
+
+
+<h3 id="2comments">2,”Comments”中文</h3>
+<h4 id="21">2.1,查看评论：</h4>
+<p><img alt="查看评论" src="http://www.twalksong.com/images/pz/pl.jpg" /></p>
+<p>如图红圈里的是“查看评论”，在安装主题完是英文的，如果要修改成中文，文件路径在<code>\source\_includes\article.html</code>:</p>
+<p>article.html</p>
+<div class="hlcode"><pre><span class="c">&lt;!--&lt;span class=&quot;comments&quot;&gt;&lt;a href=&quot;#disqus_thread&quot;&gt;Comments&lt;/a&gt;&lt;/span&gt;--&gt;</span>
+<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;comments&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">index</span> <span class="cp">%}{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="s">#comments&quot;</span><span class="nt">&gt;</span>查看评论<span class="nt">&lt;/a&gt;&lt;/span&gt;</span>
+</pre></div>
+
+
+<hr />
+<h4 id="22">2.2,评论:</h4>
+<p><img alt="评论" src="http://www.twalksong.com/images/pz/pl2.jpg" /></p>
+<p>如图红圈里的是“评论”，在安装主题完是英文的，如果要修改成中文，文件路径在<code>\source\_layouts\post.html</code></p>
+<p>post.html</p>
+<div class="hlcode"><pre><span class="c">&lt;!--&lt;section&gt;</span>
+<span class="c">    &lt;h1&gt;Comments&lt;/h1&gt;</span>
+<span class="c">   ......</span>
+<span class="c">&lt;/section&gt;--&gt;</span>
+<span class="nt">&lt;section&gt;</span>
+    <span class="nt">&lt;h1&gt;</span>评论<span class="nt">&lt;/h1&gt;</span>
+    ......
+<span class="nt">&lt;/section&gt;</span>
+</pre></div>
+
+
+<h3 id="3read-on">3,”read on”中文</h3>
+<p>如下图：</p>
+<p><img alt="read on" src="http://www.twalksong.com/images/pz/ydqw.jpg" /></p>
+<p>如上图，“阅读全文”在没汉化之前是“Continue reading”，文件路径在<code>/_config.yml</code>：</p>
+<p>将Continue reading修改为中文</p>
+<div class="hlcode"><pre><span class="cp">#excerpt_link: &quot;Continue reading &amp;rarr;&quot;  # &quot;Continue reading&quot; link text at the bottom of excerpted articles</span>
+<span class="nl">excerpt_link:</span> <span class="s">&quot;阅读全文 &amp;rarr;&quot;</span>
+</pre></div>
+
+
+<h2 id="_23">五、博客不显示时间</h2>
+<p>刚安装的主题居然不显示时间，如下图： <img alt="时间显示" src="http://www.twalksong.com/images/pz/sjxs.jpg" /><br />
+红圈的地方刚开始时间是不显示的，后来发现是没有包含日期插件，但是去网上下日期插件也不行，后来自己想了办法，修改了octopress代码，直接在代码里格式化，代码路径在<code>\source\_includes\post\date.html</code>，将<code>date_format</code>，修改为<code>date| date: "%Y-%m-%d %H:%M:%S"</code>。</p>
+<h2 id="_24">六、安装国内多说插件</h2>
+<p>本来想安装国外的disqus，但是，去disqus官网注册之后，放到博客，怎么也不显示，转而安装国内的多说评论插件。</p>
+<h3 id="1_1">1,首先注册多说帐号</h3>
+<p>首先去<a href="http://duoshuo.com/">多说官网</a>注册帐号且创建站点。但是坑爹的多说，我怎么找都没有找到创造站点的地方，后来在一个非常隐秘的界面找到是在<a href="http://duoshuo.com/create-site/">这里</a>，多说也没有一个帮助文档吗，或许是我没找到吧。<br />
+注册站点之后记住二级域名，如下图：<br />
+<img alt="新建站点" src="http://www.twalksong.com/images/pz/zd.jpg" /></p>
+<h3 id="2octopress">2,配置octopress</h3>
+<p>配置<code>/_config.yml</code>文件，在文件最后加代码如下：</p>
+<p>_config.yml  </p>
+<div class="hlcode"><pre><span class="cp"># Duoshuo Comments</span>
+<span class="nl">duoshuo_comments:</span> <span class="nb">true</span>
+<span class="nl">duoshuo_short_name:</span> <span class="n">twalksong</span>
+</pre></div>
+
+
+<p>twalksong为我的多说二级域名。</p>
+<h3 id="3">3,加多说代码</h3>
+<p>在路径<code>\source\_includes\post</code>，新增文件<code>duoshuo.html</code>，并将以下代码写到此文件：</p>
+<p>duoshuo.html  </p>
+<div class="hlcode"><pre><span class="c">&lt;!-- 多说评论框 start --&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;ds-thread&quot;</span> <span class="na">data-title=</span><span class="s">&quot;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.titlecase</span> <span class="cp">%}{{</span> <span class="nv">page.title</span> <span class="o">|</span> <span class="nf">titlecase</span> <span class="cp">}}{%</span> <span class="k">else</span> <span class="cp">%}</span><span class="s"></span>
+<span class="s">    </span><span class="cp">{{</span> <span class="nv">page.title</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="s">&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="c">&lt;!-- 多说评论框 end --&gt;</span>
+<span class="c">&lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+var duoshuoQuery = {short_name:&quot;<span class="cp">{{</span> <span class="nv">site.duoshuo_short_name</span> <span class="cp">}}</span>&quot;};
+    (function() {
+        var ds = document.createElement(&#39;script&#39;);
+        ds.type = &#39;text/javascript&#39;;ds.async = true;
+        ds.src = (document.location.protocol == &#39;https:&#39; ? &#39;https:&#39; : &#39;http:&#39;) + &#39;//static.duoshuo.com/embed.js&#39;;
+        ds.charset = &#39;UTF-8&#39;;
+        (document.getElementsByTagName(&#39;head&#39;)[0]
+         || document.getElementsByTagName(&#39;body&#39;)[0]).appendChild(ds);
+    })();
+    <span class="nt">&lt;/script&gt;</span>
+<span class="c">&lt;!-- 多说公共JS代码 end --&gt;</span>
+</pre></div>
+
+
+<h3 id="4">4,修改原来文章评论代码</h3>
+<p>修改<code>\source\_layouts\post.html</code>文件，在最后加如下代码:</p>
+<p>post.html</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">site.duoshuo_short_name</span> <span class="ow">and</span> <span class="nx">site.duoshuo_comments</span> <span class="o">==</span> <span class="kc">true</span> <span class="ow">and</span> <span class="nx">page.comments</span> <span class="o">==</span> <span class="kc">true</span><span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">评论</span><span class="o">&lt;/</span><span class="nx">h1</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">div</span> <span class="n">id</span><span class="o">=</span><span class="s2">&quot;comments&quot;</span> <span class="nx">aria</span><span class="na">-live</span><span class="o">=</span><span class="s2">&quot;polite&quot;</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="nb">include</span> <span class="nx">post</span><span class="p">/</span><span class="nx">duoshuo.html</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nx">section</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<h3 id="5">5,修改“查看评论代码”</h3>
+<p>修改<code>\source\_includes\article.html</code>文件，在以前的disqus代码下加如下代码:</p>
+<p>article.html</p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.duoshuo_short_name</span> <span class="k">and</span> <span class="nv">page.comments</span> <span class="p">!</span><span class="o">=</span> <span class="kp">false</span> <span class="k">and</span> <span class="nv">post.comments</span> <span class="p">!</span><span class="o">=</span> <span class="kp">false</span> <span class="k">and</span> <span class="nv">site.duoshuo_comments</span> <span class="o">==</span> <span class="kp">true</span> <span class="cp">%}</span>
+          <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;comments&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">index</span> <span class="cp">%}{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="s">#comments&quot;</span><span class="nt">&gt;</span>查看评论<span class="nt">&lt;/a&gt;&lt;/span&gt;</span>
+         <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<h3 id="6ok">6,至此完结，如果还有什么地方发现需要评论，按照上面的思路修改就ok。</h3>
+<h2 id="toc">七、增加自动生成目录功能(TOC)</h2>
+<p>摘抄<a href="http://khaos.github.io/blog/2012/12/05/generating-toc-in-octopress/">Octopress易筋经，目录表ToC</a>:</p>
+<blockquote>
+<p>维护长博客的时候，如果加上一个目录表 (Table of Contents)，会令读者对文章结构有一个清晰的把握。基于Octopress的博客系统，有两种常见的创建目录表的方式：基于 kramdown1 的实现，以及基于 jQuery 插件的实现。前者基本上不需要配置，仅要求把默认的 Markdown parser 改为 kramdown 即可。后者则需要对系统进行相对较多的修改。</p>
+</blockquote>
+<p>我这里使用第一种kramdown方法实现，所以这里着重介绍第一种方法，第二种方法没有试验。</p>
+<h3 id="kramdowntoc">方式一：利用kramdown内嵌的ToC功能</h3>
+<p>kramdown是一款由Ruby实现的Markdown解析器。它扩展的标准Markdown语言，添加了很多语法，其中一个就是内置了ToC的实现。这让在基于Jekyll/Octopress的博客系统中插入ToC变得简单而灵活，但是不幸的是，它的目录结构和层次需要在<code>_config.yml</code>中指定，也就是说，这些设定是全站的，你无法在某一篇Blog中使用不同于全站的ToC结构。<br />
+实现这种方式的配置很简单，仅需要在你的<code>_config.yml</code>文件中，将默认的 Markdown parser 改为 kramdown，也即，<code>markdown: kramdown</code>，在kramdown中，默认的目录树层次是从h1到h6，你可以用下的设定将这个层次改为从h1到h3，</p>
+<p>将octopress的解析器修改为kramdown</p>
+<div class="hlcode"><pre><span class="n">markdown</span><span class="o">:</span> <span class="n">kramdown</span>
+<span class="n">kramdown</span><span class="o">:</span>
+  <span class="n">toc_levels</span><span class="o">:</span> <span class="mi">1</span><span class="o">..</span><span class="mi">3</span> <span class="err">#将默认的目录树层次修改为从</span><span class="n">h1</span><span class="err">到</span><span class="n">h3</span>
+</pre></div>
+
+
+<p>如果没有还没有安装kramdown，需要安装kramdown解析器：<br />
+1，修改/Gemfile，在文件最后增加一行：<code>gem 'kramdown', '~&gt; 0.14'</code>。<br />
+2，然后打开windows命令行工具，定位到octopress目录，执行如下命令<code>bundle install</code>，kramdown会自动安装。</p>
+<p>然后修改toc的样式，样式目录位于<code>\sass\custom\_styles.scss</code>，在文件最后一行增加如下代码：</p>
+<p>toc样式</p>
+<div class="hlcode"><pre><span class="cp">#markdown-toc:before {</span>
+  <span class="nl">content:</span> <span class="s">&quot;目录&quot;</span><span class="p">;</span>
+  <span class="n">font</span><span class="o">-</span><span class="n">weight</span><span class="o">:</span> <span class="n">bold</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">ul</span><span class="err">#</span><span class="n">markdown</span><span class="o">-</span><span class="n">toc</span> <span class="p">{</span>
+  <span class="n">list</span><span class="o">-</span><span class="n">style</span><span class="o">:</span> <span class="n">none</span><span class="p">;</span>
+  <span class="n">background</span><span class="o">-</span><span class="n">color</span><span class="o">:</span> <span class="n">white</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="n">blog</span><span class="o">-</span><span class="n">index</span> <span class="err">#</span><span class="n">markdown</span><span class="o">-</span><span class="n">toc</span> <span class="p">{</span>
+  <span class="nl">display:</span> <span class="n">none</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>插入ToC也很简单，几乎在你的文章任何地方，加入下面的代码，在相应的部分kramdown就会帮你生成并插入一个ToC，</p>
+<p>插入toc代码</p>
+<div class="hlcode"><pre>    <span class="o">*</span> <span class="n">Put</span> <span class="n">anything</span> <span class="n">here</span>
+    <span class="p">{</span><span class="o">:</span><span class="n">toc</span><span class="p">}</span>
+</pre></div>
+
+
+<p><strong><em>注：关于阅读全文的问题：</em></strong><br />
+这里有一个问题就是如果在文章中加了<code>&lt;!-- more --&gt;</code>，因此在博客首页只会显示文章的一部分，那么在<code>&lt;!-- more --&gt;</code>之下的目录就不会起作用，所以在博客首页的时候就不显示目录，点击文章进去再显示目录。<br />
+网上有解决办法，但是试验不成功，后来经过本人测试，可以如下解决，在目录<code>\source\_includes\article.html</code>,修改如下代码：</p>
+<p>toc解决办法</p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;entry-content blog-index&quot;</span> <span class="na">itemprop=</span><span class="s">&quot;articleBody&quot;</span><span class="nt">&gt;</span>
+                <span class="cp">{{</span> <span class="nv">content</span> <span class="o">|</span> <span class="nf">excerpt</span> <span class="cp">}}</span>
+                <span class="cp">{%</span> <span class="k">capture</span> <span class="nv">excerpted</span> <span class="cp">%}{{</span> <span class="nv">content</span> <span class="o">|</span> <span class="nf">has_excerpt</span> <span class="cp">}}{%</span> <span class="k">endcapture</span> <span class="cp">%}</span>
+                <span class="cp">{%</span> <span class="k">if</span> <span class="nv">excerpted</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span> <span class="cp">%}</span><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="na">class=</span><span class="s">&quot;more-link&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">site.excerpt_link</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;</span><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+
+<p>主要变化是增加了css类blog-index，这个类的作用就是隐藏目录。为什么会是在article.html文件呢，因为如果是博客首页，在这个页面会有一个判断<code>{% if index %}</code>，index就是博客首页的变量，所以这样，就可以在博客首页的时候隐藏目录，然后点击文章才展示目录。以下是<code>article.html</code>全部代码。</p>
+<p>(article.html)<a href="http://www.twalksong.com/downloads/code/article.html">download</a></p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">if</span> <span class="nv">index</span> <span class="cp">%}</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;meta&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span><span class="cp">{%</span> <span class="k">include</span> <span class="nv">post</span><span class="o">/</span><span class="nv">date.html</span> <span class="cp">%}{{</span> <span class="nv">time</span> <span class="cp">}}</span><span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;tags&quot;</span><span class="nt">&gt;</span><span class="cp">{%</span> <span class="k">include</span> <span class="nv">post</span><span class="o">/</span><span class="nv">categories.html</span> <span class="cp">%}</span><span class="nt">&lt;/div&gt;</span>
+        <span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.disqus_short_name</span> <span class="k">and</span> <span class="nv">site.disqus_show_comment_count</span> <span class="o">==</span> <span class="kp">true</span> <span class="cp">%}</span>
+            <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;comments&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}</span><span class="s">#disqus_thread&quot;</span><span class="nt">&gt;</span>Comments<span class="nt">&lt;/a&gt;&lt;/span&gt;</span>
+        <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+         <span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.duoshuo_short_name</span> <span class="k">and</span> <span class="nv">page.comments</span> <span class="p">!</span><span class="o">=</span> <span class="kp">false</span> <span class="k">and</span> <span class="nv">post.comments</span> <span class="p">!</span><span class="o">=</span> <span class="kp">false</span> <span class="k">and</span> <span class="nv">site.duoshuo_comments</span> <span class="o">==</span> <span class="kp">true</span> <span class="cp">%}</span>
+           <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;comments&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">index</span> <span class="cp">%}{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="s">#comments&quot;</span><span class="nt">&gt;</span>查看评论<span class="nt">&lt;/a&gt;&lt;/span&gt;</span>
+         <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">&quot;title&quot;</span> <span class="na">itemprop=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="na">itemprop=</span><span class="s">&quot;url&quot;</span><span class="nt">&gt;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.titlecase</span> <span class="cp">%}{{</span> <span class="nv">post.title</span> <span class="o">|</span> <span class="nf">titlecase</span> <span class="cp">}}{%</span> <span class="k">else</span> <span class="cp">%}{{</span> <span class="nv">post.title</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;entry-content blog-index&quot;</span> <span class="na">itemprop=</span><span class="s">&quot;articleBody&quot;</span><span class="nt">&gt;</span>
+        <span class="cp">{{</span> <span class="nv">content</span> <span class="o">|</span> <span class="nf">excerpt</span> <span class="cp">}}</span>
+        <span class="cp">{%</span> <span class="k">capture</span> <span class="nv">excerpted</span> <span class="cp">%}{{</span> <span class="nv">content</span> <span class="o">|</span> <span class="nf">has_excerpt</span> <span class="cp">}}{%</span> <span class="k">endcapture</span> <span class="cp">%}</span>
+        <span class="cp">{%</span> <span class="k">if</span> <span class="nv">excerpted</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span> <span class="cp">%}</span><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}</span><span class="s">&quot;</span> <span class="na">class=</span><span class="s">&quot;more-link&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">site.excerpt_link</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;</span><span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;meta&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;date&quot;</span><span class="nt">&gt;</span><span class="cp">{%</span> <span class="k">include</span> <span class="nv">post</span><span class="o">/</span><span class="nv">date.html</span> <span class="cp">%}{{</span> <span class="nv">time</span> <span class="cp">}}</span><span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;tags&quot;</span><span class="nt">&gt;</span><span class="cp">{%</span> <span class="k">include</span> <span class="nv">post</span><span class="o">/</span><span class="nv">categories.html</span> <span class="cp">%}</span><span class="nt">&lt;/div&gt;</span>
+<span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.duoshuo_short_name</span> <span class="k">and</span> <span class="nv">page.comments</span> <span class="p">!</span><span class="o">=</span> <span class="kp">false</span> <span class="k">and</span> <span class="nv">post.comments</span> <span class="p">!</span><span class="o">=</span> <span class="kp">false</span> <span class="k">and</span> <span class="nv">site.duoshuo_comments</span> <span class="o">==</span> <span class="kp">true</span> <span class="cp">%}</span>
+           <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;comments&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">index</span> <span class="cp">%}{{</span> <span class="nv">root_url</span> <span class="cp">}}{{</span> <span class="nv">post.url</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="s">#comments&quot;</span><span class="nt">&gt;</span>查看评论<span class="nt">&lt;/a&gt;&lt;/span&gt;</span>
+         <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;h1</span> <span class="na">class=</span><span class="s">&quot;title&quot;</span> <span class="na">itemprop=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.titlecase</span> <span class="cp">%}{{</span> <span class="nv">page.title</span> <span class="o">|</span> <span class="nf">titlecase</span> <span class="cp">}}{%</span> <span class="k">else</span> <span class="cp">%}{{</span> <span class="nv">page.title</span> <span class="cp">}}{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="nt">&lt;/h1&gt;</span>
+
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;entry-content&quot;</span> <span class="na">itemprop=</span><span class="s">&quot;articleBody&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">content</span> <span class="cp">}}</span><span class="nt">&lt;/div&gt;</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<h3 id="jquerytoc">方式二：利用jQuery的ToC插件</h3>
+<p>这种方式实现起来稍微复杂一些，好处是可以根据需要调整ToC的层次结构。当然，它也有局限性，例如，就我的实现而言，ToC的位置是固定浮动与整篇正文之上的，也就是说它会出现在文章的最开头处。这里应用的方法主要参照的是<a href="http://brizzled.clapper.org/blog/2012/02/04/generating-a-table-of-contents-in-octopress/">Brian Clapper的博客</a><br />
+* jQuery插件支持<br />
+按照jQuery网站的提示配置你的系统，并且下载<a href="http://fuelyourcoding.com/scripts/toc/">Table of Contents jQuery Plugin</a>，将相应的JS文件放到<code>source/javascripts</code>目录。在<code>source/_includes/custom/after_footer.html</code>中添加</p>
+<p>after_footer.html</p>
+<div class="hlcode"><pre><span class="c1">// !!! Load jQuery before this</span>
+<span class="o">&lt;</span><span class="nb">script</span> <span class="k">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+    <span class="nx">jQuery.noConflict</span><span class="p">();</span>
+<span class="o">&lt;/</span><span class="nb">script</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nb">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;/javascripts/jquery.scrollTo.min.js&quot;</span> <span class="k">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">script</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nb">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;/javascripts/jquery.tableofcontents.min.js&quot;</span> <span class="k">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;&lt;/</span><span class="nb">script</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<ul>
+<li>创建JavaScript文件，例如，<code>tocgenerator.js</code>，使其包含下面的代码，</li>
+</ul>
+<p>tocgenerator.js</p>
+<div class="hlcode"><pre><span class="nx">function</span> <span class="nx">generateTOC</span><span class="p">(</span><span class="nb">insertBefore</span><span class="p">,</span> <span class="nx">heading</span><span class="p">,</span> <span class="nx">startLv</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="n">container</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="s2">&quot;&lt;div id=&#39;tocBlock&#39;&gt;&lt;/div&gt;&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="n">div</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="s2">&quot;&lt;ul id=&#39;toc&#39;&gt;&lt;/ul&gt;&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="n">content</span> <span class="o">=</span> <span class="nx">jQuery</span><span class="p">(</span><span class="nb">insertBefore</span><span class="p">)</span><span class="bp">.</span><span class="nb">first</span><span class="p">();</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">heading</span> <span class="o">!==</span> <span class="nx">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">heading</span> <span class="o">!==</span> <span class="kt">null</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">container.append</span><span class="p">(</span><span class="s1">&#39;&lt;span class=&quot;tocHeading&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">heading</span> <span class="o">+</span> <span class="s1">&#39;&lt;/span&gt;&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">startLv</span> <span class="o">===</span> <span class="nx">undefined</span><span class="p">)</span> <span class="p">{</span> <span class="n">startLv</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="nx">div.tableOfContents</span><span class="p">(</span><span class="nb">content</span><span class="p">,</span> <span class="p">{</span> <span class="nx">startLevel</span><span class="p">:</span> <span class="nx">startLv</span> <span class="p">});</span>
+    <span class="nx">container.append</span><span class="p">(</span><span class="nb">div</span><span class="p">);</span>
+    <span class="nx">container.insertBefore</span><span class="p">(</span><span class="nb">insertBefore</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>载入创建的JS文件（<code>source/_includes/custom/after_footer.html</code>）</p>
+</li>
+<li>
+<p>创建ToC模块，依然在<code>source/_includes/custom/after_footer.html</code>中，添加，</p>
+</li>
+</ul>
+<p>after_footer.html</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">page.toc</span> <span class="o">==</span> <span class="kc">true</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="nx">page.tocstartlv</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="nb">script</span> <span class="k">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+    <span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">)</span><span class="bp">.</span><span class="nb">ready</span><span class="p">(</span><span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// Put a TOC right before the entry content.</span>
+      <span class="nx">generateTOC</span><span class="p">(</span><span class="s1">&#39;.entry-content&#39;</span><span class="p">,</span> <span class="s1">&#39;Contents&#39;</span><span class="p">,</span> <span class="p">);</span>
+    <span class="p">});</span>
+    <span class="o">&lt;/</span><span class="nb">script</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">else</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="nb">script</span> <span class="k">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+    <span class="nx">jQuery</span><span class="p">(</span><span class="nb">document</span><span class="p">)</span><span class="bp">.</span><span class="nb">ready</span><span class="p">(</span><span class="nx">function</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// Put a TOC right before the entry content.</span>
+      <span class="nx">generateTOC</span><span class="p">(</span><span class="s1">&#39;.entry-content&#39;</span><span class="p">,</span> <span class="s1">&#39;Contents&#39;</span><span class="p">);</span>
+    <span class="p">});</span>
+    <span class="o">&lt;/</span><span class="nb">script</span><span class="o">&gt;</span>
+  <span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="nx">endif</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<ul>
+<li>插入ToC<br />
+与方式一不同，第二种方法插入ToC需要在文章的开始的Liquid标签出用两个新标签toc和tocstartlv来控制是否显示ToC以及ToC starting level。例如，本文采用了如下设定，</li>
+</ul>
+<p>插入toc代码</p>
+<div class="hlcode"><pre>    <span class="nl">toc:</span> <span class="nb">true</span>
+    <span class="nl">tocstartlv:</span> <span class="mi">2</span>
+</pre></div>
+
+
+<p><strong><em>*注：第二种方法还没有经过测试，但是网上有测试成功的，所以我贴出来供大家参考。</em></strong>*</p>
+<h2 id="_25">八、修改链接为打开窗口方式</h2>
+<p>Octopress无法将外链在新窗口中打开，在网上找到一段代码，网址是<a href="http://firestudio.cn/blog/2013/01/13/rang-octopresszai-xin-biao-qian-ye-zhong-da-kai-wai-lian/">让Octopress在新标签页中打开外链</a>,代码如下：</p>
+<p>open-in-blank.js</p>
+<div class="hlcode"><pre><span class="kd">function</span> <span class="nx">addBlankTargetForLinks</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;a</span><span class="cp">[</span><span class="nb">href</span><span class="p">^</span><span class="o">=</span><span class="s2">&quot;http&quot;</span><span class="cp">]</span><span class="s1">&#39;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;_blank&#39;</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;DOMNodeInserted&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">addBlankTargetForLinks</span><span class="p">();</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<p>用法很简单：</p>
+<p>1.将上面的代码下载下来或者复制其内容；<br />
+2.保存到octopress目录的source/javascripts/子目录中,另存为open-in-blank.js；<br />
+3.修改source/_includes/custom/header.html，在下面插入如下代码即可：</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;/javascripts/open-in-blank.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<h2 id="_26">九、加“关于我”界面</h2>
+<p>刚安装的主题是没有关于我网页的，这个需要自己创建，代码如下：</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">new_page</span><span class="p">[</span><span class="err">&#39;</span><span class="n">about</span><span class="err">&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<p>会生成<code>source\about\index.markdown</code>文件，修改这个文件，然后生成、预览、部署就行。</p>
+<h1 id="octopressgithub">使用Octopress和github搭建个人博客</h1>
+<h1 id="_27">一、缘起</h1>
+<p>一直想搭建一个自己的博客，用于技术积累的记录。例如有些技术问题会一而再、再而三的出现，但是还是每次要上网查找或者花时间回忆解决办法；例如在项目管理中出现的一些感悟，可能是一闪而过，如果不记录下来下次很难再想起来。虽然目前自己有一个技术积累库，记录在word文档里，有两个缺点，一是查找不方便，第二个是不能用于其他码农的相互借鉴：我的解决办法是不是最优解决办法？我的想法是不是有偏差？</p>
+<p>所以花时间搭建了这么一个octopress的博客系统。之前看过wordpress的搭建方法，安装文件越来越大，里面自带的东西也越来越多，php、apache、mysql学习成本也很大。最主要的是需要自己去购买空间安装这些组件。但是我只是需要一个写博客记录并发布给其他志同道合的朋友看而已，为何要这么庞大？所以就一直搁浅。如果我能有一个很方便写博客，且又不需要自己购买空间的方法该有多好！或者是自己太贪心了些。</p>
+<p>正好最近对github感兴趣，听说github是一个在线版本控制平台，许多开源项目都托管在上面，对传统版本控制存有疑虑的人来说，github应该是一个极好的版本控制工具。虽然目前自己也还没有弄明白git的使用方法和规范。某次搜索又看到一篇博文说可以利用github为每个用户以及开源项目创建主页的特性，来创建自己的博客，且不用购买空间来部署，因为github提供jekyll的静态网站生成器。静态网站的一个优势是，不需要用到数据库，文章存储在一个标准的静态网页文件里，随意占用空间小部署简单。我们只需要编写jekyll能解析的轻量级的标签语言(Markdown、Liquid等)书写博客，就可以将博客托管给github。</p>
+<p>但是出于安全问题有些jekyll插件，github不提供解析服务，例如评论、分享功能，但是github提供静态页面解析服务。所以我们可以自己下载jekyll，将轻量级的标签语言转化为静态页面之后，再上传到github，就可以使用博客的一般功能。但是直接使用jekyll可能会带来一些学习成本，所以我找了octopress，这是一个jekyll的博客发布框架，无缝集成git。</p>
+<p>下面具体介绍如何使用这些工具搭建一个轻量级的静态网页博客。</p>
+<hr />
+<h1 id="_28">二、需要了解的技术点</h1>
+<p><strong>1.git</strong>:<br />
+是一个开源的项目版本管理工具，如同cvs、svn。由linux的发明者Linus Torvalds编写，用作Linux内核代码的管理。</p>
+<ul>
+<li><a href="http://www.git-scm.com/">git主页</a>。</li>
+<li><a href="http://zh.wikipedia.org/wiki/Git">git维基百科链接</a>。</li>
+</ul>
+<p><strong>2.github</strong>:<br />
+利用服务器端部署git技术，提供在线的开源项目版本管理平台，也是一个项目托管平台。提供付费和无偿服务。例如java的很多开源组件都托管在github上。</p>
+<ul>
+<li><a href="https://github.com/">github主页</a>。</li>
+<li><a href="http://zh.wikipedia.org/wiki/GitHub">github维基百科链接</a>。</li>
+</ul>
+<p><strong>3.jekyll</strong>:<br />
+是一个使用ruby写的，博客形态的静态站点生成器。Jekyll 是一个简单的博客形态的静态站点生产机器。它有一个模版目录，其中包含原始文本格式的文档，通过 Markdown （或者 Textile） 以及 Liquid 转化成一个完整的可发布的静态网站，你可以发布在任何你喜爱的服务器上。</p>
+<ul>
+<li><a href="http://jekyllcn.com/docs/home/">jekyll中国主页</a>。</li>
+<li><a href="http://en.wikipedia.org/wiki/Jekyll_(software)">jekyll维基百科链接</a>。</li>
+</ul>
+<p><strong>4.Liquid</strong>:<br />
+Liquid是一模板引擎语言，从电子商务系统Shopify提取而来。</p>
+<ul>
+<li><a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">Liquid语法</a>。</li>
+</ul>
+<p><strong>5.Markdown</strong>:<br />
+Markdown 是一种轻量级的标记语言，Markdown 的目标是实现「易读易写」。</p>
+<ul>
+<li><a href="http://www.mceiba.com/develop/markdown-syntax.html">Markdown语法</a>。</li>
+</ul>
+<p><strong>6.Octopress</strong>:<br />
+是一个为jekyll而设计的框架。单独使用jekyll，你需要写你自己的html模板，css,js,以及设置好配置文件，但是用Octopress，这一切都被托管，你关注的只是写博客。</p>
+<ul>
+<li><a href="http://octopress.org/">Octopress主页</a>。</li>
+<li><a href="http://octopress.org/docs/setup/">Octopress官方安装文档</a>。</li>
+</ul>
+<p><strong>7.Ruby</strong>:<br />
+因为jekyll是ruby写的,当然需要按装ruby。Ruby 是一种面向对象、命令式、函数式、动态的通用编程语言。在20世纪90年代中期由日本人松本行弘设计并开发。</p>
+<ul>
+<li><a href="https://www.ruby-lang.org/zh_cn/">Ruby主页</a>。</li>
+<li><a href="http://zh.wikipedia.org/wiki/Ruby">ruby维基百科链接</a>。</li>
+</ul>
+<p><strong>8.rubygems</strong>:<br />
+是一种ruby包管理组件,提供一种分发ruby程序和库的标准格式。</p>
+<ul>
+<li><a href="http://rubygems.org/">Rubygems主页</a>。</li>
+<li><a href="http://en.wikipedia.org/wiki/RubyGems">Rubygems维基百科链接</a>。</li>
+</ul>
+<p><strong>9.DevKit</strong>:<br />
+是一个很方便的编译和使用本地c/c++扩展的工具套件，例如windows上的本地ruby扩展。在windows上使用ruby的一个挑战是如何很容易的使用来自于社区的rubygems。因为有些ruby扩展源代码使用了例如make、gcc、sh类似于unix的命令。所以devkit就发明了，为了能在windows上使用类unix命令。</p>
+<ul>
+<li><a href="https://github.com/oneclick/rubyinstaller/wiki/Development-Kit">github-DevKit</a>。</li>
+</ul>
+<p><strong>10.python</strong>:<br />
+是一种面向对象、直译式电脑编程语言，具有近二十年的发展历史，成熟且稳定。它的语法简捷和清晰，尽量使用无异义的英语单词，与其它大多数程序设计语言使用大括号不一样，它使用缩进来定义语句块。</p>
+<ul>
+<li><a href="https://www.python.org/">python主页</a>。</li>
+<li><a href="http://zh.wikipedia.org/wiki/Python">python维基百科链接</a>。</li>
+</ul>
+<hr />
+<h1 id="_29">三、博客搭建</h1>
+<p>搭建环境：win7 sp1。<br />
+  主体思路是，既然Octopress是使用jekyll来实现的框架，而jekyll是使用ruby写的，那么必然得安装ruby，ruby扩展需要用到Devkit。而博客空间又需要github实现托管，自然需要下载git工具。另外一个博客代码加亮模块需要python的支持。所以需要安装的软件为：ruby、Devkit、octopress、git、python。<br />
+  为了使ruby使用中文utf-8编码，需要给操作系统加两个环境变量，</p>
+<div class="hlcode"><pre><span class="n">LANG</span><span class="o">=</span><span class="n">zh_CN</span><span class="p">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">LC_ALL</span><span class="o">=</span><span class="n">zh_CN</span><span class="p">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+
+
+<p>或者在windows命令窗口执行</p>
+<div class="hlcode"><pre><span class="n">set</span> <span class="n">LANG</span><span class="o">=</span><span class="n">zh_CN</span><span class="p">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">set</span> <span class="n">LC_ALL</span><span class="o">=</span><span class="n">zh_CN</span><span class="p">.</span><span class="n">UTF</span><span class="o">-</span><span class="mi">8</span>
+</pre></div>
+
+
+<p>这样有一个缺点，一旦命令窗口关掉，又需要重新设置这两个变量。</p>
+<h2 id="1git">1.git安装</h2>
+<p><a href="http://git-scm.com/download/win">git的windows版下载地址</a>。<br />
+  安装没有什么特别之处，按照流程一步一步来就ok。也可参照git官方网站安装介绍：<a href="http://git-scm.com/book/zh/%E8%B5%B7%E6%AD%A5-%E5%AE%89%E8%A3%85-Git">安装 Git</a>。</p>
+<h2 id="2ruby">2.ruby安装</h2>
+<p><a href="http://rubyinstaller.org/downloads/">ruby的windows版下载地址</a>。 <br />
+  Octopress官方文档介绍，最新的Octopress最低依赖于ruby1.9.3。这里如果使用git clone的方式获取的octopress一定要安装大于ruby1.9.3的版本。之前我就是因为clone的是最新版的Octopress，而安装的是ruby1.9.2在之后的操作中出现问题。<br />
+  ruby安装非常简单，需要注意的是，要选中”Add Ruby executables to your PATH”。安装完之后打开windows命令窗口，执行<code>ruby -v</code>，如果执行成功，显示ruby版本号，则表示ruby安装成功。<br />
+  更新gem的更新源，ruby的官网经常被拦截，换成国内的更新源。命令如下：</p>
+<div class="hlcode"><pre> <span class="n">gem</span> <span class="n">sources</span> <span class="o">-</span><span class="n">a</span> <span class="n">http</span><span class="o">:</span><span class="c1">//ruby.taobao.org/</span>
+ <span class="n">gem</span> <span class="n">sources</span> <span class="o">-</span><span class="n">r</span> <span class="n">http</span><span class="o">:</span><span class="c1">//rubygems.org/</span>
+ <span class="n">gem</span> <span class="n">sources</span> <span class="o">-</span><span class="n">l</span>
+</pre></div>
+
+
+<p><img alt="img" src="http://www.twalksong.com/images/ruby/rubyinstaller.jpg" /><img alt="Add Ruby executables to your PATH" src="http://www.twalksong.com/images/ruby/rubyin.jpg" /></p>
+<h2 id="3devkit">3.Devkit安装</h2>
+<p>DevKit的下载地址跟ruby的下载地址在一个网页上。选择ruby1.9.3使用的版本。 如果网址打不开，打开<a href="https://github.com/oneclick/rubyinstaller/downloads/">这个网址</a>下载devkit。 安装过程中会要求解压，解压目录最好选择不带中文名和空格的目录。我第一次选择的是带中文的，导致执行之后的命令一直报错。<br />
+安装完之后，使用cmd命令打开windows命令窗口，执行如下命令：</p>
+<p>windows的Devkit安装脚本</p>
+<div class="hlcode"><pre><span class="n">d</span><span class="o">:</span>
+<span class="n">cd</span> <span class="n">devkit</span><span class="err">#我的</span><span class="n">devkit</span><span class="err">安装在</span><span class="n">d</span><span class="err">盘根目录下</span>
+<span class="n">ruby</span> <span class="n">dk</span><span class="o">.</span><span class="na">rb</span> <span class="n">init</span><span class="err">#生成</span><span class="n">config</span><span class="o">.</span><span class="na">yml</span><span class="err">，这里会检查将要添加</span><span class="n">DevKit</span><span class="err">支持的</span><span class="n">Ruby</span><span class="err">列表，只支持通过</span><span class="n">RubyInstaller</span><span class="err">安装的</span><span class="n">Ruby</span><span class="err">。</span>
+<span class="n">ruby</span> <span class="n">dk</span><span class="o">.</span><span class="na">rb</span> <span class="n">install</span>
+</pre></div>
+
+
+<h2 id="4python">4.python安装</h2>
+<hr />
+<p><a href="https://www.python.org/downloads/">python的windows版下载地址</a>，这里下载2.7.8版本。<br />
+  python没有什么特别之处，按照流程来安装就ok。安装成功后，执行<code>easy_install pygments</code>，安装博客高亮模块。我执行命令的时候报错，报”不存在的命令”，后来发现是环境变量的问题，python自己加的path环境变量中包含<code>D:\Python27\Pythons</code>没有后面的斜杠，正确应该是<code>D:\Python27\Pythons\</code>。</p>
+<h2 id="5octopress">5.octopress安装</h2>
+<h3 id="51octopress">5.1，用命令行下载octopress源码：</h3>
+<p>用命令行下载octopress源码</p>
+<div class="hlcode"><pre><span class="n">d</span><span class="o">:</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">://</span><span class="n">github</span><span class="o">.</span><span class="na">com</span><span class="sr">/imathis/</span><span class="n">octopress</span><span class="o">.</span><span class="na">git</span>  <span class="n">octopress</span>
+</pre></div>
+
+
+<h3 id="52octopress">5.2，更新octopress的更新源：</h3>
+<p>进入d:/octopress目录，用文本编辑器打开gemfile文件，将<code>source “http://rubygems.org/”</code>，修改为<code>source “http://ruby.taobao.org/”</code>。</p>
+<h3 id="53octopress">5.3，安装octopress依赖项：</h3>
+<p>安装octopress依赖项</p>
+<div class="hlcode"><pre><span class="n">d</span><span class="o">:</span>
+<span class="n">cd</span> <span class="n">octopress</span>
+<span class="n">gem</span> <span class="n">install</span> <span class="n">bundler</span>
+<span class="n">bundle</span> <span class="n">install</span>
+</pre></div>
+
+
+<h2 id="6githubrepositories">6.登录github，新建主页库(Repositories)。</h2>
+<p>github分为用户主页和项目主页，用户主页就可以作为个人博客，用户主页输入username.github.com就可以进入。用户主页需要登录github用户，建立一个名字为<code>username.github.com</code>的库。例如twitter的GitHub主页是：http://twitter.github.com/。 <br />
+  没有github的用户，先注册一个github用户。注册之后，登录Github，新建一个库，名字为<code>username.github.com</code>,username为你的注册用户名。<br />
+<img alt="新建主页库" src="http://www.twalksong.com/images/ruby/github2.jpg" /> <img alt="新建主页库" src="http://www.twalksong.com/images/ruby/github3.jpg" /> <img alt="新建主页库" src="http://www.twalksong.com/images/ruby/github4.jpg" /></p>
+<p><em>说明1</em>：最好不要勾选init this repo with a readme，因为octopress会自动为我们设置一个readme.md，如果服务器也有一个readme.md,在之后的操作可能会出现不同步的问题。<br />
+<em>说明2</em>：需要配置ssh,具体配置请看底下的<a href="http://www.twalksong.com/blog/2014/08/15/my-first-octopress-blog/#ssh">注意问题1</a>。</p>
+<h2 id="7octopressgithub">7.部署octopress静态站点到github。</h2>
+<h3 id="71github_pages">7.1，进行github_pages设置：</h3>
+<p>打开windows命令窗口，输入</p>
+<p>github_pages设置</p>
+<div class="hlcode"><pre><span class="n">d</span><span class="o">:</span>
+<span class="n">cd</span> <span class="n">octopress</span>
+<span class="n">rake</span> <span class="n">setup_github_pages</span>
+</pre></div>
+
+
+<p>这个rake命令会问你的用户库，按照提示输入新建的用户库地址：</p>
+<div class="hlcode"><pre><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">username</span><span class="o">/</span><span class="n">username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">.</span><span class="n">git</span>
+<span class="err">或</span>
+<span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">username</span><span class="o">/</span><span class="n">username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>不要按照提示来输入<code>git@github.com:username/username.github.io</code>，要不然在之后的操作会报错，说找不到库。<br />
+<img alt="rake setup_github_pages" src="http://www.twalksong.com/images/ruby/git4.jpg" /></p>
+<p>说明1：<a href="http://blog.csdn.net/smilewater/article/details/1683808">rake</a>是ruby make，ruby开发的一个项目构建工具。<br />
+说明2：</p>
+<blockquote>
+<p>Github Pages使用master分支，就像web服务器上的公共目录，为我们的站点提供服务。但是在另外一个方面，我们又想要使用source分支，来版本控制项目源代码。<code>rake setup_github_pages</code>这个命令就可以全部帮我们设置好。<br />
+这个命令会执行如下操作： <br />
+<em> 询问你主页库地址 <br />
+</em> 重新命名远程点从'origin'到'octopress' <br />
+<em> 加上我们输入的主页库作为默认的origin remote <br />
+</em> 转换活动分支从master到source <br />
+<em> 根据你的库配置博客地址 <br />
+</em> 在_deploy目录设置一个master分支，用于部署。</p>
+</blockquote>
+<h3 id="72github">7.2，将静态站点发布到github：</h3>
+<p>打开windows命令窗口，输入</p>
+<p>将静态站点发布到github</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">install</span>  
+<span class="n">rake</span> <span class="n">generate</span>  
+<span class="n">rake</span> <span class="n">deploy</span>
+</pre></div>
+
+
+<p>这个会安装默认博客主题，并生成博客站点，复制博客站点到_deploy文件夹，并将它加入到git,提交发布到github的master分支。几秒之后，在浏览器输入<code>username.github.com</code>，应该就可以进入你的博客站点了。<br />
+<img alt="blog" src="http://www.twalksong.com/images/ruby/blog.jpg" /></p>
+<p>说明：如果想在本地预览博客效果，可以在<code>rake generate</code>命令执行之后，执行<code>rake preview</code>命令，执行成功，不要关掉命令窗口，在浏览器输入<a href="http://localhost:4000/">http://localhost:4000</a>就可以预览你自己的博客了。</p>
+<h3 id="73githuboctopressgithubsource">7.3，别忘了将从github克隆下来的octopress源代码提交到github的source分支：</h3>
+<p>源代码提交</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">add</span> <span class="p">.</span>  
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">&#39;</span><span class="n">your</span> <span class="n">message</span><span class="err">&#39;</span>  
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">source</span>
+</pre></div>
+
+
+<hr />
+<h1 id="_30">四、站点配置</h1>
+<p><a href="http://jekyllrb.com/docs/variables/">站点配置介绍</a>。</p>
+<blockquote>
+<p>Jekyll允许你很轻松的设计你的网站，这很大程度上归功于灵活强大的配置功能。既可以配置在网站根目录下的 _config.yml 文件，也可以作为命令行的标记来配置。</p>
+</blockquote>
+<p>一个_config.yml例子如下：</p>
+<p>_config.yml例子</p>
+<div class="hlcode"><pre>    <span class="nl">url:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//picnic106.github.io</span>
+    <span class="nl">title:</span> <span class="err">寧靜致遠</span>
+    <span class="nl">subtitle:</span> <span class="err">焚膏油以繼晷，恆兀兀以窮年。</span>
+    <span class="nl">author:</span> <span class="n">songyj</span>
+    <span class="nl">simple_search:</span> <span class="n">https</span><span class="o">:</span><span class="c1">//www.google.com/search</span>
+    <span class="nl">dePythonion:</span>
+</pre></div>
+
+
+<p>你可以修改你博客的url，博客标题，博客的说明，博客作者等。详细站点配置请点击<a href="http://jekyllcn.com/docs/configuration/">站点配置</a>。</p>
+<hr />
+<h1 id="_31">五、使用博客</h1>
+<p><a href="http://octopress.org/docs/blogging/">octopress官方使用文档</a>，以下基本是对官方文档的翻译：</p>
+<p>Octopress提供一些<code>rake</code>命令，根据Jekyll的命名规则来创建文章和根据元数据预装载网页。</p>
+<h2 id="1_2">1，博客文章</h2>
+<p>博客文章必须被写在<code>source/_posts</code>文件夹下，而且命名规则必须依照Jekyll的命名规则：<code>YYYY-MM-DD-post-title.markdown</code>。这个文件名字将被用于url解析，时间将被用于定位文件以及文章排序。<br />
+  Octopress提供一些<code>rake</code>命令使用正确的命名规则以及正确的yaml元素来创建新的文章：<code>rake new_post["title"]</code>。</p>
+<p>new_post命令要求一个自然的书写标题，以及剥离了创建文件时的不良url字符。默认新文章文章扩展名是markdown，但是在Rakefile文件中可以配置。例如：</p>
+<p>new_post命令</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">new_post</span><span class="p">[</span><span class="s">&quot;我的第一篇博客&quot;</span><span class="p">]</span><span class="err">#将创建</span><span class="n">source</span><span class="o">/</span><span class="n">_posts</span><span class="o">/</span><span class="mi">2014</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span><span class="o">-</span><span class="err">我的第一篇博客</span><span class="p">.</span><span class="n">markdown</span><span class="err">文件</span>
+</pre></div>
+
+
+<p>这个文件名决定你的url。根据永久链接设置，新的博客文章访问url将是如下：<code>http://username.github.com/blog/2014/08/14/我的第一篇博客/index.html</code>。永久链接的规则是可以设置的，也可以不按照这个规则来，详细规则请看<a href="http://jekyllrb.com/docs/permalinks/">永久链接设置官方文档</a>。</p>
+<p>使用一个文本编辑器(例如win7下使用的是notepad++)打开新文章（<code>source/_posts</code>）。看到一块<a href="http://jekyllrb.com/docs/frontmatter/">yaml头信息</a>设置。</p>
+<blockquote>
+<p>正是头信息开始让Jekyll变的很酷。任何只要包含YAML头信息的文件在Jekyll 中都能被当做一个特殊的文件来处理。头信息必须在文件的开始部分，并且需要按照 YAML 的格式写在两行三虚线之间。告诉Jekyll如何处理文章和网页。</p>
+</blockquote>
+<p>YAML头信息</p>
+<div class="hlcode"><pre>    <span class="o">---</span>
+    <span class="nl">layout:</span> <span class="n">post</span>
+    <span class="nl">title:</span> <span class="s">&quot;我的第一篇博客&quot;</span>
+    <span class="nl">date:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">5</span><span class="o">:</span><span class="mi">59</span>
+    <span class="nl">comments:</span> <span class="nb">true</span>
+    <span class="n">external</span><span class="o">-</span><span class="n">url</span><span class="o">:</span>
+    <span class="nl">categories:</span>
+    <span class="o">---</span>
+</pre></div>
+
+
+<p>在这两行的三虚线之间，你可以设置一些预定义的变量或者甚至创建一个你自己定义的变量。这样在接下来的文章和任意模板中或者在包含这些页面或博客的模板中都可以通过使用 Liquid 标签来访问这些变量。<br />
+  这里你还可以把意见（comments）关掉，或者是给你的文章加一个类别。假如这篇文章是几个人同时写的话，还可以加上<code>author: 你的名字</code>。如果你的文章只是一个草稿，你还可以加上<code>published: false</code>，防止发布到正式博客上。<br />
+你还能加一个简单的类别或者多个类别，例如：</p>
+<p>YAML头信息categories配置</p>
+<div class="hlcode"><pre>    <span class="err">#</span> <span class="n">One</span> <span class="n">category</span>
+    <span class="nl">categories:</span> <span class="n">Sass</span>
+
+    <span class="err">#</span> <span class="n">Multiple</span> <span class="n">categories</span> <span class="n">example</span> <span class="mi">1</span>
+    <span class="nl">categories:</span> <span class="p">[</span><span class="n">CSS3</span><span class="p">,</span> <span class="n">Sass</span><span class="p">,</span> <span class="n">Media</span> <span class="n">Queries</span><span class="p">]</span>
+
+    <span class="err">#</span> <span class="n">Multiple</span> <span class="n">categories</span> <span class="n">example</span> <span class="mi">2</span>
+    <span class="nl">categories:</span>
+    <span class="o">-</span> <span class="n">CSS3</span>
+    <span class="o">-</span> <span class="n">Sass</span>
+    <span class="o">-</span> <span class="n">Media</span> <span class="n">Queries</span>
+</pre></div>
+
+
+<h2 id="2">2，博客网页</h2>
+<p>你可以加一个页面在你博客源目录的任何地方，他们会被Jekyll解析。这个url将直接指定到目录，所以<code>about.markdown</code>变成了<code>site.com/about.html</code>。Octopress 有一个新建网页的rake命令：</p>
+<p>新建网页的rake命令</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">new_page</span><span class="p">[</span><span class="n">super</span><span class="o">-</span><span class="n">awesome</span><span class="p">]</span><span class="err">#</span> <span class="n">creates</span> <span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">super</span><span class="o">-</span><span class="n">awesome</span><span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">markdown</span>
+
+<span class="n">rake</span> <span class="n">new_page</span><span class="p">[</span><span class="n">super</span><span class="o">-</span><span class="n">awesome</span><span class="o">/</span><span class="n">page</span><span class="p">.</span><span class="n">html</span><span class="p">]</span><span class="err">#</span> <span class="n">creates</span> <span class="o">/</span><span class="n">source</span><span class="o">/</span><span class="n">super</span><span class="o">-</span><span class="n">awesome</span><span class="o">/</span><span class="n">page</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+
+
+<p>跟新建文章命令一样，默认的扩展文件名是markdown，但是你可以在rakefile中配置。一个新生成的页面大概是这样：</p>
+<p>YAML头信息</p>
+<div class="hlcode"><pre>    <span class="o">---</span>
+    <span class="nl">layout:</span> <span class="n">page</span>
+    <span class="nl">title:</span> <span class="s">&quot;Super Awesome&quot;</span>
+    <span class="nl">date:</span> <span class="mi">2011</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mo">03</span> <span class="mi">5</span><span class="o">:</span><span class="mi">59</span>
+    <span class="nl">comments:</span> <span class="nb">true</span>
+    <span class="nl">sharing:</span> <span class="nb">true</span>
+    <span class="nl">footer:</span> <span class="nb">true</span>
+    <span class="o">---</span>
+</pre></div>
+
+
+<h2 id="3_1">3，博客内容</h2>
+<p>在yaml头信息设置后，你可以添加你的博客内容。博客内容可以使用你在站点配置文件中配置的标签语法，（例如Markdown标签语法，第二节有介绍）。这个文章或者网页的内容将被你在站点配置文件设置的标签引擎所渲染。在文章中，你另外你还可以使用liquid模板语法。插入<code>&lt;!-- more --&gt;</code>到你的文章将防止低于此标记的后的内容被显示在首页，一个“Continue →”按钮将显示全文。</p>
+<h2 id="4_1">4，生成和预览</h2>
+<p>生成和预览</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">generate</span>   <span class="err">#</span> <span class="err">生成文章或者网页到对外访问的文件夹</span>
+<span class="n">rake</span> <span class="n">watch</span>      <span class="err">#</span> <span class="n">Watches</span> <span class="n">source</span><span class="o">/</span> <span class="n">and</span> <span class="n">sass</span><span class="o">/</span> <span class="k">for</span> <span class="n">changes</span> <span class="n">and</span> <span class="n">regenerates</span>
+<span class="n">rake</span> <span class="n">preview</span>    <span class="err">#</span> <span class="err">查看和启动一个服务，</span><span class="n">url</span><span class="err">是</span><span class="n">http</span><span class="o">:</span><span class="c1">//localhost:4000进行预览。</span>
+</pre></div>
+
+
+<h2 id="5github">5，部署到github</h2>
+<p>部署到github</p>
+<div class="hlcode"><pre><span class="n">rake</span> <span class="n">deploy</span>   <span class="err">#将博客内容发布到</span><span class="n">github</span><span class="err">，过几秒，在浏览器网址输入你博客网址</span><span class="p">(</span><span class="n">username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">)</span><span class="err">访问你的个人站点。</span>
+</pre></div>
+
+
+<hr />
+<h1 id="_32">六、注意问题</h1>
+<h2 id="1ssh">1，配置ssh</h2>
+<p>在本地安装完git,在github服务器注册完帐号，新建库之后，需要配置ssh密钥。新建库之后需要配置github的ssh密钥,要不然在<code>rake deploy</code>部署命令的时候会报错：</p>
+<div class="hlcode"><pre><span class="n">Permission</span> <span class="n">denied</span> <span class="p">(</span><span class="n">publicb</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">key</span><span class="p">).</span>  
+<span class="nl">fatal:</span> <span class="n">Could</span> <span class="n">not</span> <span class="n">read</span> <span class="n">from</span> <span class="n">remote</span> <span class="n">repository</span><span class="p">.</span>
+</pre></div>
+
+
+<p><a href="https://help.githuarticles/generating-ssh-keys">ssh密钥</a>:是一种用来识别受信任计算机的一种方法，而不涉及到密码。下面的步骤将带你产生一个ssh密钥，并将公钥加入到github帐户。</p>
+<h3 id="1_3"><strong>步骤1</strong>：</h3>
+<p>检查ssh密钥：检查计算机上是否存在ssh密钥,进入windows用户目录，例如我机器上的用户目录是：C:\Users\username。检查这个目录下是否有.ssh文件夹，如果有检查.ssh文件夹下是否有<code>id_rsa.pub</code>或者<code>id_dsa.pub</code>文件。如果没有进入第二步，如果已经存在了，进入第三步。</p>
+<h3 id="2_1"><strong>步骤2</strong>：</h3>
+<p>生成一个ssh密钥：生成一个密钥，需要执行以下命令，确保git/bin目录存在环境变量PATH里，your_email@example.com修改为你github的注册邮箱：</p>
+<p>生成ssh密钥</p>
+<div class="hlcode"><pre><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">C</span> <span class="s">&quot;your_email@example.com&quot;</span>
+<span class="cp">#这个命令生成一对ssh公钥/私钥，输入一个目录保存ssh密钥，保存到用户目录的.ssh文件夹下。</span>
+</pre></div>
+
+
+<p>然后会要求输入密码，不想输入，直接回车，但是官方建议是一定要输入密码。</p>
+<h3 id="3_2"><strong>步骤3</strong>：</h3>
+<p>配置github帐号的ssh公钥：使用文本文件打开<code>id_rsa.pub</code>文件，复制里面的内容，然后把内容加到github帐号。<br />
+  1，点击github帐号设置：<br />
+<img alt="进入帐号设置" src="http://www.twalksong.com/images/ruby/zhsz.jpg" /><br />
+  2，在左边设置点击“ssh keys”： <br />
+<img alt="sshkey" src="http://www.twalksong.com/images/ruby/sshkey.jpg" /><br />
+  3，在右边输入ssh密钥描述，然后粘贴你复制的ssh公钥,点击保存：<br />
+<img alt="sshsr" src="http://www.twalksong.com/images/ruby/sshsr.jpg" /><br />
+  4，测试sshkey是否配置正确，打开本地命令窗口，输入：</p>
+<p>测试sshkey</p>
+<div class="hlcode"><pre><span class="n">ssh</span> <span class="o">-</span><span class="n">T</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>如果提示：</p>
+<div class="hlcode"><pre><span class="n">Hi</span> <span class="n">picnic106</span><span class="o">!</span> <span class="n">You</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">successfully</span> <span class="n">authenticated</span><span class="p">,</span> <span class="n">but</span> <span class="n">GitHub</span> <span class="n">does</span> <span class="n">not</span> <span class="n">provide</span> <span class="n">shell</span> <span class="n">access</span><span class="p">.</span>
+</pre></div>
+
+
+<p>表示配置成功。</p>
+<h2 id="2rake-setup_github_pages">2，注意rake setup_github_pages命令的库路径</h2>
+<p>不要按照提示来输入<code>git@github.com:username/username.github.io</code>，要不然在之后的操作会报错，说找不到库。<br />
+<img alt="rake setup_github_pages" src="http://www.twalksong.com/images/ruby/git4.jpg" /><br />
+那么如果输错了的解决办法是修改octopress/_deploy/.git/config下和你本身站点相关的username.github.io全修改成username.github.com，之后使用<code>rake deploy</code>重新部署。例如：</p>
+<div class="hlcode"><pre><span class="k">[remote &quot;origin&quot;]</span>
+<span class="na">url</span> <span class="o">=</span> <span class="s">git@github.com:username/username.github.io.git</span>
+</pre></div>
+
+
+<p>修改成</p>
+<div class="hlcode"><pre> <span class="p">[</span><span class="n">remote</span> <span class="s">&quot;origin&quot;</span><span class="p">]</span>
+ <span class="n">url</span> <span class="o">=</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">username</span><span class="o">/</span><span class="n">username</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+
+
+<h2 id="3_3">3，文件格式问题</h2>
+<p>所有文件格式必须是UTF-8的无BOM编码格式，可以使用文本编辑软件进行转换格式，例如notepad++转换格式在菜单：format-&gt;转为utf-8无bom编码格式。<br />
+至于什么是bom，且为什么要这样，goole吧，本人也了解不多。如果不这么设置，在有一些命令会报错。</p>
+<h2 id="4github">4，部署到github，报版本不一致问题</h2>
+<p>有时候运行<code>rake deploy</code>会报错<code>non-fast-forward errors</code>,出现这个问题是因为本地文件跟github服务器文件版本不一致，例如上面谈到的，在新建库的时候建立了readme.md文件但是本地进行<code>rake generate</code>的时候也生成了readme.md文件，那么就会造成版本不一致问题。<br />
+解决办法：</p>
+<p>解决报版本不一致脚本</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="n">branch</span><span class="p">.</span><span class="n">master</span><span class="p">.</span><span class="n">remote</span> <span class="n">origin</span>  
+<span class="n">git</span> <span class="n">config</span> <span class="n">branch</span><span class="p">.</span><span class="n">master</span><span class="p">.</span><span class="n">merge</span> <span class="n">refs</span><span class="o">/</span><span class="n">heads</span><span class="o">/</span><span class="n">master</span>  
+<span class="n">git</span> <span class="n">pull</span><span class="err">#将远程文件拉到本地，并进行合并</span><span class="n">merge</span>
+<span class="n">rake</span> <span class="n">deploy</span><span class="err">#就不会出现问题了</span>
+</pre></div>
+
+
+<h2 id="octopress-20">Octopress 2.0 介绍</h2>
+<p>Octopress是<a href="http://brandonmathis.com/">Brandon Mathis</a>为<a href="https://github.com/jekyll/jekyll">jekyll</a>设计的一个框架，jekyll是<a href="https://pages.github.com/">Github Pages</a>服务可以支持的博客形态的静态网站生成器。</p>
+<p>使用jekyll来写博客，你不得不自己写html模板，css，js以及自己处理各种配置。但是octopress框架托管一切。简单的<a href="https://github.com/imathis/octopress">clone或者fork octopress</a>开源框架，安装依赖软件和主题，你就可以开始写博客了。</p>
+<h3 id="20">2.0有什么新特性？</h3>
+<p>简短的回答是：一切。基于<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>开发的Octopress已经使用满山的好特性从底层被完全重写。</p>
+<p>Octopress有如下特性：</p>
+<ul>
+<li>一个html5的语义模板</li>
+<li>第一个移动端响应布局（旋转或者调整您的浏览器观看）</li>
+<li>内置很多第三方支持，例如：Twitter、Google Plus One、Disqus Comments、Pinboard、Delicious以及Google Analytics</li>
+<li>使用Github pages或者Rsync，具有很简单的部署策略</li>
+<li>内置POW或者Rack服务</li>
+<li>很容易的使用Compass和Sass来构建主题</li>
+<li>很漂亮的<a href="http://ethanschoonover.com/solarized">Solarized</a>语法高亮</li>
+</ul>
+<p>一定要查看<a href="http://octopress.org/docs">文档</a>获取完整的信息(原文是the full scoop，scoop是勺子，不知这样翻译对不对?)。</p>
+<h3 id="_33">插件仓库</h3>
+<p>大部分插件都创建好了，但是小部分来自于Jekyll社区的插件，一直在改进和更新。</p>
+<ul>
+<li><a href="http://octopress.org/docs/plugins/video-tag/">html5的视频标签</a> - 轻松发布mp4的html5播放器，使用flash player fallback</li>
+<li><a href="http://octopress.org/docs/plugins/codeblock/">代码块</a> - 很方便的内联代码共享</li>
+<li><a href="http://octopress.org/docs/plugins/include-code/">包含代码</a> - 从你的文件系统中嵌入代码</li>
+<li><a href="http://octopress.org/docs/plugins/gist-tag/">Gist标签</a> - 自动下载和嵌入gist要点</li>
+<li><a href="http://octopress.org/docs/plugins/image-tag/">图片标签</a> - 很方便的发布图片使用类名字和标题</li>
+<li><a href="http://octopress.org/docs/plugins/render-partial/">渲染部分</a> - 插入任何文件到另外的文章或者界面</li>
+<li><a href="http://octopress.org/docs/plugins/blockquote/">引用块</a> - 生成漂亮的语义快引用</li>
+<li><a href="http://octopress.org/docs/plugins/pullquote/">Pullquote</a> - 生成只拉引用的css样式 - 没有重复数据，没有js</li>
+<li><a href="http://octopress.org/docs/plugins/category-generator/">类别生成器</a> - 为每一个博客类别生成归档页面</li>
+</ul>
+<p>更多插件请查看<a href="http://octopress.org/docs/plugins/">插件列表</a>。</p>
+<h3 id="_34">准备好开始了吗？</h3>
+<p>Octopress是真的很容易设置和不是，<a href="http://octopress.org/docs/setup">点击这里开始</a>。</p>
+<p>现在就是这样了。查看<a href="http://octopress.org/docs/">文档</a>，<a href="https://github.com/imathis/octopress">查看github的octopress库</a>，<a href="https://github.com/imathis/octopress/issues">发布问题</a>，发给我<a href="http://convore.com/octopress/support">支持请求</a>，以及告诉你所有朋友。</p>
+<h2 id="octopress_5">Octopress文档</h2>
+<p>Octopress是为了Jekyll(一个Github Pages支持的静态博客引擎)而设计的框架。假如你遇到困难，看一下文档，<a href="http://octopress.org/help/">我很高兴帮助你</a>。假如你发现错误在文档里，发布一个错误，或者fork，然后发送一个拉的请求到主支。</p>
+<h3 id="_35">开始吧</h3>
+<p>这节将帮助你设置以及解释怎样为你的站点配置octopress。注意：假如你已经有一个其他博客，<a href="http://jekyllcn.com/docs/migrations/">查看博客迁移界面</a>，帮助你为了形成octopress博客而获取当前博客的设置。</p>
+<ul>
+<li><a href="http://octopress.org/docs/setup/">初始化设置</a>-获取源代码以及安装依赖</li>
+<li><a href="http://octopress.org/docs/configuring/">基本配置</a>-能使用第三方服务以及自定义你自己的博客</li>
+</ul>
+<h3 id="octopress_6">使用octopress</h3>
+<p>你的博客应该极好的，让人羡慕的，底下能帮助到你变成这样：</p>
+<ul>
+<li><a href="http://octopress.org/docs/blogging/">博客基础</a> - 怎样创建文章和页面</li>
+<li><a href="http://octopress.org/docs/deploying/">部署octopress</a> - 部署到Rsync和Github界面服务的简单介绍</li>
+<li><a href="http://octopress.org/docs/blogging/code/">分享代码片段</a> - 简单分享代码片段</li>
+<li><a href="http://octopress.org/docs/blogging/plugins/">博客插件</a> - 博客插件概览</li>
+<li><a href="http://octopress.org/docs/theme/">主题和定制化</a> - 改变主题的指南</li>
+<li><a href="http://octopress.org/docs/updating/">更新octopress</a> - 更新到最新octopress的指南</li>
+</ul>
+<h3 id="octopress-">octopress插件 - 使用和例子</h3>
+<p>Octopress整个套件有如下插件。许多是专门为octopress而写的，但是有一些是从jekelly社区选择的，而且有很多的更新和改进。</p>
+<ul>
+<li><a href="http://octopress.org/docs/plugins/video-tag/">html5视频标签</a> - 嵌入mp4编码格式的html5视频</li>
+<li><a href="http://octopress.org/docs/plugins/backtick-codeblock/">简单代码块</a> - 简单轻量级的代码分享</li>
+<li><a href="http://octopress.org/docs/plugins/codeblock/">代码块 </a>- 带有标题和代码链接的代码块分享</li>
+<li><a href="http://octopress.org/docs/plugins/include-code/">包含代码</a> - 使用一个可下载的链接从你的文件系统嵌入代码</li>
+<li><a href="http://octopress.org/docs/plugins/gist-tag/">gist标签</a> - 自动下载和嵌入 Github gists</li>
+<li><a href="http://octopress.org/docs/plugins/jsfiddle-tag/">jsFiddle</a> - 从jsFiddle下载内嵌代码</li>
+<li><a href="http://octopress.org/docs/plugins/image-tag/">图片标签</a> - 很容易的发布图片使用类名和标题</li>
+<li><a href="http://octopress.org/docs/plugins/render-partial/">渲染部分</a> - 插入任何文件到另外的文章和页面</li>
+<li><a href="http://octopress.org/docs/plugins/blockquote/">引用块</a> - 生成漂亮的语义引用块</li>
+<li><a href="http://octopress.org/docs/plugins/pullquote/">拉引用</a> - 仅仅拉引用生成css,没有重复数据，没有js</li>
+<li><a href="http://octopress.org/docs/plugins/category-generator/">类别生成器</a> - 为每一个博客类别生成归档页面</li>
+<li><a href="http://octopress.org/docs/plugins/include-array/">包含多个页面</a> - 包含一系列的界面在config.yml配置</li>
+<li><a href="http://octopress.org/docs/plugins/puts/">提出</a> - 将Liquid的日志提出到终端(为了主题和插件开发者)</li>
+</ul>
+<p>底下的过滤器被octopress使用，并作为不要的记录在他们的源里面。</p>
+<p>Octopress过滤器 - 只是octopress建立liquid过滤器 <br />
+网站地图生成器 - 生成一个seo友好的sitemap.xml<br />
+Haml转换 - 允许.haml的界面被jekelly解析 代码高亮 - 将代码片段来突出显示并缓存来加快jekelly的处理 Titlecase - 被许多插件需要的自动生成合适的标题</p>
+<p><a href="https://github.com/imathis/octopress/tree/master/plugins">Octopress插件源</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

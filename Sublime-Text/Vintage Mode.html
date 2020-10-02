@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Vintage Mode - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Sublime-Text">Sublime-Text</a>&nbsp;&#187;&nbsp;Vintage Mode
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 13:59
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Vintage Mode</div>
+
+  <h1 id="sublimehqvintage"><a href="https://github.com/sublimehq/Vintage">sublimehq/Vintage</a></h1>
+<p><a href="http://www.sublimetext.com/docs/2/vintage.html">Vintage</a>是VI编辑包Sublime Text 2。</p>
+<p>Vintage 出厂默认与Sublime Text 2.要使用默认的，你应该在这方面的发展，而不是版本：</p>
+<ol>
+<li>确保内置的 Vintage 包是在<code>ignored_packages</code>列表，因为它是在默认情况下。</li>
+<li>克隆这个仓库到一个单独的目录下的_包_路径，如Vintage Dev。例如，在OS X，你可以这样做：</li>
+</ol>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Application</span><span class="err">\</span> <span class="n">Support</span><span class="o">/</span><span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="err">\</span> <span class="mi">2</span><span class="o">/</span><span class="n">Packages</span><span class="o">/</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">sublimehq</span><span class="o">/</span><span class="n">Vintage</span><span class="p">.</span><span class="n">git</span> <span class="s">&quot;Vintage Dev&quot;</span>
+</pre></div>
+
+
+<h1 id="vintage-mode">Vintage Mode</h1>
+<h3 id="_1">概观</h3>
+<p>Vintage是vi模式编辑软件包的Sublime Text 2.它可以让你VI的命令模式与崇高的文本的功能，其中包括多选组合。</p>
+<p>Vintage Mode开发开放和补丁非常欢迎。如果您想贡献，细节上的<a href="https://github.com/sublimehq/Vintage">GitHub的</a>页面。</p>
+<h2 id="vintage">启用Vintage</h2>
+<p>Vintage 默认情况下，通过禁用，ignored_packages设置。如果从忽略的软件包列表中删除“Vintage”，你就可以编辑用vi键：</p>
+<ol>
+<li>选择首选项/设置-默认菜单项</li>
+<li>编辑ignored_packages设置，对其进行更改：</li>
+</ol>
+<div class="hlcode"><pre>    <span class="s">&quot;ignored_packages&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;Vintage&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<p>于：</p>
+<div class="hlcode"><pre>    <span class="s">&quot;ignored_packages&quot;</span><span class="o">:</span> <span class="p">[]</span>
+</pre></div>
+
+
+<p>现在保存文件。<br />
+  3. Vintage Mode现在已启用 - 你会看到“INSERT MODE”在状态栏中所列</p>
+<p>Vintage开始插入模式在默认情况下。这可以通过添加可以改变：</p>
+<div class="hlcode"><pre>    <span class="s">&quot;vintage_start_in_command_mode&quot;</span><span class="o">:</span> <span class="nb">true</span>
+</pre></div>
+
+
+<p>你的用户设置。</p>
+<h2 id="_2">包含哪些内容</h2>
+<p>Vintage 包括最基本的动作：D（删除），Y（复印件），C（变化），合谷（小写），顾（大写），G〜（交换的情况下），G？（ROT13），&lt;（取消缩进）和&gt;（缩进）。</p>
+<p>它还包含了许多议案，其中包括L，H，J，K，W，W，E，E，B，B，ALT + W（由子言的举动），ALT + W（由子言向后移动）， $ ^％，0，G，GG，F，F，T，T，^ F，^ B，H，M和L.</p>
+<p>文本对象的支持，包括文字，行情，支架和标签。</p>
+<p>重复<code>('.')</code>就在那里，因为是指定计数的命令和动作。寄存器的支持，因为是宏和书签。许多其他的杂项命令支持太，例如和*，/，N，N，S，S和更多。</p>
+<h2 id="_3">什么是不</h2>
+<p>插入模式是有规律的Sublime Text 2的编辑，与通常的Sublime Text 2键绑定：vi的插入模式键绑定不会效仿。</p>
+<p>防爆指令不落实，除了：W和：即通过命令调色板哪些工作。</p>
+<h2 id="_4">引擎盖下</h2>
+<p>随意浏览的Vintage mode，看看它是如何放在一起 - Vintage mode通过按键绑定和插件API完全实现。举个例子，如果你想绑定“JJ”退出插入模式，你可以添加此键绑定：</p>
+<div class="hlcode"><pre><span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="o">:</span> <span class="cp">[</span><span class="s2">&quot;j&quot;</span><span class="p">,</span> <span class="s2">&quot;j&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;exit_insert_mode&quot;</span><span class="o">,</span>
+    <span class="s2">&quot;context&quot;</span><span class="o">:</span>
+    <span class="cp">[</span>
+        <span class="p">{</span> <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;setting.command_mode&quot;</span><span class="p">,</span> <span class="s2">&quot;operand&quot;</span><span class="p">:</span> <span class="kc">false</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;setting.is_widget&quot;</span><span class="p">,</span> <span class="s2">&quot;operand&quot;</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
+    <span class="cp">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="os-x">OS X</h2>
+<p>在狮子，按住一个键就不再重复了，但反而会显示一个弹出式菜单的性格变化之间进行选择。这不使用命令模式下工作，所以你可能要禁用它。这可以通过在终端处输入此来完成：</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">sublimetext</span><span class="mf">.2</span> <span class="n">ApplePressAndHoldEnabled</span> <span class="o">-</span><span class="kt">bool</span> <span class="nb">false</span>
+</pre></div>
+
+
+<h2 id="ctrl">按Ctrl键</h2>
+<p>复古支持这些ctrl键绑定：</p>
+<ul>
+<li>按Ctrl + [：逃生</li>
+<li>按Ctrl + R：重做</li>
+<li>按Ctrl + Y：向下滚动一行</li>
+<li>按Ctrl + E：向上滚动一行</li>
+<li>按Ctrl + F：向下翻页</li>
+<li>按Ctrl + B：向上翻页<br />
+然而，因为他们与其他崇高文本2键绑定冲突，这些都是在默认情况下Windows和Linux上禁用。他们可以与vintage_ctrl_keys设置启用：</li>
+</ul>
+<div class="hlcode"><pre>    <span class="s">&quot;vintage_ctrl_keys&quot;</span><span class="o">:</span> <span class="nb">true</span>
+</pre></div>
+
+
+<h2 id="ex">Ex模式</h2>
+<p>请看看<a href="https://github.com/SublimeText/VintageEx">VintageEx</a>的Vintage</p>
+<h2 id="_5"><a href="https://github.com/sublimehq/Vintage#documentation"></a>文件</h2>
+<ul>
+<li><a href="http://www.sublimetext.com/docs/2/api_reference.html">API参考</a></li>
+<li><a href="http://sublimetext.info/docs/en/customization/key_bindings.html">键绑定</a></li>
+</ul>
+<h2 id="_6"><a href="https://github.com/sublimehq/Vintage#settings"></a>设置</h2>
+<p>请参阅Packages/Vintage/Preferences.sublime-settings设置_查看可用的选项。如果要更改任何设置，使用  Packages/User/Preferences.sublime-settings文件。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

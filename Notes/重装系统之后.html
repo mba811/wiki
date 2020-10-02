@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>重装系统之后 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;重装系统之后
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 03:44
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">重装系统之后</div>
+
+  <h2 id="_1">系统偏好设置</h2>
+<ul>
+<li>更改电脑名称</li>
+</ul>
+<blockquote>
+<p>共享</p>
+</blockquote>
+<ul>
+<li>允许安装任何来源的 APP</li>
+</ul>
+<blockquote>
+<p>安全性与隐私 --&gt; 通用</p>
+</blockquote>
+<ul>
+<li>设置快捷键</li>
+</ul>
+<blockquote>
+<p>键盘 --&gt; 快捷键</p>
+</blockquote>
+<h2 id="etcpaths">编辑 /etc/paths</h2>
+<div class="hlcode"><pre><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">sbin</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span>
+<span class="o">/</span><span class="n">bin</span>
+<span class="o">/</span><span class="n">sbin</span>
+</pre></div>
+
+
+<h2 id="xcode">安装 <a href="https://developer.apple.com/xcode/">Xcode</a></h2>
+<h2 id="homebrew">安装 <a href="http://brew.sh/">Homebrew</a></h2>
+<div class="hlcode"><pre><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/homebrew/go/install)&quot;</span>
+</pre></div>
+
+
+<div class="hlcode"><pre><span class="n">echo</span> <span class="s">&quot;export PATH=\$(echo \$PATH | sed &#39;s|/usr/local/bin||; s|/usr/local/sbin||; s|::|:|; s|^:||; s|\(.*\)|/usr/local/bin:/usr/local/sbin:</span><span class="se">\1</span><span class="s">|&#39;)&quot;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">zshrc</span> <span class="o">&amp;&amp;</span> <span class="n">source</span> <span class="o">~/</span><span class="p">.</span><span class="n">zshrc</span>
+</pre></div>
+
+
+<blockquote>
+<p>確保 Homebrew 安裝套件的優先性(系統本身會內建一些套件，我們必須執行以下指令來確保我們使用 Homebrew 安裝更新版套件的優先使用性。)</p>
+<p>会提示先安装 Command Line Tools，按提示操作即可。 或者也可以预先手动执行 <code>xcode-select --install</code> 安装。</p>
+</blockquote>
+<h2 id="git-autojump">安装 git, <a href="https://github.com/joelthelion/autojump">autojump</a></h2>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">git</span> <span class="n">autojump</span>
+</pre></div>
+
+
+<h2 id="oh-my-zsh">安装 <a href="http://ohmyz.sh/">Oh My Zsh</a></h2>
+<div class="hlcode"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="n">http</span><span class="o">:</span><span class="c1">//install.ohmyz.sh | sh</span>
+</pre></div>
+
+
+<blockquote>
+<p><strong>plugins=(<a href="http://jasonm23.github.io/oh-my-git-aliases.html">git</a> autojump)</strong></p>
+</blockquote>
+<h2 id="nvm">安装 <a href="https://github.com/creationix/nvm">nvm</a></h2>
+<div class="hlcode"><pre><span class="n">curl</span> <span class="n">https</span><span class="o">:</span><span class="c1">//raw.githubusercontent.com/creationix/nvm/master/install.sh | sh</span>
+</pre></div>
+
+
+<p>在 <code>~/.zshrc</code> 中添加：</p>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">NVM_NODEJS_ORG_MIRROR</span><span class="o">=</span><span class="s">&quot;http://npm.taobao.org/dist&quot;</span>
+<span class="p">[[</span> <span class="o">-</span><span class="n">s</span> <span class="s">&quot;$HOME/.nvm/nvm.sh&quot;</span> <span class="p">]]</span> <span class="o">&amp;&amp;</span> <span class="p">.</span> <span class="s">&quot;$HOME/.nvm/nvm.sh&quot;</span>
+<span class="n">export</span> <span class="n">NODE_PATH</span><span class="o">=</span><span class="err">$</span><span class="n">NVM_DIR</span><span class="o">/</span><span class="err">$</span><span class="p">(</span><span class="n">nvm_ls</span> <span class="n">current</span><span class="p">)</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">node_modules</span>
+</pre></div>
+
+
+<h2 id="rbenv">安装 <a href="https://github.com/sstephenson/rbenv">rbenv</a></h2>
+<blockquote>
+<p>步驟如下</p>
+</blockquote>
+<ul>
+<li>移除 rvm</li>
+</ul>
+<div class="hlcode"><pre><span class="n">rvm</span> <span class="n">implode</span>
+</pre></div>
+
+
+<ul>
+<li>使用 homebrew 安裝 rbenv</li>
+</ul>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">update</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">rbenv</span> <span class="n">ruby</span><span class="o">-</span><span class="n">build</span> <span class="n">rbenv</span><span class="o">-</span><span class="n">gemset</span>
+</pre></div>
+
+
+<p>新增 settings</p>
+<div class="hlcode"><pre><span class="n">echo</span> <span class="err">&#39;</span><span class="n">export</span> <span class="n">RBENV_ROOT</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">rbenv</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">zshrc</span>
+<span class="n">echo</span> <span class="err">&#39;</span><span class="k">if</span> <span class="n">which</span> <span class="n">rbenv</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span><span class="p">;</span> <span class="n">then</span> <span class="n">eval</span> <span class="s">&quot;$(rbenv init -)&quot;</span><span class="p">;</span> <span class="n">fi</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">zshrc</span>
+</pre></div>
+
+
+<ul>
+<li>更新 rbenv</li>
+</ul>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">update</span>
+<span class="n">brew</span> <span class="n">upgrade</span> <span class="n">rbenv</span> <span class="n">ruby</span><span class="o">-</span><span class="n">build</span>
+</pre></div>
+
+
+<ul>
+<li>安裝 ruby</li>
+</ul>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">install</span> <span class="o">-</span><span class="n">l</span>      <span class="err">#</span> <span class="n">list</span> <span class="n">all</span> <span class="n">available</span> <span class="n">versions</span><span class="o">:</span>
+<span class="n">rbenv</span> <span class="n">install</span> <span class="mf">2.1.5</span>   <span class="err">#</span> <span class="n">install</span> <span class="n">a</span> <span class="n">Ruby</span> <span class="n">version</span><span class="o">:</span>
+<span class="n">rbenv</span> <span class="n">global</span> <span class="mf">2.1.5</span>    <span class="err">#</span> <span class="n">use</span> <span class="n">global</span> <span class="n">set</span> <span class="n">ruby</span> <span class="n">version</span> <span class="n">used</span> <span class="n">in</span> <span class="n">all</span> <span class="n">shells</span>
+<span class="n">rbenv</span> <span class="n">global</span> <span class="mf">2.1.5</span>
+<span class="n">rbenv</span> <span class="n">rehash</span>
+<span class="n">rbenv</span> <span class="n">versions</span>       <span class="err">#</span> <span class="n">list</span> <span class="n">all</span> <span class="n">installed</span> <span class="n">Ruby</span> <span class="n">versions</span>
+</pre></div>
+
+
+<ul>
+<li>安裝及更新 gems 套件</li>
+</ul>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">update</span> <span class="o">--</span><span class="n">system</span>
+<span class="n">gem</span> <span class="n">update</span>
+<span class="n">gem</span> <span class="n">install</span> <span class="n">bundle</span>
+</pre></div>
+
+
+<ul>
+<li>配置 gem 源</li>
+</ul>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">sources</span> <span class="o">-</span><span class="n">a</span> <span class="n">http</span><span class="o">:</span><span class="c1">//ruby.taobao.org/ -r https://rubygems.org/</span>
+<span class="n">echo</span> <span class="err">&#39;</span><span class="n">gem</span><span class="o">:</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">document</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">gemrc</span>
+</pre></div>
+
+
+<h2 id="nodejs">安装 NodeJS</h2>
+<div class="hlcode"><pre><span class="n">nvm</span> <span class="n">install</span> <span class="mf">0.10</span>
+<span class="n">nvm</span> <span class="n">alias</span> <span class="k">default</span> <span class="mf">0.10</span>
+</pre></div>
+
+
+<h2 id="mongodb-mysql">安装 MongoDB, MySQL</h2>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">mongodb</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<ul>
+<li>设置开机自启动「可选」：</li>
+</ul>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mongodb</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mysql</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+</pre></div>
+
+
+<h2 id="pow">安装 <a href="http://pow.cx/">Pow</a></h2>
+<div class="hlcode"><pre><span class="n">curl</span> <span class="n">get</span><span class="p">.</span><span class="n">pow</span><span class="p">.</span><span class="n">cx</span> <span class="o">|</span> <span class="n">sh</span>
+</pre></div>
+
+
+<h2 id="ssh-keygen">SSH-KeyGen</h2>
+<div class="hlcode"><pre><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span>
+</pre></div>
+
+
+<h2 id="sublime-text-3"><a href="http://www.sublimetext.com/3">Sublime Text 3</a></h2>
+<p><a href="https://sublime.wbond.net/installation"><strong>Package Control</strong></a></p>
+<p><strong>Bin</strong></p>
+<div class="hlcode"><pre><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="p">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">SharedSupport</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">subl</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sm</span>
+</pre></div>
+
+
+<p><strong>Settings</strong></p>
+<div class="hlcode"><pre><span class="p">{</span>
+  <span class="s">&quot;default_line_ending&quot;</span><span class="o">:</span> <span class="s">&quot;unix&quot;</span><span class="p">,</span>
+  <span class="s">&quot;ensure_newline_at_eof_on_save&quot;</span><span class="o">:</span> <span class="nb">true</span><span class="p">,</span>
+  <span class="s">&quot;file_exclude_patterns&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;.DS_Store&quot;</span><span class="p">,</span> <span class="s">&quot;*.zip&quot;</span><span class="p">],</span>
+  <span class="s">&quot;folder_exclude_patterns&quot;</span><span class="o">:</span> <span class="p">[</span><span class="s">&quot;.git&quot;</span><span class="p">,</span> <span class="s">&quot;.svn&quot;</span><span class="p">],</span>
+  <span class="s">&quot;font_size&quot;</span><span class="o">:</span> <span class="mi">20</span><span class="p">,</span>
+  <span class="s">&quot;highlight_line&quot;</span><span class="o">:</span> <span class="nb">true</span><span class="p">,</span>
+  <span class="s">&quot;line_padding_top&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="s">&quot;open_files_in_new_window&quot;</span><span class="o">:</span> <span class="nb">false</span><span class="p">,</span>
+  <span class="s">&quot;show_encoding&quot;</span><span class="o">:</span> <span class="nb">true</span><span class="p">,</span>
+  <span class="s">&quot;tab_size&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="s">&quot;translate_tabs_to_spaces&quot;</span><span class="o">:</span> <span class="nb">true</span><span class="p">,</span>
+  <span class="s">&quot;trim_automatic_white_space&quot;</span><span class="o">:</span> <span class="nb">false</span><span class="p">,</span>
+  <span class="s">&quot;trim_trailing_white_space_on_save&quot;</span><span class="o">:</span> <span class="nb">true</span><span class="p">,</span>
+  <span class="s">&quot;word_separators&quot;</span><span class="o">:</span> <span class="s">&quot;./</span><span class="se">\\</span><span class="s">()</span><span class="se">\&quot;</span><span class="s">&#39;:,.;&lt;&gt;~!@#$%^&amp;*|+=[]{}`~?&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p><strong>Key Bindings</strong></p>
+<div class="hlcode"><pre><span class="cp">[</span>
+  <span class="c1">// Add folder to project</span>
+  <span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="p">:</span> <span class="err">[</span><span class="s2">&quot;super+shift+o&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;prompt_add_folder&quot;</span> <span class="err">}</span><span class="o">,</span>
+  <span class="o">//</span> <span class="nt">Match</span> <span class="nt">with</span> <span class="err">`</span><span class="nt">ctrl</span><span class="o">+</span><span class="nt">shift</span><span class="o">+</span><span class="nt">k</span><span class="err">`</span>
+  <span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="o">:</span> <span class="cp">[</span><span class="s2">&quot;ctrl+shift+d&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;duplicate_line&quot;</span> <span class="p">}</span><span class="o">,</span>
+  <span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="o">:</span> <span class="cp">[</span><span class="s2">&quot;alt+up&quot;</span><span class="p">,</span> <span class="s2">&quot;alt+1&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;fold_by_level&quot;</span><span class="o">,</span> <span class="s2">&quot;args&quot;</span><span class="o">:</span> <span class="err">{</span><span class="s2">&quot;level&quot;</span><span class="o">:</span> <span class="m">1</span><span class="p">}</span> <span class="err">}</span><span class="o">,</span>
+  <span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="o">:</span> <span class="cp">[</span><span class="s2">&quot;alt+up&quot;</span><span class="p">,</span> <span class="s2">&quot;alt+2&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;fold_by_level&quot;</span><span class="o">,</span> <span class="s2">&quot;args&quot;</span><span class="o">:</span> <span class="err">{</span><span class="s2">&quot;level&quot;</span><span class="o">:</span> <span class="m">2</span><span class="p">}</span> <span class="err">}</span><span class="o">,</span>
+  <span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="o">:</span> <span class="cp">[</span><span class="s2">&quot;alt+up&quot;</span><span class="p">,</span> <span class="s2">&quot;alt+3&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;fold_by_level&quot;</span><span class="o">,</span> <span class="s2">&quot;args&quot;</span><span class="o">:</span> <span class="err">{</span><span class="s2">&quot;level&quot;</span><span class="o">:</span> <span class="m">3</span><span class="p">}</span> <span class="err">}</span><span class="o">,</span>
+  <span class="p">{</span> <span class="s2">&quot;keys&quot;</span><span class="o">:</span> <span class="cp">[</span><span class="s2">&quot;alt+down&quot;</span><span class="cp">]</span><span class="o">,</span> <span class="s2">&quot;command&quot;</span><span class="o">:</span> <span class="s2">&quot;unfold_all&quot;</span> <span class="p">}</span>
+<span class="o">]</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

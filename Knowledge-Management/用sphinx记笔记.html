@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>用Sphinx记笔记 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Knowledge-Management">Knowledge-Management</a>&nbsp;&#187;&nbsp;用Sphinx记笔记
+    <span class="updated">Page Updated&nbsp;
+      2015-02-10 13:28
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">用Sphinx记笔记</div>
+
+  <h2 id="sphinx">Sphinx简介<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id1"></a></h2>
+<p>简单来说，这是一个基于ReStructuredText的文档生成工具。方便易用，功能强大。</p>
+<p>有很多开源工程都采用sphinx作为文档生成系统，最有名的就是 <a href="http://docs.python.org/">python官方文档</a> 。 在 <a href="http://sphinx.pocoo.org/">sphinx官方网站</a> 上也列出使用sphinx的项目，有将近90个左右，其中不乏大名鼎鼎的开源项目。</p>
+<p>一些中文的翻译项目也采用了sphinx，如 <a href="http://code.google.com/p/pymotwcn/">pymotwcn</a> 。</p>
+<h2 id="_1">安装<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id2"></a></h2>
+<ul>
+<li>
+<p>安装python</p>
+<ul>
+<li>python2.5或者python2.6都可以。</li>
+<li>如果是windows平台，推荐下载 <a href="http://www.activestate.com/activepython/downloads/">ActivePython</a></li>
+<li>其他平台可以直接下载 <a href="http://www.python.org/download/">python官方版本</a></li>
+<li>
+<p>要确认已经安装了setuptools</p>
+</li>
+<li>
+<p>如果已经安装，你在python安装路径下的Scripts文件夹下会找到一个easy_install.exe。</p>
+</li>
+<li><a href="http://pypi.python.org/pypi/setuptools#downloads">setuptools下载</a></li>
+<li>
+<p>在命令行输入easy_install sphinx</p>
+</li>
+<li>
+<p>easy_install可以自动下载并安装sphinx以及它所依赖的其他模块。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="sphinx_1">建立sphinx工程<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id5"></a></h2>
+<p>建议使用sphinx自带的配置工具sphinx-quickstart。 - 建立一个工程目录，比如D:Note。 - 在该目录启动命令行，输入sphinx-quickstart</p>
+<div class="hlcode"><pre><span class="nl">D:</span><span class="err">\</span><span class="n">Note</span><span class="o">&gt;</span><span class="n">sphinx</span><span class="o">-</span><span class="n">quickstart</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>程序会提示输入一些选项，如输入根目录</p>
+<p>Welcome to the Sphinx quickstart utility.</p>
+<p>Please enter values for the following settings (just press Enter to<br />
+accept a default value, if one is given in brackets).</p>
+<p>Enter the root path for documentation.</p>
+<blockquote>
+<p>Root path for the documentation [.]:</p>
+</blockquote>
+<p>大部分使用默认选项，直接按回车即可。</p>
+</li>
+<li>
+<p>需要指定的选项</p>
+<ol>
+<li>分离source和build目录，方便管理</li>
+</ol>
+<blockquote>
+<p>Separate source and build directories (y/N) [n]: y</p>
+</blockquote>
+<ol>
+<li>指定工程名、作者名、版本号</li>
+</ol>
+<p>The project name will occur in several places in the built documentation.</p>
+<blockquote>
+<p>Project name: Note<br />
+Author name(s): LK</p>
+</blockquote>
+<p>Sphinx has the notion of a "version" and a "release" for the<br />
+software. Each version can have multiple releases. For example, for<br />
+Python the version is something like 2.5 or 3.0, while the release is<br />
+something like 2.5.1 or 3.0a1.  If you don't need this dual structure,<br />
+just set both to the same value.</p>
+<blockquote>
+<p>Project version: 0.1<br />
+Project release [0.1]:</p>
+</blockquote>
+<ol>
+<li>文档文件的后缀名，默认是.rst，个人认为用.txt更方便些。</li>
+</ol>
+<p>The file name suffix for source files. Commonly, this is either ".txt"<br />
+or ".rst".  Only files with this suffix are considered documents.</p>
+<blockquote>
+<p>Source file suffix [.rst]: .txt</p>
+</blockquote>
+</li>
+<li>
+<p>完成后，可以看到Note目录下有以下目录和文件</p>
+<ul>
+<li>build目录 运行make命令后，生成的文件都在这个目录里面</li>
+<li>source目录 放置文档的源文件</li>
+<li>make.bat 批处理命令</li>
+<li>makefile</li>
+<li>基本完成了，使用make html命令就可以生成html形式的文档了。</li>
+</ul>
+</li>
+</ul>
+<h2 id="confpy">配置（conf.py）<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#conf-py"></a></h2>
+<p>conf.py文件包含了sphinx工程的所有配置选项，包括一些无法在sphinx-quickstart中进行设置的。</p>
+<p>分为三部分：</p>
+<ul>
+<li>General configuration（一般选项）</li>
+<li>Options for HTML output（HTML输出选项）</li>
+<li>Options for LaTeX output（Latex输出选项）</li>
+</ul>
+<p>下面是一些常用的选项：</p>
+<ul>
+<li>language （语言）</li>
+</ul>
+<p>对应于sphinx的locale目录下的文件夹，里面是本地化配置。</p>
+<p>官方版本只支持繁体中文（zh_TW）,可以下载 <a href="http://www.javaeye.com/wiki/topic/299363">sphinx简体中文包</a> （javaEye topman制作）</p>
+<p>下载后放到locale目录下，然后language选项修改为zh_CN即可</p>
+<ul>
+<li>
+<p>html_theme （输出html的主题）:</p>
+<h1 id="the-theme-to-use-for-html-and-html-help-pages-major-themes-that-come-with">The theme to use for HTML and HTML Help pages.  Major themes that come with</h1>
+<h1 id="sphinx-are-currently-default-and-sphinxdoc">Sphinx are currently 'default' and 'sphinxdoc'.</h1>
+<p>html_theme = 'sphinxdoc'</p>
+</li>
+</ul>
+<h2 id="_2">常用的文档格式符号<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id7"></a></h2>
+<p>下面只是列出了一些常用的格式符号，以供大家参考，详细的教程可以参照《reStructuredText 简明教程》 （以下基本上是从该教程直接引用过来的）。</p>
+<h3 id="_3">标题<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id8"></a></h3>
+<p>ReStructuredText会根据下划线读取文档的标题，并且可以自动组织索引</p>
+<blockquote>
+<p>=====================<br />
+    文档标题<br />
+    =====================</p>
+<div class="hlcode"><pre><span class="o">--------</span>
+<span class="err">子标题</span>
+<span class="o">--------</span>
+
+<span class="err">章节标题</span>
+<span class="o">========</span>
+
+<span class="p">...</span>
+</pre></div>
+
+
+</blockquote>
+<h3 id="_4">列表<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id9"></a></h3>
+<p>列表中，相同的层级使用相同的缩进。</p>
+<p>列表中同一层级不需要空行分隔。不同层级起始处必须有空行。</p>
+<div class="hlcode"><pre><span class="err">列表：</span>
+  <span class="o">-</span> <span class="err">条目</span>
+  <span class="o">-</span> <span class="err">条目</span>
+
+      <span class="o">-</span> <span class="err">条目</span>
+      <span class="o">-</span> <span class="err">条目</span>
+  <span class="o">-</span> <span class="err">条目</span>
+</pre></div>
+
+
+<h3 id="_5">超链接<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id10"></a></h3>
+<blockquote>
+<p><strong>独立链接</strong> ，自动将网址转换为链接。</p>
+<p>例如 <a href="http://www.ubuntu.org.cn/">http://www.ubuntu.org.cn/</a></p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//www.ubuntu.org.cn/</span>
+</pre></div>
+
+
+<p><strong>命名链接</strong> ，为链接命名，有助记忆和减少空间占用。</p>
+<p>在正文中使用 <code>&lt;链接名&gt;_</code> ，注释中使用 <code>_&lt;链接名&gt;: [链接目标]</code></p>
+<p>例如 <a href="http://www.ubuntu.org.cn/">Ubuntu</a></p>
+<p>Ubuntu_</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="nt">_Ubuntu:</span>  http://www.ubuntu.org.cn/
+</pre></div>
+
+
+</blockquote>
+<h3 id="_6">代码<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id11"></a></h3>
+<p>sphinx对嵌入程序代码的支持很好（本来就是为了编写python文档而开发的工具）。</p>
+<p>在段落的结尾添加符号 <code>::</code> ，则表明下面的段落为代码段落。代码段落相对之前的段落要缩进一次。</p>
+<div class="hlcode"><pre><span class="err">普通文本段落，下一段是代码段落</span><span class="o">::</span>
+
+    <span class="err">缩进结束前</span>
+        <span class="err">代码段落不会被处理</span>
+
+ <span class="err">普通文本段落</span>
+</pre></div>
+
+
+<h3 id="_7">文本<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id12"></a></h3>
+<p>只要没有空行，不管换多少次行，都会处理为一行。 建议您将每行的内容控制在50个汉字或者100个字母之内， 尽量在标点符号处手动换行，以增加源文件的可读性。</p>
+<h2 id="_8">其他<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id13"></a></h2>
+<p>暂时没有发现支持ReStructuredText的Blog，不知道大家有没有知道的。如果能直接用ReStructuredText写Blog就太好了。</p>
+<h2 id="_9">参考教程<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html#id14"></a></h2>
+<p><a href="http://docutils.sourceforge.net/docs/user/rst/quickstart.html">A ReStructuredText Primer</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

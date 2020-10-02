@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用Dropzone和七牛云存储来优化博客图床 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;使用Dropzone和七牛云存储来优化博客图床
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 07:20
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用Dropzone和七牛云存储来优化博客图床</div>
+
+  <blockquote>
+<p>之前我在用SAE的Storage作为博客图床，但是令我非常不爽的是没有一个很好的上传和获得公共链接的方法。现在总算用Dropzone和七牛把这个问题解决了，下面是我上传图片和获得URL的操作，方法再往下看。</p>
+</blockquote>
+<p><img alt="七牛操作流" src="http://7q5cfr.com1.z0.glb.clouddn.com/tool-qiniu-workflow.gif" /></p>
+<h2 id="_1">设置七牛帐号</h2>
+<blockquote>
+<p><a href="http://www.qiniu.com/">七牛</a>是国内口碑不错的一个云存储为主的公司。它的特点应该就在图片存储上，有非常方便的上传SDK和图片处理流，用来作为博客图床非常合适，而且价格不贵，每月有免费的10G流量。</p>
+</blockquote>
+<ol>
+<li>去七牛注册帐号</li>
+</ol>
+<p>刚刚创建的帐号是测试帐号，完成个人认证就可以成为标准帐号，获得10G的存储空间和各10G的上传下载流量。</p>
+<p><img alt="标准帐号" src="http://7q5cfr.com1.z0.glb.clouddn.com/tool-qiniu-access-key.png" /></p>
+<ol>
+<li>创建一个空间</li>
+</ol>
+<p>创建空间也比较容易，记得选择公开空间。</p>
+<p><img alt="创建空间" src="http://7q5cfr.com1.z0.glb.clouddn.com/tool-qiniu-create-bucket.png" /></p>
+<h2 id="dropzone">设置Dropzone</h2>
+<blockquote>
+<p><a href="https://aptonic.com/dropzone3/">Dropzone</a>是我很早就非常喜欢的一个软件。它通过拖拽的方式，增强了文件的处理流程。一直懒得给它开发插件，没想到七牛的SDK如此好用，所以今天折腾了一下搞定了。</p>
+</blockquote>
+<ol>
+<li>下载软件</li>
+</ol>
+<p>这个软件可以在App Store上直接购买，但是买到的是功能受限的，它不能操作外部文件。不过没有关系，再从官网上下载非沙箱版本，然后覆盖掉Application文件夹下的即可。</p>
+<ol>
+<li>安装Qiniu插件</li>
+</ol>
+<p>我把这个插件放到了<a href="https://github.com/suyan/scripts/tree/master/Dropzone%20Action">Github</a>上，戳<a href="https://github.com/suyan/scripts/blob/master/Dropzone%20Action/Qiniu.dzbundle.zip?raw=true">这里</a>下载。</p>
+<ol>
+<li>安装插件</li>
+</ol>
+<p>下载后的是一个zip包，把这个包解压以后双击安装即可。</p>
+<ol>
+<li>安装Qiniu的Ruby库</li>
+</ol>
+<p><code>sudo gem install qiniu</code></p>
+<ol>
+<li>启用插件</li>
+</ol>
+<p>从增加列表中选择我们安装好的七牛插件。</p>
+<p><img alt="启用插件" src="http://7q5cfr.com1.z0.glb.clouddn.com/tool-use-bundle.png" /></p>
+<p>然后填写配置：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="n">server</span><span class="o">:</span> <span class="err">七牛上的空间名</span>
+<span class="o">*</span> <span class="n">username</span><span class="o">:</span> <span class="err">七牛的</span><span class="n">access_key</span>
+<span class="o">*</span> <span class="n">password</span><span class="o">:</span> <span class="err">七牛的</span><span class="n">secret_key</span>
+<span class="o">*</span> <span class="n">remote</span> <span class="n">path</span><span class="p">(</span><span class="err">可选</span><span class="p">)</span><span class="o">:</span> <span class="err">本地同步图片的目录，如果你希望本地也存一份图片，选一个地址即可</span>
+<span class="o">*</span> <span class="n">root</span> <span class="n">url</span><span class="o">:</span> <span class="err">七牛的公共链接根目录</span>
+</pre></div>
+
+
+<p><img alt="access key" src="http://7q5cfr.com1.z0.glb.clouddn.com/tool-qiniu-access-key.png" /></p>
+<p><img alt="root url" src="http://7q5cfr.com1.z0.glb.clouddn.com/tool-qiniu-root-url.png" /></p>
+<h2 id="_2">其他建议</h2>
+<p>利用Dropzone还有很多可利用的技巧，例如增加一个ImageOptim应用来压缩图片，然后再进行上传。</p>
+<p>对于临时图片，可以直接上传到Imgur获得链接。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

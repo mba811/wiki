@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>简化静态博客发图的Alfred工作流 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;简化静态博客发图的Alfred工作流
+    <span class="updated">Page Updated&nbsp;
+      2015-05-08 03:04
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">简化静态博客发图的Alfred工作流</div>
+
+  <p>把自己的blog迁到了github上，为了解决图片加载慢的问题又用了qiniudn做图床加速。没想到用力太猛，贴图比之前更麻烦了。。。没办法，用Alfred写了个Workflow，一劳永逸的解决贴图的问题吧……</p>
+<p>使用octopress写文章，贴图的常见流程是：</p>
+<ol>
+<li>随便找个工具或者用系统工具截图；</li>
+<li>将截图存储到桌面或者随便什么地方；</li>
+<li>修改截图文件名；</li>
+<li>将截图放到octopress/source/images/....去；</li>
+<li>在文档中写上图片的Markdown标签，指向图片；</li>
+</ol>
+<p>在我no zuo no die的用了第三方网站做图床以后，又多了一步：</p>
+<ul>
+<li>在图片Markdown标签中加上图床的url前缀；</li>
+</ul>
+<p>我擦……这事儿干下来基本上写文的一点儿激情就都烟消云散了……</p>
+<p>这个写稿贴图的事儿最好可以简化成这样就爽到了：</p>
+<ol>
+<li>随便找个玩意儿截图到剪贴板；</li>
+<li>按个快捷键把Markdown的Url给粘贴到正在写的文档中；</li>
+</ol>
+<p>恩，就这两步，剩下的恶心事儿最好都有人帮着做了就爽了……</p>
+<p>网上搜了半天，没找到现成的东西%&gt;_&lt;%，难道大家都这么苦日子过着？？</p>
+<p>好吧，发扬懒人改变世界的精神，自己动手丰衣足食吧……</p>
+<p>先打开自己最爱的Alfred，新建一个Workflow（注意，必须是有Powerpack的版本哦~~）：</p>
+<p>加个Hotkey的Triggers，写上自己熟悉的热键作为粘贴的热键使用：</p>
+<p><img alt="" src="http://attaches-mirror.qiniudn.com/images/attaches/e3840d6cc172bc918c5121ba9179ebc6.png" /></p>
+<p>由于我直接用QQ截图，QQ热键是Ctrl+Cmd+A，所以就直接设置Ctrl+Cmd+V了……</p>
+<p>接下来要加一个Actions，本来打算用NSAppleScript的，但是从AppleScript编辑器里粘过去的代码死活不work，没辙，改用<code>Run Script</code>的Action了。</p>
+<p><img alt="" src="http://attaches-mirror.qiniudn.com/images/attaches/b78a14c1c9864d77a24f49bccb451f78.png" /></p>
+<p>双击Action，Language选择<code>/usr/bin/osascript</code>，把下面的代码粘贴到<code>Script</code>区域：</p>
+<div class="hlcode"><pre><span class="n">property</span> <span class="n">fileTypes</span> <span class="o">:</span> <span class="p">{</span><span class="err">¬</span>
+    <span class="p">{</span><span class="err">«</span><span class="n">class</span> <span class="n">PNGf</span><span class="err">»</span><span class="p">,</span> <span class="s">&quot;.png&quot;</span><span class="p">},</span> <span class="err">¬</span>
+    <span class="p">{</span><span class="n">JPEG</span> <span class="n">picture</span><span class="p">,</span> <span class="s">&quot;.jpg&quot;</span><span class="p">}}</span>
+
+<span class="n">on</span> <span class="n">getType</span><span class="p">()</span> <span class="o">--</span><span class="err">判断剪贴板中的数据类型，暂时只支持</span><span class="n">png</span><span class="err">和</span><span class="n">jpg</span><span class="err">，优先用</span><span class="n">png</span>
+    <span class="n">repeat</span> <span class="n">with</span> <span class="n">aType</span> <span class="n">in</span> <span class="n">fileTypes</span>
+        <span class="n">repeat</span> <span class="n">with</span> <span class="n">theInfo</span> <span class="n">in</span> <span class="p">(</span><span class="n">clipboard</span> <span class="n">info</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">first</span> <span class="n">item</span> <span class="n">of</span> <span class="n">theInfo</span><span class="p">)</span> <span class="n">is</span> <span class="n">equal</span> <span class="n">to</span> <span class="p">(</span><span class="n">first</span> <span class="n">item</span> <span class="n">of</span> <span class="n">aType</span><span class="p">)</span> <span class="n">then</span> <span class="k">return</span> <span class="n">aType</span>
+        <span class="n">end</span> <span class="n">repeat</span>
+    <span class="n">end</span> <span class="n">repeat</span>
+    <span class="k">return</span> <span class="n">missing</span> <span class="n">value</span>
+<span class="n">end</span> <span class="n">getType</span>
+
+<span class="n">set</span> <span class="n">theType</span> <span class="n">to</span> <span class="n">getType</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">theType</span> <span class="n">is</span> <span class="n">not</span> <span class="n">missing</span> <span class="n">value</span> <span class="n">then</span>
+    <span class="n">set</span> <span class="n">filePath</span> <span class="n">to</span> <span class="s">&quot;/Users/viecks/Datas/Blog/octopress/source/images/attaches/&quot;</span> <span class="o">--</span><span class="err">这里换成你自己放置图片的路径</span>
+    <span class="n">set</span> <span class="n">fileName</span> <span class="n">to</span> <span class="k">do</span> <span class="n">shell</span> <span class="n">script</span> <span class="s">&quot;date </span><span class="se">\&quot;</span><span class="s">+%Y%m%d%H%M%S</span><span class="se">\&quot;</span><span class="s"> | md5&quot;</span> <span class="o">--</span><span class="err">用当前时间的</span><span class="n">md5</span><span class="err">值做文件名</span>
+    <span class="k">if</span> <span class="n">fileName</span> <span class="n">does</span> <span class="n">not</span> <span class="n">end</span> <span class="n">with</span> <span class="p">(</span><span class="n">second</span> <span class="n">item</span> <span class="n">of</span> <span class="n">theType</span><span class="p">)</span> <span class="n">then</span> <span class="n">set</span> <span class="n">fileName</span> <span class="n">to</span> <span class="p">(</span><span class="n">fileName</span> <span class="o">&amp;</span> <span class="n">second</span> <span class="n">item</span> <span class="n">of</span> <span class="n">theType</span> <span class="n">as</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">set</span> <span class="n">markdownUrl</span> <span class="n">to</span> <span class="s">&quot;![](http://attaches-mirror.qiniudn.com/images/attaches/&quot;</span> <span class="o">&amp;</span> <span class="n">fileName</span> <span class="o">&amp;</span> <span class="s">&quot;)&quot;</span> <span class="o">--</span><span class="err">这里如果没有用到图床，就把前面前缀去掉，用到的话换成你自己图床的</span><span class="n">url</span>
+    <span class="n">set</span> <span class="n">filePath</span> <span class="n">to</span> <span class="n">filePath</span> <span class="o">&amp;</span> <span class="n">fileName</span>
+
+    <span class="n">try</span>
+        <span class="n">set</span> <span class="n">imageFile</span> <span class="n">to</span> <span class="p">(</span><span class="n">open</span> <span class="k">for</span> <span class="n">access</span> <span class="n">filePath</span> <span class="n">with</span> <span class="n">write</span> <span class="n">permission</span><span class="p">)</span>
+        <span class="n">set</span> <span class="n">eof</span> <span class="n">imageFile</span> <span class="n">to</span> <span class="mi">0</span>
+        <span class="n">write</span> <span class="p">(</span><span class="n">the</span> <span class="n">clipboard</span> <span class="n">as</span> <span class="p">(</span><span class="n">first</span> <span class="n">item</span> <span class="n">of</span> <span class="n">theType</span><span class="p">))</span> <span class="n">to</span> <span class="n">imageFile</span> <span class="o">--</span> <span class="n">as</span> <span class="n">whatever</span>
+        <span class="n">close</span> <span class="n">access</span> <span class="n">imageFile</span>
+        <span class="n">set</span> <span class="n">the</span> <span class="n">clipboard</span> <span class="n">to</span> <span class="n">markdownUrl</span>
+        <span class="n">try</span>
+            <span class="n">tell</span> <span class="n">application</span> <span class="s">&quot;System Events&quot;</span>
+                <span class="n">keystroke</span> <span class="s">&quot;v&quot;</span> <span class="n">using</span> <span class="n">command</span> <span class="n">down</span>
+            <span class="n">end</span> <span class="n">tell</span>
+        <span class="n">end</span> <span class="n">try</span>
+    <span class="n">on</span> <span class="n">error</span>
+        <span class="n">try</span>
+            <span class="n">close</span> <span class="n">access</span> <span class="n">imageFile</span>
+        <span class="n">end</span> <span class="n">try</span>
+        <span class="k">return</span> <span class="s">&quot;&quot;</span>
+    <span class="n">end</span> <span class="n">try</span>
+<span class="k">else</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;</span>
+<span class="n">end</span> <span class="k">if</span>
+</pre></div>
+
+
+<p>然后把Triggers和Action之间牵个红线……</p>
+<p>然后Ctrl+Cmd+A，Ctrl+Cmd+V，</p>
+<p><img alt="" src="http://attaches-mirror.qiniudn.com/images/attaches/6cbd5c0748c60b083cce5b273789ffdd.png" /></p>
+<p><img alt="" src="http://attaches-mirror.qiniudn.com/images/attaches/7fe29cfc8f6451d4861c21743164a768.png" /></p>
+<p>擦，很神奇的一个markdown的image标签就出现在你的编辑器里面了，文件也直接出现在你的图片目录里了，O(∩_∩)O，直接去deploy吧……</p>
+<p><em>首发于<a href="http://blog.viecks.info/">viecks个人博客</a>，转发请联系作者。</em></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

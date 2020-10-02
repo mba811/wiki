@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>如何为MacOS X终端设置代理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;如何为MacOS X终端设置代理
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 20:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">如何为MacOS X终端设置代理</div>
+
+  <blockquote>
+<p>本文介绍如何在MacOS X终端里使用代理访问网络,虽然只在Mountain Lion下测试，但同样适用于装有Bash的系统。</p>
+</blockquote>
+<p>实在无法忍受<a href="http://www.linode.com/">linode</a>日本机房的高延迟，动手配置了一个<a href="http://code.google.com/p/goagent/">goagent</a>服务。但是HTTP代理和VPN不同，没法全局代理（<em>至少不能简单配置</em>），在Terminal里下载最新版本的Ruby，奇慢无比，下面介绍如何让Terminal里执行的程序使用<a href="http://code.google.com/p/goagent/">goagent</a>代理。</p>
+<h3 id="socks">Socks代理</h3>
+<p>使用tsocks可以为任意程序提供socks代理</p>
+<h4 id="tsocks">安装tsocks</h4>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">adamv</span><span class="o">/</span><span class="n">alt</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">tsocks</span>
+</pre></div>
+
+
+<h4 id="tsocks_1">配置tsocks</h4>
+<p>打开配置文件/usr/local/etc/tsocks.conf</p>
+<p>修改如下</p>
+<div class="hlcode"><pre><span class="n">local</span> <span class="o">=</span> <span class="mf">192.168.0.0</span><span class="o">/</span><span class="mf">255.255.255.0</span>
+<span class="n">server</span> <span class="o">=</span> <span class="mf">127.0.0.1</span>
+<span class="n">server_type</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">server_port</span> <span class="o">=</span> <span class="mi">8080</span>
+</pre></div>
+
+
+<h3 id="http">HTTP代理</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">export</span> <span class="n">http_proxy</span><span class="o">=</span><span class="err">&#39;</span><span class="n">http</span><span class="o">:</span><span class="c1">//YOUR_USERNAME:YOUR_PASSWORD@PROXY_IP:PROXY_PORT/&#39;</span>
+</pre></div>
+
+
+<h3 id="https">HTTPS代理</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">export</span> <span class="n">https_proxy</span><span class="o">=</span><span class="err">&#39;</span><span class="n">http</span><span class="o">:</span><span class="c1">//YOUR_USERNAME:YOUR_PASSWORD@PROXY_IP:PROXY_PORT/&#39;</span>
+</pre></div>
+
+
+<h3 id="httphttps">取消HTTP/HTTPS代理</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">unset</span> <span class="n">http_proxy</span>
+<span class="err">$</span> <span class="n">unset</span> <span class="n">https_proxy</span>
+</pre></div>
+
+
+<h3 id="_1">例子</h3>
+<p>让Terminal里的http访问走<a href="http://code.google.com/p/goagent/">goagent</a>的默认端口8087</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">export</span> <span class="n">http_proxy</span><span class="o">=</span><span class="err">&#39;</span><span class="n">http</span><span class="o">:</span><span class="c1">//localhost:8087&#39;</span>
+<span class="err">$</span> <span class="n">export</span> <span class="n">https_proxy</span><span class="o">=</span><span class="err">&#39;</span><span class="n">http</span><span class="o">:</span><span class="c1">//localhost:8087&#39;</span>
+<span class="err">$</span> <span class="n">tsocks</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Textual</span><span class="p">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">MacOS</span><span class="o">/</span><span class="n">Textual</span>
+</pre></div>
+
+
+<h3 id="privoxysockshttp">使用Privoxy将socks代理转换为HTTP代理</h3>
+<p>使用<code>ssh -D</code>可以获得一个socks5代理，privoxy可以将socks转换为http代理</p>
+<p>安装privoxy</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">privoxy</span>
+</pre></div>
+
+
+<p>修改配置文件<code>vim /usr/local/etc/privoxy/config</code></p>
+<div class="hlcode"><pre><span class="n">listen</span><span class="o">-</span><span class="n">address</span>  <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">8118</span>
+<span class="n">forward</span><span class="o">-</span><span class="n">socks5</span> <span class="o">/</span> <span class="n">localhost</span><span class="o">:</span><span class="mi">1080</span> <span class="p">.</span>
+</pre></div>
+
+
+<h4 id="_2">参考文章</h4>
+<ol>
+<li><a href="http://www.webupd8.org/2010/10/how-to-set-proxy-for-terminal-quick.html">HOW TO SET A PROXY FOR THE TERMINAL [QUICK LINUX TIP]</a></li>
+<li><a href="https://whatbox.ca/wiki/tsocks">tsocks</a></li>
+<li><a href="https://voidcode.com/post/2679.html">用 Privoxy 在 Mac OS X/Linux/Ubuntu 上将 Socks5 转换为 HTTP 代理</a></li>
+<li><a href="http://superuser.com/questions/280129/http-proxy-over-ssh-not-socks">http proxy over ssh, not socks</a></li>
+</ol>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用 Jekyll 内置的 Sass 预处理器 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;使用 Jekyll 内置的 Sass 预处理器
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 10:46
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用 Jekyll 内置的 Sass 预处理器</div>
+
+  <p>之前有介绍过 <a href="http://havee.me/internet/2013-08/convert-scss-to-css.html">CSS 的预处理器 Sass</a>，今天翻阅 Jekyll 官网发现，Jekyll 本身就内置 Sass 的编译，一些小修改，就剔除了 compass 工具，完美的使用，顺便记录下，希望本文能帮到大家。</p>
+<p>如果你也想尝试的话，要确定以下几点</p>
+<ul>
+<li>你有一个 Jekyll 博客在运行</li>
+<li>你本地的 Jekyll 版本高于或等于 2.4.0</li>
+<li>对 Sass 有一些了解</li>
+</ul>
+<p>一般大家都喜欢将 Jekyll push 到 GitHub Pages 上，那么首先对比下 GitHub Pages 上对版本的要求吧：<a href="https://pages.github.com/versions/">https://pages.github.com/versions/</a>。</p>
+<p>一切准备就绪，下面开始安装 Sass：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">sass</span>
+</pre></div>
+
+
+<p>在你的 <code>css</code> 目录下创建 <code>style.scss</code>：</p>
+<div class="hlcode"><pre><span class="gh">---</span>
+<span class="gh">---</span>
+// your scss here
+</pre></div>
+
+
+<p>那么，在 <code>$ jekyll build</code> 编译后，会自动将 <code>css/style.scss</code> 转化成 <code>_site/css/style.css</code>。</p>
+<p>最后只需在你的模版文件的 <code>&lt;head&gt;</code> 区域加入以下代码：</p>
+<div class="hlcode"><pre><span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;/css/style.css&quot;</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>某些同学，喜欢将 Scss 分割开，最后在 <code>style.scss</code> 中使用 <code>@import</code> 来引入，当然可以，你可以在 <code>_sass</code> 目录下写入你的 Scss，譬如：</p>
+<div class="hlcode"><pre><span class="n">_sass</span><span class="o">/</span><span class="n">_one</span><span class="p">.</span><span class="n">scss</span>
+<span class="n">_sass</span><span class="o">/</span><span class="n">_two</span><span class="p">.</span><span class="n">scss</span>
+</pre></div>
+
+
+<p>在你的 <code>_config.yml</code> 中的适当地方添加如下：</p>
+<div class="hlcode"><pre><span class="n">sass</span><span class="o">:</span>
+    <span class="n">sass_dir</span><span class="o">:</span> <span class="n">_sass</span>
+</pre></div>
+
+
+<p>最后在 <code>css/style.scss</code> 中引入：</p>
+<div class="hlcode"><pre><span class="o">---</span>
+<span class="o">---</span>
+
+<span class="c1">//Imports</span>
+<span class="cp">@import</span> <span class="s2">&quot;one&quot;</span><span class="p">;</span>
+<span class="cp">@import</span> <span class="s2">&quot;two&quot;</span><span class="p">;</span>
+</pre></div>
+
+
+<p>注意，两行的 <code>---</code> 是必须的，以便让 Jekyll 知晓该前置数据块的文件需要处理。可以详细了解下 <a href="http://havee.me/internet/2013-07/jekyll-yaml-front-matter.html">Jekyll 的 YAML 前置数据</a>。</p>
+<p><code>_sass</code> 是 Jekyll 默认的目录，你可以设置到其他地方，只需 <code>_config.yml</code> 中声明好即可：</p>
+<div class="hlcode"><pre><span class="n">sass</span><span class="o">:</span>
+    <span class="n">sass_dir</span><span class="o">:</span> <span class="n">path</span><span class="o">/</span><span class="n">_lib</span>
+</pre></div>
+
+
+<p>顺便提一下，内置的 Sass 编译器支持压缩：</p>
+<div class="hlcode"><pre><span class="n">sass</span><span class="o">:</span>
+    <span class="n">sass_dir</span><span class="o">:</span> <span class="n">path</span><span class="o">/</span><span class="n">_lib</span>
+    <span class="n">style</span><span class="o">:</span> <span class="o">:</span><span class="n">compressed</span>
+</pre></div>
+
+
+<p>参考：<a href="http://jekyllrb.com/docs/assets/">http://jekyllrb.com/docs/assets/</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

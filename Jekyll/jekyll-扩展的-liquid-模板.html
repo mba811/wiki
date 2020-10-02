@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 扩展的 Liquid 模板 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 扩展的 Liquid 模板
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 11:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 扩展的 Liquid 模板</div>
+
+  <blockquote>
+<p>原文地址:<a href="https://github.com/mojombo/jekyll/wiki/Liquid-Extensions">https://github.com/mojombo/jekyll/wiki/Liquid-Extensions</a></p>
+</blockquote>
+<p>Jekyll 使用 <a href="http://liquidmarkup.org/">Liquid</a> 来处理模板数据。除了 <a href="https://github.com/shopify/liquid/wiki/liquid-for-designers">标准的Liquid标签和过滤器</a>，Jekyll还增加一些它自己特有的：</p>
+<h4 id="_1">过滤器</h4>
+<p><strong>日期-XML</strong></p>
+<p>将时间转换成 XML 格式</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">site</span><span class="p">.</span><span class="n">time</span> <span class="o">|</span> <span class="n">date_to_xmlschema</span> <span class="p">}}</span> <span class="o">=&gt;</span> <span class="mi">2008</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">17</span><span class="n">T13</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mi">54</span><span class="o">-</span><span class="mi">08</span><span class="o">:</span><span class="mo">00</span>
+</pre></div>
+
+
+<p><strong>日期-字符串</strong></p>
+<p>将时间转换成短格式，举例："27 Jan 2011"。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">site</span><span class="p">.</span><span class="n">time</span> <span class="o">|</span> <span class="n">date_to_string</span> <span class="p">}}</span> <span class="o">=&gt;</span> <span class="mi">17</span> <span class="n">Nov</span> <span class="mi">2008</span>
+</pre></div>
+
+
+<p><strong>日期-长字符串</strong></p>
+<p>将时间转换成长格式，举例："27 January 2011"。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">site</span><span class="p">.</span><span class="n">time</span> <span class="o">|</span> <span class="n">date_to_long_string</span> <span class="p">}}</span> <span class="o">=&gt;</span> <span class="mi">17</span> <span class="n">November</span> <span class="mi">2008</span>
+</pre></div>
+
+
+<p><strong>XML转义</strong></p>
+<p>在 XML 中的转义字符。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">page</span><span class="p">.</span><span class="n">content</span> <span class="o">|</span> <span class="n">xml_escape</span> <span class="p">}}</span>
+</pre></div>
+
+
+<p><strong>CGI 转义字符</strong></p>
+<p>CGI 会在 URL 中将一个字符串转义。用正确的 %XX 替换所有特殊字符。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="s">&quot;foo,bar;baz?&quot;</span> <span class="o">|</span> <span class="n">cgi_escape</span> <span class="p">}}</span> <span class="o">=&gt;</span> <span class="n">foo</span><span class="o">%</span><span class="mi">2</span><span class="n">Cbar</span><span class="o">%</span><span class="mi">3</span><span class="n">Bbaz</span><span class="o">%</span><span class="mf">3F</span>
+</pre></div>
+
+
+<p><strong>单词数</strong></p>
+<p>在文本统计单词的数目。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">page</span><span class="p">.</span><span class="n">content</span> <span class="o">|</span> <span class="n">number_of_words</span> <span class="p">}}</span> <span class="o">=&gt;</span> <span class="mi">1337</span>
+</pre></div>
+
+
+<p><strong>数组-句子</strong></p>
+<p>讲一个数组转换成一个句子。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">page</span><span class="p">.</span><span class="n">tags</span> <span class="o">|</span> <span class="n">array_to_sentence_string</span> <span class="p">}}</span> <span class="o">=&gt;</span> <span class="n">foo</span><span class="p">,</span><span class="n">bar</span><span class="p">,</span><span class="n">and</span> <span class="n">baz</span>
+</pre></div>
+
+
+<p><strong>Textilize</strong></p>
+<p>将一个 Textilize 格式的字符串转换成 HTML 格式，通过 RedCloth 渲染的。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">page</span><span class="p">.</span><span class="n">excerpt</span> <span class="o">|</span> <span class="n">textilize</span> <span class="p">}}</span>
+</pre></div>
+
+
+<p><strong>Markdownify</strong></p>
+<p>将一个 Markdown 格式的文件转换成 HTML 格式。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="n">page</span><span class="p">.</span><span class="n">excerpt</span> <span class="o">|</span> <span class="n">markdownify</span> <span class="p">}}</span>
+</pre></div>
+
+
+<h4 id="_2">标签</h4>
+<p><strong>Include</strong></p>
+<p>如果你有小的页面框架碎片需要添加到你站点上多个不同的文件中，你可以使用 <code>inlcude</code> 标签。</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">include</span> <span class="n">sig</span><span class="p">.</span><span class="n">textile</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>Jekyll 总是从你根目录下的 <code>_include</code> 目录下寻找需要加载的文件。</p>
+<p><strong>代码高亮</strong></p>
+<p>Jekyll 通过 <a href="http://havee.me/internet/2013-08/support-pygments-in-jekyll.html">Pygments</a> 内建支持了代码高亮，支持超过 <a href="http://pygments.org/languages/">100种语言</a>。为了使这个机制，你需要安装 Pygments，而且 pygmentize 的可执行文件必须在你 <code>path</code> 路径中，当你运行 Jekyll 时，确保以 <a href="http://havee.me/internet/2013-07/jekyll-configuration.html">Pygments支持</a> 的方式运行。</p>
+<p>为了表示一个需要高亮的代码块，你需要：</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">highlight</span> <span class="n">ruby</span> <span class="o">%</span><span class="p">}</span>
+<span class="n">def</span> <span class="n">foo</span>
+    <span class="n">puts</span> <span class="err">&#39;</span><span class="n">foo</span><span class="err">&#39;</span>
+<span class="n">end</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endhighlight</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p><code>highlight</code> 的参数是一个编程语言的标示符，你可以在 <a href="http://pygments.org/docs/lexers/">Lexers</a> 上找到你所喜欢的编程语言的正确标示符。</p>
+<p><strong>行号</strong></p>
+<p><code>highlight</code> 有第二个叫做 <code>linenos</code> 的参数，这是一个可选的选项，使用这个选项可以使高亮的代码加入行号。举例来说，下面的代码段块将会在每行的行首加入行号。</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">highlight</span> <span class="n">ruby</span> <span class="n">linenos</span> <span class="o">%</span><span class="p">}</span>
+<span class="n">def</span> <span class="n">foo</span>
+    <span class="n">puts</span> <span class="err">&#39;</span><span class="n">foo</span><span class="err">&#39;</span>
+<span class="n">end</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endhighlight</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>为了使你的代码高亮生效，你需要引入高亮的层叠样式表(就是 CSS 文件—译者注)。<a href="http://github.com/mojombo/tpw/tree/master/css/syntax.css">这里</a> 是一个样式表的例子。这个样式表也正是 GitHub 所使用的，你可以在你的站点免费地使用它。如果你要使用行号，你需要在你样式表中添加一个额外的 CSS 类定义，以此来区分行号和高亮的代码。</p>
+<p><strong>博文的 Url</strong></p>
+<p>如果你想要在一篇文章中加入一个链接，你可以使用<code>post_tag</code>标签。</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">post_url</span> <span class="mi">2010</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">21</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">post</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>可以通过以下的方式来创建一个链接：</p>
+<div class="hlcode"><pre><span class="p">[</span><span class="n">Name</span> <span class="n">of</span> <span class="n">Link</span><span class="p">]({</span><span class="o">%</span> <span class="n">post_url</span> <span class="mi">2010</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">21</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">post</span> <span class="o">%</span><span class="p">})</span>
+</pre></div>
+
+
+<p>转自：<a href="http://zhouyichu.com/%E7%BF%BB%E8%AF%91/Jekyll-Liquid-Extensions.html">【译文】Jekyll扩展的Liquid模板</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Goagent+Chrome+SwitchyOmega使用 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;Goagent+Chrome+SwitchyOmega使用
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 19:31
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Goagent+Chrome+SwitchyOmega使用</div>
+
+  <p>之前已经发表过相关的文章，无奈绿坝升级了，很多教程已经无法使用，因此出这篇升级版教程，对应2015年最新版Goagent+Chrome+SwitchyOmega教程。</p>
+<h2 id="_1"></h2>
+<h2 id="_2">写在前面</h2>
+<p>很有可能，下面的部分操作需要爬墙而你的爬墙还没做好，那么推荐你使用一个畅游无限浏览器，这个是chrome集成了<a href="http://www.zhiyanblog.com/tag/goagent">goagent</a>的一款二次修改浏览器，先下载它临时用一下吧，以帮助你完成一下步骤，下载地址：<a href="http://www.zhiyanblog.com/redirect/aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xcEo3SU5GbA==">http://pan.baidu.com/s/1pJ7INFl</a></p>
+<h2 id="_3">相关软件及下载</h2>
+<p>Goagent还是那个<a href="http://www.zhiyanblog.com/tag/goagent">goagent</a>，只不过应该升级了，最新版3.2.3,而且项目已经从googlecode移到了github，所以最新下载地址看github 的goagent项目主页：<a href="http://www.zhiyanblog.com/redirect/aHR0cHM6Ly9naXRodWIuY29tL2dvYWdlbnQvZ29hZ2VudA==">https://github.com/goagent/goagent</a></p>
+<p>如果仍无法下载，那就下载我上传到百度网盘的备份吧：<a href="http://www.zhiyanblog.com/redirect/aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xZ2RrWTdEcA==">http://pan.baidu.com/s/1gdkY7Dp</a></p>
+<p>Chrome当然是google浏览器了，不过头疼的是chrome总是要求在线安装，而往往都失败，所以给个备份离线安装下载地址吧：<a href="http://www.zhiyanblog.com/redirect/aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xc2pEZTBhRA==">http://pan.baidu.com/s/1sjDe0aD</a></p>
+<p>如果要安装最新版，那么使用下面这个在线安装器吧：<a href="http://www.zhiyanblog.com/redirect/aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xbWd3WkFOZQ==">http://pan.baidu.com/s/1mgwZANe</a></p>
+<p>SwitchyOmega是原来的SwitchySharp的升级版2代，下载地址：<a href="http://www.zhiyanblog.com/redirect/aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xdllkR3k=">http://pan.baidu.com/s/1vYdGy</a></p>
+<p>SwitchyOmega的配置文件备份：<a href="http://www.zhiyanblog.com/redirect/aHR0cDovL3Bhbi5iYWlkdS5jb20vcy8xYm5DUmhlZg==">http://pan.baidu.com/s/1bnCRhef</a></p>
+<h2 id="google-app-engineappid">申请Google App Engine并创建Appid</h2>
+<p>此部分内容还是看看前面相关文章的对应部分，基本没变化：<a href="http://www.zhiyanblog.com/goagent20140607.html">http://www.zhiyanblog.com/goagent20140607.html</a></p>
+<h2 id="_4"></h2>
+<h2 id="goagent">Goagent软件上传配置</h2>
+<p>首先请务必已经下载了段落2中的所有软件，并且已经申请到了appid。</p>
+<ul>
+<li>解压下载的goagent主程序</li>
+<li>定位local/proxy.ini文件，打开修改大概第11行，appid后面的值goagent为你刚才申请到的appid</li>
+<li>定位server/uploader.bat文件，以管理员权限运行，按照提示分别先后填写appid，你的google邮箱地址以及密码</li>
+<li>等待程序上传以及配置文件</li>
+</ul>
+<p><a href="http://zhiyanblog.qiniudn.com/wp-content/uploads/2015/01/goagentupload.jpg"><img alt="goagent-upload" src="http://zhiyanblog.qiniudn.com/wp-content/uploads/2015/01/goagentupload_thumb.jpg?watermark/1/image/aHR0cDovL3d3dy56aGl5YW5ibG9nLmNvbS93cC1jb250ZW50L3VwbG9hZHMvMjAxNC8wMi93YXRlcm1hcmsxLnBuZw==/dissolve/100/gravity/SouthEast/dx/10/dy/10" /></a></p>
+<h2 id="switchyomega">SwitchyOmega安装以及配置</h2>
+<ul>
+<li>打开google chrome浏览器，地址栏输入<a href="chrome://extensions/">chrome://extensions/</a>进入扩展程序界面</li>
+<li>拖动下载的SwitchyOmega.crx文件到该界面完成安装</li>
+<li>安装好SwitchyOmega后进入其配置页面，点击导入导出，选择从文件恢复，选择下载的配置备份文件恢复</li>
+<li>一切就绪后，启动goagent.exe，打开chrome，选择SwitchyOmega的代理模式，开始畅游吧。</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

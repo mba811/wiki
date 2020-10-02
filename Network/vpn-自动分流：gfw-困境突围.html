@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>VPN 自动分流：GFW 困境突围 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;VPN 自动分流：GFW 困境突围
+    <span class="updated">Page Updated&nbsp;
+      2015-05-19 00:15
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">VPN 自动分流：GFW 困境突围</div>
+
+  <ul>
+<li>问题描述</li>
+</ul>
+<p>由于大陆习惯搞大局域网，访问国外资源总是显得这么困难，于是 VPN 就火起来了。但是VPN默认使用的是全局代理，当访问国内的网站时，我们不得不把 VPN 关掉。这样来回切换，很是麻烦。如果我们能够让 VPN 自动识别国内 IP 地址，并且主动绕过 VPN 访问。这样我们就不用来回切换了，提升在 VPN 下国内网站的访问速度，顺便节约了宝贵的 VPN 流量。</p>
+<ul>
+<li>问题分析</li>
+</ul>
+<p>这个问题实现起来，其实很简单，在一些路由器里早已实现。我们只要在我们的路由表里，为每一个国内 IP 地址都写一个路由规则，指定其通过的网关和接口，就可以达到这个目的。比如我要让 27.112.0.0 这个网段内的所有 IP 绕过 VPN，则可以这样添加路由规则：</p>
+<p>1</p>
+<h1 id="route-add-net-2712200-netmask-25525500-gw-19216811-dev-eth0">route add -net 27.122.0.0 netmask 255.255.0.0 gw 192.168.1.1 dev eth0</h1>
+<ul>
+<li>解决方案</li>
+</ul>
+<p>难道我们只能自己一个一个去添加这些路由规则么？当然不是，我们可以写一个脚本，把国内所有 IP 段批量添加到我们的路由规则里，就可以了。现在网上有一个 <a href="http://code.google.com/p/chnroutes/">chnroutes</a> 项目，它利用 APNIC 官方提供的 <a href="http://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest">IP数据</a> 生成两个脚本，<code>ip-pre-up</code> 和 <code>ip-down</code>。第一个就是往路由表中添加路由规则，而 <code>ip-down</code> 则是把前面添加的规则删除掉。</p>
+<p>我们可以在使用 VPN 之前，运行一下 <code>ip-up</code> 脚本，在使用完 VPN 后，用 <code>ip-down</code> 把路由表恢复原样。这样我们就可以无缝在国内线路和 VPN 线路之间切换。如果你觉得手动运行这两个脚本很麻烦，可以把这个工作交给你的 VPN Client 去做。如果你用的是 PPTP VPN，可以把 <code>ip-pre-up</code> 复制到 <code>/etc/ppp</code> 下，把 <code>ip-down</code> 复制到 <code>/etc/ppp/ip-down.d</code> 下。这样在打开 VPN 时， PPTP 会自动运行 <code>ip-up</code> 脚本，批量添加路由规则，在关闭 VPN 时，PPTP 会自动运行 <code>ip-down</code> 脚本，自动恢复路由规则。如果你用的时 OpenVPN，或者其他类型的 VPN，也有类似的机制，具体可以参考 <a href="http://code.google.com/p/chnroutes/wiki/Usage">chnroutes的帮助页面</a>。</p>
+<p><code>ip-pre-up</code> 和 <code>ip-down</code> 这两个脚本可以从 <a href="http://chnroutes-dl.appspot.com/">chnroutes网站</a> 上获取，或则利用它提供的 python 脚本自动生成。</p>
+<p>这种简单粗暴的解决方法比较实用，但由于路由规则过于庞大，会稍微影响网络速度，但相对与你用 VPN 的延时，这就算不了什么了。由于IP地址是变动的，你需要隔一段时间更新一下这两个脚本。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

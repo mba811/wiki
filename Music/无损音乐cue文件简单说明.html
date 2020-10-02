@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>无损音乐cue文件简单说明 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;无损音乐cue文件简单说明
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:07
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">无损音乐cue文件简单说明</div>
+
+  <p>各种无损格式广大音乐爱好者都很熟悉了。一般来说，无论是FLAC还是APE格式，无论分轨还是整轨，都会自带一个CUE文件。经常制作无损音乐的人都知道，这个CUE文件很可能会和抓轨生成的音频文件不匹配，造成这种原因并不一定是因为抓轨过程不正确，其他原因比如文件名的改动都可能造成CUE出错的结果。</p>
+<p>了解一些CUE的知识，可以让大家知道如何处理错误的CUE文件，所以下面feicun就简单介绍一些关于CUE的操作。</p>
+<h2 id="no-1-cue">No. 1 修改错误的CUE文件</h2>
+<p>来看两个CUE的例子：（//后为注释）</p>
+<p><strong>1、</strong><strong>这是一个整轨无损音频的CUE文件</strong></p>
+<blockquote>
+<p>PERFORMER “Mars Lasar”          //歌手或艺术家名字 ，大写的PERFORMER是字段名， ” “中的是内容<br />
+TITLE “sapphire dreams (A Romantic Interlude)”     //专辑名字，TITLE字段名， ” “中的是内容<br />
+FILE “sapphire dreams.ape” WAVE          //重要的文件名！它指示了.ape的文件名。这里必须和实际的文件名一致才行<br />
+TRACK 01 AUDIO          //音轨序列<br />
+TITLE “Belonging”       //歌曲名<br />
+PERFORMER “Mars Lasar”        //艺术家<br />
+INDEX 01 00:00:00           //时间索引<br />
+TRACK 02 AUDIO<br />
+TITLE “Garden of Eden”<br />
+PERFORMER “Mars Lasar”<br />
+INDEX 01 04:47:00<br />
+TRACK 03 AUDIO<br />
+TITLE “Sapphire Dreams”<br />
+PERFORMER “Mars Lasar”<br />
+INDEX 01 08:04:22<br />
+TRACK 04 AUDIO<br />
+TITLE “Blue Nile”<br />
+PERFORMER “Mars Lasar”<br />
+INDEX 01 12:22:27<br />
+TRACK 05 AUDIO<br />
+…//后面省略</p>
+</blockquote>
+<p><strong>2、和第一个CUE的格式类似，不过这个是分轨无损的CUE，区别是每个单独无损文件都有一个对应的文件名</strong></p>
+<blockquote>
+<p>PERFORMER “Coldplay”          //歌手或艺术家名字 ，大写的PERFORMER是字段名， ” “中的是内容<br />
+TITLE “Viva La Vida or Death And All His Friends”     //专辑名字，TITLE字段名， ” “中的是内容<br />
+FILE “01 Coldplay – Life In Technicolor.wav” WAVE    //文件名！它指示了这个单独的无损文件名<br />
+TRACK 01 AUDIO                 //音轨序列<br />
+INDEX 01 00:00:00            //时间索引<br />
+FILE “02 Coldplay – Cemeteries Of London.wav” WAVE    //文件名！它指示了这个单独的无损文件名<br />
+TRACK 02 AUDIO<br />
+INDEX 01 00:00:00<br />
+FILE “03 Coldplay – Lost!.wav” WAVE<br />
+TRACK 03 AUDIO<br />
+INDEX 01 00:00:00<br />
+FILE “04 Coldplay – 42.wav” WAVE<br />
+TRACK 04 AUDIO<br />
+INDEX 01 00:00:00<br />
+FILE “05 Coldplay – Lovers In Japan, Reign Of Love.wav” WAVE<br />
+TRACK 05 AUDIO<br />
+INDEX 01 00:00:00<br />
+FILE “06 Coldplay – Yes.wav” WAVE<br />
+TRACK 06 AUDIO<br />
+…//后面省略</p>
+</blockquote>
+<p>很多情况下，CUE文件的错误都是由于 FILE 字段中文件名的不匹配引起的，所以，修改 FILE 字段里的文件名可以解决很多问题。</p>
+<h2 id="no2-cue">No.2 重建/自建 CUE 文件</h2>
+<p>有些时候我们得到的无损音乐并没有CUE文件，那么这个时候就需要自己动手创建一个CUE文件。为了达到这个目标，需要准备Foobar2000，以及它的一个插件 foo_cuesheet_creator.dll（<a href="http://cid-1f649f9db577f1a6.skydrive.live.com/self.aspx/.Public/foo%5E_cuesheet%5E_creator.rar">点这里下载</a>或<a href="http://www.multiupload.com/6ELC5KLKR5">下载地址2</a>）。</p>
+<p>把这个插件放到foobar安装目录的components文件夹里，安装就算完成，然后在右键菜单里会出现如下图的选项，选择 “ Save as cuesheet…” 即可创建出一个CUE文件。</p>
+<p><img alt="" src="http://farm4.static.flickr.com/3177/2946925764_2a91299313_o.jpg" /></p>
+<p>这是简单的办法，如果你愿意钻研，仿造上面的格式自己写一个也未尝不可。</p>
+<h2 id="no3-cue">NO.3 制作一个可以被虚拟光驱识别的CUE文件</h2>
+<p>网上下的无损，有时候需要鉴定一下是不是真无损，一般常有的鉴别工具是Tau Analyzer。但是这个软件设计之初是为了鉴定CD的真假，如果要用它鉴定无损数字音乐，就需要先将下载的无损音乐用虚拟光驱弄成一张CD。此时如果CUE文件不正确，就无法用虚拟光驱软件载入，下面就来说说怎么制造一个正确的CUE文件，以便让虚拟光驱软件载入。</p>
+<p>1、使用Foobar等工具将无损文件（FLAC、APE等）还原成WAV格式，具体操作很简单，不再赘述。</p>
+<p>2、用Foobar打开已还原好的WAV文件，再使用<a href="http://vinmusic.com/%E9%9F%B3%E4%B9%90%E5%B7%A5%E5%85%B7/%E6%97%A0%E6%8D%9F%E9%9F%B3%E4%B9%90-cue-%E6%96%87%E4%BB%B6%E7%AE%80%E5%8D%95%E8%AF%B4%E6%98%8E/">上一篇文章</a>提到的foo_cuesheet_creator插件创造一个CUE文件，放到WAV文件所在的文件夹里。</p>
+<p>3、用虚拟光驱软件载入新生成的CUE文件，如果载入成功，就不用看下面的步骤了。</p>
+<p>4、如未载入成功，提示错误，把</p>
+<blockquote>
+<p>PERFORMER “XXXXXXX”<br />
+TITLE “XXXXXXXXXXXX”</p>
+</blockquote>
+<p>两行加到新生成CUE文件的最上面，其中第一行XXXX代表专辑歌手名，第二行XXXXXX为专辑名称。</p>
+<p>5、保存，用虚拟光驱软件载入。</p>
+<p>经过上面的步骤，无损音乐应该就可以被虚拟成CD了，使用Tau Analyzer测试吧。</p>
+<h2 id="no4-eaccue">NO.4 为EAC刻盘制造一个CUE文件</h2>
+<p>如果你想把下载的无损刻盘保存，那EAC是个很好的选择。不过成功刻盘的第一步还是要有正确的CUE文件……经过上面的介绍，你应该能至少制作出来一个被虚拟光驱识别的CUE文件。这个CUE文件通常也可以直接供EAC使用。</p>
+<p>但是有时候，这样的CUE也会被报错，比如这样的错误信息：</p>
+<blockquote>
+<p>at Stream.3051 -&gt;INDEX RANGE</p>
+</blockquote>
+<p>如果类似这样的错误，解决也很简单。这是由于EAC不支持UTF-8编码造成的。只要重新用记事本打开CUE文件，保存为ANSI编码，就OK了～</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

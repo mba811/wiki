@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用lightbox显示相册 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;使用lightbox显示相册
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 22:37
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用lightbox显示相册</div>
+
+  <p>点击图片查看效果:</p>
+<ul>
+<li><a href="http://blog.ixtr.me/photos/lightbox/image1.jpg"><img alt="" src="http://blog.ixtr.me/photos/Thumb/lightbox/thumb_image1.jpg" /> </a></li>
+<li><a href="http://blog.ixtr.me/photos/lightbox/image2.jpg"><img alt="" src="http://blog.ixtr.me/photos/Thumb/lightbox/thumb_image2.jpg" /> </a></li>
+<li><a href="http://blog.ixtr.me/photos/lightbox/image3.jpg"><img alt="" src="http://blog.ixtr.me/photos/Thumb/lightbox/thumb_image3.jpg" /> </a></li>
+<li><a href="http://blog.ixtr.me/photos/lightbox/image4.jpg"><img alt="" src="http://blog.ixtr.me/photos/Thumb/lightbox/thumb_image4.jpg" /></a></li>
+</ul>
+<h2 id="_1">安装与设置</h2>
+<p>下载链接:</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//download2us.softpedia.com/dl/42dfdcfa945d253049a3886c658765eb/52266060/600044190/webscripts/javascripts/jquery-lightbox-0.5.zip</span>
+</pre></div>
+
+
+<p>解压后的目录:</p>
+<div class="hlcode"><pre><span class="n">jayen</span><span class="err">@</span><span class="n">mymbp</span><span class="p">[</span><span class="n">jquery</span><span class="o">-</span><span class="n">lightbox</span><span class="o">-</span><span class="mf">0.5</span><span class="p">]</span><span class="err">$</span><span class="n">tree</span> <span class="o">-</span><span class="n">L</span> <span class="mi">2</span>
+<span class="p">.</span>
+<span class="err">├──</span> <span class="n">css</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">jquery</span><span class="p">.</span><span class="n">lightbox</span><span class="o">-</span><span class="mf">0.5</span><span class="p">.</span><span class="n">css</span>
+<span class="err">├──</span> <span class="n">images</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">lightbox</span><span class="o">-</span><span class="n">blank</span><span class="p">.</span><span class="n">gif</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">lightbox</span><span class="o">-</span><span class="n">btn</span><span class="o">-</span><span class="n">close</span><span class="p">.</span><span class="n">gif</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">lightbox</span><span class="o">-</span><span class="n">btn</span><span class="o">-</span><span class="n">next</span><span class="p">.</span><span class="n">gif</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">lightbox</span><span class="o">-</span><span class="n">btn</span><span class="o">-</span><span class="n">prev</span><span class="p">.</span><span class="n">gif</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">lightbox</span><span class="o">-</span><span class="n">ico</span><span class="o">-</span><span class="n">loading</span><span class="p">.</span><span class="n">gif</span>
+<span class="err">├──</span> <span class="n">index</span><span class="p">.</span><span class="n">htm</span>
+<span class="err">├──</span> <span class="n">js</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">jquery</span><span class="p">.</span><span class="n">js</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">jquery</span><span class="p">.</span><span class="n">lightbox</span><span class="o">-</span><span class="mf">0.5</span><span class="p">.</span><span class="n">js</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">jquery</span><span class="p">.</span><span class="n">lightbox</span><span class="o">-</span><span class="mf">0.5</span><span class="p">.</span><span class="n">min</span><span class="p">.</span><span class="n">js</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">jquery</span><span class="p">.</span><span class="n">lightbox</span><span class="o">-</span><span class="mf">0.5</span><span class="p">.</span><span class="n">pack</span><span class="p">.</span><span class="n">js</span>
+<span class="err">└──</span> <span class="n">photos</span>
+    <span class="err">├──</span> <span class="n">image1</span><span class="p">.</span><span class="n">jpg</span>
+    <span class="err">├──</span> <span class="n">image2</span><span class="p">.</span><span class="n">jpg</span>
+</pre></div>
+
+
+<p>将 css,images,js目录下的文件,放在自己的jekyll站点目录路径参考别的css和js，放在一起.</p>
+<p>主题模板文件标签插入刚才的js和css文件</p>
+<div class="hlcode"><pre><span class="n">vim</span> <span class="n">_layouts</span><span class="o">/</span><span class="k">default</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+
+
+<p>添加以下内容:</p>
+<div class="hlcode"><pre><span class="c">&lt;!-- Arquivos utilizados pelo jQuery lightBox plugin --&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;/js/jquery.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;/js/jquery.lightbox-0.5.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;/css/jquery.lightbox-0.5.css&quot;</span> <span class="na">media=</span><span class="s">&quot;screen&quot;</span> <span class="nt">/&gt;</span>    
+<span class="c">&lt;!-- Ativando o jQuery lightBox plugin --&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+$(function() {
+    $(&#39;#gallery a&#39;).lightBox();
+    $(&#39;a<span class="cp">[</span><span class="nb">rel</span><span class="o">*=</span><span class="nx">lightbox</span><span class="cp">]</span>&#39;).lightBox();
+});
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>再参考解压目录中的index.html中定义的相册的css样式，把相册的css写到jquery.lightbox-0.5.css中,方便以后修改</p>
+<p>lightbox使用的图标默认路径在网页相同路径下的images文件夹，修改jquery.lightbox-0.5.js文件中的定义</p>
+<div class="hlcode"><pre><span class="nl">imageLoading:</span>           <span class="err">&#39;</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">lightbox</span><span class="o">-</span><span class="n">ico</span><span class="o">-</span><span class="n">loading</span><span class="p">.</span><span class="n">gif</span><span class="err">&#39;</span><span class="p">,</span>     <span class="c1">// (string) Path and the name of the loading icon</span>
+<span class="nl">imageBtnPrev:</span>           <span class="err">&#39;</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">lightbox</span><span class="o">-</span><span class="n">btn</span><span class="o">-</span><span class="n">prev</span><span class="p">.</span><span class="n">gif</span><span class="err">&#39;</span><span class="p">,</span>            <span class="c1">// (string) Path and the name of the prev button image</span>
+<span class="nl">imageBtnNext:</span>           <span class="err">&#39;</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">lightbox</span><span class="o">-</span><span class="n">btn</span><span class="o">-</span><span class="n">next</span><span class="p">.</span><span class="n">gif</span><span class="err">&#39;</span><span class="p">,</span>            <span class="c1">// (string) Path and the name of the next button image</span>
+<span class="nl">imageBtnClose:</span>          <span class="err">&#39;</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">lightbox</span><span class="o">-</span><span class="n">btn</span><span class="o">-</span><span class="n">close</span><span class="p">.</span><span class="n">gif</span><span class="err">&#39;</span><span class="p">,</span>       <span class="c1">// (string) Path and the name of the close btn</span>
+<span class="nl">imageBlank:</span>             <span class="err">&#39;</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="n">lightbox</span><span class="o">-</span><span class="n">blank</span><span class="p">.</span><span class="n">gif</span><span class="err">&#39;</span><span class="p">,</span>           <span class="c1">// (string) Path and the name of a blank image (one pixel)</span>
+</pre></div>
+
+
+<p>以上修改好后应该就可以看到效果了，除了点击按钮，还可以通过左右键盘，进行下一张图片的预览。只是相册还要用到html去写,有时间写个插件简化一下相册。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

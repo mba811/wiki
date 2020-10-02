@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Grunt 前端自动化构建工具 [方便懒得看英文文档的新同学] - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;Grunt 前端自动化构建工具 [方便懒得看英文文档的新同学]
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 17:46
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Grunt 前端自动化构建工具 [方便懒得看英文文档的新同学]</div>
+
+  <p>Grunt是一个JavaScript构建工具。</p>
+<h4 id="_1">安装</h4>
+<p>在安装Grunt前需要安装node NPM。<br />
+首先全局安装grunt-cli（grunt-cli为grunt的命令工具）。<br />
+<code>$ npm install -g grunt-cli</code><br />
+然后在开发的项目目录下安装grunt。<br />
+<code>$ npm install grunt</code><br />
+通过"—version"命令查看当前cli和grunt版本<br />
+<code>$ grunt —version</code><br />
+通过git安装模板插件<br />
+<code>$ git clone https://github.com/gruntjs/grunt-init-gruntfile.git ~/.grunt-init/gruntplugin</code><br />
+通过grunt-init --help命令可以查看到Available templates，当前安装的模板名称为gruntplugin。<br />
+安装grunt常用的插件。<br />
+<code>$ npm install grunt-contrib-uglify</code> <br />
+<code>$ npm install grunt-contrib-concat</code> <br />
+<code>$ npm install grunt-contrib-watch</code><br />
+以上基本需要安装的东西都完成了，接下来进行配置。<br />
+当然这里你也可以不单独安装需要的plugin，而是通过npm install 命令直接安装package.json文件中引入的全部plugins。</p>
+<h4 id="_2">配置</h4>
+<p>Grunt项目需要package.json和Gruntfile.js/Gruntfile.coffee这两个配置文件。其中package.json定义了项目中需要引入的plugins，Gruntfile.js定义了Grunt的配置信息。<br />
+首先通过grunt-init [模板名]创建Gruntfile.js文件和package.json文件。<br />
+<code>$ grunt-init gruntplugin</code><br />
+接下来通过npm init命令根据提示输入项目相关相应参数，完善package.json文件。<br />
+<code>$ npm init</code><br />
+这里也可以clone我使用的项目<br />
+<code>$ git clone https://github.com/dandananddada/helloGrunt.git</code><br />
+然后在根目录下执行<br />
+<code>$ npm install</code><br />
+接下来就可以通过Grunt的命令查看定义的Task，并且执行相应任务了。<br />
+具体任务相关数据配置的说明可参考官网，不在这里细说了。<br />
+<a href="http://gruntjs.com/configuring-tasks">http://gruntjs.com/configuring-tasks</a></p>
+<h4 id="_3">参考个人项目配置</h4>
+<p><a href="https://github.com/dandananddada/helloGrunt.git">https://github.com/dandananddada/helloGrunt.git</a></p>
+<h4 id="_4">附录</h4>
+<p>Gruntfile.js</p>
+<div class="hlcode"><pre><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">grunt</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="o">:</span> <span class="s1">&#39;app&#39;</span><span class="p">,</span>
+        <span class="nx">dist</span><span class="o">:</span> <span class="s1">&#39;dist&#39;</span>
+    <span class="p">};</span>
+
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
+        <span class="nx">pkg</span><span class="o">:</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">readJSON</span><span class="p">(</span><span class="s1">&#39;package.json&#39;</span><span class="p">),</span>
+        <span class="nx">config</span><span class="o">:</span> <span class="nx">config</span><span class="p">,</span>
+        <span class="c1">//sass-&gt;css编译插件</span>
+        <span class="nx">sass</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">sourceMap</span><span class="o">:</span> <span class="kc">false</span>
+            <span class="p">},</span>
+            <span class="nx">dist</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="p">{</span>
+                    <span class="nx">expand</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">cwd</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.app %&gt;/styles/sass&#39;</span><span class="p">,</span>
+                    <span class="nb">src</span><span class="p">:</span> <span class="err">[</span><span class="s1">&#39;*.scss&#39;</span><span class="cp">]</span><span class="p">,</span>
+                    <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;app/styles/&#39;</span><span class="p">,</span>
+                    <span class="nx">ext</span><span class="o">:</span> <span class="s1">&#39;.css&#39;</span>
+                <span class="p">}]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="c1">//清除build后生成的文件（清空dist目录）</span>
+        <span class="nx">clean</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">dist</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="p">{</span>
+                      <span class="nx">dot</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                      <span class="nb">src</span><span class="p">:</span> <span class="err">[</span>
+                          <span class="s1">&#39;.tmp&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;&lt;%= config.dist %&gt;/*&#39;</span><span class="p">,</span>
+                          <span class="s1">&#39;!&lt;%= config.dist %&gt;/.git*&#39;</span>
+                      <span class="cp">]</span>
+                <span class="p">}]</span>
+            <span class="p">},</span>
+        <span class="p">},</span>
+        <span class="c1">//合并js和css文件</span>
+        <span class="nx">concat</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">js</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">src</span><span class="o">:</span> <span class="cp">[</span><span class="s1">&#39;&lt;%= config.app %&gt;/js/**/*.js&#39;</span><span class="cp">]</span><span class="p">,</span>
+                <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/combine/&lt;%= pkg.name %&gt;.js&#39;</span>
+            <span class="p">},</span>
+            <span class="nx">css</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">src</span><span class="o">:</span> <span class="cp">[</span><span class="s1">&#39;&lt;%= config.app %&gt;/styles/**/*.css&#39;</span><span class="cp">]</span><span class="p">,</span>
+                <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/combine/&lt;%= pkg.name %&gt;.css&#39;</span>  
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="c1">// 压缩css文件</span>
+        <span class="nx">cssmin</span><span class="o">:</span> <span class="p">{</span>
+            <span class="c1">// 保持目录结构压缩</span>
+            <span class="nx">compress</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="p">{</span>
+                      <span class="nx">expand</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                      <span class="nx">cwd</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.app %&gt;/styles/&#39;</span><span class="p">,</span>
+                      <span class="nb">src</span><span class="p">:</span> <span class="err">[</span><span class="s1">&#39;*.css&#39;</span><span class="p">,</span> <span class="s1">&#39;!*.min.css&#39;</span><span class="cp">]</span><span class="p">,</span>
+                      <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/release/css/&#39;</span><span class="p">,</span>
+                      <span class="nx">ext</span><span class="o">:</span> <span class="s1">&#39;.min.css&#39;</span>
+                    <span class="p">}]</span>
+            <span class="p">},</span>
+            <span class="c1">// 合并为一个文件后压缩</span>
+            <span class="nx">build</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="p">{</span>
+                      <span class="nx">expand</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                      <span class="nx">cwd</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/combine/&#39;</span><span class="p">,</span>
+                      <span class="nb">src</span><span class="p">:</span> <span class="err">[</span><span class="s1">&#39;*.css&#39;</span><span class="p">,</span> <span class="s1">&#39;!*.min.css&#39;</span><span class="cp">]</span><span class="p">,</span>
+                      <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/release&#39;</span><span class="p">,</span>
+                      <span class="nx">ext</span><span class="o">:</span> <span class="s1">&#39;.min.css&#39;</span>
+                    <span class="p">}]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="c1">// 压缩js文件</span>
+        <span class="nx">uglify</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">banner</span><span class="o">:</span> <span class="s1">&#39;/*! &lt;%= pkg.name %&gt; &lt;%= grunt.template.today(&quot;yyyy-mm-dd&quot;) %&gt; */\n&#39;</span>
+            <span class="p">},</span>
+            <span class="c1">// 保持目录结构压缩</span>
+            <span class="nx">compress</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">mangle</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">compress</span><span class="o">:</span> <span class="p">{</span>
+                        <span class="nx">drop_console</span><span class="o">:</span> <span class="kc">true</span>
+                    <span class="p">},</span>
+                    <span class="nx">report</span><span class="o">:</span> <span class="s2">&quot;min&quot;</span>
+                <span class="p">},</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="p">{</span>
+                    <span class="nx">expand</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">cwd</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.app %&gt;/js&#39;</span><span class="p">,</span>
+                    <span class="nb">src</span><span class="p">:</span> <span class="s1">&#39;**/*.js&#39;</span><span class="p">,</span>
+                    <span class="nx">dest</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/release/js&#39;</span><span class="p">,</span>
+                    <span class="nx">ext</span><span class="p">:</span> <span class="s1">&#39;.min.js&#39;</span>
+                <span class="p">}</span><span class="cp">]</span>
+            <span class="p">},</span>
+            <span class="c1">// 合并为一个文件后压缩</span>
+            <span class="nx">build</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">mangle</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">compress</span><span class="o">:</span> <span class="p">{</span>
+                        <span class="nx">drop_console</span><span class="o">:</span> <span class="kc">true</span>
+                    <span class="p">},</span>
+                    <span class="nx">report</span><span class="o">:</span> <span class="s2">&quot;min&quot;</span>
+                <span class="p">},</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="p">{</span>
+                    <span class="nx">expand</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+                    <span class="nx">cwd</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/combine&#39;</span><span class="p">,</span>
+                    <span class="nb">src</span><span class="p">:</span> <span class="s1">&#39;**/*.js&#39;</span><span class="p">,</span>
+                    <span class="nx">dest</span><span class="p">:</span> <span class="s1">&#39;&lt;%= config.dist %&gt;/release&#39;</span><span class="p">,</span>
+                    <span class="nx">ext</span><span class="p">:</span> <span class="s1">&#39;.min.js&#39;</span>
+                <span class="p">}</span><span class="cp">]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="c1">// 配置ctrl+s触发任务</span>
+        <span class="nx">watch</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">compile</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span><span class="s1">&#39;&lt;%= config.app %&gt;/styles/sass/**/*.scss&#39;</span><span class="cp">]</span><span class="p">,</span>
+                <span class="nx">tasks</span><span class="o">:</span> <span class="cp">[</span><span class="s1">&#39;sass&#39;</span><span class="cp">]</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">livereload</span><span class="o">:</span> <span class="s1">&#39;&lt;%= connect.options.livereload %&gt;&#39;</span>
+                <span class="p">},</span>
+                <span class="nx">files</span><span class="o">:</span> <span class="cp">[</span>
+                    <span class="s1">&#39;&lt;%= config.app %&gt;/{,*/}*.html&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;&lt;%= config.app %&gt;/{,*/}*.css&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;&lt;%= config.app %&gt;/images/{,*/}*&#39;</span>
+                <span class="cp">]</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="c1">// 将当前站点作为服务器启动</span>
+        <span class="nx">connect</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">port</span><span class="o">:</span> <span class="mi">9001</span><span class="p">,</span>
+                <span class="nx">open</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                <span class="nx">livereload</span><span class="o">:</span> <span class="mi">35729</span><span class="p">,</span>
+                <span class="nx">hostname</span><span class="o">:</span> <span class="s1">&#39;localhost&#39;</span>
+            <span class="p">},</span>
+            <span class="nx">livereload</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="nx">middleware</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">connect</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">return</span> <span class="cp">[</span>
+                            <span class="nx">connect.static</span><span class="p">(</span><span class="nx">config.app</span><span class="p">)</span>
+                        <span class="cp">]</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="c1">// 针对测试作为服务启动</span>
+        <span class="nx">karma</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">unit</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">configFile</span><span class="o">:</span> <span class="s1">&#39;karma.conf.js&#39;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-sass&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-contrib-clean&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-contrib-concat&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-contrib-cssmin&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-contrib-uglify&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-contrib-watch&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-contrib-connect&#39;</span><span class="p">);</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">loadNpmTasks</span><span class="p">(</span><span class="s1">&#39;grunt-karma&#39;</span><span class="p">);</span>
+
+    <span class="c1">// 将sass文件编译为css文件</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;compile&#39;</span><span class="p">,</span> <span class="cp">[</span><span class="s1">&#39;sass&#39;</span><span class="cp">]</span><span class="p">);</span>
+    <span class="c1">// 清理dist目录</span>
+    <span class="c1">// grunt clean,grunt-contrib-clean内置任务</span>
+    <span class="c1">// 分别合并js和css文件为一个文件</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;combine&#39;</span><span class="p">,</span><span class="cp">[</span><span class="s1">&#39;compile&#39;</span><span class="p">,</span><span class="s1">&#39;concat:css&#39;</span><span class="p">,</span><span class="s1">&#39;concat:js&#39;</span><span class="cp">]</span><span class="p">);</span>
+    <span class="c1">// 保持原目录结构压缩css文件和js文件</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;compress&#39;</span><span class="p">,</span><span class="cp">[</span><span class="s1">&#39;compile&#39;</span><span class="p">,</span><span class="s1">&#39;cssmin:compress&#39;</span><span class="p">,</span><span class="s1">&#39;uglify:compress&#39;</span><span class="cp">]</span><span class="p">);</span>
+    <span class="c1">// 部署js文件和css文件（分别将js和css文件合并压缩为一个文件）</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;build&#39;</span><span class="p">,</span><span class="cp">[</span><span class="s1">&#39;clean:dist&#39;</span><span class="p">,</span><span class="s1">&#39;compile&#39;</span><span class="p">,</span><span class="s1">&#39;combine&#39;</span><span class="p">,</span><span class="s1">&#39;cssmin:build&#39;</span><span class="p">,</span><span class="s1">&#39;uglify:build&#39;</span><span class="cp">]</span><span class="p">);</span>
+    <span class="c1">//将当前站点作为服务启动</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">,</span> <span class="cp">[</span><span class="s1">&#39;connect:livereload&#39;</span><span class="p">,</span><span class="s1">&#39;watch&#39;</span><span class="p">,</span><span class="s1">&#39;watch:compile&#39;</span><span class="cp">]</span><span class="p">);</span>
+    <span class="c1">// 启动js单元测试服务</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="cp">[</span><span class="s1">&#39;karma&#39;</span><span class="cp">]</span><span class="p">);</span>
+    <span class="c1">// 设置grunt默认任务为server</span>
+    <span class="nx">grunt</span><span class="p">.</span><span class="nx">registerTask</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="cp">[</span><span class="s1">&#39;server&#39;</span><span class="cp">]</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

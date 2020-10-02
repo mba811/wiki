@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Tachyon：一个高性能、高容错、基于内存的开源分布式存储系统 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Tachyon：一个高性能、高容错、基于内存的开源分布式存储系统
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 05:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Tachyon：一个高性能、高容错、基于内存的开源分布式存储系统</div>
+
+  <p>从Tachyon的<a href="http://www.tachyonproject.org/">官网</a>得知，Tachyon是一个高性能、高容错、基于内存的开源分布式存储系统，并具有类Java的文件API、插件式的底层文件系统、兼容Hadoop MapReduce和<a href="http://spark.apache.org/">Apache Spark</a>等特征。Tachyon能够为集群框架（如Spark、MapReduce等）提供内存级速度的跨集群文件共享服务。Tachyon充分使用内存和文件对象之间的世代（Lineage）信息，因此速度很快，官方号称<a href="http://highscalability.com/blog/2013/4/17/tachyon-fault-tolerant-distributed-file-system-with-300-time.html">最高比HDFS吞吐量高300倍</a>。目前，很多公司（如Pivotal、EMC、红帽等）已经在使用Tachyon，并且来自20个组织或公司（如雅虎、英特、红帽等）的60多个贡献者都在为其贡献代码。Tachyon是于<a href="http://www.berkeley.edu/">UC Berkeley</a>数据分析栈(<a href="https://amplab.cs.berkeley.edu/bdas/">BDAS</a>)的存储层，它还是Fedroa操作系统<a href="https://fedoraproject.org/wiki/SIGs/bigdata/packaging">自带应用</a>。</p>
+<p>Tachyon具有的重要特征如下：</p>
+<ul>
+<li>类Java的文件API: Tachyon的原生API同Java的文件类非常相似，并提供了InputStream和OutputStream接口，还支持内存映射IO；</li>
+<li>兼容MapReduce和Spark：Tachyon实现了Hadoop的FileSystem接口，因此，MapReduce和Spark无需做任何修改就可以使用Tachyon；</li>
+<li>插件式的底层文件系统：Tachyon基于Hadoop并从底层重建了Hadoop平台。Tachyon具有一个通用、方便于接入不同底层文件系统的接口。目前支持的文件系统包括HDFS、S3、GlusterFS、单节点本地文件系统等，对其他文件系统的支持将很快实现。</li>
+<li>支持本地原始表：Tachyon提供了对多列数据的本地支持，且提供了选择项，以决定是否将Hot列放入内存以节省空间；</li>
+<li>浏览文件系统的Web界面：用户能够通过Web界面浏览文件系统，尤其在Debug模式下，管理员还能够查看每个文件的详细信息，如文件位置、检查点（Checkpoint）路径等；</li>
+<li>支持命令行交互:用户能够使用命令“./bin/tachyon tfs”同Tachyon进行交互，如往文件系统中复制数据以及从文件系统往外复制数据；</li>
+<li>高容错性：Tachyon具有良好的容错机制，Master和Worker都有自己的容错方式。Master使用<a href="http://zookeeper.apache.org/">ZooKeeper</a>进行容错，Master中保存的元数据使用Journal进行容错，Master还对各个Worker的状态进行监控，发现Worker失效时会自动重启对应的Worker。对于具体的文件数据，Tachyon使用世代关系进行容错。</li>
+</ul>
+<p>Tachyon采用了Master-Worker模式，运行中的Tachyon系统由一个Master和多个Worker构成。Tachyon Master管理全部文件的元数据信息，同时也负责监控各个Tachyon Worker的状态。为了高效地对文件进行管理，Tachyon文件在内存中按块组织。文件和块信息保存在Master端，每个Worker以块为单位进行存储和管理。Tachyon的架构如下图所示：</p>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/news/2015/03/tachyon-distributed--system/zh/resources/0325000.png" /></p>
+<p>Tachyon诞生于<a href="https://amplab.cs.berkeley.edu/">UC Berkeley的AMPLab</a>，由该实验室的计算机在读博士<a href="http://weibo.com/hyhaoyuanli">李浩源</a>初创，并基于<a href="https://github.com/amplab/tachyon/blob/master/LICENSE">Apache License 2.0</a>开源协议发布，代码托管在<a href="https://github.com/amplab/tachyon">GitHub</a>，其当前最新版本为<a href="https://github.com/amplab/tachyon/releases/tag/v0.6.1">0.6.1</a>。去年10份，李浩源在接受<a href="http://www.infoq.com/cn/news/2014/10/pivotal-tachyon">InfoQ采访</a>时曾表示：</p>
+<blockquote>
+<p>长期来讲，他们对待Tachyon会像对待Apache Mesos和Apache Spark一样，Tachyon也会进入Apache软件基金会，这里欢迎更多的开发者加入。</p>
+</blockquote>
+<p>近日，从华尔街日报<a href="http://blogs.wsj.com/digits/2015/03/17/andreessen-horowitz-invests-7-5m-in-big-data-startup-tachyon/?mod=ST1">消息</a>得知，Tachyon获得了硅谷风投<a href="http://a16z.com/">A16Z</a>的750万美元A轮投资。AMPLab的项目还包括与Hadoop相似、启用了内存分布数据集的开源集群计算环境<a href="http://spark.apache.org/">Spark</a>、类似于基于键/值存储的SQL查询语言<a href="https://amplab.cs.berkeley.edu/projects/piql-scale-independent-query-processing/">PIQL</a>、基于分布式系统的机器学习系统<a href="https://amplab.cs.berkeley.edu/projects/sparrow-low-latency-scheduling-for-interactive-cluster-services/">MLBase</a>、多核和大型SMP系统的操作系统<a href="https://amplab.cs.berkeley.edu/projects/sparrow-low-latency-scheduling-for-interactive-cluster-services/">Akaros</a>、低延迟计算集群调度系统<a href="https://amplab.cs.berkeley.edu/projects/sparrow-low-latency-scheduling-for-interactive-cluster-services/">Sparrow</a>等。此外，Tachyon官网还提供了相关文档，如<a href="http://tachyon-project.org/#user-documentation">用户文档</a>、<a href="http://tachyon-project.org/#developer-documentation">开发者文档</a>等。更多关于Tachyon的信息，读者可以登录其官网或其GitHub提供的<a href="https://github.com/amplab/tachyon/wiki">Wiki页面</a>查看。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

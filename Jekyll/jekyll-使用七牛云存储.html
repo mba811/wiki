@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 使用七牛云存储 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 使用七牛云存储
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 21:41
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 使用七牛云存储</div>
+
+  <p>使用 Github Page 的博客由于服务器在国外，访问速度不佳，可以使用国内的 CDN 服务存储图片、js/css 等静态文件来为网站提速。事实上，因为整个网站都是静态的，可以把所有文件都放在 CDN 服务器上，但是这样就无法使用 Git 了。如果使用 Bootstrap 框架，可以将 assets 文件夹和图像放在 CDN 服务器上，以兼顾两头。</p>
+<p>目前国内的 CDN 提供商有七牛、又拍等，此处选择七牛。七牛按存储空间、流量、请求次数计费，提供一定的免费额度，对于小站来说基本够用了，而且还有一些优惠活动。如果还没有七牛账号，可以点<a href="http://portal.qiniu.com/signup?code=3lh1xdgm7zxaq">这里</a>注册（这是我的邀请链接）。</p>
+<p>假设网站资源文件都放在 /assets 目录下，图片放在 /images 目录下，要将这两个文件夹里的内容使用七牛加速，可以参考以下做法。</p>
+<h2 id="_1">一、设置七牛</h2>
+<p>在七牛新建一个 bucket，命名为 liberize，设置为公开空间，则这个 bucket 里面的内容可以通过<code>liberize.u.qiniudn.com</code> 访问。在"空间设置" - "基本设置" - "镜像存储"里面设置镜像源为博客地址<code>http://liberize.me/</code>。设置了镜像存储以后，当访问 bucket 里面不存在的内容时会自动从镜像源获取。</p>
+<h2 id="_configxml">二、修改_config.xml</h2>
+<p>在 _config.xml 文件中按如下设置。</p>
+<div class="hlcode"><pre><span class="n">safe</span><span class="o">:</span> <span class="kc">false</span>
+<span class="n">cdn_url</span> <span class="o">:</span> <span class="n">http</span><span class="o">://</span><span class="n">liberize</span><span class="o">.</span><span class="na">u</span><span class="o">.</span><span class="na">qiniudn</span><span class="o">.</span><span class="na">com</span>
+
+<span class="n">JB</span> <span class="o">:</span>
+  <span class="n">ASSET_PATH</span> <span class="o">:</span> <span class="kc">false</span>
+  <span class="n">IMAGE_PATH</span> <span class="o">:</span> <span class="kc">false</span>
+</pre></div>
+
+
+<h2 id="_includesjbsetup">三、修改_includes/JB/setup</h2>
+<p>修改 <code>_includes/JB/setup</code> 里面 <code>{% if site.JB.ASSET_PATH %}</code> 语句块，增加对 <code>site.safe</code>的判断，同时类比写出 IMAGE_PATH 部分。这么做的好处是本地测试时将使用本地资源，而提交到 GitHub 后，将自动使用 <code>site.cdn_url</code> 指定的 CDN 服务器上的资源。为什么会有这种效果呢？因为 GitHub 默认是禁止插件的，在运行 jekyll 时会加上 <code>--safe</code> 参数，这将会覆盖 _config.yml 中的<code>safe: false</code> 设置。</p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.JB.ASSET_PATH</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">assign</span> <span class="nv">ASSET_PATH</span> <span class="o">=</span> <span class="nv">site.JB.ASSET_PATH</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">elsif</span> <span class="nv">site.safe</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">capture</span> <span class="nv">ASSET_PATH</span> <span class="cp">%}{{</span> <span class="nv">site.cdn_url</span> <span class="cp">}}</span><span class="x">/assets/themes/</span><span class="cp">{{</span> <span class="nv">page.theme.name</span> <span class="cp">}}{%</span> <span class="k">endcapture</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">capture</span> <span class="nv">ASSET_PATH</span> <span class="cp">%}{{</span> <span class="nv">BASE_PATH</span> <span class="cp">}}</span><span class="x">/assets/themes/</span><span class="cp">{{</span> <span class="nv">page.theme.name</span> <span class="cp">}}{%</span> <span class="k">endcapture</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
+
+<span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.JB.IMAGE_PATH</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">assign</span> <span class="nv">IMAGE_PATH</span> <span class="o">=</span> <span class="nv">site.JB.IMAGE_PATH</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">elsif</span> <span class="nv">site.safe</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">capture</span> <span class="nv">IMAGE_PATH</span> <span class="cp">%}{{</span> <span class="nv">site.cdn_url</span> <span class="cp">}}</span><span class="x">/images</span><span class="cp">{%</span> <span class="k">endcapture</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  </span><span class="cp">{%</span> <span class="k">capture</span> <span class="nv">IMAGE_PATH</span> <span class="cp">%}{{</span> <span class="nv">BASE_PATH</span> <span class="cp">}}</span><span class="x">/images</span><span class="cp">{%</span> <span class="k">endcapture</span> <span class="cp">%}</span><span class="x"></span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+
+
+<p>以后需要在文章中插入图片时，只需将图片放到 /images 文件夹，然后使用<code>{{ IMAGE_PATH }}/图片文件名</code> 格式就可以了。由于设置了镜像存储，不需要手动上传，但是当更改了 /assets 或 /images 里面的文件时，应当删除七牛服务器上的对应资源，否则访问的仍然是旧的资源。</p>
+<p>除了用来做图床、CDN 加速以外，七牛还有图片处理（缩放、旋转、打水印等）、防盗链等功能，请参考官方文档。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

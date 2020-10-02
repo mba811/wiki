@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用 rbenv 安装管理 Ruby - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;使用 rbenv 安装管理 Ruby
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 19:29
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用 rbenv 安装管理 Ruby</div>
+
+  <p>Ruby 有不同的版本会同时存在，现在最新版本是 1.9.3-9125，但是有些开发者仍然使用 1.8.x 系列。而且很多程序只针对特定的 Ruby 版本。所以对 Ruby 做版本管理是即为重要的，这其中也就涉及到安装的问题。</p>
+<p>常用的几个 Ruby 版本管理工具有：<a href="https://github.com/wayneeseguin/rvm">rvm</a>，<a href="https://github.com/sstephenson/rbenv">rbenv</a>，<a href="https://github.com/jayferd/ry">ry</a>，<a href="https://github.com/hmans/rbfu">rbfu</a>。rvm 应该是最早出现、使用最多的，因为过于强大以至于违背了某个 Linux 软件开发原则，所以出现了很多轻便的替代者，其中来自 37signals 的 rbenv 就很受欢迎。ry 和 rbfu 看上去更轻便，不过使用不广泛。所以我最终选择使用 rbenv。</p>
+<p>我电脑的环境是：Mac OS X 10.6.8，XCode 3.2.3，终端是 bash。</p>
+<h2 id="1-rbenv">1. 安装 rbenv</h2>
+<p>在终端中，从 github 上将 rbenv 源码 clone 到本地，然后设置 <code>$PATH</code> 等。</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/sstephenson/rbenv.git ~/.rbenv</span>
+<span class="n">echo</span> <span class="err">&#39;</span><span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s">&quot;$HOME/.rbenv/bin:$PATH&quot;</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+<span class="n">echo</span> <span class="err">&#39;</span><span class="n">eval</span> <span class="s">&quot;$(rbenv init -)&quot;</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+</pre></div>
+
+
+<h2 id="2-ruby-build">2. 安装 ruby-build</h2>
+<p><a href="https://github.com/sstephenson/ruby-build">ruby-build</a> 这个工具用来安装编译 Ruby 源码，如果选择手动编译，可不使用这个工具。</p>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="p">.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">plugins</span>
+<span class="n">cd</span> <span class="o">~/</span><span class="p">.</span><span class="n">rbenv</span><span class="o">/</span><span class="n">plugins</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/sstephenson/ruby-build.git</span>
+</pre></div>
+
+
+<h2 id="3-ruby">3. 安装 Ruby</h2>
+<p>使用 ruby-build 可以自动下载编译安装 Ruby 相应的版本，只需指定版本号。</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">install</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p125</span>
+</pre></div>
+
+
+<p>等待一大会儿，安装完毕后可以查看已经安装的 Ruby 版本：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">versions</span>
+</pre></div>
+
+
+<p>以上命令列出了安装在 rbenv 中的各 Ruby 版本，前面带有 * 号的表示是当前使用的版本。</p>
+<h2 id="4-ruby">4. 选择一个 Ruby 版本</h2>
+<p>rbenv 中的 Ruby 版本有三个不同的作用域：全局，本地，当前终端。</p>
+<h3 id="41">4.1 设置全局版本</h3>
+<p>全局版本是在没有找到“当前终端”或“本地”作用域的设置时执行。通过以下命令设置：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">global</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p125</span>
+</pre></div>
+
+
+<p>如果要使用系统原有的 Ruby，则通过 <code>system</code> 指定：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">global</span> <span class="n">system</span>
+</pre></div>
+
+
+<h3 id="42">4.2 设置本地版本</h3>
+<p>“本地”作用域是针对各个项目的，因为不同的项目可以基于不同的 Ruby 版本开发。“本地”作用域通过项目文件夹中的 <code>.rbenv-version</code> 这个文件进行管理，需要将相应的 Ruby 版本号写入这个文件。这个过程可以通过以下命令执行：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">local</span> <span class="mf">1.9.2</span><span class="o">-</span><span class="n">p290</span>
+</pre></div>
+
+
+<h3 id="43">4.3 设置当前终端版本</h3>
+<p>“当前终端”作用域的优先级最高。通过以下命令设置：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">shell</span> <span class="mf">1.9.2</span><span class="o">-</span><span class="n">p290</span>
+</pre></div>
+
+
+<p>设置完毕后可以通过以下命令进行验证：</p>
+<div class="hlcode"><pre><span class="n">which</span> <span class="n">ruby</span>
+<span class="n">rbenv</span> <span class="n">version</span>
+</pre></div>
+
+
+<h2 id="5-gem">5. 安装 gem</h2>
+<p>使用 rbenv 后，gem 还是按照原有的方式进行安装、升级，只是 gem 的安装路径是在 rbenv 文件夹中当前 Ruby 版本文件夹下。而且，安装带有可执行文件的 gem 后，需要执行一个特别的命令，告诉 rbenv 更新相应的映射关系，这个命令在安装新版本的 Ruby 后也需要执行：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">rehash</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Hugo静态网站生成 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Go">Go</a>&nbsp;&#187;&nbsp;Hugo静态网站生成
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 12:23
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Hugo静态网站生成</div>
+
+  <p>建一个网站是一件十分麻烦的事情，即使对于我们这些互联网专业人士也同样。 有些时候，我们想用最快的方式建一个网站，把内容放到互联网上。</p>
+<p>CMS系统其实就是为了达到这样的目的。那为什么不用CMS呢？ <br />
+使用CMS意味着你需要一台server，还要搭建DB，运行环境等，这些都要花时间。 就不能更简单一些么？于是，有了静态网站生成器。它用一个最实际的特性 <strong>简单</strong>，解决了一个建站的最大的实际问题： <strong>懒！</strong></p>
+<p>使用静态网站生成器，用户一般需要把内容放在不同的文本文件里，格式常见的有markdown，resturectedText等（完全没有db）。然后，通过命令行工具生成网站所有的html文件。这些html文件放到server上即可使用，不需要复杂的后台技术。这意味着随便搞个server几乎都可以部署，发布<strong>简单</strong> ， 空间流量十分 <strong>便宜</strong> 。由于github提供了github pages静态页面服务，每个人几乎都可以 <strong>免费</strong> 搭建自己的站点。</p>
+<p>当然并不是所有的项目都适合静态网站生成器。静态网站生成器一般适合多读少写，以内容为主的项目。如：个人博客，github项目介绍，程序API文档等。 使用静态网站生成的有名的站点列举一些，如：<a href="http://www.getbootstrap.com/">http://www.getbootstrap.com</a>,<a href="https://training.github.com/">https://training.github.com/</a></p>
+<h2 id="hugo">hugo</h2>
+<p>常用的静态网站生成器很多，Jekyll, Octopress最为流行。还有更多可以参考这里的<a href="https://www.staticgen.com/">详细列表</a>。这里介绍一个优秀的静态网站生成器 -- hugo。</p>
+<p>hugo有以下优点：</p>
+<ul>
+<li>编译后， <em>只有一个二进制文件。没有任何依赖</em> 。</li>
+</ul>
+<p>Jekyll, Octopress都是ruby搞的，个人而言，无法忍受安装ruby只为搞这个。其他基于python，nodejs的也都要安装解释器、安装依赖库！</p>
+<ul>
+<li>
+<p>Go语言是编译语言，运行效率高。页面生成速度最快。</p>
+</li>
+<li>
+<p>Windows, linux, mac兼容</p>
+</li>
+<li>易于配置，功能强大</li>
+<li>修改内容后支持liveReload</li>
+</ul>
+<h2 id="_1">快速上手</h2>
+<h3 id="_2">下载</h3>
+<p>先去<a href="http://hugo.spf13.com/">hugo</a>网站上下个包吧，三大平台都打包好的一个文件。</p>
+<p>下完之后麻烦放到PATH路径下面哦。</p>
+<h3 id="_3">建立网站</h3>
+<div class="hlcode"><pre><span class="n">hugo</span> <span class="n">new</span> <span class="n">site</span> <span class="n">MySite</span>
+</pre></div>
+
+
+<p>hugo会为你生成以下的文件结构。</p>
+<div class="hlcode"><pre><span class="err">▸</span> <span class="n">content</span><span class="o">/</span>      <span class="err">内容</span>
+<span class="err">▸</span> <span class="n">layouts</span><span class="o">/</span>      <span class="err">模版</span>
+<span class="err">▸</span> <span class="k">static</span><span class="o">/</span>       <span class="err">静态文件</span><span class="n">js</span><span class="p">,</span> <span class="n">css</span>
+<span class="err">▸</span> <span class="n">archetypes</span><span class="o">/</span>   <span class="err">针对类型的内容配置</span>
+  <span class="n">config</span><span class="p">.</span><span class="n">toml</span>   <span class="err">站点的配置文件，也可以用</span><span class="n">yaml</span><span class="p">,</span> <span class="n">json</span><span class="err">格式</span>
+</pre></div>
+
+
+<h3 id="_4">添加内容</h3>
+<div class="hlcode"><pre><span class="n">hugo</span> <span class="n">new</span> <span class="n">about</span><span class="p">.</span><span class="n">md</span>
+</pre></div>
+
+
+<p>hugo为你在content目录下生成了一个文件，目前只有这个内容的元数据。</p>
+<div class="hlcode"><pre><span class="o">+++</span>
+<span class="n">draft</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s">&quot;about&quot;</span>
+<span class="n">date</span> <span class="o">=</span> <span class="mi">2014</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">20</span><span class="n">T10</span><span class="o">:</span><span class="mo">04</span><span class="o">:</span><span class="mi">31</span><span class="n">Z</span>
+<span class="o">+++</span>
+</pre></div>
+
+
+<p>我们写些内容进去吧! markdown内容跟在文件后面就行了。 <a href="http://daringfireball.net/projects/markdown/basics">markdown的语法</a>详见这里。</p>
+<div class="hlcode"><pre><span class="o">+++</span>
+<span class="n">draft</span> <span class="o">=</span> <span class="nb">true</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s">&quot;about&quot;</span>
+<span class="n">date</span> <span class="o">=</span> <span class="mi">2014</span><span class="o">-</span><span class="mo">05</span><span class="o">-</span><span class="mi">20</span><span class="n">T10</span><span class="o">:</span><span class="mo">04</span><span class="o">:</span><span class="mi">31</span><span class="n">Z</span>
+<span class="o">+++</span>
+
+<span class="cp"># 标题</span>
+<span class="n">Hello</span><span class="p">,</span> <span class="n">world</span><span class="o">!</span>
+</pre></div>
+
+
+<h3 id="_5">安装样式</h3>
+<p>默认的hugo项目是没有样式的，俺们安装一些预设的样式。</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="p">[</span><span class="n">https</span><span class="o">:</span><span class="c1">//github.com/spf13/hugoThemes](https://github.com/spf13/hugoThemes) themes</span>
+</pre></div>
+
+
+<h3 id="server">运行测试server</h3>
+<div class="hlcode"><pre><span class="n">hugo</span> <span class="n">server</span> <span class="o">--</span><span class="n">theme</span><span class="o">=</span><span class="n">hyde</span> <span class="o">--</span><span class="n">buildDrafts</span>
+<span class="mi">2</span> <span class="n">pages</span> <span class="n">created</span>
+<span class="mi">0</span> <span class="n">tags</span> <span class="n">created</span>
+<span class="mi">0</span> <span class="n">categories</span> <span class="n">created</span>
+<span class="n">in</span> <span class="mi">5</span> <span class="n">ms</span>
+<span class="n">Serving</span> <span class="n">pages</span> <span class="n">from</span> <span class="n">exampleHugoSite</span><span class="o">/</span><span class="n">public</span>
+<span class="n">Web</span> <span class="n">Server</span> <span class="n">is</span> <span class="n">available</span> <span class="n">at</span> <span class="p">[</span><span class="n">http</span><span class="o">:</span><span class="c1">//localhost:1313](http://localhost:1313/)</span>
+<span class="n">Press</span> <span class="n">ctrl</span><span class="o">+</span><span class="n">c</span> <span class="n">to</span> <span class="n">stop</span>
+</pre></div>
+
+
+<p>恭喜！你的站点好了。用浏览器打开<a href="http://localhost:1313/">http://localhost:1313</a> 看下吧</p>
+<h2 id="_6">进阶</h2>
+<p>现在制作的hugo站点是默认的样式，要在实际项目中用，学习自定义模版是必须的。</p>
+<p>hugo生成页面的时候有以下一些流程:</p>
+<ol>
+<li>
+<p>copy静态资源到public文件夹，包括： <br />
+copy theme/static/<em> 到 public/下; copy static/</em> 到 public/下</p>
+</li>
+<li>
+<p>遍历所有content/下所有文件 <br />
+获取文件头信息，并把正文markdown转换为html</p>
+</li>
+</ol>
+<p>注：rst格式使用rst2html.py转换rst，使用rst需要安装python docutils</p>
+<ol>
+<li>渲染生成每个页面对应的正文页面，生成文件夹对应的列表页面，生成分类页面，生成主页</li>
+</ol>
+<p>每个静态页面生成的时候需要两个东西，一个模版，一个结构体数据。</p>
+<h3 id="_7">模版选择</h3>
+<p>hugo会从layouts文件夹下一系列路径寻找第一个文件作为模版，这样方便对不同的页面模版进行定制。</p>
+<p>例如：正文渲染会依次从以下一些位置寻找模版。首先是layouts文件夹，然后再在themes下面的layouts文件夹寻找。</p>
+<ul>
+<li>/layouts/<code>TYPE</code> or <code>SECTION</code>/<code>LAYOUT</code>.html</li>
+<li>/layouts/<code>TYPE</code> or <code>SECTION</code>/single.html</li>
+<li>/layouts/_default/single.html</li>
+<li>/themes/<code>THEME</code>/layouts/<code>TYPE</code> or <code>SECTION</code>/<code>LAYOUT</code>.html</li>
+<li>/themes/<code>THEME</code>/layouts/<code>TYPE</code> or <code>SECTION</code>/single.html</li>
+<li>/themes/<code>THEME</code>/layouts/_default/single.html</li>
+</ul>
+<p>我们最常使用的模版是以下三个：</p>
+<ul>
+<li>正文页：/layouts/_default/single.html</li>
+<li>列表页：/layouts/_default/list.html</li>
+<li>主页：/layouts/index.html</li>
+</ul>
+<h4 id="_8">正文</h4>
+<p>hugo使用的模版语言是go自带的template系统。详细的语法可以参考<a href="http://hugo.spf13.com/templates/go-templates">这里</a>。</p>
+<p>正文渲染使用hugolib/page.go中的Page结构体。Page结构体主要的属性包括： - Title标题 - Summary摘要 - Content正文 - TableOfContents目录 - ...</p>
+<p>有兴趣的同学可以看下这个文件。</p>
+<p>例如：一个很简单的正文片段如下。我们把文件放到/layouts/_default/single.html。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="nx">template</span> <span class="s2">&quot;partial/header.html&quot;</span> <span class="nx">.</span> <span class="p">}}</span>
+<span class="p">{{</span> <span class="nx">template</span> <span class="s2">&quot;partial/menu.html&quot;</span> <span class="nx">.</span> <span class="p">}}</span>
+
+<span class="o">&lt;</span><span class="nb">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;content container&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nb">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="p">{{</span> <span class="bp">.</span><span class="nb">Title</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="nx">h1</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;post-date&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="bp">.</span><span class="nx">Date.Format</span> <span class="s2">&quot;Mon, Jan 2, 2006&quot;</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="nx">span</span><span class="o">&gt;</span>
+        <span class="p">{{</span> <span class="bp">.</span><span class="nb">Content</span> <span class="p">}}</span>
+    <span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+
+<span class="p">{{</span> <span class="nx">template</span> <span class="s2">&quot;partial/footer.html&quot;</span> <span class="nx">.</span> <span class="p">}}</span>
+</pre></div>
+
+
+<p>注意，这里使用template语句把常用的模块分散，如页头，页尾，菜单。</p>
+<h4 id="_9">列表页</h4>
+<p>对于每个文件夹，hugo会生成列表页，显示下面的所有内容的列表。列表页使用 <code>hugolib/node.go</code> 文件中定义的Node结构体渲染页面。</p>
+<p>该结构体有两个属性：</p>
+<ul>
+<li>Site代表站点配置信息，是位于hugolib/site.go中定义的SiteInfo结构体。</li>
+<li>Data是节点数据，其Pages属性表示子页面的列表。</li>
+</ul>
+<p>如下的/layouts/_default/list.html文件对Data.Pages进行了循环，渲染了该文件夹中所有的文件。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="nx">template</span> <span class="s2">&quot;partial/header.html&quot;</span> <span class="nx">.</span> <span class="p">}}</span>
+<span class="p">{{</span> <span class="nx">template</span> <span class="s2">&quot;partial/menu.html&quot;</span> <span class="nx">.</span> <span class="p">}}</span>
+
+<span class="o">&lt;</span><span class="nb">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;content container&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;posts&quot;</span><span class="o">&gt;</span>
+    <span class="p">{{</span> <span class="nb">range</span> <span class="bp">.</span><span class="nx">Data.Pages</span> <span class="p">}}</span>
+    <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{ .Permalink }}&quot;</span><span class="o">&gt;&lt;</span><span class="nx">h4</span><span class="o">&gt;</span><span class="p">{{</span> <span class="bp">.</span><span class="nb">Title</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="nx">h4</span><span class="o">&gt;&lt;/</span><span class="nx">a</span><span class="o">&gt;&lt;</span><span class="nb">time</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;pull-right post-list&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="bp">.</span><span class="nx">Date.Format</span> <span class="s2">&quot;Mon, Jan 2, 2006&quot;</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="nb">time</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+    <span class="p">{{</span> <span class="nb">end</span> <span class="p">}}</span>
+    <span class="o">&lt;/</span><span class="nx">ul</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+
+<span class="p">{{</span> <span class="nx">template</span> <span class="s2">&quot;partial/footer.html&quot;</span> <span class="nx">.</span> <span class="p">}}</span>
+</pre></div>
+
+
+<h4 id="_10">主页</h4>
+<p>主页其实也是一个列表文件。渲染数据和列表页结构相同，都是Node结构体。只是模版优先选择<code>/layouts/index.html</code>文件 这里就不再赘述了。</p>
+<h3 id="_11">分类</h3>
+<p>hugo除了正文，列表，主页三种页面。还支持分类页面tags, categories。</p>
+<p>使用时简单的在正文元数据定义下ok。</p>
+<div class="hlcode"><pre><span class="nl">tags:</span>
+    <span class="o">-</span> <span class="s">&quot;javascript&quot;</span>
+    <span class="o">-</span> <span class="s">&quot;python&quot;</span>
+    <span class="o">-</span> <span class="s">&quot;go&quot;</span>
+<span class="nl">categories:</span>
+    <span class="o">-</span> <span class="s">&quot;hugo&quot;</span>
+    <span class="o">-</span> <span class="s">&quot;fun&quot;</span>
+    <span class="o">-</span> <span class="s">&quot;test&quot;</span>
+</pre></div>
+
+
+<h3 id="_12">代码高亮</h3>
+<p>码农必备！hugo使用的python的pygment进行语法高亮的。需要先安装python pygment。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="o">%</span> <span class="nx">highlight</span> <span class="nx">javascript</span> <span class="o">%</span><span class="p">}}</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">123</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="p">{{</span> <span class="o">%</span> <span class="err">/highlight %}}</span>
+</pre></div>
+
+
+<p>这语法时hugo的shortcode，还可以搞其他的东西，相当于一个内容插件。</p>
+<h3 id="_13">菜单</h3>
+<p>hugo的菜单系统支持菜单有两种使用方式：</p>
+<h4 id="1a">1a. 在站点配置文件中声明菜单。</h4>
+<p>如下的yaml文件定义了一个main菜单，和两个菜单条目。</p>
+<div class="hlcode"><pre><span class="nx">menu</span><span class="p">:</span>
+    <span class="nx">main</span><span class="p">:</span>
+      <span class="o">-</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;about hugo&quot;</span>
+        <span class="nx">pre</span><span class="p">:</span> <span class="s2">&quot;&lt;i class=&#39;ico ico-heart&#39;&gt;&lt;/i&gt;&quot;</span>
+        <span class="nx">weight</span><span class="p">:</span> <span class="o">-</span><span class="mi">110</span>
+        <span class="nx">identifier</span><span class="p">:</span> <span class="s2">&quot;about&quot;</span>
+      <span class="o">-</span> <span class="nb">name</span><span class="p">:</span> <span class="s2">&quot;getting-started&quot;</span>
+        <span class="nx">pre</span><span class="p">:</span> <span class="s2">&quot;&lt;i class=&#39;ico ico-road&#39;&gt;&lt;/i&gt;&quot;</span>
+        <span class="nx">weight</span><span class="p">:</span> <span class="o">-</span><span class="mi">110</span>
+        <span class="nb">url</span><span class="p">:</span> <span class="err">[</span><span class="nx">http</span><span class="p">:</span><span class="c1">//www.bing.com](http://www.bing.com/)</span>
+</pre></div>
+
+
+<h4 id="1b">1b. 在正文的元数据中声明内容所属的菜单。</h4>
+<p>加入到单个菜单</p>
+<div class="hlcode"><pre><span class="o">---</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="s">&quot;main&quot;</span>
+<span class="o">---</span>
+</pre></div>
+
+
+<p>加入到多个菜单</p>
+<div class="hlcode"><pre><span class="o">---</span>
+<span class="nl">menu:</span> <span class="p">[</span><span class="s">&quot;main&quot;</span><span class="p">,</span> <span class="s">&quot;footer&quot;</span><span class="p">]</span>
+<span class="o">---</span>
+</pre></div>
+
+
+<p>菜单定义好了以后就可以在模版中通过循环显示菜单列表。</p>
+<div class="hlcode"><pre><span class="p">{{</span> <span class="nv">$currentNode</span> <span class="o">:=</span> <span class="nx">.</span> <span class="p">}}</span>
+<span class="o">&lt;</span><span class="nx">ul</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;nav navbar-nav&quot;</span><span class="o">&gt;</span>
+<span class="p">{{</span> <span class="nb">range</span> <span class="bp">.</span><span class="nx">Site.Menus.main</span> <span class="p">}}</span>
+<span class="o">&lt;</span><span class="nx">li</span> <span class="p">{{</span><span class="k">if</span> <span class="ow">or</span> <span class="p">(</span><span class="nv">$currentNode.HasMenuCurrent</span> <span class="s2">&quot;main&quot;</span> <span class="nx">.</span><span class="p">)</span> <span class="p">(</span><span class="nv">$currentNode.IsMenuCurrent</span> <span class="s2">&quot;main&quot;</span> <span class="nx">.</span><span class="p">)</span> <span class="p">}}</span><span class="n">class</span><span class="o">=</span><span class="s2">&quot;active&quot;</span><span class="p">{{</span><span class="nb">end</span><span class="p">}}</span><span class="o">&gt;&lt;</span><span class="nx">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{{.Url}}&quot;</span><span class="o">&gt;</span><span class="p">{{</span> <span class="bp">.</span><span class="nb">Name</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="nx">a</span><span class="o">&gt;&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+<span class="p">{{</span><span class="nb">end</span><span class="p">}}</span>
+<span class="o">&lt;/</span><span class="nx">ul</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<h3 id="github-pages">发布到Github Pages</h3>
+<p>使用静态网站生成器一个很重要的优点是可以免费部署在github! 接下来我们就来看下。</p>
+<p>Github pages一般有两种使用。一个是项目的主页，另一种是个人/机构的主页，这种一个用户只能建一个。 <br />
+作为项目的主页，项目的版本库需要一个命名为gh-pages的分支。这个分支是网站根目录。 作为个人主页，个人需要有一个以自己的名字命名的仓库，其master分支是跟目录。例如：用户名gliheng,仓库gliheng.github.io将是主页的仓库。</p>
+<p>这样我们只需要把编译出来的静态文件（/public文件夹）丢到某个仓库的某个分支即可。</p>
+<p>我们来试试个人博客。</p>
+<h4 id="githubcreate-repositoryxxx">先去github点Create Repository建立新点仓库xxx。</h4>
+<p>记得勾上<code>Initialize this repository with a README</code></p>
+<h4 id="_14">回到本地</h4>
+<p>把本地的source分支推到remote的source分支。 把public文件夹的文件推到remote的master分支。</p>
+<div class="hlcode"><pre><span class="n">hugo</span> <span class="n">new</span> <span class="n">site</span> <span class="n">xxx</span>
+<span class="n">cd</span> <span class="n">xxx</span>
+
+<span class="n">git</span> <span class="n">init</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">--</span><span class="n">orphan</span> <span class="n">source</span>
+
+<span class="n">git</span> <span class="n">add</span> <span class="p">.</span>
+<span class="cp"># 把代码提交到source分支吧</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;Initial submit&quot;</span>
+
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="p">[</span><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">](</span><span class="n">mailto</span><span class="o">:</span><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">)</span><span class="o">:</span><span class="n">gliheng</span><span class="o">/</span><span class="n">xxx</span><span class="p">.</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">pull</span>
+
+<span class="cp"># 建立本地master分支</span>
+<span class="n">git</span> <span class="n">branch</span> <span class="n">master</span>
+<span class="cp"># 把master作为source分支的子目录了</span>
+<span class="n">git</span> <span class="n">subtree</span> <span class="n">add</span> <span class="o">--</span><span class="n">prefix</span> <span class="n">public</span> <span class="p">[</span><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">](</span><span class="n">mailto</span><span class="o">:</span><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">)</span><span class="o">:</span><span class="n">gliheng</span><span class="o">/</span><span class="n">xxx</span><span class="p">.</span><span class="n">git</span> <span class="n">master</span> <span class="o">--</span><span class="n">squash</span>
+
+<span class="cp"># 添加一个文章，编辑一下</span>
+<span class="n">hugo</span> <span class="n">new</span> <span class="n">blog</span><span class="o">/</span><span class="n">first</span><span class="p">.</span><span class="n">md</span>
+<span class="cp"># 生成public下的站点</span>
+<span class="n">hugo</span>
+
+<span class="cp"># 把source分支推到github的source分支</span>
+<span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">source</span>
+<span class="cp"># 把public文件夹推到github的master分支</span>
+<span class="n">git</span> <span class="n">subtree</span> <span class="n">push</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=</span><span class="n">public</span> <span class="p">[</span><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">](</span><span class="n">mailto</span><span class="o">:</span><span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">)</span><span class="o">:</span><span class="n">gliheng</span><span class="o">/</span><span class="n">xxx</span><span class="p">.</span><span class="n">git</span> <span class="n">master</span>
+</pre></div>
+
+
+<p>搞定！访问yourname.github.io看下吧。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

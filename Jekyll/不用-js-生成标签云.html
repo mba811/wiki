@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>不用 JS 生成标签云 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;不用 JS 生成标签云
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 22:34
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">不用 JS 生成标签云</div>
+
+  <p>标签云是网站中的内容标签的视觉化描述。透过标签云，网站访客可以很直观地看到某个标签下的文章数目多少。对于动态博客，可以在后台查询数据库，生成标签云；对于静态博客，一般需要使用 JavaScript。使用 js 生成标签云的基本思路是：首先生成携带文章数信息的标签列表，然后通过 js 计算并修改每个标签的样式，比如颜色、大小等等。事实上，这些工作可以在生成静态网页时完成，无需使用 js。不使用 js 的原因是：静态网站要实现动态网站相同的功能，基本都需要将后台 php 等做的工作转成前台 js 来实现，这会导致在网页中使用过多 js 而带来一些不良影响。Jekyll 使用 Liquid 模板引擎来处理模板，而 Liquid 本身有一些简单的计算功能，下面就介绍如何使用 Liquid 来生成标签云。如果你对 Liquid 不太熟悉，可以在<a href="https://github.com/Shopify/liquid/wiki/Liquid-for-Designers">这儿</a>了解一下。</p>
+<h2 id="_1">一、统计每个标签下的文章数，得到最大最小值</h2>
+<p>此处先介绍一下 <code>site.tags</code> 变量。 <code>site.tags</code> 是一个数组，里面每一项对应一个标签，每一项本身又是一个数组，第一个元素是标签名，第二个元素是一个具有该标签的文章的数组。通过遍历 <code>site.tags</code> 就找到每个标签下文章数的最大最小值。</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">assign</span> <span class="n">first</span> <span class="o">=</span> <span class="n">site</span><span class="p">.</span><span class="n">tags</span><span class="p">.</span><span class="n">first</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">assign</span> <span class="n">max</span> <span class="o">=</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">size</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">assign</span> <span class="n">min</span> <span class="o">=</span> <span class="n">max</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">tag</span> <span class="n">in</span> <span class="n">site</span><span class="p">.</span><span class="n">tags</span> <span class="n">offset</span><span class="o">:</span><span class="mi">1</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="k">if</span> <span class="n">tag</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">max</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">assign</span> <span class="n">max</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">size</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="n">elsif</span> <span class="n">tag</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">min</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">assign</span> <span class="n">min</span> <span class="o">=</span> <span class="n">tag</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">size</span> <span class="o">%</span><span class="p">}</span>
+  <span class="p">{</span><span class="o">%</span> <span class="n">endif</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">assign</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">max</span> <span class="o">|</span> <span class="n">minus</span><span class="o">:</span> <span class="n">min</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<h2 id="_2">二、计算每个标签的样式</h2>
+<p>此处，将字体大小范围设成 9pt ~ 18pt，字体大小可以取 9.5pt 等，因此总共分为 18 个区间；字体颜色范围设为 #999 ~ #000，为简单起见，只使用 #xxx 这种颜色（即颜色全是黑白的），因此总共分为 9 个区间。文章数最少的标签样式将是 <code>font-size: 9pt; color: #999;</code>，文章数最多的标签样式将是<code>font-size: 18pt; color: #000;</code>，这样文章数越多字体越大、颜色越深，看起来越醒目。</p>
+<p>需要注意的是，Liquid 只支持整数运算，因此需要做一些转换。另外，此处考虑的比较细致，采取四舍五入的方式进行近似，因此更为精确。</p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">for</span> <span class="nv">tag</span> <span class="k">in</span> <span class="nv">site.tags</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">temp</span> <span class="o">=</span> <span class="nv">tag</span><span class="o">[</span><span class="m">1</span><span class="o">]</span><span class="nv">.size</span> <span class="o">|</span> <span class="nf">minus</span><span class="o">:</span> <span class="nv">min</span> <span class="o">|</span> <span class="nf">times</span><span class="o">:</span> <span class="m">36</span> <span class="o">|</span> <span class="nf">divided_by</span><span class="o">:</span> <span class="nv">diff</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">base</span> <span class="o">=</span> <span class="nv">temp</span> <span class="o">|</span> <span class="nf">divided_by</span><span class="o">:</span> <span class="m">4</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">remain</span> <span class="o">=</span> <span class="nv">temp</span> <span class="o">|</span> <span class="nf">modulo</span><span class="o">:</span> <span class="m">4</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">if</span> <span class="nv">remain</span> <span class="o">==</span> <span class="m">0</span> <span class="cp">%}</span>
+    <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">size</span> <span class="o">=</span> <span class="nv">base</span> <span class="o">|</span> <span class="nf">plus</span><span class="o">:</span> <span class="m">9</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">elsif</span> <span class="nv">remain</span> <span class="o">==</span> <span class="m">1</span> <span class="k">or</span> <span class="nv">remain</span> <span class="o">==</span> <span class="m">2</span> <span class="cp">%}</span>
+    <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">size</span> <span class="o">=</span> <span class="nv">base</span> <span class="o">|</span> <span class="nf">plus</span><span class="o">:</span> <span class="m">9</span> <span class="o">|</span> <span class="nf">append</span><span class="o">:</span> <span class="s1">&#39;.5&#39;</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+    <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">size</span> <span class="o">=</span> <span class="nv">base</span> <span class="o">|</span> <span class="nf">plus</span><span class="o">:</span> <span class="m">10</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">if</span> <span class="nv">remain</span> <span class="o">==</span> <span class="m">0</span> <span class="k">or</span> <span class="nv">remain</span> <span class="o">==</span> <span class="m">1</span> <span class="cp">%}</span>
+    <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">color</span> <span class="o">=</span> <span class="m">9</span> <span class="o">|</span> <span class="nf">minus</span><span class="o">:</span> <span class="nv">base</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+    <span class="cp">{%</span> <span class="k">assign</span> <span class="nv">color</span> <span class="o">=</span> <span class="m">8</span> <span class="o">|</span> <span class="nf">minus</span><span class="o">:</span> <span class="nv">base</span> <span class="cp">%}</span>
+  <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">site.JB.tags_path</span> <span class="cp">}}</span><span class="s">#</span><span class="cp">{{</span> <span class="nv">tag</span><span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="cp">}}</span><span class="s">-ref&quot;</span> <span class="na">style=</span><span class="s">&quot;font-size: </span><span class="cp">{{</span> <span class="nv">size</span> <span class="cp">}}</span><span class="s">pt; color: #</span><span class="cp">{{</span> <span class="nv">color</span> <span class="cp">}}{{</span> <span class="nv">color</span> <span class="cp">}}{{</span> <span class="nv">color</span> <span class="cp">}}</span><span class="s">;&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">tag</span><span class="o">[</span><span class="m">0</span><span class="o">]</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;</span>
+<span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

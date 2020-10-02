@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Homebrew与Homebrew cask - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;Homebrew与Homebrew cask
+    <span class="updated">Page Updated&nbsp;
+      2015-02-08 00:06
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Homebrew与Homebrew cask</div>
+
+  <p>介绍 Homebrew。Homebrew 是 Mac OS X 上强大的包管理器。 </p>
+<p>Homebrew Cask 扩展了 Homebrew ，是 Mac 上简单优雅的软件安装命令行工具。</p>
+<p><strong>1. 安装 <a href="http://brew.sh/index_zh-cn.html">Homebrew</a> 和 <a href="http://caskroom.io/">Home Cask</a> 。</strong></p>
+<p>Home-cask 依赖于 Homebrew，而 Homebrew 依赖于 Xcode 和 ruby 。 </p>
+<p><em>1.1. 安装 Xcode，可在Mac的App store里边下载安装。</em></p>
+<p><em>1.2.对于 ruby， Mac本身自带，可不用安装。</em></p>
+<p><em>1.3. 安装 Homebrew。</em></p>
+<p>安装完 Xcode 和 ruby 后，打开 Terminal, 复制并粘贴以下指令并回车执行。 </p>
+<div class="hlcode"><pre><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)&quot;</span>
+</pre></div>
+
+
+<p><em>1.4. 安装 Homebrew Cask。</em></p>
+<p>安装完 Homebrew 后，打开 Terminal, 复制并粘贴以下指令并回车执行。 </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">phinze</span><span class="o">/</span><span class="n">cask</span><span class="o">/</span><span class="n">brew</span><span class="o">-</span><span class="n">cask</span>
+</pre></div>
+
+
+<p><strong> 2. 使用 Homebrew</strong></p>
+<p>以安装和管理 软件 wget 为例，演示如何日常简单的使用 Homebrew 。 </p>
+<p><em>2.1. 安装软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p><em>2.2. 卸载软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">uninstall</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p><em>2.3. 搜索软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">search</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p><em>2.4. 更新软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">upgrade</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p>2.5. 查看软件包信息 </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">upgrade</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p>2.6. 列出软件包的依赖关系 </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">deps</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p><em>2.7. 删除软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cleanup</span> <span class="n">wget</span>
+</pre></div>
+
+
+<p><em>2.8. 查看哪些软件需要更新。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">outdated</span>
+</pre></div>
+
+
+<p><em>2.9. 更新所有软件。</em></p>
+<p>把所有的Formula目录更新，并且会对本机已经安装并有更新的软件用*标明。 </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">upgrade</span>
+</pre></div>
+
+
+<p><em>3.0. 显示已经安装的软件列表。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">list</span>
+</pre></div>
+
+
+<p><strong>3. Homebrew 定制软件包</strong></p>
+<p><em>3.1. 找到待安装软件的源码下载地址。</em></p>
+<p>比如为：http://foo.com/bar-1.0.tgz。 </p>
+<p><em>3.2. 建立自己的formula。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">create</span> <span class="n">http</span><span class="o">:</span><span class="c1">//foo.com/bar-1.0.tgz</span>
+</pre></div>
+
+
+<p><em>3.3. 编辑formula。</em></p>
+<p>上一步建立成功后，Homebrew会自动打开新建的formula进行编辑，也可用如下命令打开formula进行编辑。 </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">edit</span> <span class="n">bar</span>
+</pre></div>
+
+
+<p>Homebrew自动建立的formula已经包含了基本的configure和make install命令，对于大部分软件，不需要进行修改，退出编辑即可。 </p>
+<p><em>3.4. 安装软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">bar</span>
+</pre></div>
+
+
+<p>这样，该软件包便在Homebrew的管理之下了，可方便之后的管理。 </p>
+<p><strong>4. Homebrew的安装路径及文件夹说明</strong></p>
+<p>Homebrew 的安装路径为：/usr/local 。 </p>
+<p>bin <br />
+用于存放所安装程序的启动链接（相当于快捷方式） </p>
+<p>Cellar <br />
+所有brew安装的程序，都将以[程序名/版本号]存放于本目录下 </p>
+<p>etc <br />
+brew安装程序的配置文件默认存放路径 </p>
+<p>Library <br />
+Homebrew 系统自身文件夹 </p>
+<p><strong>5. Homebrew Cask 使用</strong></p>
+<p>以google-chrome为例，演示如何日常简单的使用 Homebrew Cask 。 </p>
+<p><em>5.1. 安装软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">google</span><span class="o">-</span><span class="n">chrome</span>
+</pre></div>
+
+
+<p><em>5.2. 列出所有可以被安装的软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">search</span>
+</pre></div>
+
+
+<p><em>5.3. 查找所有名字包含 “chrome” 的应用。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">search</span> <span class="n">chrome</span>
+</pre></div>
+
+
+<p><em>5.4. 查看软件的信息。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">info</span> <span class="n">google</span><span class="o">-</span><span class="n">chrome</span>
+</pre></div>
+
+
+<p><em>5.5. 卸载软件。</em></p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">uninstall</span> <span class="n">google</span><span class="o">-</span><span class="n">chrome</span>
+</pre></div>
+
+
+<p>5.6. <a href="https://github.com/phinze/homebrew-cask/tree/master/Casks">这里</a>为 Homebrew Cask 已支持软件列表。 </p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

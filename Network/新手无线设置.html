@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>新手无线设置 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;新手无线设置
+    <span class="updated">Page Updated&nbsp;
+      2015-02-27 00:43
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">新手无线设置</div>
+
+  <h1 id="wireless-starters-guide-for-first-time-dd-wrt-users">Wireless starters guide for first time dd-wrt users</h1>
+<p>In order to setup your router for maximum speed it is required to properly setup a few parameters.</p>
+<p>I’m going to explain a few parameters in detail so you have a basic understanding of these parameters.</p>
+<p>This guide is specific to broadcom based routers with AC radio!</p>
+<p>Note: Most of the parameters depend on previously set parameters, e.g. changing<br />
+Channel Width will give you a different list of channels you can choose.<br />
+Thus whenever you change one setting you should press Apply and wait a few<br />
+seconds until the GUI refreshes displaying updated choices.</p>
+<p>It is also neccessary to set wireless security to WPA2 AES in order to<br />
+reach full speeds as it is part of the specification. Some clients may<br />
+not even be able to connect if you don’t use WPA2, e.g. Android devices.</p>
+<p>You should setup parameters in the correct order to avoid unnessessary steps.</p>
+<p><a href="http://lszb811.qiniudn.com/5G.png"><img alt="" src="http://lszb811.qiniudn.com/5G.png" /></a></p>
+<p>5 Ghz Sample Setup</p>
+<p><strong>1. Setup Wireless Mode</strong></p>
+<p><strong>2. Setup Network Mode</strong></p>
+<p>You should choose a Mode that works for all of your clients. If you only<br />
+have 802.11n devices you would choose N-Only. If you only have AC devices<br />
+and don’t want to allow any N devices choose AC-Only. N-Only 5Ghz<br />
+will allow AC as well as standard N clients to connect.</p>
+<p>Note: N/AC standard requires WPA2/AES Encryption</p>
+<p><strong>3. Channel Width</strong></p>
+<p>To get full AC speed this needs to be set to 80Mhz. If you choose 40 or 20 Mhz<br />
+Width you won’t be able to connect at full speed, but depending on channel occupation<br />
+it might be of advantage to choose a spectrum that is not covered by other routers.<br />
+Thus it may be of advantage to only use 40Mhz to be able to use a spectrum that is not<br />
+occupied by other routers in order to avoid interference.</p>
+<p>For some detailed explanation about data rates, width etc. you can checkout these<br />
+ressources:</p>
+<p><a href="http://www.smallnetbuilder.com/wireless/wireless-features/31694-why-80211ac-will-kill-the-5-ghz-wi-fi-band">http://www.smallnetbuilder.com/wireless/wireless-features/31694-why-80211ac-will-kill-the-5-ghz-wi-fi-band</a></p>
+<p><a href="http://www.aerohive.com/pdfs/Blog/MCS_Chart_802.11ac_v.06.html">http://www.aerohive.com/pdfs/Blog/MCS_Chart_802.11ac_v.06.html</a></p>
+<p><strong>4. Extension Channel</strong></p>
+<p>After you have setup Channel Width the UI will update and give you new choices for Extension Channels.<br />
+Now choose an Extension channel and press Apply again. If you want to know more about Extension Channels<br />
+consult google:-)</p>
+<p><strong>5. Wireless Channel</strong></p>
+<p>Finally you can choose your prefered channel. Depending on Width and Extension you previously set<br />
+you will have a different choice of channels.</p>
+<p><strong>It is important to set a fixed channel otherwise your radio might not operate at full width.</strong></p>
+<p>General rule for all bands:</p>
+<p>-lowest or highest channel may not allow to output full power</p>
+<p>General rule for 5Ghz:</p>
+<p>-on higher channels regulation limits allow more power output from the radio.</p>
+<p>-on higher channels output might be limited in case radar signals are detected</p>
+<p>Thus most of times higher channels on 5Ghz will give you more range.</p>
+<p>Additional Info:</p>
+<p><strong>Advanced Wireless Settings</strong></p>
+<p>Most users don’t need this and can leave it at their defaults.</p>
+<p>If you have range/signal problems on long range connections play with txpwr</p>
+<p>and measure your throughput.</p>
+<p>E.g. value that proved to deliver great speeds on 2.4Ghz in my tests was <strong>160mW</strong> .</p>
+<p>For 5Ghz you likely want to increase txpwr even further.</p>
+<p><strong>Notes:</strong></p>
+<p><strong>Increasing txpwr only boosts sending to the client. If your client devices allows to increase output power, then you should change it as well. E.g. by default Intel client adapters, built in laptops, do not output with maximum power in order to save energy.</strong></p>
+<p><strong>In latest driver build with NEWD it is currently not possible to override power output, still investigating if this is on purpose or if this is a problem with current wl tool.</strong></p>
+<hr />
+<p><strong>Beamforming</strong></p>
+<p>Beamforming uses algorithms to determine the location of a client and to direct signalstowards the client. As output is directed towards a client it is possible to increase output power, which will improve range. Regular Beamforming only works with clients that support Beamforming. Implicit Beamforming also works for clients that have no Beamforming support.</p>
+<p>Short note on performance testing with beamforming. As Beamfomring needs some sort of localization and therefore calibration you should give the radio a bit of time,after you changed wireless parameters, before you start doing any performance testing.Everytime you change parameters the radio will be brought down and up and reinitialized.</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

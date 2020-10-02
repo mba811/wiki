@@ -1,0 +1,100 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>TextBar：彻底玩转你的 Menubar - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;TextBar：彻底玩转你的 Menubar
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 02:46
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">TextBar：彻底玩转你的 Menubar</div>
+
+  <p>在 OS X 这块寸土寸金的地方，在你天天面面向对的主屏幕上，有四个区域会经常使用：Desktop，Dock，Notification，Menubar，前面三个都有许多软件来帮助用户进行信息自定义操作，比如擅长往桌面放各种信息 Widget 的 GeekTool 和 Ubersicht，为通知中心放置个性化统计信息的<a href="http://www.waerfa.com/today-scripts-for-yosemite-today-view">Today Scripts</a>，还有老牌 Dock 程序预览窗口工具 <a href="http://www.waerfa.com/hyperdock">HyperDock</a>，那么 Menubar 在我接触 TextBar 之前还是一款纯洁的处女地，除了 Bartender，我似乎还未碰到过什么强大的自定义软件。现在，TextBar 将继承上述几位前辈的志向，让 Menubar 显示任何你想要的信息，只要你会玩脚本命令，乐趣将是大大的。</p>
+<p><img alt="textbar Recipes" src="http://7q5cfr.com1.z0.glb.clouddn.com/textbar-Recipes.png" /></p>
+<p><a href="http://www.waerfa.com/textbar">TextBar</a> 是由独立程序员 <a href="http://www.richsomerfield.com/apps/">Rich Somerfield</a> 开发的，你可以在后台设置里添加任意数量的脚本程序来显示你想要的信息，每一条叫做 Recipes，噢，让我想起了 IFTTT，我猜作者也想把这款软件打造成 Flashlight 那样的开源插件平台吧</p>
+<p>作者在 Github 开了一个 TextBar Recipes 的<a href="https://github.com/richie5um/TextBar-Recipes">专页</a>，你可以到里面参考安装一些 Recipes 学习学习，比如下面这张图：</p>
+<p><img alt="textbar settings-2" src="http://7q5cfr.com1.z0.glb.clouddn.com/textbar-settings-2.png" /></p>
+<p>在设置窗口内你可以为 Recipes 选择个性化的 ICON，这些 ICON 全部从 <a href="https://icons8.com/">ICONS8</a> 下载，接着就是 Script，直接输入即可，然后是调整信息更新频率，以秒为单位，随意设置吧，TextBar 还支持让你的信息通过 OS X Ntofication Center 进行消息推送，这对于安装在 Menubar 的天气、系统监控类 Recipes 非常有帮助。</p>
+<h2 id="recipes">下面我们来介绍几个既常用又实用的 Recipes：</h2>
+<h3 id="1-ip">1. 显示本地 IP 地址：</h3>
+<p><code>ifconfig | grep inet | grep -v inet6 | cut -d" " -f2 | tail -n1</code></p>
+<h3 id="2-ip">2. 显示外网 IP 地址：</h3>
+<p><code>curl http://ipinfo.io/ip</code></p>
+<h3 id="3">3. 显示硬盘占用率：</h3>
+<p><code>df / | awk '{ print $5 }' | tail -n 1</code></p>
+<h3 id="4">4. 显示某个国家时间：</h3>
+<p><code>UKDATE=</code>TZ=GB date +"%H:%M %p"<code>; echo "UK: $UKDATE"</code></p>
+<h3 id="5-emoji">5. 显示 Emoji：</h3>
+<p><code>echo '🌚'</code></p>
+<p>友情提示：组合键：CONTROL+CMD+SPACE 快速调用 Emoji 选择菜单</p>
+<h3 id="6">6. 显示电池容量：</h3>
+<p><code>ioreg -n AppleSmartBattery -r | awk '$1~/Capacity/{c[$1]=$3} END{OFMT="%.2f%%"; max=c["\"MaxCapacity\""]; print (max&gt;0? 100*c["\"CurrentCapacity\""]/max: "?")}'</code></p>
+<h3 id="7-cpu">7. 显示 CPU 状态：</h3>
+<p><code>$HOME/scripts/CPUSpeed.sh</code></p>
+<p>需要 <a href="http://7q5cfr.com1.z0.glb.clouddn.com/TextBar-Recipes/blob/master/CPUSpeed.sh">CPUSpeed.sh</a> 配合，点击链接下载</p>
+<h3 id="8-itunes">8. 显示 iTunes 正在播放哪首歌曲：</h3>
+<p><code>osascript -e 'if application "iTunes" is running then' -e 'tell application "iTunes"' -e 'if player state = playing then' -e '(get name of current track) &amp; " – " &amp; (get artist of current track)' -e 'else' -e 'return ""' -e 'end if' -e 'end tell' -e 'else' -e 'return ""' -e 'end if'</code></p>
+<p>此脚本需要你的 iTunes 处于歌曲播放状态</p>
+<h3 id="9">9. 显示天气：</h3>
+<p><code>curl -s 'http://api.openweathermap.org/data/2.5/weather?q=Manchester,UK&amp;units=metric' | python -c 'import sys, json; data=json.load(sys.stdin); print("{} : {:.1f}°C".format(data["weather"][0]["main"], data["main"]["temp"]))'</code></p>
+<p><img alt="TextBar Weather" src="http://7q5cfr.com1.z0.glb.clouddn.com/Weather.png" /></p>
+<p>将你所在的城市信息替代脚本里的“Manchester,UK”即可</p>
+<h3 id="10-outlook">10. 显示 Outlook 里未读邮件数量：</h3>
+<p><code>osascript $HOME/scripts/CheckOutlookMail.scpt</code></p>
+<p>需要独立的 <a href="https://github.com/richie5um/TextBar-Recipes/blob/master/CheckOutlookMail.scpt">CheckOutlookMail.scpt</a> 帮忙，放入 ~/script/ 即可</p>
+<h3 id="11">11. 显示系统文本剪切板：</h3>
+<p><code>pbpaste | sed 's/^[[:space:]]*//;s/[[:space:]]$//' | sed -E 's/^(.{10}).+$/\1.../'</code></p>
+<p>这个脚本只能显示文本的前10个字符，后面的用省略号替代。。</p>
+<h3 id="12">12. 显示剪切板文本字符数量：</h3>
+<p><code>pbpaste | wc -c</code></p>
+<h3 id="13">13. 显示蓝牙键盘/鼠标剩余电量：</h3>
+<p><code>echo "M: "</code>ioreg -c BNBMouseDevice | grep '"BatteryPercent" =' | sed 's/[^0-9]<em>//g'<code>"%" echo "B:"</code>ioreg -c AppleBluetoothHIDKeyboard | grep '"BatteryPercent" =' | sed 's/[^0-9]</em>//g'<code>"%"</code></p>
+<p><img alt="Mouse Keyboard Battery" src="http://7q5cfr.com1.z0.glb.clouddn.com/MouseKeyboardBattery.png" /></p>
+<h3 id="14-finder">14. 显示 Finder 里已选文件的名称：</h3>
+<p><code>osascript $HOME/scripts/SelectedFinderFile.scpt</code></p>
+<p>需要独立的 <a href="https://github.com/richie5um/TextBar-Recipes/blob/master/SelectedFinderFile.scpt">SelectedFinderFile.scpt</a> 帮忙，把这个 scpt 放入 ~/scripts 目录即可</p>
+<h3 id="15-menubar">15. 直接在 Menubar 显示图片？</h3>
+<p><code>echo '&lt;html&gt;&lt;img src="http://www......."/&gt;&lt;/html&gt;'</code></p>
+<p>这个脚本对图片要求太高，长宽不得超过 14px，要折腾请谨慎！</p>
+<h2 id="_1">更多的个性化设置办法</h2>
+<p>TextBar 竟然还能做字体更换，OMG!，</p>
+<h3 id="_2">来看办法：</h3>
+<p><code>defaults write com.RichSomerfield.TextBar DefaultFontName -string "HelveticaNeue-UltraLight"</code></p>
+<p>脚本执行后需重启软件</p>
+<h3 id="_3">设置字体大小：</h3>
+<p><code>defaults write com.RichSomerfield.TextBar textBarPreferences.DefaultFontSize -int 10</code></p>
+<p>脚本执行后需重启软件</p>
+<h3 id="textbar-mebubar-recipes">设置 TextBar 在 Mebubar 上显示 Recipes 限制数量：</h3>
+<p><code>defaults write com.RichSomerfield.TextBar DefaultMaxWidth -int 100</code></p>
+<p>脚本执行后需重启软件，这个脚本需要你的 OS X 系统是 Yosemite，TextBar 版本要在 v1.4.47 及以上，脚本里最后的“100”是自选值，填写任意数字代表 Recipes 显示数量，填写“0”代表不限制，当然，如果 Recipes 太多，你需要 Bartender 来帮忙了。</p>
+<h2 id="_4">总结</h2>
+<p>总之，这款软件适合有脚本编写经验的用户使用，乐趣大大的有，就看你的能力了，我觉得这款作品与 iOS 上的 Workflow 有些像，入门很容易，但要玩好需要你自己苦练内容，TextBar 售价 2.99$，提供7天试用，感兴趣的 Geek 不妨试试。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

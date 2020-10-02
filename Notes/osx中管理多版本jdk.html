@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>OSX中管理多版本JDK - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;OSX中管理多版本JDK
+    <span class="updated">Page Updated&nbsp;
+      2015-06-04 12:24
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">OSX中管理多版本JDK</div>
+
+  <p>由于工作中需要在多个版本中切换，手工写环境变量或改配置文件太过麻烦，因此，我特别需要一个类似于rvm（ruby多版本管理工具）的工具。昨天终于找到了这样一个工具：jEnv.</p>
+<h2 id="jenv">安装 jEnv</h2>
+<p>注：在安装jEnv前确保系统中已安装好<a href="http://brew.sh/index_zh-cn.html">brew</a>。</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">brew</span> <span class="n">install</span> <span class="n">jenv</span>
+<span class="err">$</span><span class="n">brew</span> <span class="n">install</span> <span class="n">caskroom</span><span class="o">/</span><span class="n">cask</span><span class="o">/</span><span class="n">brew</span><span class="o">-</span><span class="n">cask</span> <span class="p">(</span><span class="err">这个虽然官网上没说，但是我实验的结果是没有这个，后面添加</span><span class="n">JDK</span><span class="err">时会报错</span><span class="p">)</span>
+</pre></div>
+
+
+<p>测试下：</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">jenv</span> <span class="n">versions</span>
+<span class="o">*</span> <span class="p">(</span><span class="n">set</span> <span class="n">by</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">gniu</span><span class="o">/</span><span class="p">.</span><span class="n">java</span><span class="o">-</span><span class="n">version</span><span class="p">)</span>
+</pre></div>
+
+
+<p>“*“代表当前所选版本，由于系统还未安装JDK（jEnv不管理JDK安装的事儿），所以没有显示JDK信息。</p>
+<h2 id="jdk">安装 JDK</h2>
+<p>如果是安装最新版的JDK可以通过以下命令完成：</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">java</span>
+</pre></div>
+
+
+<p>当然，你也可以直接下载.pkg包安装。如果你需要JDK6，下载地址：<a href="http://support.apple.com/kb/DL1572">适用于 OS X 的 Java 2014-001</a></p>
+<h2 id="jdk_1">注册 JDK</h2>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">jenv</span> <span class="n">add</span> <span class="o">/</span><span class="n">System</span><span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="mf">1.6.0</span><span class="p">.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+<span class="n">oracle64</span><span class="o">-</span><span class="mf">1.6.0.65</span> <span class="n">added</span>
+<span class="mf">1.6.0.65</span> <span class="n">added</span>
+<span class="mf">1.6</span> <span class="n">added</span>
+<span class="err">$</span><span class="n">jenv</span> <span class="n">add</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk1</span><span class="mf">.7.0</span><span class="n">_75</span><span class="p">.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+<span class="n">oracle64</span><span class="o">-</span><span class="mf">1.7.0.75</span> <span class="n">added</span>
+<span class="mf">1.7.0.75</span> <span class="n">added</span>
+<span class="mf">1.7</span> <span class="n">added</span>
+<span class="err">$</span><span class="n">jenv</span> <span class="n">add</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Java</span><span class="o">/</span><span class="n">JavaVirtualMachines</span><span class="o">/</span><span class="n">jdk1</span><span class="mf">.8.0</span><span class="n">_31</span><span class="p">.</span><span class="n">jdk</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Home</span>
+<span class="n">oracle64</span><span class="o">-</span><span class="mf">1.8.0.31</span> <span class="n">added</span>
+<span class="mf">1.8.0.31</span> <span class="n">added</span>
+<span class="mf">1.8</span> <span class="n">added</span>
+
+<span class="err">$</span><span class="n">jenv</span> <span class="n">versions</span>
+<span class="o">*</span> <span class="n">system</span> <span class="p">(</span><span class="n">set</span> <span class="n">by</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">gniu</span><span class="o">/</span><span class="p">.</span><span class="n">jenv</span><span class="o">/</span><span class="n">version</span><span class="p">)</span>
+  <span class="mf">1.6</span>
+  <span class="mf">1.6.0.65</span>
+  <span class="mf">1.7</span>
+  <span class="mf">1.7.0.75</span>
+  <span class="mf">1.8</span>
+  <span class="mf">1.8.0.31</span>
+  <span class="n">oracle64</span><span class="o">-</span><span class="mf">1.6.0.65</span>
+  <span class="n">oracle64</span><span class="o">-</span><span class="mf">1.7.0.75</span>
+  <span class="n">oracle64</span><span class="o">-</span><span class="mf">1.8.0.31</span>
+</pre></div>
+
+
+<h2 id="jdk_2">切换JDK</h2>
+<p>jEnv切换JDK可以针对某个目录来设置JDK，例如：</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">jenv</span> <span class="n">local</span> <span class="n">oracle64</span><span class="o">-</span><span class="mf">1.6.0.65</span>
+<span class="err">$</span><span class="n">jenv</span> <span class="n">version</span>
+<span class="n">oracle64</span><span class="o">-</span><span class="mf">1.6.0.65</span> <span class="p">(</span><span class="n">set</span> <span class="n">by</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">gniu</span><span class="o">/</span><span class="n">Blog</span><span class="o">/</span><span class="n">yekki</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="p">.</span><span class="n">java</span><span class="o">-</span><span class="n">version</span><span class="p">)</span>
+</pre></div>
+
+
+<p>从上面可以看出，只要你目录/Users/gniu/Blog/yekki.github.com/中，默认的JDK就是oracle64-1.6.0.65。</p>
+<p>当然，你也可以全局设置，例如：</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">jenv</span> <span class="n">global</span> <span class="n">oracle64</span><span class="o">-</span><span class="mf">1.6.0.65</span>
+<span class="err">或</span>
+<span class="err">$</span><span class="n">jenv</span> <span class="n">global</span> <span class="mf">1.6</span>
+</pre></div>
+
+
+<p>但是这里需要注意：基于目录的设置会覆盖全局设置。例如：你已经将某个目录设定为oracle64-1.7.0.75，然后你又全局设定oracle64-1.6.0.65，那么在你处在那个目录中时，oracle64-1.7.0.75生效，而出了这个目录，则oracle64-1.6.0.65生效。如果你想删除对目录的JDK设置，只需删除目录中的.java-version文件。</p>
+<h2 id="jdk_3">安装老版本JDK</h2>
+<p>我工作中需要用到老版本的JDK，例如：jdk1.7.0_55.jdk。但是，在OSX上你只能安装jdk1.7系列的最新版，这时，你需要使用工具：Pacifist，用这个工具解开.pkg包，将其中的Contents目录取出，将其放入你手工创建的JDK目录，例如：/Library/Java/JavaVirtualMachines/jdk1.7.0_55。最后，记得更改权限，例如：”sudo chmod -R 755 /Library/Java/JavaVirtualMachines/jdk1.7.0_55”。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

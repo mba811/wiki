@@ -1,0 +1,131 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac下搭建go语言开发环境 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Go">Go</a>&nbsp;&#187;&nbsp;Mac下搭建go语言开发环境
+    <span class="updated">Page Updated&nbsp;
+      2015-05-19 00:08
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac下搭建go语言开发环境</div>
+
+  <h2 id="_1">前言</h2>
+<p>年关将至(笔者还是喜欢过旧年),项目也处于平稳阶段。感觉最近比较的颓废,这可不行,程序员应当始终保持一颗探索新事物的心。</p>
+<p>于是就想着学习一门新语言了。从事java开发,觉得java体系过于庞大想着研究一下较为"轻量型"的语言,正好最近go语言风头正盛，值得一学。</p>
+<h2 id="go">GO语言</h2>
+<p>Go语言是Google内部主推的语言,它作为一门全新的静态类型开发语言,与当前的开发语言相比具有许多令人兴奋不已的新特性。专门针对多处理器系统的应用程序编程进行了优化，使用go语言完全可以媲美c、c＋＋的速度，而且更加安全、简洁，支持并行进程。</p>
+<p>以下是go语言的主要特性：</p>
+<p>1、自动垃圾回收</p>
+<p>2、更丰富的内置类型</p>
+<p>3、函数多反回值</p>
+<p>4、错误处理</p>
+<p>5、匿名函数和闭包</p>
+<p>6、类型和接口</p>
+<p>7、并发编程</p>
+<p>8、反射</p>
+<p>9、语言交互性</p>
+<h2 id="mac">Mac开发环境搭建</h2>
+<p>以上基本都属废话,搭建开发环境尽快开启编程之旅才是王道,笔者使用的是mac系统，因此介绍下mac下golang的环境搭建。</p>
+<h3 id="1golangsdk">1、安装Golang的SDK</h3>
+<p>google官网被墙下载地址如下:<a href="http://www.golangtc.com/download">http://www.golangtc.com/download</a> ，下载最新的安装包，之后双击安装即可。</p>
+<p>安装完成之后，打开终端，输入go、或者go version(查看安装版本)出现如下信息即表示安装成功：</p>
+<div class="hlcode"><pre><span class="nl">LCore:</span><span class="o">~</span> <span class="n">lcore</span><span class="err">$</span> <span class="n">go</span> <span class="n">version</span>
+<span class="n">go</span> <span class="n">version</span> <span class="n">go1</span><span class="mf">.4.1</span> <span class="n">darwin</span><span class="o">/</span><span class="n">amd64</span>
+<span class="nl">LCore:</span><span class="o">~</span> <span class="n">lcore</span><span class="err">$</span>
+</pre></div>
+
+
+<h3 id="2">2、配置环境变量</h3>
+<p>安装完sdk之后接下来便是配置环境变量了，打开终端输入cd ~ 进入用户主目录,之后输入ls －all命令查看是否存在.bash_profile<br />
+文件，存在既使用vim .bash_profile打开并编辑该文件。根据自己实际情况，内容如下：</p>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">GOPATH</span><span class="o">=/</span><span class="n">Users</span><span class="o">/</span><span class="n">lcore</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">code</span><span class="o">/</span><span class="n">go</span>
+<span class="n">export</span> <span class="n">GOBIN</span><span class="o">=</span><span class="err">$</span><span class="n">GOPATH</span><span class="o">/</span><span class="n">bin</span>
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="err">$</span><span class="n">PATH</span><span class="o">:</span><span class="err">$</span><span class="n">GOBIN</span>
+</pre></div>
+
+
+<p>GOPATH:日常开发的根目录。GOBIN:是GOPATH下的bin目录。</p>
+<p>且需要gobin目录加入到path路径下，生成的可执行文件就可以直接运行了。<br />
+   退出vim,使用source ~/.bash_profile即可完成对golang环境变量的配置了，可以在终端中输入go env查看配置后的效果:</p>
+<div class="hlcode"><pre><span class="nl">LCore:</span><span class="o">~</span> <span class="n">lcore</span><span class="err">$</span> <span class="n">go</span> <span class="n">env</span>
+<span class="n">GOARCH</span><span class="o">=</span><span class="s">&quot;amd64&quot;</span>
+<span class="n">GOBIN</span><span class="o">=</span><span class="s">&quot;/Users/lcore/dev/code/go/bin&quot;</span>
+<span class="n">GOCHAR</span><span class="o">=</span><span class="s">&quot;6&quot;</span>
+<span class="n">GOEXE</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+<span class="n">GOHOSTARCH</span><span class="o">=</span><span class="s">&quot;amd64&quot;</span>
+<span class="n">GOHOSTOS</span><span class="o">=</span><span class="s">&quot;darwin&quot;</span>
+<span class="n">GOOS</span><span class="o">=</span><span class="s">&quot;darwin&quot;</span>
+<span class="n">GOPATH</span><span class="o">=</span><span class="s">&quot;/Users/lcore/dev/code/go&quot;</span>
+<span class="n">GORACE</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+<span class="n">GOROOT</span><span class="o">=</span><span class="s">&quot;/usr/local/go&quot;</span>
+<span class="n">GOTOOLDIR</span><span class="o">=</span><span class="s">&quot;/usr/local/go/pkg/tool/darwin_amd64&quot;</span>
+<span class="n">CC</span><span class="o">=</span><span class="s">&quot;clang&quot;</span>
+<span class="n">GOGCCFLAGS</span><span class="o">=</span><span class="s">&quot;-fPIC -m64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -fno-common&quot;</span>
+<span class="n">CXX</span><span class="o">=</span><span class="s">&quot;clang++&quot;</span>
+<span class="n">CGO_ENABLED</span><span class="o">=</span><span class="s">&quot;1&quot;</span>
+</pre></div>
+
+
+<h3 id="3sublime-text">3、开发工具配置(sublime text)</h3>
+<p>这里笔者选用的是sublime text安装gosublime插件进行开发（golang语法高亮提示），安装方式这里就不多提了。</p>
+<h2 id="hello-go">Hello GO</h2>
+<p>配置好开发环境之后,简单的进行一下go语言的开发。在你的gopath下的src目录下，新建一个文件夹(以项目名称命名)，然后在sublime中打开该文件夹,新建main.go文件即可以进行编码了。</p>
+<div class="hlcode"><pre><span class="n">package</span> <span class="n">main</span>
+
+<span class="nf">import</span> <span class="p">(</span>
+    <span class="s">&quot;fmt&quot;</span>
+<span class="p">)</span>
+
+<span class="n">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">fmt</span><span class="p">.</span><span class="n">Println</span><span class="p">(</span><span class="s">&quot;hello go&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>代码编写完成之后,使用command＋b打开sublime text终端，使用go build xx(项目名称)对其进行编译,编译通过的结果信息如下:</p>
+<div class="hlcode"><pre><span class="p">[</span> <span class="err">`</span><span class="n">go</span> <span class="n">build</span>  <span class="n">helloGo</span><span class="err">`</span> <span class="o">|</span> <span class="n">done</span><span class="o">:</span> <span class="mf">420.495985</span><span class="n">ms</span> <span class="p">]</span>
+</pre></div>
+
+
+<p>提示编译成功之后，再执行shell命令，执行刚刚编译之后的文件./hellogo即可看到运行结果:</p>
+<div class="hlcode"><pre><span class="k">[ `./helloGo` | done: 10.532868ms ]</span>
+    <span class="err">hello</span> <span class="err">go</span>
+</pre></div>
+
+
+<p>如果仅仅是只需要看到运行的结果，而不产生可执行文件(文件名和项目名一样)则在sublime text终端中直接使用go run xxx.go即可:</p>
+<div class="hlcode"><pre><span class="k">[ `go run main.go` | done: 314.476988ms ]</span>
+    <span class="err">hello</span> <span class="err">go</span>
+</pre></div>
+
+
+<p>到目前为止,我们已经安装好了开发golang程序的基本环境,可以开心的享受golang的奇妙之处了!</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

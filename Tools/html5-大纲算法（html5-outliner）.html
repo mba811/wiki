@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>HTML5 大纲算法（HTML5 Outliner） - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;HTML5 大纲算法（HTML5 Outliner）
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 11:54
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">HTML5 大纲算法（HTML5 Outliner）</div>
+
+  <h3 id="html">HTML大纲算法</h3>
+<p>HTML中存在着一个大纲算法，大纲可以为用户提供同一份页面的信息结构目录，就像之前我们在word和pdf文档中体验过的那样。</p>
+<p>PDF文档中的目录结构：</p>
+<p><img alt="pdf.gif" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/3e0499026c2df03cd32029e18316b90e.gif" /></p>
+<h3 id="html5">没有HTML5之前</h3>
+<p>HTML5之前的HTML4，唯一的方式是采用<h1> ~ <h6>元素来创建大纲。因为正常习惯下，<h1> ~ <h6>表示了从第一级到第六级的层级递减标题，而标题之下就应该是对应的内容了。</p>
+<p>合理正确的使用标题元素可以为文档赋予一个良好结构的大纲，不单单对于搜索引擎的优化，更是为借助于屏幕阅读器浏览器网页的盲人（或弱视力）用户提供了巨大的帮助。</p>
+<p>在非采用HTML5对网页进行重构的情况下，合理正确的使用标题元素依然可以为文档赋予一个良好结构的大纲，比如目前<a href="http://www.osmn00.com/">堂主博客</a>的首页模板：</p>
+<p><img alt="gg-测试插件.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/d45fd5260ffcd475aa2a1a1de1711ae7.png" /></p>
+<p>这个首页采用了如下的结构：</p>
+<div class="hlcode"><pre><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;h1&gt;</span>堂主 - WEB前端开发<span class="nt">&lt;/h1&gt;</span>
+
+<span class="nt">&lt;h2&gt;</span>博客导航<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;ul&gt;</span>...<span class="nt">&lt;/ul&gt;</span>
+
+<span class="nt">&lt;h2&gt;</span>文章列表<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;ol&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;h3&gt;</span>...<span class="nt">&lt;/h3&gt;&lt;/li&gt;</span>
+  <span class="nt">&lt;/ol&gt;</span>
+
+<span class="nt">&lt;h2&gt;</span>边栏应用标题...<span class="nt">&lt;/h2&gt;</span>
+  ...
+
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+
+<h3 id="_1">现实不总是那么美好</h3>
+<p>但在某些情况下，比如一个标题下还需要一个副标题；或者网站本身是聚合性质的，内容都是以模块的形式从其他网站摘取、嵌入、拼合而成。那么这种情况下，原有技术基础上的大纲算法会提供一个灾难性的大纲目录。</p>
+<p>比如我为我的博客名称添加一个副标题（或者在其他情景的时候会为一篇文章添加一个副标题；或者像现在流行的团购网站那样，在网站LOGO+名称的下面都会来上一句口号），就像我们经常在<a href="http://wordpress.org/">WordPress</a>中做的那样：</p>
+<p><img alt="wordpress中设置副标题.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/d10fa494b961b3526530b54526221339.png" /></p>
+<p>OK，我为我的博客增加了一个副标题，结构代码可能会变成下面这样：</p>
+<div class="hlcode"><pre><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;h1&gt;</span>堂主 - WEB前端开发<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;h2&gt;</span>Code is art!<span class="nt">&lt;/h2&gt;</span>
+...
+
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+
+<p>此时页面大纲会变成下面的样子：</p>
+<p><img alt="添加副标题后的大纲.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/58291e94db0bb762bb7999df232860d5.png" /></p>
+<p>我这里只是增加了一个博客副标题，结果大纲目录中新增加出来一个标号为1的二级“Code is art !”标题，这会弄得屏幕阅读器用户晕头转向：因为这只是博客名称的副标题，而不是某块内容区域的<strong>实用性指向标题</strong>。无奈的替换办法一般是将这个副标题放入<p></p>中，并设置<p class="subheading">来对段落中的内容进行说明。但这么做是在损害我们代码的语义性，因为这部分文字毕竟是一个标题而不是一段简单的内容文字。</p>
+<p>试想如果一个网页是聚合类网页，里面呈现很多条从信息源网站摘取来的文章块（包括该文章的标题和简述），如果不同信息源的文章标题使用的元素还不一致（有的是<h1>有的可能是根据自身页面上下文采用其他等级的H），那么该聚合网页的大纲会是多么的魔鬼！盲人用户会不会高呼“杀了我！”？</p>
+<h3 id="_2">新技术带来的解脱</h3>
+<p>于是新的HTML5中定义了一个非常严谨的大纲算法，并且对语义性内容布局元素赋予了一个“开始新的节”的功能。个人理解，HTML5中，元素在大纲中的表现可以简单分为以下三类：</p>
+<ul>
+<li>无作为</li>
+<li>开始一个新的节</li>
+<li>成节的根</li>
+</ul>
+<h4 id="_3">无作为</h4>
+<p>“无作为”是我个人对这类元素的称呼，它们在页面大纲中不会产生新的节。如下面的这段代码：</p>
+<div class="hlcode"><pre><span class="nt">&lt;div&gt;</span>这是一个没有语义的层<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+  <span class="nt">&lt;li&gt;</span>一个无序列表<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</pre></div>
+
+
+<p>在浏览器的“HTML5 Outliner”插件中（本文末尾会介绍2款浏览器中使用的插件）查看会如下呈现：</p>
+<p><img alt="无作为的.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/810bb875ea79a686fc9ef0b1d2763b1c.png" /></p>
+<p>大纲中没有子节，只有一个无标题的body根。</p>
+<h4 id="_4">开始一个新的节</h4>
+<p>而像<article>、<section>、<nav>、<aside>等新的语义性元素，会开始一个新的节，如下代码：</p>
+<div class="hlcode"><pre><span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;section&gt;</span>这是页面中的一个主题区域<span class="nt">&lt;/section&gt;</span>
+<span class="nt">&lt;aside&gt;</span>这是页面中的一个边栏区域<span class="nt">&lt;/aside&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+
+<p>在浏览器的“HTML5 Outliner”插件中查看会如下呈现：</p>
+<p><img alt="开始一个新的节.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/a9ec934aa8a28d343ebeeace33e087f9.png" /></p>
+<p>另外已有的<h1> ~ <h6> 也会创建新的节，但H元素在创建新的节的时候会遵循一个出现的顺序的问题，如下两段不同代码演示的：</p>
+<div class="hlcode"><pre><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>H1<span class="nt">&lt;/h1&gt;</span>
+  <span class="nt">&lt;h2&gt;</span>H2<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>H3<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;h4&gt;</span>H4<span class="nt">&lt;/h4&gt;</span>
+  <span class="nt">&lt;h5&gt;</span>H5<span class="nt">&lt;/h5&gt;</span>
+  <span class="nt">&lt;h6&gt;</span>H6<span class="nt">&lt;/h6&gt;</span>
+
+  <span class="nt">&lt;h6&gt;</span>H6<span class="nt">&lt;/h6&gt;</span>
+  <span class="nt">&lt;h5&gt;</span>H5<span class="nt">&lt;/h5&gt;</span>
+  <span class="nt">&lt;h4&gt;</span>H4<span class="nt">&lt;/h4&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>H3<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;h2&gt;</span>H2<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>H1<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+
+<p><img alt="H顺序和倒序.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/3996f1570f1fd1e73ac30cfeb1a477be.png" /></p>
+<p>同一节中，H元素会依照自身大小创建新的节和归属不同级别。如果我们改一下倒序列中的<h6>为<h3></p>
+<div class="hlcode"><pre><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>H1<span class="nt">&lt;/h1&gt;</span>
+  <span class="nt">&lt;h2&gt;</span>H2<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>H3<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;h4&gt;</span>H4<span class="nt">&lt;/h4&gt;</span>
+  <span class="nt">&lt;h5&gt;</span>H5<span class="nt">&lt;/h5&gt;</span>
+  <span class="nt">&lt;h6&gt;</span>H6<span class="nt">&lt;/h6&gt;</span>
+
+  <span class="nt">&lt;h3&gt;</span>H3<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;h5&gt;</span>H5<span class="nt">&lt;/h5&gt;</span>
+  <span class="nt">&lt;h4&gt;</span>H4<span class="nt">&lt;/h4&gt;</span>
+  <span class="nt">&lt;h3&gt;</span>H3<span class="nt">&lt;/h3&gt;</span>
+  <span class="nt">&lt;h2&gt;</span>H2<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>H1<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+
+<p>那么其的大纲会变为下面的样子：</p>
+<p><img alt="改了顺序的H.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/0c374d11194c2dc056958d7a0bb4acde.png" /></p>
+<p>背后的逻辑是：出现在最前面的<h1>创建了一个新的节，其后的所有小于它的H元素都在其创建的节内再创建子节。一个节内，同重的H元素在大纲中会出现在相同的级中。所以后面倒序的H元素会像上面截图中那样呈现。</p>
+<h4 id="_5">成节的根</h4>
+<p><a href="http://book.douban.com/subject/5344975/">《HTML5用户指南》</a>中这样介绍这类元素：</p>
+<blockquote>
+<p>某些元素（<blockquote>、<body>、<details>、<fieldset>、<figure>、<td>）叫做成节的跟，并且它们可以拥有自己的大纲。但是，这些元素中的节和标题对于它们的祖先的大纲没有任何影响。</p>
+</blockquote>
+<p>简单的说，在<body>里，如果你使用了<blockquote>等，即时它们自身包含的内容中有用于创建新的节的元素（<h2>或者一个<nav>），但在针对body这个根的大纲里，这些也都不会显示。如下代码：</p>
+<div class="hlcode"><pre><span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;h1&gt;</span>H1<span class="nt">&lt;/h1&gt;</span>
+  <span class="nt">&lt;section&gt;</span>
+    <span class="nt">&lt;h2&gt;</span>您吃了么？<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;/section&gt;</span>
+
+  <span class="nt">&lt;blockquote&gt;</span>
+    <span class="nt">&lt;section&gt;</span>
+      <span class="nt">&lt;h2&gt;</span>今天星期几？<span class="nt">&lt;/h2&gt;</span>
+    <span class="nt">&lt;/section&gt;</span>
+  <span class="nt">&lt;/blockquote&gt;</span>
+
+  <span class="nt">&lt;section&gt;</span>
+    <span class="nt">&lt;h2&gt;</span>吃了！<span class="nt">&lt;/h2&gt;</span>
+  <span class="nt">&lt;/section&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</pre></div>
+
+
+<p><img alt="成节的根.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/f87b42b20a6559c77e194860a15ff43a.png" /></p>
+<p>很明显，虽然<blockquote>里包含了<section>和<h2>，但在大纲中并无显示。</p>
+<h3 id="_6">小工具</h3>
+<p>对于大纲的可视化，这里介绍2款浏览器中应用的插件。<a href="http://book.douban.com/subject/5344975/">《HTML5用户指南》</a>和<a href="http://book.douban.com/subject/5386169/">《HTML5揭秘》</a>中都给出了一个在线测试查看的<a href="http://gsnedders.html5.org/outliner/">网址</a>，不过我这里测试都是网页测试程序存在问题。还好我们有更方便的替代方案——浏览器插件。</p>
+<h4 id="opera"><strong>Opera平台上的插件</strong></h4>
+<p>Opera的这款HTML5 Outliner插件需要安装Opera 11及以上版本的浏览器。浏览器下载地址可以去<a href="http://www.operachina.com/browser/">官网</a>下载，插件地址在这里：<a href="https://addons.opera.com/addons/extensions/details/html5-outliner/1.0/?display=en">https://addons.opera.com/addons/extensions/details/html5-outliner/1.0/?display=en</a></p>
+<p><img alt="op-安装插件.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/f4846025b4cfad2599676d747ca49316.png" /></p>
+<p>安装完成后打开浏览器，会在右上角出现一个HTML5 Outliner的按钮：</p>
+<p><img alt="op-按钮位置.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/8ec125dffe7d7e138f8421f68cbda0e9.png" /></p>
+<p>打开要查看的网站，点击这个按钮就OK了：</p>
+<p><img alt="op-测试插件.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/0ac3e5ba562ba28974e4731d78d2769a.png" /></p>
+<h4 id="chrome">Chrome下的插件</h4>
+<p>同样，扩展搜索中搜索：HTML5 Outliner</p>
+<p><img alt="gg-搜索插件.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/2488ad318c9eb661c2f8fe6f4aa9861f.png" /></p>
+<p>安装：</p>
+<p><img alt="gg-安装插件.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/8105240a4aa77486531134d75d87d30a.png" /></p>
+<p>安装完之后默认在浏览器上不会出现变化，但在访问某个网址的时候，会在地址栏右侧，“书签”按钮的左侧显示出“HTML5 Outliner”的按钮：</p>
+<p><img alt="gg-按钮位置.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/2aa072b277e294a130bd2f530a8a5c1f.png" /></p>
+<p>使用方法同样，网页加载完毕后点击这个按钮：</p>
+<p><img alt="gg-测试插件.png" src="http://osmn00.com/d/file/blog/front-end/2011-04-04/c8c7ea6342212ca751b4e285bb47b8a8.png" /></p>
+<h3 id="_7">后记</h3>
+<p>堂主写这篇博客的时候尚不清楚目前浏览器对HTML5的大纲算法支持程度究竟怎样，手头的资料显示的是尚无一款能完整支持的浏览器。这意味着目前的屏幕阅读器用户可能不会很快体验到新技术带来的便利。这就要求我们在编写页面的时候最好遵循文档中节的套嵌层级使用相应的H元素，保证标题的层级正确。避免所有层级都只用<h1>——即使这么做在新的HTML5中是属于容许范围的。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

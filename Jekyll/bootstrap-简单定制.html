@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Bootstrap 简单定制 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Bootstrap 简单定制
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 21:56
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Bootstrap 简单定制</div>
+
+  <h3 id="_1">一、增加搜索框</h3>
+<h4 id="1google">1、Google自定义搜索</h4>
+<p>向jekyll中增加搜索功能有多种方式，此处采用Google自定义搜索来实现全站搜索。</p>
+<p>添加以下样式到你的css文件中：</p>
+<div class="hlcode"><pre><span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">search</span> <span class="n">div</span><span class="p">{</span><span class="n">position</span><span class="o">:</span><span class="n">relative</span><span class="p">;</span><span class="n">margin</span><span class="o">-</span><span class="n">right</span><span class="o">:</span><span class="mi">20</span><span class="n">px</span><span class="p">;}</span>
+<span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">inner</span> <span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">search</span> <span class="p">.</span><span class="n">search</span><span class="o">-</span><span class="n">query</span><span class="o">:</span><span class="n">focus</span><span class="p">,</span>
+<span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">inner</span> <span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">search</span> <span class="p">.</span><span class="n">search</span><span class="o">-</span><span class="n">query</span><span class="p">.</span><span class="n">focused</span><span class="p">,</span>
+<span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">inner</span> <span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">search</span> <span class="p">.</span><span class="n">search</span><span class="o">-</span><span class="n">query</span><span class="p">{</span><span class="n">padding</span><span class="o">-</span><span class="n">right</span><span class="o">:</span><span class="mi">28</span><span class="n">px</span><span class="p">;}</span>
+<span class="p">.</span><span class="n">navbar</span><span class="o">-</span><span class="n">search</span> <span class="n">button</span><span class="p">.</span><span class="n">icon</span><span class="o">-</span><span class="n">search</span><span class="p">{</span><span class="n">position</span><span class="o">:</span><span class="n">absolute</span><span class="p">;</span><span class="n">right</span><span class="o">:</span><span class="mi">10</span><span class="n">px</span><span class="p">;</span><span class="n">top</span><span class="o">:</span><span class="mi">7</span><span class="n">px</span><span class="p">;</span><span class="n">border</span><span class="o">:</span><span class="n">none</span><span class="p">;</span><span class="n">background</span><span class="o">-</span><span class="n">color</span><span class="o">:</span><span class="n">transparent</span><span class="p">;}</span>
+<span class="p">.</span><span class="n">search</span><span class="o">-</span><span class="n">hidden</span><span class="p">{</span><span class="n">width</span><span class="o">:</span><span class="mi">0</span><span class="n">px</span><span class="p">;</span><span class="n">overflow</span><span class="o">:</span><span class="n">hidden</span><span class="p">;</span><span class="n">height</span><span class="o">:</span><span class="mi">0</span><span class="n">px</span><span class="p">;}</span>
+</pre></div>
+
+
+<p>将以下html片段插入到合适位置：</p>
+<div class="hlcode"><pre><span class="c">&lt;!-- display custom searchbox --&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+  (function() {
+    var cx = &#39;XXXXX:YYYY&#39;;
+    var gcse = document.createElement(&#39;script&#39;);
+    gcse.type = &#39;text/javascript&#39;;
+    gcse.async = true;
+    gcse.src = (document.location.protocol == &#39;https:&#39; ? &#39;https:&#39; : &#39;http:&#39;) +
+        &#39;//www.google.com/cse/cse.js?cx=&#39; + cx;
+    var s = document.getElementsByTagName(&#39;script&#39;)<span class="cp">[</span><span class="mi">0</span><span class="cp">]</span>;
+    s.parentNode.insertBefore(gcse, s);
+  })();
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;search-hidden&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;gcse:search&gt;&lt;/gcse:search&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">&quot;searchbox_XXXXX:YYYY&quot;</span> <span class="na">action=</span><span class="s">&quot;&quot;</span> <span class="na">class=</span><span class="s">&quot;navbar-search pull-right&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">value=</span><span class="s">&quot;XXXXX:YYYY&quot;</span> <span class="na">name=</span><span class="s">&quot;cx&quot;</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">value=</span><span class="s">&quot;FORID:11&quot;</span> <span class="na">name=</span><span class="s">&quot;cof&quot;</span> <span class="na">type=</span><span class="s">&quot;hidden&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;button</span> <span class="na">class=</span><span class="s">&quot;icon-search&quot;</span><span class="nt">&gt;&lt;/button&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">&quot;q&quot;</span> <span class="na">name=</span><span class="s">&quot;q&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">class=</span><span class="s">&quot;search-query span2&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Search&quot;</span><span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</pre></div>
+
+
+<p><strong>注意</strong>：此处cx中的"<code>XXXXX:YYYY</code>"应当替换为你的gcse id，若没有，请到<a href="http://www.google.com/cse/">google官网</a>申请一个。</p>
+<h4 id="2js">2、js静态搜索</h4>
+<p>请参考另一篇文章Jekyll 基于 Feed 实现静态搜索</p>
+<h3 id="_2">二、设置代码高亮</h3>
+<h4 id="1">1、转换方式及相应语法</h4>
+<p>将代码转换为html的方式很多，语法也各不相同。例如，可以使用liquid模板引擎：</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">highlight</span> <span class="n">ruby</span> <span class="o">%</span><span class="p">}</span>
+    <span class="n">require</span> <span class="err">&#39;</span><span class="n">redcarpet</span><span class="err">&#39;</span>
+    <span class="n">markdown</span> <span class="o">=</span> <span class="n">Redcarpet</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">)</span>
+    <span class="n">puts</span> <span class="n">markdown</span><span class="p">.</span><span class="n">to_html</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endhighlight</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>也可以使用markdown转换器来实现，不同markdown转换器支持的语法格式也可能不同。</p>
+<p>事实上，由于liquid语法的冗长以及在markdown中插入liquid代码带来的不协调，很多人更喜欢采用markdown本身的语法格式。</p>
+<p>例如下面是<code>GFM(GitHub Flavored Markdown)</code>的<code>fenced code block</code>语法：</p>
+<div class="hlcode"><pre><span class="err">```</span><span class="n">ruby</span>
+<span class="n">require</span> <span class="err">&#39;</span><span class="n">redcarpet</span><span class="err">&#39;</span>
+<span class="n">markdown</span> <span class="o">=</span> <span class="n">Redcarpet</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">)</span>
+<span class="n">puts</span> <span class="n">markdown</span><span class="p">.</span><span class="n">to_html</span>
+<span class="err">```</span>
+</pre></div>
+
+
+<p>GFM语法是对markdown的扩充，需要markdown转换器支持。有关GFM的更多内容，请看<a href="https://help.github.com/articles/github-flavored-markdown">这里</a>。</p>
+<p>这里顺便提一下markdown转换器的有关内容。常见的转换器有：</p>
+<ul>
+<li><code>maruku</code> (默认，纯ruby实现，速度较慢，语法灵活，支持若干扩展特性)</li>
+<li><code>rdiscount</code> (C语言实现，速度最快，但基本上只支持标准markdown语法)</li>
+<li><code>kramdown</code> (纯ruby实现，速度比maruku快好几倍，常与coderay一起使用，支持非常丰富的扩展语法)</li>
+<li><code>redcarpet</code> (基于ruby库Sundown实现，速度较快，支持较为丰富的扩展语法，方便自定义)</li>
+</ul>
+<p>由于我比较喜欢<code>fenced code block</code>语法，上面列举的4个中只有redcarpet支持，所以此处采用redcarpet。</p>
+<h4 id="2">2、语法高亮显示引擎</h4>
+<p>常见的语法高亮引擎有：</p>
+<ul>
+<li><code>pygments</code> (python实现，支持多达百种语言，支持多种主题，速度较慢)</li>
+<li><code>coderay</code> (ruby实现，速度非常快，提供的功能特性有限，支持的语言种类也不多)</li>
+</ul>
+<p>除此之外，还可以使用javascript来渲染，比如<code>highlight.js</code>。<code>highlight.js</code>目前支持50多种语言和20多种主题，而且可以自动检测语言。</p>
+<h4 id="3">3、具体设置</h4>
+<p>此处介绍使用redcarpet+pygments和redcarpet+highlight.js两种设置。</p>
+<h5 id="1redcarpet">1）设置redcarpet</h5>
+<p>首先，安装redcarpet：</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">redcarpet</span>
+</pre></div>
+
+
+<p>然后，在/_config.yml中设置：</p>
+<div class="hlcode"><pre><span class="n">markdown</span><span class="o">:</span> <span class="n">redcarpet</span>
+<span class="n">redcarpet</span><span class="o">:</span>
+  <span class="n">extensions</span><span class="o">:</span> <span class="o">[</span><span class="s2">&quot;no_intra_emphasis&quot;</span><span class="o">,</span> <span class="s2">&quot;fenced_code_blocks&quot;</span><span class="o">,</span> <span class="s2">&quot;autolink&quot;</span><span class="o">,</span> <span class="s2">&quot;strikethrough&quot;</span><span class="o">,</span> <span class="s2">&quot;superscript&quot;</span><span class="o">,</span> <span class="s2">&quot;with_toc_data&quot;</span><span class="o">]</span>
+</pre></div>
+
+
+<h5 id="2pygments">2）设置pygments</h5>
+<p>首先，安装pygments(Ubuntu):</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">pygments</span>
+</pre></div>
+
+
+<p>然后，在/_config.yml中设置：</p>
+<div class="hlcode"><pre><span class="n">pygments</span><span class="o">:</span> <span class="kc">true</span>
+</pre></div>
+
+
+<p>在jekyll目录下执行：</p>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="p">.</span><span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">themes</span><span class="o">/</span><span class="n">twitter</span><span class="o">/</span><span class="n">pygments</span><span class="o">/</span><span class="n">styles</span>
+<span class="n">cd</span> <span class="p">.</span><span class="o">/</span><span class="n">assets</span><span class="o">/</span><span class="n">themes</span><span class="o">/</span><span class="n">twitter</span><span class="o">/</span><span class="n">pygments</span><span class="o">/</span><span class="n">styles</span>
+<span class="n">pygmentize</span> <span class="o">-</span><span class="n">S</span> <span class="k">default</span> <span class="o">-</span><span class="n">f</span> <span class="n">html</span> <span class="o">&gt;</span> <span class="k">default</span><span class="p">.</span><span class="n">css</span>
+</pre></div>
+
+
+<p>可以把<code>default</code>换成其他主题，如<code>vs</code>、<code>emacs</code>(推荐)等。关于主题，请看这个<a href="http://pygments.org/demo/82675/">例子</a>。</p>
+<p>最后，打开/_includes/themes/twitter/default.html，在head部分添加以下内容：</p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.pygments</span> <span class="cp">%}</span><span class="x"></span>
+<span class="x">  &lt;!-- highlight with pygments --&gt;</span>
+<span class="x">  &lt;link href=&quot;</span><span class="cp">{{</span> <span class="nv">ASSET_PATH</span> <span class="cp">}}</span><span class="x">/pygments/styles/emacs.css&quot; rel=&quot;stylesheet&quot;&gt;</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span><span class="x"></span>
+</pre></div>
+
+
+<h5 id="3highlightjs">3）设置highlight.js</h5>
+<p>可以直接打开/_includes/themes/twitter/default.html，在head部分添加以下内容即可：</p>
+<div class="hlcode"><pre><span class="c">&lt;!-- highlight with highlight.js --&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;http://yandex.st/highlightjs/7.3/styles/default.min.css&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://yandex.st/highlightjs/7.3/highlight.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span>hljs.initHighlightingOnLoad();<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>也可以采用我的办法：</p>
+<p>首先，下载<a href="http://softwaremaniacs.org/soft/highlight/en/download/">highlight.js</a>，解压到/assets/themes/twitter/highlightjs。</p>
+<p>然后，在打开/_includes/themes/twitter/default.html，在head部分添加以下内容：</p>
+<div class="hlcode"><pre><span class="cp">{%</span> <span class="k">if</span> <span class="nv">site.highlightjs</span> <span class="k">and</span> <span class="nv">page.langs</span> <span class="p">!</span><span class="o">=</span> <span class="nv">null</span> <span class="cp">%}</span>
+  <span class="c">&lt;!-- highlight with highlight.js --&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">ASSET_PATH</span> <span class="cp">}}</span><span class="s">/highlightjs/styles/vs.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">ASSET_PATH</span> <span class="cp">}}</span><span class="s">/highlightjs/highlight.pack.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="cp">{%</span> <span class="k">if</span> <span class="nv">page.langs</span> <span class="o">==</span> <span class="nv">empty</span> <span class="cp">%}</span>
+    <span class="nt">&lt;script&gt;</span>hljs.initHighlightingOnLoad();<span class="nt">&lt;/script&gt;</span>
+  <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+    <span class="nt">&lt;script&gt;</span>hljs.initHighlightingOnLoad(<span class="cp">{{</span> <span class="nv">page.langs</span> <span class="o">|</span> <span class="nf">join</span><span class="s2">:&quot;&#39;,&#39;&quot;</span> <span class="o">|</span> <span class="nf">prepend</span><span class="s2">:&quot;&#39;&quot;</span> <span class="o">|</span> <span class="nf">append</span><span class="s2">:&quot;&#39;&quot;</span> <span class="cp">}}</span>);<span class="nt">&lt;/script&gt;</span>
+  <span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+<span class="cp">{%</span> <span class="k">endif</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<p>此处演示的是vs主题，可以自己更换。</p>
+<p>最后，在/_config.yml中，添加：</p>
+<div class="hlcode"><pre><span class="n">highlightjs</span><span class="o">:</span> <span class="kc">true</span>
+</pre></div>
+
+
+<p>这么做的好处是：</p>
+<ul>
+<li>可以在/_config.yml中设置<code>highlightjs: false</code>来关闭highlightjs.</li>
+<li>可以在每个post的YAML头部中添加类似<code>langs: [bash, python]</code>的项来指定用到的语言，这可以加快highlight.js的加载速度。</li>
+</ul>
+<h3 id="_3">三、设置评论、分析系统</h3>
+<h4 id="1_1">1、评论系统</h4>
+<p>我用的是disqus。</p>
+<p>由于bootstrap已经内置了评论功能，我们只需做简单的设置即可。</p>
+<p>打开<code>/_config.yml</code>，设置"comments"下的"provider"为"disqus"，然后在"disqus"下设置"short_name"即可。就像我的：</p>
+<div class="hlcode"><pre><span class="n">comments</span> <span class="o">:</span>
+  <span class="n">provider</span> <span class="o">:</span> <span class="n">disqus</span>
+  <span class="n">disqus</span> <span class="o">:</span>
+    <span class="n">short_name</span> <span class="o">:</span> <span class="n">liberize</span>
+</pre></div>
+
+
+<p>如果你还没有disqus账号，请到<a href="http://disqus.com/">官网</a>注册，你将得到一个short_name，填入即可。</p>
+<p>设置<code>provider: false</code>关闭全局评论功能，或者在page/post的YAML头部设置<code>comments: false</code>关闭该page/post的评论功能。</p>
+<p><strong>更新</strong>：现在已经将评论系统换成了多说，请看<a href="http://liberize.me/post/jekyll-use-duoshuo-comment-system.html">这里</a>。</p>
+<h4 id="2_1">2、分析系统</h4>
+<p>我用的是google analytics.</p>
+<p>同样的，我们作如下设置：</p>
+<p>/_config.yml：</p>
+<div class="hlcode"><pre><span class="n">analytics</span> <span class="o">:</span>
+  <span class="n">provider</span> <span class="o">:</span> <span class="n">google</span>
+  <span class="n">google</span> <span class="o">:</span> 
+  <span class="n">tracking_id</span> <span class="o">:</span> <span class="s1">&#39;UA-123-12&#39;</span>
+</pre></div>
+
+
+<p>如果还没有tracking_id，请到<a href="http://www.google.com/analytics/">官网</a>申请。</p>
+<p>设置<code>provider: false</code>关闭全局分析功能，或者在page/post的YAML头部设置<code>analytics: false</code>关闭该page/post的分析功能。</p>
+<h3 id="_4">四、更改主题</h3>
+<p>请看官网提供的<a href="http://themes.jekyllbootstrap.com/">主题</a>。</p>
+<p>主题安装及更换方法：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">your</span><span class="o">/</span><span class="n">jekyll</span><span class="o">/</span>
+<span class="cp"># install via git</span>
+<span class="n">rake</span> <span class="n">theme</span><span class="o">:</span><span class="n">install</span> <span class="n">git</span><span class="o">=</span><span class="s">&quot;https://github.com/jekyllbootstrap/theme-the-program.git&quot;</span>
+<span class="cp"># or by name</span>
+<span class="n">rake</span> <span class="n">theme</span><span class="o">:</span><span class="n">install</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;the-program&quot;</span>
+<span class="cp"># switch themes</span>
+<span class="n">rake</span> <span class="n">theme</span><span class="o">:</span><span class="k">switch</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;the-program&quot;</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

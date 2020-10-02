@@ -1,0 +1,101 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title> zsh与oh my zsh - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp; zsh与oh my zsh
+    <span class="updated">Page Updated&nbsp;
+      2015-02-08 11:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title"> zsh与oh my zsh</div>
+
+  <p>zsh 与 oh my zsh。</p>
+<p><strong>1. 安装zsh</strong></p>
+<p>1.1. 采用 Homebrew 来安装zsh。</p>
+<p><code>brew ``install</code> <code>zsh</code></p>
+<p>1.2. 设置zsh为默认。</p>
+<p>1.2.1. 在/etc/shells文件末尾添加 ：/usr/local/bin/zsh。</p>
+<p>1.2.2. 执行</p>
+<p><code>chsh</code> <code>-s ``/usr/local/bin/zsh</code></p>
+<p>1.2.3. 将~/.bash_prorile或者~/.profile等配置拷贝到~/.zshrc中。</p>
+<p><strong>2. 安装<a href="https://github.com/robbyrussell/oh-my-zsh"> oh my zsh</a></strong></p>
+<p>我采用手动安装。</p>
+<p>2.1. Clone git 仓库。</p>
+<p><code>git clone git:``//github``.com``/robbyrussell/oh-my-zsh``.git ~/.oh-my-zsh</code></p>
+<p>2.2. 备份  ~/.zshrc 文件（如果存在）（可选）。</p>
+<p><code>cp</code> <code>~/.zshrc ~/.zshrc.orig</code></p>
+<p>2.3. 通过复制 zsh 的配置模板文件创建一个新的 zsh 配置文件。</p>
+<p><code>cp</code> <code>~/.oh-my-zsh``/templates/zshrc``.zsh-template ~/.zshrc</code></p>
+<p>2.4. 设置 zsh 为默认 shell。</p>
+<p><code>chsh</code> <code>-s ``/bin/zsh</code></p>
+<p>2.5. 通过打开一个新的终端 Terminal 来启动或重启zsh。</p>
+<p><strong>3. 更新 oh my zsh</strong></p>
+<p>默认情况下，oh my zsh 会自动更新，并会弹出窗口告诉你更新。</p>
+<p>3.1. 你可以设置让它不弹出窗口，自动更新。</p>
+<p>设置 ~/.zshrc 文件中，</p>
+<p><code>DISABLE_UPDATE_PROMPT=true</code></p>
+<p>3.2. 你可以设置让它不自动更新。</p>
+<p>设置 ~/.zshrc 文件中，</p>
+<p><code>DISABLE_AUTO_UPDATE=true</code></p>
+<p>3.3. 手动更新。</p>
+<p>在终端命令行中执行：</p>
+<p><code>upgrade_oh_my_zsh</code></p>
+<p><strong>4. 卸载 oh my zsh</strong></p>
+<p>在终端命令行中执行：</p>
+<p><code>uninstall_oh_my_zsh</code></p>
+<p><strong>5.配置 oh my zsh </strong></p>
+<p>5.1. 配置 oh my zsh 主题。</p>
+<p>找到并设置 ~/.zshrc 文件中，</p>
+<p><code>ZSH_THEME="你想要的主题名称"</code></p>
+<p>oh my zsh 提供了数十种主题，具体可以看<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/themes">这里</a>。</p>
+<p>5.2. 配置 oh my zsh 插件。</p>
+<p>找到并设置 ~/.zshrc 文件中（默认配置了git 插件），</p>
+<p><code>plugins=(git 你想要的插件名称)</code></p>
+<p>oh my zsh 提供了数十种插件，具体可以看<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Plugins">这里</a>。</p>
+<p><strong>6. zsh 的特色与功能</strong></p>
+<p>6.1. 兼容 bash</p>
+<p>6.2. 拼写纠正。当你打错命令时，zsh会进行自动拼写纠正。</p>
+<p>6.3. 更强大的补全</p>
+<p>6.3.1. 连按两次tab，列出所有的补全列表，并直接开始选择。（用方向键或 ctrl-n/p/f/b 来选择，也可以继续按 tab 键依次选择）。</p>
+<p>6.3.2. 命令选项补全。如，键入“ tar – ” 然后按tab键，就会列出命令 tar 的所有的选项和帮助说明。</p>
+<p>6.3.3. 命令参数补全。如，键入 “kill” 然后按tab键，就会列出所有的进程名和对应的进程号；键入 “kill sbin” 然后按tab键，就会列出的进程路径中有 “sbin” 的进程的进程号。</p>
+<p>6.4. 更智能的历史命令。在用或者<code>方向上键</code>查找历史命令时，zsh支持限制查找。如，输入 “ls” 然后再按方向上键,则只会查找用过的 ls 命令。</p>
+<p>6.5. 多个终端会话共享历史记录。</p>
+<p>6.6. 更智能的cd。</p>
+<p>6.6.1. 直接输入路径不用输入cd，便可以进入该目录。</p>
+<p>6.6.2. 快速补全。如，你输入 cd /u/l/b 然后按 tab 键，快速补全为：cd /usr/local/bin。</p>
+<p>6.6.3. 路径替换。如，你进入了路径 /usr/local/bin 下，而你现在想进入 /usr/local/share 下，你可以直接输入命令 cd bin share 即可。</p>
+<p>6.7. 更强大的alias。</p>
+<p>6.7.1. 支持普通的alias。如，alias ls =’ls –color=auto’。</p>
+<p>6.7.2. 支持后缀 alias，即以什么命令打开特定的后缀名文件。如，alias -s js=mvim，输入hello.js，会以 vim 软件打开该文件，而不在需要 vim hello.js。</p>
+<p>6.8. 通配符搜索。不仅支持一般的通配符搜索，如，ls -l <em>.log，而且还支持递归的通配符搜索，如，ls -l </em><em>/</em>.log。</p>
+<p>6.9. 以上列举了 zsh 常用的功能，更详尽的内容，请看<a href="http://zsh.sourceforge.net/Guide/zshguide.html">这里</a>。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

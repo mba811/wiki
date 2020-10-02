@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac 终端常用命令行 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac 终端常用命令行
+    <span class="updated">Page Updated&nbsp;
+      2015-05-24 19:12
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac 终端常用命令行</div>
+
+  <h2 id="mac">mac 终端 常用命令</h2>
+<h2 id="_1">基本命令</h2>
+<h3 id="1">1、列出文件</h3>
+<p>ls 参数 目录名 例: 看看驱动目录下有什么:ls /System/Library/Extensions<br />
+参数 -w 显示中文，-l 详细信息， -a 包括隐藏文件</p>
+<h3 id="2">2、转换目录</h3>
+<p>cd 例：想到驱动目录下溜达一圈 cd /System/Library/Extensions</p>
+<h3 id="3">3、建立新目录</h3>
+<p>mkdir 目录名 例：在驱动目录下建一个备份目录 backup mkdir /System/Library/Extensions/backup<br />
+在桌面上建一个备份目录 backup mkdir /User/用户名/Desktop/backup</p>
+<h3 id="4">4、拷贝文件</h3>
+<p>cp 参数 源文件 目标文件 例：想把桌面的Natit.kext 拷贝到驱动目录中 cp -R /User/用户名/Desktop/Natit.kext /System/Library/Extensions<br />
+参数R表示对目录进行递归操作，kext在图形界面下看起来是个文件，实际上是个文件夹。<br />
+把驱动目录下的所有文件备份到桌面backup<br />
+cp -R /System/Library/Extensions/* /User/用户名/Desktop/backup</p>
+<h3 id="5">5、删除文件</h3>
+<p>rm 参数 文件 例：想删除驱动的缓存 rm -rf /System/Library/Extensions.kextcache rm -rf /System/Library/Extensions.mkext<br />
+参数－rf 表示递归和强制，千万要小心使用，如果执行了 rm -rf / 你的系统就全没了</p>
+<h3 id="6">6、移动文件</h3>
+<p>mv 文件 例：想把AppleHDA.Kext 移到桌面 mv /System/Library/Extensions/AppleHDA.kext /User/用户名/Desktop<br />
+想把AppleHDA.Kext 移到备份目录中 mv /System/Library/Extensions/AppleHDA.kext /System/Library/Extensions/backup</p>
+<h3 id="7">7、文本编辑</h3>
+<p>nano 文件名 例：编辑natit Info.plist nano /System/Library/Extensions/Natit.kext/Info.plist</p>
+<h2 id="_2">目录操作</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>mkdir 创建一个目录 mkdir dirname</p>
+<p>rmdir 删除一个目录 rmdir dirname</p>
+<p>mvdir 移动或重命名一个目录 mvdir dir1 dir2</p>
+<p>cd 改变当前目录 cd dirname</p>
+<p>pwd 显示当前目录的路径名 pwd</p>
+<p>ls 显示当前目录的内容 ls -la</p>
+<h2 id="_3">文件操作</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>cat 显示或连接文件 cat filename</p>
+<p>od 显示非文本文件的内容 od -c filename</p>
+<p>cp 复制文件或目录 cp file1 file2</p>
+<p>rm 删除文件或目录 rm filename</p>
+<p>mv 改变文件名或所在目录 mv file1 file2</p>
+<p>find 使用匹配表达式查找文件 find . -name “*.c” -print</p>
+<p>file 显示文件类型 file filename</p>
+<h2 id="_4">选择操作</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>head 显示文件的最初几行 head -20 filename</p>
+<p>tail 显示文件的最后几行 tail -15 filename</p>
+<p>cut 显示文件每行中的某些域 cut -f1,7 -d: /etc/passwd</p>
+<p>colrm 从标准输入中删除若干列 colrm 8 20 file2</p>
+<p>diff 比较并显示两个文件的差异 diff file1 file2</p>
+<p>sort 排序或归并文件 sort -d -f -u file1</p>
+<p>uniq 去掉文件中的重复行 uniq file1 file2</p>
+<p>comm 显示两有序文件的公共和非公共行 comm file1 file2</p>
+<p>wc 统计文件的字符数、词数和行数 wc filename</p>
+<p>nl 给文件加上行号 nl file1 &gt;file2</p>
+<h2 id="_5">进程操作</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>ps 显示进程当前状态 ps u</p>
+<p>kill 终止进程 kill -9 30142</p>
+<h2 id="_6">时间操作</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>date 显示系统的当前日期和时间 date</p>
+<p>cal 显示日历 cal 8 1996</p>
+<p>time 统计程序的执行时间 time a.out</p>
+<p>网络与通信操作</p>
+<p>命令名 功能描述 使用举例</p>
+<p>telnet 远程登录 telnet hpc.sp.net.edu.cn</p>
+<p>rlogin 远程登录 rlogin hostname -l username</p>
+<p>rsh 在远程主机执行指定命令 rsh f01n03 date</p>
+<p>ftp 在本地主机与远程主机之间传输文件 ftpftp.sp.net.edu.cn</p>
+<p>rcp 在本地主机与远程主机 之间复制文件 rcp file1 host1:file2</p>
+<p>ping 给一个网络主机发送 回应请求 ping hpc.sp.net.edu.cn</p>
+<p>mail 阅读和发送电子邮件 mail</p>
+<p>write 给另一用户发送报文 write username pts/1</p>
+<p>mesg 允许或拒绝接收报文 mesg n</p>
+<h2 id="korn-shell">Korn Shell 命令</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>history 列出最近执行过的 几条命令及编号 history</p>
+<p>r 重复执行最近执行过的 某条命令 r -2</p>
+<p>alias 给某个命令定义别名 alias del=rm -i</p>
+<p>unalias 取消对某个别名的定义 unalias del</p>
+<h2 id="_7">其它命令</h2>
+<p>命令名 功能描述 使用举例</p>
+<p>uname 显示操作系统的有关信息 uname -a</p>
+<p>clear 清除屏幕或窗口内容 clear</p>
+<p>env 显示当前所有设置过的环境变量 env</p>
+<p>who 列出当前登录的所有用户 who</p>
+<p>whoami 显示当前正进行操作的用户名 whoami</p>
+<p>tty 显示终端或伪终端的名称 tty</p>
+<p>stty 显示或重置控制键定义 stty -a</p>
+<p>du 查询磁盘使用情况 du -k subdir</p>
+<p>df /tmp 显示文件系统的总空间和可用空间</p>
+<p>w 显示当前系统活动的总信息</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

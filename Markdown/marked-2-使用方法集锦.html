@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Marked 2 使用方法集锦 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Markdown">Markdown</a>&nbsp;&#187;&nbsp;Marked 2 使用方法集锦
+    <span class="updated">Page Updated&nbsp;
+      2015-02-26 21:15
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Marked 2 使用方法集锦</div>
+
+  <p>首先妳得会用 Markdown 语言编辑文本，MD 很容易掌握，你可以先看看创始人 John Gruber 写的<a href="http://daringfireball.net/projects/markdown/syntax">语法</a>，然后再看看我们站内推荐的各种 <a href="http://www.waerfa.com/?s=markdown">MD 软件</a>，基本上就算入门了，而 Brett 这款 Marked 2 也算把 Markdown 玩到了前所未有的境界，这是一款功能强大的 Markdown 标记文本预览软件，能辅导你撰写出最专业的 MD 文本，但我一直纳闷，为啥 Brett 不自己再开发一款 MD 编辑软件呢？也许是害怕与<a href="http://www.waerfa.com/when-mac-wear-met-chenluo">罗晨</a>竞争吧？哈哈，开个玩笑，回归主题。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathpreview.png" /></p>
+<p>经过了一年半的锤炼，第二代的功能全面性已今非昔比，针对不同使用人群，Marked 都推出了相应的实用功能，在今晚构思文章架构的时候，觉得一个晚上的时间还是不能道出所有的功能，所以今天这篇就算个引子吧，可能对 Marked 2 持观望的朋友会失望了，不能在今晚看到完整的评测，但我只能说，如果你喜欢撰写有条理的干净文章，那 Marked 2 绝对是最佳的工作伴侣，先来举个例子好了：无论你是使用 <a href="http://www.waerfa.com/ulysses-iii">Ulysses</a>、Mou、Byword 这样的轻量化编辑工具，还是使用 Scrivener 写大布头长篇， Marked 都能流畅的加载文本进行预览，Marked 根据 MD 文章内子标题对全文段落进行自动识别，并给出文章索引目录方便作者审阅，把握行文节奏，支持许多诸如 MultiMarkdown，Fountain 等泛标记文本语言，你可以随时查看文章的字数，段落数，预计阅读所用时间，并验证文内所有外链的有效性等等功能，就像是一个复杂的检测机器，能够发现并纠正你的文章里每一处编辑错误。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepath11.gif" /></p>
+<h1 id="_1">基础篇</h1>
+<p>介绍 Marked 2 的基础功能，那这次 Frank 不打算用大段文字来解释，准备尝试多用动图，这样阅读理解起来比较直观，也容易让 Marked 2 在大家的印象形成一个比较立体的概念，本文分 「打开文件」，「预览」，「快捷键」，「导出」四个模块来讲，其中「预览」是本篇要着重介绍的，如果您看完全文介绍后你会发现其实 Marked 2 是为撰写/浏览长文本所设计的，为啥这么说呢，请看介绍：</p>
+<h2 id="_2">打开文件</h2>
+<p>Marked 提供了非常多样化的文件访问方法，比如在 MD 软件标题栏选中文本图标，直接拖入 Dock 栏上的 Marked 图标即可进行预览：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathopening.gif" /></p>
+<p>在 Marked 预览窗口标题栏上，按住 CMD 键，单击标题还能弹出 Finder 目录选择菜单，选择任意一个目录都能弹出文件选择窗口：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathopening2.gif" /></p>
+<p>当然，Marked 2 打开文本的普通方式也不缺少，像在 Menubar 上选择「Open」，「Open Recent」都算最基本的了：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathfile_open.jpg" /></p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathopen_recent.jpg" /></p>
+<p>除此之外，Marked 还能直接从剪切版文本记录里直接预览效果，在 Menubar 菜单里进入 Preview – Clipboard Preview 可以直接生成预览窗口，或者使用热键 「⌘⇧V」也可。</p>
+<h2 id="_3">预览文本</h2>
+<h3 id="1">1. 排版自选</h3>
+<p>基础的预览功能已满足大部分文字工作的需要，但用户的视觉需求必须得满足，Marked 2 内置了 9 种不同风格的预览模板可供用户选择，当然，如果你动手能力强，可以考虑使用 Brett 提供的一套原始自定义CSS文件来打造自己的预览模板：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathstyle.png" /></p>
+<p>在设置里你会看到「Theme」里默认有一条「Custtom CSS Example」，点击「Reveal」跳到 CSS 文件所在 Finder 目录，打开编辑即可，另外还能填入「Additional CSS 」参数应用给所有候选模板：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathcustomstyletemplate.png" /></p>
+<h3 id="2">2. 文本缩放</h3>
+<p>文本预览的过程中，文字、用词校队工作最耗精力，快读调整文本大小不可没有，在窗口右下角或 Menubar 菜单项里你都能找到这个名为「Zoom」的文本缩放选项，当然，记住热键用起来最方便：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathtextzoom.jpg" /></p>
+<h3 id="3">3. 对比度反转</h3>
+<p>我们在 iPhone 上看 RSS 文章或刷微博，App 都会提供按时间自动切换界面主题，主要目的还是为了护眼，Marked 2 上同样提供了这样的黑白两色主题，Preview 菜单 – High Contrast 里切换即可：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/CfakepathHigh-Contrast.png" /></p>
+<h2 id="_4">阅读控制组功能「核心功能」</h2>
+<h3 id="1-table">1. Table 「文章导航」</h3>
+<p>Marked 核心功能之一就是：Table，即文章内容导航，如果你的文章带有 H1，H2 这样的子标题，那么 Marked 会识别文内的各级标题，自动生成，点击底部右侧的工具组第二个图标会弹出文章导航，也可按「F」键弹出，但这样也会触发段落快速跳转功能，按「F」键后在文章导航里输入分段落子标题并按回车就能快速跳转到分段落。</p>
+<p>使用「J」和「K」键或着上下方向键能在文章导航里的各个子标题之间移动。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathmarkedtable.gif" /></p>
+<h3 id="2-auto-scroll">2. Auto-scroll 「自动滚动翻页」</h3>
+<p>在浏览长文时你需要自动滚动翻页这样的功能来解放你的手指去不停的按翻页键，按「S」键开始自动滚动，按住「Shift」键，再按左右方向键可以逐步加快或减慢滚动速度。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathmarkedautoscroll.gif" /></p>
+<h3 id="3_1">3. 检查外链</h3>
+<p>Marked 可以对文内所有外链进行检查，鼠标单击不要马上放开，过1秒松开会弹出工具菜单，你可以选择验证外链是否合法，将外链地址拷贝到剪切板，或是选择在 Safari 里打开：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathchecklink.gif" /></p>
+<h3 id="4">4. 搜索</h3>
+<p>Marked 2 的文本搜索功能不是非常丰富，除了提供精准词汇，大小写区分以及正则表达式这三种筛选条件外再没有其他功能了：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathsearchonmarked.png" /></p>
+<h3 id="5">5. 阅读进度动态指示条</h3>
+<p>当你在阅读长文的时候，你会发现顶部标题栏实时变动的蓝色进度条会明确告诉你当前阅读的位置：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathdocumentprogress.png" /></p>
+<h3 id="6">6. 段落折叠</h3>
+<p>段落折叠功能同样是为多段落的长篇文本所设计的功能，按住 CMD 键（或在设置里选择不按住），单击分段标题就能对这段文本进行折叠，当你按住「Shift」再单击标题时还能快速将其他同级的分段落折叠。使用热键 「Option」+「Command」+ 左右方向键还能快速将全文文本折叠或铺展。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathcollpase.gif" /></p>
+<h3 id="7-mini-map">7. Mini Map</h3>
+<p>Marked 2 真是为长文所设计的，按数字「0」键可在预览窗口右侧生成一个用来快速浏览正文的缩小版全文截图，即 Mini Map，当然，这可是活的 Map，当你按住 CMD 键将光标放在里面上下移动时，会弹出一个当前段落的预览窗口，不过我感觉 Mini Map 这个功能不如文章导航「Table」来的实在，使用频率不会太高，而且每次开启 Mini Map 时会造成软件卡顿。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathminimap.gif" /></p>
+<h3 id="8-view-source">8. View Source</h3>
+<p>使用热键「CMD+U」或是窗口左下角的「&lt;&gt;」按钮，可以在预览模式与 HTML 源码模式下快速切换</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathviewsource.gif" /></p>
+<h2 id="_5">导航用快捷键</h2>
+<p>Marked 2 的热键无比丰富，可以说每一个小功能都有热键来配合实现，在你需要回顾某些热键时，可以按「h」直接在窗口左侧调出常用热键列表，使用组合键「CMD+Option+K」可以调出一个更完整的热键参考悬浮框：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathkeyboard.gif" /></p>
+<p>「J」和「K」：上下滚动翻页</p>
+<p>「Shift」+「J/K」：加快滚动速度</p>
+<p>「T」：一键回到文章顶部</p>
+<p>「B」：一键回到文章底部</p>
+<p>「U」：以当前窗口尺寸二分之一的距离向后滚动</p>
+<p>「D」： 以当前窗口尺寸二分之一的距离向前滚动</p>
+<p>「英文逗号/句号」：在各个同级子标题所在分段落快速跳转</p>
+<h2 id="bookmarks">Bookmarks「给文章添加阅读书签」</h2>
+<p>阅读时插入书签这个动作本来是真实生活中一个常用方法，在虚拟屏幕上她也会经常被用到，Marked 2 设计的书签功能非常好用，当你遇到需要二次修改或反复雕琢的段落时，可以按住「Shift」+「1-9任意数字」可以为该段落添加标签，添加后你会在段落右上角看到标签数字，按对应数字就能瞬间跳到那个段落上。</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathaddbookmarks.gif" /></p>
+<p>使用「n」，「p」两个单键可以上下顺序跳转段落，如果添加标签时，把「Shift」换成「Option」按住再选择数字可以对子标题看成标签添加；此外还有一个小细节需要注意，按数字「0」键可以将所有书签的数字改为分段落子标题显示，这样将更为直观，双击「x」键将清除所有已添加的书签</p>
+<h2 id="_6">导出</h2>
+<h3 id="1_1">1. 基础导出功能</h3>
+<p>在编辑出满意的作品后，格式输出也是最后一个值得注意的环节，每个人的需求都不一样， Marked 2 也是尽可能的照顾到了所有人的需要，她能将 MD 文本导出成： HTML, PDF, RTFD, RTF, DOCX, ODT 等多种格式的文档，如果你只是想立刻将文本拷贝到浏览器的编辑器里，使用组合键「CMD+Shift+C」可以一键拷贝全文HTML源码到系统剪切板里，看下面的动图：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathexport1.gif" /></p>
+<h3 id="2-pdf">2. PDF 打印</h3>
+<p>有许多用户需要把 MD 文章输出成 PDF 格式并打印出来的，Marked 2 提供的 PDF 打印功能可谓十分给力，你可以将各项打印参数调整好后保存为一个「Preset」，每次调用时直接在“Presets”选项里勾选即可：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/CfakepathPrintPDF.png" /></p>
+<p>如果你想更进一步设计自己的打印排版，可以在软件设置-Export里对分页方式，页间距，表格内容的打印（分级标签规则），页头，页尾的内容定义，字体等参数进行规范：</p>
+<p><img alt="" src="http://pix.waerfa.com//2014/11/Cfakepathexportingprintpdf.png" /></p>
+<p>比如拿页头，页尾来说，这些显示项可以放在页面四个边角位置，显示的信息可以是文章标题，存储路径，日期，时间等等，以下是官方给出的信息解释：</p>
+<ul>
+<li>%title = Document Title</li>
+<li>%date = Current Date</li>
+<li>%time = Current Time</li>
+<li>%page = Current Page Number</li>
+<li>%total = Total Page Number</li>
+<li>%path = Filesystem path to document</li>
+<li>%%(text) = Text to print only on the first page</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

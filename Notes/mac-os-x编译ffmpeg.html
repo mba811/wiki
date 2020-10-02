@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac OS X编译ffmpeg - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;Mac OS X编译ffmpeg
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 09:34
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac OS X编译ffmpeg</div>
+
+  <p><img alt="" src="http://www.liaoxuefeng.com/files/attachments/0013847825460366d96c8f4c35444b594cfc41b41f51e87000/l" /></p>
+<p><a href="http://www.liaoxuefeng.com/user/001383729881018b677b2776c24451e9b5f30a03ea5d73c000">廖雪峰</a> / <a href="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a> / 2011-9-9 20:45 / 阅读: 1</p>
+<p>下载了一堆flv的MTV，无法导入iTunes，iTunes只识别mp4格式的视频，于是准备用ffmpeg把flv转换成mp4。</p>
+<p>网上一搜，其实ffmpeg官网给出了非常详细的在Mac上编译ffmpeg的步骤：</p>
+<p><a href="http://ffmpeg.org/trac/ffmpeg/wiki/MacOSXCompilationGuide">http://ffmpeg.org/trac/ffmpeg/wiki/MacOSXCompilationGuide</a></p>
+<h3 id="1-xcode">1) 安装XCode</h3>
+<p>首先，必须安装XCode，XCode提供了Mac平台开发环境必须的gcc编译器，要注意的是XCode 4.5安装后并没有命令行的gcc可用，还需要打开XCode，在某个设置里添加Command Line Tools，XCode就会自动下载并安装好gcc，同时还有git也被安装了。</p>
+<h3 id="2-homebrew">2) 安装homebrew</h3>
+<p>然后安装homebrew，这是一个Mac平台的包管理工具，类似Debian/Ubuntu的apt，提供了许多Mac没有的Unix/Linux工具，例如wget。安装homebrew很简单：</p>
+<div class="hlcode"><pre><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSkL raw.github.com/mxcl/homebrew/go)&quot;</span>
+</pre></div>
+
+
+<h3 id="3">3) 安装相关包</h3>
+<p>ffmpeg需要的依赖包几乎都可以通过brew install安装：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">automake</span> <span class="n">celt</span> <span class="n">faac</span> <span class="n">fdk</span><span class="o">-</span><span class="n">aac</span> <span class="n">lame</span> <span class="n">libass</span> <span class="n">libtool</span> <span class="n">libvorbis</span> <span class="n">libvpx</span> <span class="n">libvo</span><span class="o">-</span><span class="n">aacenc</span> <span class="n">opencore</span><span class="o">-</span><span class="n">amr</span> <span class="n">openjpeg</span> <span class="n">opus</span> <span class="n">sdl</span> <span class="n">schroedinger</span> <span class="n">shtool</span> <span class="n">speex</span> <span class="n">texi2html</span> <span class="n">theora</span> <span class="n">wget</span> <span class="n">x264</span> <span class="n">xvid</span> <span class="n">yasm</span>
+</pre></div>
+
+
+<p>官网的命令行多了一个git，这个XCode自带，没必要再装了。</p>
+<h3 id="4-libaacplus">4) 安装libaacplus</h3>
+<p>这个包没法通过homebrew安装，所以只能自己下载安装，官网有一个详细的命令行步骤：</p>
+<div class="hlcode"><pre><span class="n">wget</span> <span class="n">http</span><span class="o">:</span><span class="c1">//217.20.164.161/~tipok/aacplus/libaacplus-2.0.2.tar.gz</span>
+<span class="n">tar</span> <span class="n">xzf</span> <span class="n">libaacplus</span><span class="o">-</span><span class="mf">2.0.2</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">libaacplus</span><span class="o">-</span><span class="mf">2.0.2</span>
+<span class="cp"># libtool on osx is quite different from the gnu libtool, which is called glibtool on osx</span>
+<span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="err">&#39;</span><span class="p">.</span><span class="n">bck</span><span class="err">&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="err">&#39;</span><span class="n">s</span><span class="o">/</span><span class="n">libtool</span><span class="o">/</span><span class="n">glibtool</span><span class="o">/</span><span class="err">&#39;</span> <span class="n">autogen</span><span class="p">.</span><span class="n">sh</span>
+<span class="p">.</span><span class="o">/</span><span class="n">autogen</span><span class="p">.</span><span class="n">sh</span>
+<span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">install</span>
+<span class="n">cd</span> <span class="p">..</span>
+</pre></div>
+
+
+<h3 id="5-ffmpeg">5) 编译ffmpeg</h3>
+<p>直接按照官网的命令行编译，报ERROR: libopenjpeg not found，其实openjpeg是安装了的，只是没找到相应的头文件，网上google，一个国外网友给出了简单解决方案：</p>
+<p>首先，确定openjpeg的安装目录在/usr/local/Cellar/openjpeg/1.5.1，然后，把相应的路径加入到gcc的搜索路径中：</p>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">CFLAGS</span><span class="o">=</span><span class="s">&quot;-I/usr/local/Cellar/openjpeg/1.5.1/include/openjpeg-1.5&quot;</span>
+</pre></div>
+
+
+<p>然后开始编译：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//source.ffmpeg.org/ffmpeg.git ffmpeg</span>
+<span class="n">cd</span> <span class="n">ffmpeg</span>
+<span class="p">.</span><span class="o">/</span><span class="n">configure</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">gpl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">version3</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">nonfree</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">postproc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libaacplus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libcelt</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfaac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfreetype</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libmp3lame</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrnb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrwb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopenjpeg</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">openssl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libschroedinger</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libspeex</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libtheora</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvo</span><span class="o">-</span><span class="n">aacenc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libx264</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libxvid</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span>
+<span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+
+
+<p>运行ffmpeg，输出如下：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="n">version</span> <span class="n">N</span><span class="o">-</span><span class="mi">48064</span><span class="o">-</span><span class="n">gcfa5300</span> <span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2000</span><span class="o">-</span><span class="mi">2012</span> <span class="n">the</span> <span class="n">FFmpeg</span> <span class="n">developers</span>
+  <span class="n">built</span> <span class="n">on</span> <span class="n">Dec</span> <span class="mi">21</span> <span class="mi">2012</span> <span class="mi">10</span><span class="o">:</span><span class="mi">24</span><span class="o">:</span><span class="mi">39</span> <span class="n">with</span> <span class="n">llvm</span><span class="o">-</span><span class="n">gcc</span> <span class="mf">4.2.1</span> <span class="p">(</span><span class="n">LLVM</span> <span class="n">build</span> <span class="mf">2336.11.00</span><span class="p">)</span>
+  <span class="nl">configuration:</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">gpl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">version3</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">nonfree</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">postpr</span>
+<span class="n">oc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libaacplus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libcelt</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfaac</span> <span class="o">--</span><span class="n">enabl</span>
+<span class="n">e</span><span class="o">-</span><span class="n">libfdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfreetype</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libmp3lame</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrnb</span>
+ <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrwb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopenjpeg</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">openssl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libop</span>
+ <span class="n">us</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libschroedinger</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libspeex</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libtheora</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvo</span>
+ <span class="o">-</span><span class="n">aacenc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libx264</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libxvid</span> <span class="o">--</span>
+ <span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span>
+  <span class="n">libavutil</span>      <span class="mf">52.</span> <span class="mf">12.100</span> <span class="o">/</span> <span class="mf">52.</span> <span class="mf">12.100</span>
+  <span class="n">libavcodec</span>     <span class="mf">54.</span> <span class="mf">81.100</span> <span class="o">/</span> <span class="mf">54.</span> <span class="mf">81.100</span>
+  <span class="n">libavformat</span>    <span class="mf">54.</span> <span class="mf">49.102</span> <span class="o">/</span> <span class="mf">54.</span> <span class="mf">49.102</span>
+  <span class="n">libavdevice</span>    <span class="mf">54.</span>  <span class="mf">3.102</span> <span class="o">/</span> <span class="mf">54.</span>  <span class="mf">3.102</span>
+  <span class="n">libavfilter</span>     <span class="mf">3.</span> <span class="mf">29.100</span> <span class="o">/</span>  <span class="mf">3.</span> <span class="mf">29.100</span>
+  <span class="n">libswscale</span>      <span class="mf">2.</span>  <span class="mf">1.103</span> <span class="o">/</span>  <span class="mf">2.</span>  <span class="mf">1.103</span>
+  <span class="n">libswresample</span>   <span class="mf">0.</span> <span class="mf">17.102</span> <span class="o">/</span>  <span class="mf">0.</span> <span class="mf">17.102</span>
+  <span class="n">libpostproc</span>    <span class="mf">52.</span>  <span class="mf">2.100</span> <span class="o">/</span> <span class="mf">52.</span>  <span class="mf">2.100</span>
+<span class="n">Hyper</span> <span class="n">fast</span> <span class="n">Audio</span> <span class="n">and</span> <span class="n">Video</span> <span class="n">encoder</span>
+<span class="nl">usage:</span> <span class="n">ffmpeg</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="p">[[</span><span class="n">infile</span> <span class="n">options</span><span class="p">]</span> <span class="o">-</span><span class="n">i</span> <span class="n">infile</span><span class="p">]...</span> <span class="p">{[</span><span class="n">outfile</span> <span class="n">options</span><span class="p">]</span> <span class="n">outfi</span>
+<span class="n">le</span><span class="p">}...</span>
+
+<span class="n">Use</span> <span class="o">-</span><span class="n">h</span> <span class="n">to</span> <span class="n">get</span> <span class="n">full</span> <span class="n">help</span> <span class="n">or</span><span class="p">,</span> <span class="n">even</span> <span class="n">better</span><span class="p">,</span> <span class="n">run</span> <span class="err">&#39;</span><span class="n">man</span> <span class="n">ffmpeg</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>现在，可以找一个flv文件测试，把它转换成mp4：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">psy</span><span class="o">-</span><span class="n">style</span><span class="p">.</span><span class="n">flv</span> <span class="o">-</span><span class="n">vcodec</span> <span class="n">copy</span> <span class="o">-</span><span class="n">acodec</span> <span class="n">copy</span> <span class="n">psy</span><span class="o">-</span><span class="n">style</span><span class="p">.</span><span class="n">mp4</span>
+</pre></div>
+
+
+<p>由于用了copy模式，ffmpeg不会重新转码，原有画质不变，只是把文件封装从flv变为mp4，瞬间就可完成。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

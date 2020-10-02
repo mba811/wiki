@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>fossil HTTPS patch - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;fossil HTTPS patch
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 21:14
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">fossil HTTPS patch</div>
+
+  <p>最近用fossil搭了个wiki，不过原版尽管支持https schema的url生成，却漏掉了https header的判断，小小patch了一下</p>
+<div class="hlcode"><pre><span class="gd">--- src/cgi.c   2010-07-10 01:57:40.000000000 +0900</span>
+<span class="gi">+++ src/cgi.c   2010-07-21 16:22:41.000000000 +0900</span>
+<span class="gu">@@ -1140,6 +1140,8 @@</span>
+       cgi_setenv(&quot;HTTP_IF_NONE_MATCH&quot;, zVal);
+     }else if( strcmp(zFieldName,&quot;if-modified-since:&quot;)==0 ){
+       cgi_setenv(&quot;HTTP_IF_MODIFIED_SINCE&quot;, zVal);
+<span class="gi">+    }else if( strcmp(zFieldName,&quot;https:&quot;)==0 ){</span>
+<span class="gi">+      cgi_setenv(&quot;HTTPS&quot;, zVal);</span>
+     }
+   }
+</pre></div>
+
+
+<p>至于fossil是个什么东西以后有空整理一下，感兴趣的童鞋可以去 <a href="http://www.fossil-scm.org/">Fossil</a> 看下</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

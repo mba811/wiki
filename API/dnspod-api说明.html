@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>DNSPod API说明 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#API">API</a>&nbsp;&#187;&nbsp;DNSPod API说明
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 22:15
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">DNSPod API说明</div>
+
+  <ol>
+<li>DNSPod 用户 API 仅限于个人用户使用，使用户能更方便、更灵活的管理自己的域名和记录。</li>
+<li>域名注册商等代理用户请使用代理 API，申请成为代理用户请点击：<a href="https://www.dnspod.cn/Service#/account/agent">https://www.dnspod.cn/Service#/account/agent</a> 。</li>
+<li>不允许任何第三方使用本 API 获取、操作用户数据，如有类似需求，欢迎联系合作：<a href="https://www.dnspod.cn/About/Aboutus">https://www.dnspod.cn/About/Aboutus</a> 。</li>
+</ol>
+<h2 id="api">API开发规范<a href="https://www.dnspod.cn/docs/info.html#specification"></a></h2>
+<ol>
+<li>关于滥用：</li>
+</ol>
+<p>包括但不限于以下情形都被视为滥用：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">短时间内大量添加、删除、修改、刷新域名或者记录，或者设置记录状态。</span>
+<span class="o">*</span> <span class="err">记录内容没有任何改变的刷新，比如动态</span><span class="n">DNS</span><span class="err">中</span><span class="n">IP</span><span class="err">没变也请求修改记录。</span>
+<span class="o">*</span> <span class="err">程序逻辑不严谨、程序死循环等等，可能造成大量无效、重复的请求。</span>
+<span class="o">*</span> <span class="err">其它没有提到的，但会给系统带来压力的请求行为。</span>
+</pre></div>
+
+
+<p>为了保障您和广大开发者的利益，请您合理使用API，对于任何滥用API的行为，DNSPod有权对此进行封禁，并保留最终解释权。</p>
+<ol>
+<li>禁止登录：</li>
+</ol>
+<p>如果帐号尝试登录错误次数在5分钟内超过30次则会被禁止登录一个小时，写程序的时候特别是动态客户端的时候必须判断是否登录成功，如果不成功必须马上停止尝试。如果使用动态客户端，在网页上修改了密码后务必到客户端修改，否则将不可用。</p>
+<ol>
+<li>关于封禁：</li>
+</ol>
+<p>由于滥用API将会导致帐号在API中封禁，但并不影响在官方网站上的使用，封禁一定的时间后会自动解除，一般需要一个小时后才会解封，所以请小心操作，不要拿API进行大量测试。</p>
+<ol>
+<li>
+<p>关于请求：</p>
+<ul>
+<li>请求的地址为 <a href="https://dnsapi.cn/">https://dnsapi.cn/</a> 开头的地址，基于SSL安全传输。为了安全必须用https开头的地址，否则将有可能被封禁。</li>
+<li>只支持POST方法请求数据，用其它方法会提示错误。</li>
+<li>请用UTF-8编码进行数据传输，返回的数据也是UTF-8编码的。</li>
+<li>
+<p>关于UserAgent：</p>
+</li>
+<li>
+<p>请求的时候必须设置UserAgent，如果不设置或者设置为不合法的（比如设置为浏览器的）也会导致帐号被封禁API。</p>
+</li>
+<li>UserAgent的格式必须为：程序英文名称/版本(联系邮箱)，比如：MJJ DDNS Client/1.0.0 (<a href="mailto:shallwedance%40126.com">shallwedance@126.com</a>)。</li>
+<li>关于安全：</li>
+</ul>
+</li>
+</ol>
+<p>用户需要输入用户邮箱和密码才能进行下一步的操作，如果需要在客户端上或数据库中保存用户的信息，必须加密后保存，不得明文保存在文件中。</p>
+<ol>
+<li>
+<p>技术支持：</p>
+<ul>
+<li>帮助中心：<a href="https://support.dnspod.cn/">https://support.dnspod.cn/</a></li>
+<li>DNSPod开发者讨论群：150138660</li>
+</ul>
+</li>
+</ol>
+<h2 id="_1">公共参数<a href="https://www.dnspod.cn/docs/info.html#common-parameters"></a></h2>
+<p>所有的接口都需要这些参数，在此统一说明，下面的接口将不再列出。这些参数必须和接口参数一起提交。</p>
+<ul>
+<li>login_email 用户帐号，必选</li>
+<li>login_password 用户密码，必选</li>
+<li>format {json,xml} 返回的数据格式，可选，默认为xml，建议用json</li>
+<li>lang {en,cn} 返回的错误语言，可选，默认为en，建议用cn</li>
+<li>error_on_empty {yes,no} 没有数据时是否返回错误，可选，默认为yes，建议用no</li>
+<li>user_id 用户的ID，可选，仅代理接口需要， 用户接口不需要提交此参数</li>
+</ul>
+<h2 id="api-token">API Token<a href="https://www.dnspod.cn/docs/info.html#api-token"></a></h2>
+<p>增加 Token 的验证机制，<a href="https://support.dnspod.cn/Kb/showarticle/tsid/227/">https://support.dnspod.cn/Kb/showarticle/tsid/227/</a> ，后续新用户将全部使用 Token 来鉴权，具体时间会提前通知，也建议开发者们都采用 Token 来鉴权，不要再使用 “用户名 ＋ 密码” 的方式。</p>
+<h2 id="_2">共通返回<a href="https://www.dnspod.cn/docs/info.html#common-response"></a></h2>
+<p>这些返回在所有的接口都有可能返回，它们是所有接口共通的，在此统一说明，下面的接口将不再列出。另外，文档中的参考返回只列出JSON格式的，XML格式类似，就不再列出了。</p>
+<ul>
+<li>-1 登陆失败</li>
+<li>-2 API使用超出限制</li>
+<li>-3 不是合法代理 (仅用于代理接口)</li>
+<li>-4 不在代理名下 (仅用于代理接口)</li>
+<li>-7 无权使用此接口</li>
+<li>-8 登录失败次数过多，帐号被暂时封禁</li>
+<li>85 帐号异地登录，请求被拒绝</li>
+<li>-99 此功能暂停开放，请稍候重试</li>
+<li>1 操作成功</li>
+<li>2 只允许POST方法</li>
+<li>3 未知错误</li>
+<li>6 用户ID错误 (仅用于代理接口)</li>
+<li>7 用户不在您名下 (仅用于代理接口)</li>
+<li>83 该帐户已经被锁定，无法进行任何操作</li>
+<li>85 该帐户开启了登录区域保护，当前IP不在允许的区域内</li>
+</ul>
+<h2 id="d">D令牌验证相关<a href="https://www.dnspod.cn/docs/info.html#d"></a></h2>
+<p>对于已经开启D令牌的用户，在请求API时需要增加如下两个参数：</p>
+<ul>
+<li>login_code D令牌生成的随机验证码，必选</li>
+<li>login_remember {yes,no} 是否记住验证码，可选，默认为yes</li>
+</ul>
+<p>说明：由于D令牌的随机码每30秒变换一次，所以建议用户在第一次请求API的时候选择记住验证码。选择记住验证码后，除了返回所请求的数据以外，还会发一个名为’t’ + user_id 的cookie，形如：t123456，该cookie的有效期为1个月，以后再请求API可以带上这个cookie，而无须再提交login_code和login_remember参数。</p>
+<p>对于开启了D令牌的用户，某些重要操作可能会返回以下错误码，在此统一说明，下面的接口将不再列出。</p>
+<ul>
+<li>50 您开启了D令牌，需要验证码</li>
+<li>51 没有开启D令牌</li>
+<li>52 验证码不正确</li>
+<li>53 您已经开启了D令牌</li>
+<li>54 域名所有者开启了D令牌，您也需要开启D令牌才能管理该域名</li>
+</ul>
+<h2 id="api_1">获取API版本号<a href="https://www.dnspod.cn/docs/info.html#info-version"></a></h2>
+<p>接口地址：</p>
+<ul>
+<li>
+<p><a href="https://dnsapi.cn/Info.Version">https://dnsapi.cn/Info.Version</a><br />
+HTTP请求方式：</p>
+</li>
+<li>
+<p>POST<br />
+请求参数：</p>
+</li>
+<li>
+<p>公共参数<br />
+响应代码：</p>
+</li>
+<li>
+<p>共通返回</p>
+</li>
+</ul>
+<p>示例:</p>
+<div class="hlcode"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">https</span><span class="o">:</span><span class="c1">//dnsapi.cn/Info.Version -d &#39;login_email=api@dnspod.com&amp;login_password=password&amp;format=json&#39;</span>
+</pre></div>
+
+
+<p>返回参考：</p>
+<blockquote>
+<ul>
+<li>
+<p>JSON:</p>
+<p>{<br />
+    "status": {<br />
+        "code": "1",<br />
+        "message": "4.6",<br />
+        "created_at": "2012-09-10 11:20:39"<br />
+    }<br />
+}</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><a href="https://www.dnspod.cn/docs/info.html">API说明</a><ul>
+<li><a href="https://www.dnspod.cn/docs/info.html#specification">API开发规范</a></li>
+<li><a href="https://www.dnspod.cn/docs/info.html#common-parameters">公共参数</a></li>
+<li><a href="https://www.dnspod.cn/docs/info.html#api-token">API Token</a></li>
+<li><a href="https://www.dnspod.cn/docs/info.html#common-response">共通返回</a></li>
+<li><a href="https://www.dnspod.cn/docs/info.html#d">D令牌验证相关</a></li>
+<li><a href="https://www.dnspod.cn/docs/info.html#info-version">获取API版本号</a></li>
+</ul>
+</li>
+<li><a href="https://www.dnspod.cn/docs/accounts.html">帐户相关</a><ul>
+<li><a href="https://www.dnspod.cn/docs/accounts.html#user-detail">获取帐户信息</a></li>
+<li><a href="https://www.dnspod.cn/docs/accounts.html#user-modify">修改资料</a></li>
+<li><a href="https://www.dnspod.cn/docs/accounts.html#userpasswd-modify">修改密码</a></li>
+<li><a href="https://www.dnspod.cn/docs/accounts.html#useremail-modify">修改邮箱</a></li>
+<li><a href="https://www.dnspod.cn/docs/accounts.html#user-telephoneverify">获取手机验证码</a></li>
+<li><a href="https://www.dnspod.cn/docs/accounts.html#user-log">获取用户日志</a></li>
+</ul>
+</li>
+<li><a href="https://www.dnspod.cn/docs/domains.html">域名相关</a><ul>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-create">添加新域名</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-list">获取域名列表</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-remove">删除域名</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-status">设置域名状态</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-info">获取域名信息</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-log">获取域名日志</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-searchenginepush">设置搜索引擎推送</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainshare-create">添加域名共享</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainshare-list">域名共享列表</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainshare-modify">修改域名共享</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainshare-remove">删除域名共享</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-transfer">域名过户</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-lock">锁定域名</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-lockstatus">获取域名锁定状态</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-unlock">域名锁定解锁</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainalias-list">域名绑定列表</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainalias-create">添加域名绑定</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domainalias-remove">删除域名绑定</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domaingroup-list">获取域名分组</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domaingroup-create">添加域名分组</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domaingroup-modify">修改域名分组</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domaingroup-remove">删除域名分组</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-changegroup">设置域名分组</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-ismark">设置域名星标</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-remark">设置域名备注</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-purview">获取域名权限</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-acquire">域名取回获取邮箱列表</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-acquiresend">域名取回发送验证码</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#domain-acquirevalidate">验证域名取回的验证码</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#record-type">获取等级允许的记录类型</a></li>
+<li><a href="https://www.dnspod.cn/docs/domains.html#record-line">获取等级允许的线路</a></li>
+</ul>
+</li>
+<li><a href="https://www.dnspod.cn/docs/records.html">记录相关</a><ul>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-create">添加记录</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-list">记录列表</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-modify">修改记录</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-remove">删除记录</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#dns">更新动态DNS记录</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-remark">设置记录备注</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-info">获取记录信息</a></li>
+<li><a href="https://www.dnspod.cn/docs/records.html#record-status">设置记录状态</a></li>
+</ul>
+</li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html">D监控相关</a><ul>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#a">列出包含A记录的子域名</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-listsubvalue">列出子域名的A记录</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-list">监控列表</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-create">监控添加</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-modify">监控修改</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-remove">监控删除</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-info">获取监控信息</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-setstatus">设置监控状态</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-gethistory">获取监控历史</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-userdesc">获取监控概况</a></li>
+<li><a href="https://www.dnspod.cn/docs/d-monitor.html#monitor-getdowns">获取监控警告</a></li>
+</ul>
+</li>
+<li><a href="https://www.dnspod.cn/docs/custom-monitoring.html">自定义监控相关</a><ul>
+<li><a href="https://www.dnspod.cn/docs/custom-monitoring.html#collectd">使用开源软件 collectd 上报系统指标</a></li>
+<li><a href="https://www.dnspod.cn/docs/custom-monitoring.html#id2">如何使用 collectd 收集更多的服务器指标</a></li>
+<li><a href="https://www.dnspod.cn/docs/custom-monitoring.html#shell">使用 Shell 上报数据</a></li>
+<li><a href="https://www.dnspod.cn/docs/custom-monitoring.html#id3">一些有爱的上报脚本</a></li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用DEFAULTS设置系统 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;使用DEFAULTS设置系统
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 22:43
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用DEFAULTS设置系统</div>
+
+  <p>mac下的配置文件 plist</p>
+<blockquote>
+<p>Plist文件是以.plist为结尾的文件的总称. 系统和程序使用Plist文件来存储自己的安装/配置/属性等信息。正如可以使用命令行命令来处理大多数系统管理一样，操作Plist文件也是系统提供.</p>
+</blockquote>
+<p>执行defaults write指令，默认修改<code>~/Library/Preferences,/Library/Preferences</code>目录下的plist配置文件</p>
+<p>作为一个例子，该命令改变dock的3D效果为基本的2D阴影：</p>
+<p>defaults write com.apple.dock no-glass -boolean YES </p>
+<p>相当于更改 ~/Library/Preferences/com.apple.dock.plist的no-glass键值为true。</p>
+<h2 id="defaults">Defaults基本用法:</h2>
+<p><code>defaults read. 读取设置</code></p>
+<p>查看软件版本</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">read</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Safari</span><span class="p">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">Info</span> <span class="n">CFBundleShortVersionString</span>
+</pre></div>
+
+
+<p><code>defaults write 修改键值</code></p>
+<p><code>defaults delete 删除值</code></p>
+<p>删除记录</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">Finder</span> <span class="n">GoToField</span>
+</pre></div>
+
+
+<blockquote>
+<p>OS X支持两种编码plist：文本的XML方式和二进制方式. 对于二进制方式，用户无法使用文本编辑或者如cat命令等来显示该文件, 这对于用户来说不方便，但是系统可以更快地处理二进制的Plist文件，可能基于这个原因，Leopard改变了Defaults的行 为：Defaults命令会改变Plist文件为二进制格式。</p>
+</blockquote>
+<p>Plutil:</p>
+<blockquote>
+<p>Plutil是开发环境提供的一个命令行命令，使用这个命令可以转换Plist文件的格式，而且可以检查Plist文件的语法和完整性.</p>
+</blockquote>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">plutil</span> <span class="o">-</span><span class="n">convert</span> <span class="n">xml1</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Preferences</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">help</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>上面的命令将~/Library/Preferences/com.apple.help.plist文件的格式转化为文本XML格式</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">plutil</span> <span class="o">-</span><span class="n">lint</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">Preferences</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">help</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>上面的命令检查~/Library/Preferences/com.apple.help.plist文件, 正确返回:OK</p>
+<p>其它工具：</p>
+<blockquote>
+<p>Apple提供了图形工具「Property List Editor」可以查看修改plist文件,或使用gui界面的TinkerTool工具也可以修改系统设</p>
+</blockquote>
+<hr />
+<h2 id="defaultsplist">【使用defaults来修改.Plist设置文件】</h2>
+<h3 id="finder">Finder显示隐藏文件</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">AppleShowAllFiles</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">YES</span>
+<span class="err">$</span><span class="n">killall</span> <span class="n">Finder</span>
+</pre></div>
+
+
+<p>恢复隐藏不可见，在终端中输入以下代码并回车</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">AppleShowAllFiles</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">NO</span>
+<span class="err">$</span><span class="n">killall</span> <span class="n">Finder</span>
+</pre></div>
+
+
+<p>同样Finder需要重启</p>
+<p>强制 Finder 显示隐藏文件和文件夹</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">Finder</span> <span class="n">AppleShowAllFiles</span> <span class="nb">true</span>
+</pre></div>
+
+
+<h3 id="installerapp">启用或禁用 Installer.app 的附加日志</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">installer</span> <span class="n">DebugChoiceAttrEngine</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">YES</span>
+<span class="err">$</span><span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">installer</span> <span class="n">DebugChoiceAttrEngine</span>
+</pre></div>
+
+
+<h3 id="dockrecent-application10">Dock栏增加一个“Recent Application”文件夹，显示最近启动的10个软件方法</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">persistent</span><span class="o">-</span><span class="n">others</span> <span class="o">-</span><span class="n">array</span><span class="o">-</span><span class="n">add</span> <span class="err">&#39;</span><span class="p">{</span> <span class="s">&quot;tile-data&quot;</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&quot;list-type&quot;</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="p">};</span> <span class="s">&quot;tile-type&quot;</span> <span class="o">=</span> <span class="s">&quot;recents-tile&quot;</span><span class="p">;</span> <span class="p">}</span><span class="err">&#39;</span>
+<span class="err">$</span><span class="n">Killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="dashboard">关闭dashboard功能</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dashboard</span> <span class="n">mcx</span><span class="o">-</span><span class="n">disabled</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">YES</span>
+<span class="err">$</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<p>想要重新打开，在终端输入</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dashboard</span> <span class="n">mcx</span><span class="o">-</span><span class="n">disabled</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">NO</span>
+<span class="err">$</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="ds_store">禁止产生.DS_Store文件</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">desktopservices</span> <span class="n">DSDontWriteNetworkStores</span> <span class="nb">true</span>
+</pre></div>
+
+
+<h3 id="_1">更改截屏文件默认存储位置</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">screencapture</span> <span class="n">location</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span>
+</pre></div>
+
+
+<blockquote>
+<p>/path/ 即你想要设置的保存路径，比如将截图文件存储在用户目录的图片文件夹，命令则为：</p>
+</blockquote>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">screencapture</span> <span class="n">location</span> <span class="o">~/</span><span class="n">Pictures</span><span class="o">/</span>
+</pre></div>
+
+
+<p>然后输入</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">killall</span> <span class="n">SystemUIServer</span>
+</pre></div>
+
+
+<p>存储类型</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">screencapture</span> <span class="n">type</span> <span class="n">jpg</span>
+</pre></div>
+
+
+<h3 id="mac">更改mac的帮助显示方式</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">helpviewer</span> <span class="n">DevMode</span> <span class="o">-</span><span class="kt">bool</span> <span class="nb">true</span>
+</pre></div>
+
+
+<p>想要还原</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">helpviewer</span> <span class="n">DevMode</span>
+</pre></div>
+
+
+<h3 id="_2">改变系统字体大小（菜单等）</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">NSGlobalDomain</span> <span class="n">AppleDisplayScaleFactor</span> <span class="mf">1.25</span>
+</pre></div>
+
+
+<p>这里边的数字，默认值为1，数值越大字体越大想要恢复，在终端中输入</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">NSGlobalDomain</span> <span class="n">AppleDisplayScaleFactor</span> <span class="mi">1</span>
+</pre></div>
+
+
+<h3 id="_3">改变登陆背景</h3>
+<p>在终端中输入</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Preferences</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">loginwindow</span> <span class="n">DesktopPicture</span> <span class="s">&quot;/Library/Desktop%20Pictures/Nature/Aurora.jpg&quot;</span>
+</pre></div>
+
+
+<p>引号里边是图片路径</p>
+<h3 id="_4">禁用自动登录</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">delete</span> <span class="o">/</span><span class="n">Library</span><span class="o">/</span><span class="n">Preferences</span><span class="o">/</span><span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">loginwindow</span> <span class="n">autoLoginUser</span>
+</pre></div>
+
+
+<h3 id="safari">禁止Safari生成预览文件</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">Safari</span> <span class="n">DebugSnapshotsUpdatePolicy</span> <span class="o">-</span><span class="kt">int</span> <span class="mi">2</span>
+</pre></div>
+
+
+<h3 id="mac-os-x-docks">彻底禁止Mac OS X Docks图标反弹效果提示</h3>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">no</span><span class="o">-</span><span class="n">bouncing</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">TRUE</span>
+<span class="err">$</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="docktiger2d">让dock回到tiger的2d模式</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">no</span><span class="o">-</span><span class="n">glass</span> <span class="o">-</span><span class="n">boolean</span> <span class="n">YES</span>
+<span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="dock">以网格状方式显示dock堆栈时，增加鼠标移上时的白框</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">mouse</span><span class="o">-</span><span class="n">over</span><span class="o">-</span><span class="n">hilte</span><span class="o">-</span><span class="n">stack</span> <span class="o">-</span><span class="n">boolean</span> <span class="n">YES</span>
+<span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="_5">增加桌面图标大小</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">DesktopViewOptions</span> <span class="o">-</span><span class="n">dict</span> <span class="n">IconSize</span> <span class="o">-</span><span class="n">integer</span> <span class="mi">256</span>
+<span class="n">killall</span> <span class="n">Finder</span>
+</pre></div>
+
+
+<h3 id="dock_1">增加dock放大图标大小</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">largesize</span> <span class="o">-</span><span class="kt">int</span> <span class="mi">512</span>
+<span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="finder_1">允许关闭finder</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">QuitMenuItem</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">YES</span>
+<span class="n">killall</span> <span class="n">Finder</span>
+</pre></div>
+
+
+<h3 id="_6">让隐藏的程序半透明</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">Dock</span> <span class="n">showhidden</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">YES</span>
+<span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="_7">在快速查看中选择文字</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">QLEnableTextSelection</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">TRUE</span>
+</pre></div>
+
+
+<p>取消 defaults delete com.apple.finder QLEnableTextSelection</p>
+<h3 id="itunes-dock">让 iTunes 在 Dock 上的图标提示“正在播放”的曲目</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">itunes</span><span class="o">-</span><span class="n">notifications</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">TRUE</span>
+</pre></div>
+
+
+<p>取消</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">itunes</span><span class="o">-</span><span class="n">notifications</span>
+</pre></div>
+
+
+<h3 id="dock_2">在DOCK上添加空格栏:</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">persistent</span><span class="o">-</span><span class="n">apps</span> <span class="o">-</span><span class="n">array</span><span class="o">-</span><span class="n">add</span> <span class="err">&#39;</span><span class="p">{</span><span class="s">&quot;tile-type&quot;</span><span class="o">=</span><span class="s">&quot;spacer-tile&quot;</span><span class="p">;}</span><span class="err">&#39;</span><span class="p">;</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<p>在DOCK最右边添加空格栏</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="n">persistent</span><span class="o">-</span><span class="n">others</span> <span class="o">-</span><span class="n">array</span><span class="o">-</span><span class="n">add</span> <span class="err">&#39;</span><span class="p">{</span><span class="n">tile</span><span class="o">-</span><span class="n">data</span><span class="o">=</span><span class="p">{};</span> <span class="n">tile</span><span class="o">-</span><span class="n">type</span><span class="o">=</span><span class="s">&quot;spacer-tile&quot;</span><span class="p">;}</span><span class="err">&#39;</span> <span class="p">;</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="_8">四指双击回到前一个桌面</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="kt">double</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">jump</span><span class="o">-</span><span class="n">back</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">TRUE</span><span class="p">;</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<p>取消:</p>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">dock</span> <span class="kt">double</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">jump</span><span class="o">-</span><span class="n">back</span><span class="p">;</span><span class="n">killall</span> <span class="n">Dock</span>
+</pre></div>
+
+
+<h3 id="ml-icloud">将ML文档的默认保存位置从 iCloud 改为本地硬盘</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">NSGlobalDomain</span> <span class="n">NSDocumentSaveNewDocumentsToCloud</span> <span class="o">-</span><span class="kt">bool</span> <span class="nb">false</span>       <span class="err">要想恢复默认保存到</span> <span class="n">iCloud</span> <span class="err">的话，可以将上面命令中的</span> <span class="nb">false</span> <span class="err">修改为</span> <span class="nb">true</span><span class="err">，再次在终端中运行</span>
+</pre></div>
+
+
+<h3 id="tm">取消使用新硬盘提示用于TM备份</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">TimeMachine</span> <span class="n">DoNotOfferNewDisksForBackup</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">TRUE</span> <span class="err">注销后登录生效。</span>  <span class="err">恢复提示</span> <span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">TimeMachine</span> <span class="n">DoNotOfferNewDisksForBackup</span>
+</pre></div>
+
+
+<h3 id="_9">取消预览的动画</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">QLPanelAnimationDuration</span> <span class="o">-</span><span class="kt">int</span> <span class="mi">0</span><span class="o">&amp;&amp;</span><span class="n">killall</span> <span class="n">Finder</span> <span class="err">恢复</span> <span class="n">defaults</span> <span class="n">delete</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">QLPanelAnimationDuration</span><span class="o">&amp;&amp;</span><span class="n">killall</span> <span class="n">Finder</span>
+</pre></div>
+
+
+<h3 id="finder_2">在Finder标题栏上显示路径</h3>
+<div class="hlcode"><pre><span class="n">defaults</span> <span class="n">write</span> <span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">finder</span> <span class="n">_FXShowPosixPathInTitle</span> <span class="o">-</span><span class="kt">bool</span> <span class="n">YES</span>
+</pre></div>
+
+
+<h3 id="pdf">禁用邮件 pdf 预览</h3>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

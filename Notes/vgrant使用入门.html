@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title> Vgrant使用入门 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp; Vgrant使用入门
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:37
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title"> Vgrant使用入门</div>
+
+  <p>前面我们已经学会了如何安装并配置Vagrant，而且也已经按照默认的方式开启了，那么这一小节就给大家介绍一下Vagrant的高级应用。</p>
+<h2 id="vagrant"><a href="https://github.com/astaxie/Go-in-Action/blob/master/ebook/zh/01.3.md#vagrant%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"></a>Vagrant常用命令</h2>
+<p>前面讲了Vagrant的几个命令：</p>
+<ul>
+<li><code>vagrant box add</code> 添加box的操作</li>
+<li><code>vagrant init</code> 初始化box的操作</li>
+<li><code>vagrant up</code> 启动虚拟机的操作</li>
+<li><code>vagrant ssh</code> 登录拟机的操作</li>
+</ul>
+<p>Vagrant还包括如下一些操作：</p>
+<ul>
+<li><code>vagrant box list</code></li>
+</ul>
+<p>显示当前已经添加的box列表</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">box</span> <span class="n">list</span>
+<span class="n">base</span> <span class="p">(</span><span class="n">virtualbox</span><span class="p">)</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant box remove</code></li>
+</ul>
+<p>删除相应的box</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">box</span> <span class="n">remove</span> <span class="n">base</span> <span class="n">virtualbox</span>
+<span class="n">Removing</span> <span class="n">box</span> <span class="err">&#39;</span><span class="n">base</span><span class="err">&#39;</span> <span class="n">with</span> <span class="n">provider</span> <span class="err">&#39;</span><span class="n">virtualbox</span><span class="err">&#39;</span><span class="p">...</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant destroy</code></li>
+</ul>
+<p>停止当前正在运行的虚拟机并销毁所有创建的资源</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">destroy</span>
+<span class="n">Are</span> <span class="n">you</span> <span class="n">sure</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">destroy</span> <span class="n">the</span> <span class="err">&#39;</span><span class="k">default</span><span class="err">&#39;</span> <span class="n">VM</span><span class="o">?</span> <span class="p">[</span><span class="n">y</span><span class="o">/</span><span class="n">N</span><span class="p">]</span> <span class="n">y</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Destroying</span> <span class="n">VM</span> <span class="n">and</span> <span class="n">associated</span> <span class="n">drives</span><span class="p">...</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant halt</code></li>
+</ul>
+<p>关机</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">halt</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Attempting</span> <span class="n">graceful</span> <span class="n">shutdown</span> <span class="n">of</span> <span class="n">VM</span><span class="p">...</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant package</code></li>
+</ul>
+<p>打包命令，可以把当前的运行的虚拟机环境进行打包</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">package</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Attempting</span> <span class="n">graceful</span> <span class="n">shutdown</span> <span class="n">of</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">forwarded</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Creating</span> <span class="n">temporary</span> <span class="n">directory</span> <span class="k">for</span> <span class="n">export</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Exporting</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Compressing</span> <span class="n">package</span> <span class="n">to</span><span class="o">:</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">astaxie</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">package</span><span class="p">.</span><span class="n">box</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant plugin</code></li>
+</ul>
+<p>用于安装卸载插件</p>
+<ul>
+<li><code>vagrant provision</code></li>
+</ul>
+<p>通常情况下Box只做最基本的设置，而不是设置好所有的环境，因此Vagrant通常使用Chef或者Puppet来做进一步的环境搭建。那么Chef或者Puppet称为provisioning，而该命令就是指定开启相应的provisioning。按照Vagrant作者的说法，所谓的provisioning就是"The problem of installing software on a booted system"的意思。除了Chef和Puppet这些主流的配置管理工具之外，我们还可以使用Shell来编写安装脚本。</p>
+<p>例如： <code>vagrant provision --provision-with chef</code></p>
+<ul>
+<li><code>vagrant reload</code></li>
+</ul>
+<p>重新启动虚拟机，主要用于重新载入配置文件</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">reload</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Attempting</span> <span class="n">graceful</span> <span class="n">shutdown</span> <span class="n">of</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">forwarded</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Creating</span> <span class="n">shared</span> <span class="n">folders</span> <span class="n">metadata</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">network</span> <span class="n">interfaces</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Preparing</span> <span class="n">network</span> <span class="n">interfaces</span> <span class="n">based</span> <span class="n">on</span> <span class="n">configuration</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Forwarding</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="o">--</span> <span class="mi">22</span> <span class="o">=&gt;</span> <span class="mi">2222</span> <span class="p">(</span><span class="n">adapter</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Booting</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">VM</span> <span class="n">to</span> <span class="n">boot</span><span class="p">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">take</span> <span class="n">a</span> <span class="n">few</span> <span class="n">minutes</span><span class="p">.</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">VM</span> <span class="n">booted</span> <span class="n">and</span> <span class="n">ready</span> <span class="k">for</span> <span class="n">use</span><span class="o">!</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">hostname</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Mounting</span> <span class="n">shared</span> <span class="n">folders</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="o">--</span> <span class="o">/</span><span class="n">vagrant</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant resume</code></li>
+</ul>
+<p>恢复前面被挂起的状态</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">vagrant</span> <span class="n">resume</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Resuming</span> <span class="n">suspended</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Booting</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">VM</span> <span class="n">to</span> <span class="n">boot</span><span class="p">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">take</span> <span class="n">a</span> <span class="n">few</span> <span class="n">minutes</span><span class="p">.</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">VM</span> <span class="n">booted</span> <span class="n">and</span> <span class="n">ready</span> <span class="k">for</span> <span class="n">use</span><span class="o">!</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant ssh-config</code></li>
+</ul>
+<p>输出用于ssh连接的一些信息</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">vagrant</span> <span class="n">ssh</span><span class="o">-</span><span class="n">config</span>
+<span class="n">Host</span> <span class="k">default</span>
+  <span class="n">HostName</span> <span class="mf">127.0.0.1</span>
+  <span class="n">User</span> <span class="n">vagrant</span>
+  <span class="n">Port</span> <span class="mi">2222</span>
+  <span class="n">UserKnownHostsFile</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+  <span class="n">StrictHostKeyChecking</span> <span class="n">no</span>
+  <span class="n">PasswordAuthentication</span> <span class="n">no</span>
+  <span class="n">IdentityFile</span> <span class="s">&quot;/Users/astaxie/.vagrant.d/insecure_private_key&quot;</span>
+  <span class="n">IdentitiesOnly</span> <span class="n">yes</span>
+  <span class="n">LogLevel</span> <span class="n">FATAL</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant status</code></li>
+</ul>
+<p>获取当前虚拟机的状态</p>
+<div class="hlcode"><pre><span class="err">$</span><span class="n">vagrant</span> <span class="n">status</span>
+<span class="n">Current</span> <span class="n">machine</span> <span class="n">states</span><span class="o">:</span>
+
+<span class="k">default</span>                   <span class="n">running</span> <span class="p">(</span><span class="n">virtualbox</span><span class="p">)</span>
+
+<span class="n">The</span> <span class="n">VM</span> <span class="n">is</span> <span class="n">running</span><span class="p">.</span> <span class="n">To</span> <span class="n">stop</span> <span class="n">this</span> <span class="n">VM</span><span class="p">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">run</span> <span class="err">`</span><span class="n">vagrant</span> <span class="n">halt</span><span class="err">`</span> <span class="n">to</span>
+<span class="n">shut</span> <span class="n">it</span> <span class="n">down</span> <span class="n">forcefully</span><span class="p">,</span> <span class="n">or</span> <span class="n">you</span> <span class="n">can</span> <span class="n">run</span> <span class="err">`</span><span class="n">vagrant</span> <span class="n">suspend</span><span class="err">`</span> <span class="n">to</span> <span class="n">simply</span>
+<span class="n">suspend</span> <span class="n">the</span> <span class="n">virtual</span> <span class="n">machine</span><span class="p">.</span> <span class="n">In</span> <span class="n">either</span> <span class="k">case</span><span class="p">,</span> <span class="n">to</span> <span class="n">restart</span> <span class="n">it</span> <span class="n">again</span><span class="p">,</span>
+<span class="n">simply</span> <span class="n">run</span> <span class="err">`</span><span class="n">vagrant</span> <span class="n">up</span><span class="err">`</span><span class="p">.</span>
+</pre></div>
+
+
+<ul>
+<li><code>vagrant suspend</code></li>
+</ul>
+<p>挂起当前的虚拟机</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">suspend</span>
+<span class="p">[</span><span class="k">default</span><span class="p">]</span> <span class="n">Saving</span> <span class="n">VM</span> <span class="n">state</span> <span class="n">and</span> <span class="n">suspending</span> <span class="n">execution</span><span class="p">...</span>
+</pre></div>
+
+
+<h2 id="_1"><a href="https://github.com/astaxie/Go-in-Action/blob/master/ebook/zh/01.3.md#%E6%A8%A1%E6%8B%9F%E6%89%93%E9%80%A0%E5%A4%9A%E6%9C%BA%E5%99%A8%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F"></a>模拟打造多机器的分布式系统</h2>
+<p>前面这些单主机单虚拟机主要是用来自己做开发机，从这部分开始的内容主要将向大家介绍如何在单机上通过虚拟机来打造分布式造集群系统。这种多机器模式特别适合以下几种人：</p>
+<ol>
+<li>快速建立产品网络的多机器环境，例如web服务器、db服务器</li>
+<li>建立一个分布式系统，学习他们是如何交互的</li>
+<li>测试API和其他组件的通信</li>
+<li>容灾模拟，网络断网、机器死机、连接超时等情况</li>
+</ol>
+<p>Vagrant支持单机模拟多台机器，而且支持一个配置文件Vagrntfile就可以跑分布式系统。</p>
+<p>现在我们来建立多台VM跑起來，並且让他们之间能够相通信，假设一台是应用服务器、一台是DB服务器，那么这个结构在Vagrant中非常简单，其实和单台的配置差不多，你只需要通过<code>config.vm.define</code>来定义不同的角色就可以了，现在我们打开配置文件进行如下设置：</p>
+<div class="hlcode"><pre><span class="n">Vagrant</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">define</span> <span class="o">:</span><span class="n">web</span> <span class="k">do</span> <span class="o">|</span><span class="n">web</span><span class="o">|</span>
+    <span class="n">web</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provider</span> <span class="s">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+          <span class="n">v</span><span class="p">.</span><span class="n">customize</span> <span class="p">[</span><span class="s">&quot;modifyvm&quot;</span><span class="p">,</span> <span class="o">:</span><span class="n">id</span><span class="p">,</span> <span class="s">&quot;--name&quot;</span><span class="p">,</span> <span class="s">&quot;web&quot;</span><span class="p">,</span> <span class="s">&quot;--memory&quot;</span><span class="p">,</span> <span class="s">&quot;512&quot;</span><span class="p">]</span>
+    <span class="n">end</span>
+    <span class="n">web</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">box</span> <span class="o">=</span> <span class="s">&quot;base&quot;</span>
+    <span class="n">web</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s">&quot;web&quot;</span>
+    <span class="n">web</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">network</span> <span class="o">:</span><span class="n">private_network</span><span class="p">,</span> <span class="n">ip</span><span class="o">:</span> <span class="s">&quot;11.11.1.1&quot;</span>
+  <span class="n">end</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">define</span> <span class="o">:</span><span class="n">db</span> <span class="k">do</span> <span class="o">|</span><span class="n">db</span><span class="o">|</span>
+    <span class="n">db</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provider</span> <span class="s">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+          <span class="n">v</span><span class="p">.</span><span class="n">customize</span> <span class="p">[</span><span class="s">&quot;modifyvm&quot;</span><span class="p">,</span> <span class="o">:</span><span class="n">id</span><span class="p">,</span> <span class="s">&quot;--name&quot;</span><span class="p">,</span> <span class="s">&quot;db&quot;</span><span class="p">,</span> <span class="s">&quot;--memory&quot;</span><span class="p">,</span> <span class="s">&quot;512&quot;</span><span class="p">]</span>
+    <span class="n">end</span>
+    <span class="n">db</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">box</span> <span class="o">=</span> <span class="s">&quot;base&quot;</span>
+    <span class="n">db</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">hostname</span> <span class="o">=</span> <span class="s">&quot;db&quot;</span>
+    <span class="n">db</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">network</span> <span class="o">:</span><span class="n">private_network</span><span class="p">,</span> <span class="n">ip</span><span class="o">:</span> <span class="s">&quot;11.11.1.2&quot;</span>
+  <span class="n">end</span>
+<span class="n">end</span>
+</pre></div>
+
+
+<p>这里的设置和前面我们单机设置配置类似，只是我们使用了<code>:web</code>以及<code>:db</code>分別做了两个VM的设置，并且给每个VM设置了不同的<code>hostname</code>和IP，设置好之后再使用<code>vagrant up</code>将虚拟机跑起来：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">up</span>
+<span class="n">Bringing</span> <span class="n">machine</span> <span class="err">&#39;</span><span class="n">web</span><span class="err">&#39;</span> <span class="n">up</span> <span class="n">with</span> <span class="err">&#39;</span><span class="n">virtualbox</span><span class="err">&#39;</span> <span class="n">provider</span><span class="p">...</span>
+<span class="n">Bringing</span> <span class="n">machine</span> <span class="err">&#39;</span><span class="n">db</span><span class="err">&#39;</span> <span class="n">up</span> <span class="n">with</span> <span class="err">&#39;</span><span class="n">virtualbox</span><span class="err">&#39;</span> <span class="n">provider</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">forwarded</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Creating</span> <span class="n">shared</span> <span class="n">folders</span> <span class="n">metadata</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">network</span> <span class="n">interfaces</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Preparing</span> <span class="n">network</span> <span class="n">interfaces</span> <span class="n">based</span> <span class="n">on</span> <span class="n">configuration</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Forwarding</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="o">--</span> <span class="mi">22</span> <span class="o">=&gt;</span> <span class="mi">2222</span> <span class="p">(</span><span class="n">adapter</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Running</span> <span class="n">any</span> <span class="n">VM</span> <span class="n">customizations</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Booting</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">VM</span> <span class="n">to</span> <span class="n">boot</span><span class="p">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">take</span> <span class="n">a</span> <span class="n">few</span> <span class="n">minutes</span><span class="p">.</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">VM</span> <span class="n">booted</span> <span class="n">and</span> <span class="n">ready</span> <span class="k">for</span> <span class="n">use</span><span class="o">!</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">hostname</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Configuring</span> <span class="n">and</span> <span class="n">enabling</span> <span class="n">network</span> <span class="n">interfaces</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="n">Mounting</span> <span class="n">shared</span> <span class="n">folders</span><span class="p">...</span>
+<span class="p">[</span><span class="n">web</span><span class="p">]</span> <span class="o">--</span> <span class="o">/</span><span class="n">vagrant</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">the</span> <span class="n">name</span> <span class="n">of</span> <span class="n">the</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">forwarded</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Fixed</span> <span class="n">port</span> <span class="n">collision</span> <span class="k">for</span> <span class="mi">22</span> <span class="o">=&gt;</span> <span class="mf">2222.</span> <span class="n">Now</span> <span class="n">on</span> <span class="n">port</span> <span class="mf">2200.</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Creating</span> <span class="n">shared</span> <span class="n">folders</span> <span class="n">metadata</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Clearing</span> <span class="n">any</span> <span class="n">previously</span> <span class="n">set</span> <span class="n">network</span> <span class="n">interfaces</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Preparing</span> <span class="n">network</span> <span class="n">interfaces</span> <span class="n">based</span> <span class="n">on</span> <span class="n">configuration</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Forwarding</span> <span class="n">ports</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="o">--</span> <span class="mi">22</span> <span class="o">=&gt;</span> <span class="mi">2200</span> <span class="p">(</span><span class="n">adapter</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Running</span> <span class="n">any</span> <span class="n">VM</span> <span class="n">customizations</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Booting</span> <span class="n">VM</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Waiting</span> <span class="k">for</span> <span class="n">VM</span> <span class="n">to</span> <span class="n">boot</span><span class="p">.</span> <span class="n">This</span> <span class="n">can</span> <span class="n">take</span> <span class="n">a</span> <span class="n">few</span> <span class="n">minutes</span><span class="p">.</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">VM</span> <span class="n">booted</span> <span class="n">and</span> <span class="n">ready</span> <span class="k">for</span> <span class="n">use</span><span class="o">!</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Setting</span> <span class="n">hostname</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Configuring</span> <span class="n">and</span> <span class="n">enabling</span> <span class="n">network</span> <span class="n">interfaces</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="n">Mounting</span> <span class="n">shared</span> <span class="n">folders</span><span class="p">...</span>
+<span class="p">[</span><span class="n">db</span><span class="p">]</span> <span class="o">--</span> <span class="o">/</span><span class="n">vagrant</span>
+</pre></div>
+
+
+<p>看到上面的信息输出后，我们就可以通过<code>vagrant ssh</code>登录虚拟机了，但是这次和上次使用的不一样了，这次我们需要指定相应的角色，用来告诉ssh你期望连接的是哪一台：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">ssh</span> <span class="n">web</span>
+<span class="n">vagrant</span><span class="err">@</span><span class="n">web</span><span class="o">:~</span><span class="err">$</span>
+
+<span class="err">$</span> <span class="n">vagrant</span> <span class="n">ssh</span> <span class="n">db</span>
+<span class="n">vagrant</span><span class="err">@</span><span class="n">db</span><span class="o">:~</span><span class="err">$</span>
+</pre></div>
+
+
+<p>是不是很酷！现在接下来我们再来验证一下虚拟机之间的通信，让我们先使用ssh登录web虚拟机，然后在web虚拟机上使用ssh登录db虚拟机(默认密码是<code>vagrant</code>)：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">ssh</span> <span class="n">web</span>
+<span class="n">Linux</span> <span class="n">web</span> <span class="mf">2.6.32</span><span class="o">-</span><span class="mi">38</span><span class="o">-</span><span class="n">server</span> <span class="err">#</span><span class="mi">83</span><span class="o">-</span><span class="n">Ubuntu</span> <span class="n">SMP</span> <span class="n">Wed</span> <span class="n">Jan</span> <span class="mi">4</span> <span class="mi">11</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">59</span> <span class="n">UTC</span> <span class="mi">2012</span> <span class="n">x86_64</span> <span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span>
+<span class="n">Ubuntu</span> <span class="mf">10.04.4</span> <span class="n">LTS</span>
+
+<span class="n">Welcome</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Ubuntu</span> <span class="n">Server</span><span class="o">!</span>
+ <span class="o">*</span> <span class="n">Documentation</span><span class="o">:</span>  <span class="n">http</span><span class="o">:</span><span class="c1">//www.ubuntu.com/server/doc</span>
+<span class="n">New</span> <span class="n">release</span> <span class="err">&#39;</span><span class="n">precise</span><span class="err">&#39;</span> <span class="n">available</span><span class="p">.</span>
+<span class="n">Run</span> <span class="err">&#39;</span><span class="k">do</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">upgrade</span><span class="err">&#39;</span> <span class="n">to</span> <span class="n">upgrade</span> <span class="n">to</span> <span class="n">it</span><span class="p">.</span>
+
+<span class="n">Welcome</span> <span class="n">to</span> <span class="n">your</span> <span class="n">Vagrant</span><span class="o">-</span><span class="n">built</span> <span class="n">virtual</span> <span class="n">machine</span><span class="p">.</span>
+<span class="n">Last</span> <span class="n">login</span><span class="o">:</span> <span class="n">Thu</span> <span class="n">Aug</span>  <span class="mi">8</span> <span class="mi">18</span><span class="o">:</span><span class="mi">55</span><span class="o">:</span><span class="mi">44</span> <span class="mi">2013</span> <span class="n">from</span> <span class="mf">10.0.2.2</span>
+<span class="n">vagrant</span><span class="err">@</span><span class="n">web</span><span class="o">:~</span><span class="err">$</span> <span class="n">ssh</span> <span class="mf">11.11.1.2</span>
+<span class="n">The</span> <span class="n">authenticity</span> <span class="n">of</span> <span class="n">host</span> <span class="err">&#39;</span><span class="mf">11.11.1.2</span> <span class="p">(</span><span class="mf">11.11.1.2</span><span class="p">)</span><span class="err">&#39;</span> <span class="n">can</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">be</span> <span class="n">established</span><span class="p">.</span>
+<span class="n">RSA</span> <span class="n">key</span> <span class="n">fingerprint</span> <span class="n">is</span> <span class="n">e7</span><span class="o">:</span><span class="mf">8f</span><span class="o">:</span><span class="mo">07</span><span class="o">:</span><span class="mi">57</span><span class="o">:</span><span class="mi">69</span><span class="o">:</span><span class="mi">08</span><span class="o">:</span><span class="mi">6</span><span class="n">e</span><span class="o">:</span><span class="n">fa</span><span class="o">:</span><span class="mi">82</span><span class="o">:</span><span class="n">bc</span><span class="o">:</span><span class="mi">1</span><span class="n">c</span><span class="o">:</span><span class="n">f6</span><span class="o">:</span><span class="mi">53</span><span class="o">:</span><span class="mf">3f</span><span class="o">:</span><span class="mi">12</span><span class="o">:</span><span class="mi">9</span><span class="n">e</span><span class="p">.</span>
+<span class="n">Are</span> <span class="n">you</span> <span class="n">sure</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="k">continue</span> <span class="n">connecting</span> <span class="p">(</span><span class="n">yes</span><span class="o">/</span><span class="n">no</span><span class="p">)</span><span class="o">?</span> <span class="n">yes</span>
+<span class="nl">Warning:</span> <span class="n">Permanently</span> <span class="n">added</span> <span class="err">&#39;</span><span class="mf">11.11.1.2</span><span class="err">&#39;</span> <span class="p">(</span><span class="n">RSA</span><span class="p">)</span> <span class="n">to</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">known</span> <span class="n">hosts</span><span class="p">.</span>
+<span class="n">vagrant</span><span class="err">@</span><span class="mf">11.11.1.2</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">password</span><span class="o">:</span>
+<span class="n">Linux</span> <span class="n">db</span> <span class="mf">2.6.32</span><span class="o">-</span><span class="mi">38</span><span class="o">-</span><span class="n">server</span> <span class="err">#</span><span class="mi">83</span><span class="o">-</span><span class="n">Ubuntu</span> <span class="n">SMP</span> <span class="n">Wed</span> <span class="n">Jan</span> <span class="mi">4</span> <span class="mi">11</span><span class="o">:</span><span class="mi">26</span><span class="o">:</span><span class="mi">59</span> <span class="n">UTC</span> <span class="mi">2012</span> <span class="n">x86_64</span> <span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span>
+<span class="n">Ubuntu</span> <span class="mf">10.04.4</span> <span class="n">LTS</span>
+
+<span class="n">Welcome</span> <span class="n">to</span> <span class="n">the</span> <span class="n">Ubuntu</span> <span class="n">Server</span><span class="o">!</span>
+ <span class="o">*</span> <span class="n">Documentation</span><span class="o">:</span>  <span class="n">http</span><span class="o">:</span><span class="c1">//www.ubuntu.com/server/doc</span>
+<span class="n">New</span> <span class="n">release</span> <span class="err">&#39;</span><span class="n">precise</span><span class="err">&#39;</span> <span class="n">available</span><span class="p">.</span>
+<span class="n">Run</span> <span class="err">&#39;</span><span class="k">do</span><span class="o">-</span><span class="n">release</span><span class="o">-</span><span class="n">upgrade</span><span class="err">&#39;</span> <span class="n">to</span> <span class="n">upgrade</span> <span class="n">to</span> <span class="n">it</span><span class="p">.</span>
+
+<span class="n">Welcome</span> <span class="n">to</span> <span class="n">your</span> <span class="n">Vagrant</span><span class="o">-</span><span class="n">built</span> <span class="n">virtual</span> <span class="n">machine</span><span class="p">.</span>
+<span class="n">Last</span> <span class="n">login</span><span class="o">:</span> <span class="n">Thu</span> <span class="n">Aug</span>  <span class="mi">8</span> <span class="mi">18</span><span class="o">:</span><span class="mi">58</span><span class="o">:</span><span class="mi">50</span> <span class="mi">2013</span> <span class="n">from</span> <span class="mf">10.0.2.2</span>
+<span class="n">vagrant</span><span class="err">@</span><span class="n">db</span><span class="o">:~</span><span class="err">$</span>
+</pre></div>
+
+
+<p>通过上面的信息我们可以看到虚拟机之间通信是畅通的，所以现在开始你伟大的架构设计吧，你想设计怎么样的架构都可以，唯一限制你的就是你主机的硬件配置了</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

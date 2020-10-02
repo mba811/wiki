@@ -1,0 +1,504 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Linux基础 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Linux">Linux</a>&nbsp;&#187;&nbsp;Linux基础
+    <span class="updated">Page Updated&nbsp;
+      2015-02-10 13:30
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Linux基础</div>
+
+  <p>Linux 最初是 Linus Torvalds 于 1991 年在大学写的操作系统。今天，Linux 拥有了优秀的开发团队、庞大的用户社区和成功的商业模式。虽然在桌面市场表现不佳，但是在 Linux 服务器(Top 10 网站中的六家)、科学计算(Top 500 中的 459 台)、嵌入式(大量的路由设备、工业控制产品)以及新兴的移动设备(Android)领域都取得巨大的成功。</p>
+<p>Linux 是现今最成功的自由软件之一。</p>
+<h1 id="ssh-linux">SSH 登录 Linux服务器 流程说明</h1>
+<h2 id="xshell-ssh">Xshell : 极好用的免费SSH客户端<a href="http://jwch.sdut.edu.cn/book/linux/xshell.html#xshell-ssh"></a></h2>
+<p><a href="http://code.google.com/p/42qu-school/downloads/detail?name=xshell_3.0.2.53.exe&amp;can=2&amp;q=">点此下载 Xshell</a></p>
+<h2 id="session">创建session<a href="http://jwch.sdut.edu.cn/book/linux/xshell.html#session"></a></h2>
+<p>安装好xshell后，打开软件，点击菜单栏“File”中的“new”,将出现下图所示弹窗，填写相应信息。其中Host为邮件中所给的主机ip地址（name栏可以不用修改，但一般为便于在xshell中区分不同的主机，自己一般会修改为“用户名@主机”，也可以用“用户名@42qu”），然后点击“ok”。</p>
+<p><img alt="首次登录" src="http://jwch.sdut.edu.cn/book/_images/register.png" /></p>
+<h2 id="_1">登录<a href="http://jwch.sdut.edu.cn/book/linux/xshell.html#id1"></a></h2>
+<p>在随后弹出的弹窗中选择自己创建的帐号，点击“connect”，在弹出窗口中输入邮件中提供的用户名，新窗口中选择“keyboard Interactive”</p>
+<p>并确定，最后输入邮件中提供的密码，即可登录到自己的vps中。</p>
+<ol>
+<li><img alt="../_images/login1.png" src="http://jwch.sdut.edu.cn/book/_images/login1.png" /></li>
+<li><img alt="../_images/login2.png" src="http://jwch.sdut.edu.cn/book/_images/login2.png" /></li>
+<li><img alt="../_images/login3.png" src="http://jwch.sdut.edu.cn/book/_images/login3.png" /></li>
+</ol>
+<h2 id="_2">设置显示编码<a href="http://jwch.sdut.edu.cn/book/linux/xshell.html#id2"></a></h2>
+<p>简单设置一下xshell的字符显示，在下图所示的导航按钮中，勾选“UTF-8”。</p>
+<p><img alt="../_images/encoding.png" src="http://jwch.sdut.edu.cn/book/_images/encoding.png" /></p>
+<p>顺便可以设置下字体</p>
+<p><img alt="../_images/xshell_ft.png" src="http://jwch.sdut.edu.cn/book/_images/xshell_ft.png" /></p>
+<p>如果觉得粗体看着碍眼, 那么可以修正下显示设置</p>
+<ol>
+<li><img alt="../_images/xshell_font_btn.png" src="http://jwch.sdut.edu.cn/book/_images/xshell_font_btn.png" /></li>
+<li><img alt="../_images/xshell_font.png" src="http://jwch.sdut.edu.cn/book/_images/xshell_font.png" /></li>
+</ol>
+<h2 id="_3">配置密钥登录 , 无需每次输入密码<a href="http://jwch.sdut.edu.cn/book/linux/xshell.html#id3"></a></h2>
+<p>为避免每次登录vps都需要重复输入用户名和密码的步骤，可以通过生成.ssh/authorized_keys来减少麻烦。</p>
+<p>执行:</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~</span>
+</pre></div>
+
+
+<p>命令，来到home(家)目录</p>
+<p>执行:</p>
+<div class="hlcode"><pre><span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span>
+</pre></div>
+
+
+<p>命令 , 然后按两次回车, 生成密钥</p>
+<p>执行:</p>
+<div class="hlcode"><pre><span class="n">cd</span>  <span class="p">.</span><span class="n">ssh</span>
+</pre></div>
+
+
+<p>进入.ssh目录</p>
+<p>执行:</p>
+<div class="hlcode"><pre><span class="n">cat</span> <span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span> <span class="o">&gt;&gt;</span> <span class="n">authorized_keys</span>
+</pre></div>
+
+
+<p>将把当前目录下</p>
+<p>id_rsa.pub中的数据拷贝一份到新建的authorized_keys档案中。</p>
+<p><img alt="../_images/makekeys.png" src="http://jwch.sdut.edu.cn/book/_images/makekeys.png" /></p>
+<p>点击导航中的“new file transfer”图标，如下图所示。</p>
+<p><img alt="../_images/filetransfer.png" src="http://jwch.sdut.edu.cn/book/_images/filetransfer.png" /></p>
+<p>弹出窗口中忽视警告，确定后输入密码，在.ssh目录下执行“get id_rsa”命令，id_rsa将被保存到下图红线所示的本地目录中。</p>
+<p><img alt="../_images/getkeys.png" src="http://jwch.sdut.edu.cn/book/_images/getkeys.png" /></p>
+<p>在xshell菜单栏中依次点击“File”-&gt;“open”，选中你的session用户，并点击“Properties”，如下图所示。</p>
+<p><img alt="../_images/reset1.png" src="http://jwch.sdut.edu.cn/book/_images/reset1.png" /></p>
+<p>做下图所示修改，点击“Browse”按钮。</p>
+<p><img alt="../_images/reset2.png" src="http://jwch.sdut.edu.cn/book/_images/reset2.png" /></p>
+<p>点击import按钮，选择id_rsa，之后一路确定，再次登录是就可以不用再输入用户名和密码了。</p>
+<p><img alt="../_images/reset3.png" src="http://jwch.sdut.edu.cn/book/_images/reset3.png" /></p>
+<h1 id="ubuntu">ubuntu 安装说明<a href="http://jwch.sdut.edu.cn/book/linux/install.html#ubuntu"></a></h1>
+<p>可以查看这个教程</p>
+<p><a href="http://wenku.baidu.com/course/view/4fdf50e2524de518964b7d00">http://wenku.baidu.com/course/view/4fdf50e2524de518964b7d00</a></p>
+<h1 id="ftp">搭建ftp 服务器<a href="http://jwch.sdut.edu.cn/book/linux/ftp.html#ftp"></a></h1>
+<h2 id="vsftp">vsftp 快速配置<a href="http://jwch.sdut.edu.cn/book/linux/ftp.html#vsftp"></a></h2>
+<p>支持系统用户的快速配置:</p>
+<div class="hlcode"><pre><span class="cp"># 默认配置文件: /etc/vsftpd.conf</span>
+<span class="cp">#</span>
+<span class="cp">#</span>
+<span class="cp">#     下面是配置的选项及说明</span>
+<span class="cp">#</span>
+<span class="cp">#</span>
+
+<span class="cp">######### 核心设置 ###########</span>
+
+<span class="cp"># 允许本地用户登录</span>
+<span class="n">local_enable</span><span class="o">=</span><span class="n">YES</span>
+
+<span class="cp"># 本地用户的写权限</span>
+<span class="n">write_enable</span><span class="o">=</span><span class="n">YES</span>
+
+<span class="cp"># 使用FTP的本地文件权限,默认为077</span>
+<span class="cp"># 一般设置为022</span>
+<span class="n">local_umask</span><span class="o">=</span><span class="mo">022</span>
+
+<span class="cp"># 切换目录时</span>
+<span class="cp"># 是否显示目录下.message的内容</span>
+<span class="n">dirmessage_enable</span><span class="o">=</span><span class="n">YES</span>
+
+<span class="cp">#验证方式</span>
+<span class="cp">#pam_service_name=vsftpd</span>
+
+<span class="cp"># 启用FTP数据端口的数据连接</span>
+<span class="n">connect_from_port_20</span><span class="o">=</span><span class="n">YES</span>
+
+<span class="cp"># 以独立的FTP服务运行</span>
+<span class="n">listen</span><span class="o">=</span><span class="n">yes</span>
+
+<span class="cp"># 修改连接端口</span>
+<span class="cp">#listen_port=2121</span>
+
+<span class="cp">######### 匿名登录设置 ###########</span>
+
+<span class="cp"># 允许匿名登录</span>
+<span class="n">anonymous_enable</span><span class="o">=</span><span class="n">NO</span>
+
+<span class="cp"># 如果允许匿名登录</span>
+<span class="cp"># 是否开启匿名上传权限</span>
+<span class="cp">#anon_upload_enable=YES</span>
+
+<span class="cp"># 如果允许匿名登录</span>
+<span class="cp"># 是否允许匿名建立文件夹并在文件夹内上传文件</span>
+<span class="cp">#anon_mkdir_write_enable=YES</span>
+
+<span class="cp"># 如果允许匿名登录</span>
+<span class="cp"># 匿名帐号可以有删除的权限</span>
+<span class="cp">#anon_other_write_enable=yes</span>
+
+<span class="cp"># 如果允许匿名登录</span>
+<span class="cp"># 匿名的下载权限</span>
+<span class="cp"># 匿名为Other,可设置目录/文件属性控制</span>
+<span class="cp">#anon_world_readable_only=no</span>
+
+<span class="cp"># 如果允许匿名登录</span>
+<span class="cp"># 限制匿名用户传输速率,单位bite</span>
+<span class="cp">#anon_max_rate=30000</span>
+
+<span class="cp">######### 用户限制设置 ###########</span>
+
+<span class="cp">#### 限制登录</span>
+
+<span class="cp"># 用userlist来限制用户访问</span>
+<span class="cp">#userlist_enable=yes</span>
+
+<span class="cp"># 名单中的人不允许访问</span>
+<span class="cp">#userlist_deny=no</span>
+
+<span class="cp"># 限制名单文件放置的路径</span>
+<span class="cp">#userlist_file=/etc/vsftpd/userlist_deny.chroot</span>
+
+<span class="cp">#### 限制目录</span>
+
+<span class="cp"># 限制所有用户都在家目录</span>
+<span class="n">chroot_local_user</span><span class="o">=</span><span class="n">yes</span>
+
+<span class="cp"># 调用限制在家目录的用户名单</span>
+<span class="cp">#chroot_list_enable=YES</span>
+
+<span class="cp"># 限制在家目录的用户名单所在路径</span>
+<span class="cp">#chroot_list_file=/etc/vsftpd/chroot_list</span>
+
+<span class="cp">######### 日志设置 ###########</span>
+
+<span class="cp"># 日志文件路径设置</span>
+<span class="n">xferlog_file</span><span class="o">=/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">vsftpd</span><span class="p">.</span><span class="n">log</span>
+
+<span class="cp"># 激活上传/下载的日志</span>
+<span class="n">xferlog_enable</span><span class="o">=</span><span class="n">YES</span>
+
+<span class="cp"># 使用标准的日志格式</span>
+<span class="cp">#xferlog_std_format=YES</span>
+
+<span class="cp">######### 安全设置 ###########</span>
+
+<span class="cp"># 用户空闲超时,单位秒</span>
+<span class="cp">#idle_session_timeout=600</span>
+
+<span class="cp"># 数据连接空闲超时,单位秒</span>
+<span class="cp">#data_connection_timeout=120</span>
+
+<span class="cp"># 将客户端空闲1分钟后断开</span>
+<span class="cp">#accept_timeout=60</span>
+
+<span class="cp"># 中断1分钟后重新连接</span>
+<span class="cp">#connect_timeout=60</span>
+
+<span class="cp"># 本地用户传输速率,单位bite</span>
+<span class="cp">#local_max_rate=50000</span>
+
+<span class="cp"># FTP的最大连接数</span>
+<span class="cp">#max_clients=200</span>
+
+<span class="cp"># 每IP的最大连接数</span>
+<span class="cp">#max_per_ip=5</span>
+
+<span class="cp">######### 被动模式设置 ###########</span>
+
+<span class="cp"># 是否开户被动模式</span>
+<span class="n">pasv_enable</span><span class="o">=</span><span class="n">yes</span>
+
+<span class="cp"># 被动模式最小端口</span>
+<span class="n">pasv_min_port</span><span class="o">=</span><span class="mi">5000</span>
+
+<span class="cp"># 被动模式最大端口</span>
+<span class="n">pasv_max_port</span><span class="o">=</span><span class="mi">6000</span>
+
+<span class="cp">######### 其他设置 ###########</span>
+
+<span class="cp"># 欢迎信息</span>
+<span class="n">ftpd_banner</span><span class="o">=</span><span class="n">Welcome</span> <span class="n">to</span> <span class="n">Ftp</span> <span class="n">Server</span><span class="o">!</span>
+</pre></div>
+
+
+<h1 id="ssh">ssh 代理使用<a href="http://jwch.sdut.edu.cn/book/linux/ssh-proxy.html#ssh"></a></h1>
+<p>作者:<br />
+<a href="http://zhangweide.cn/">张卫</a></p>
+<h2 id="linuxssh">linux系统下的ssh代理使用方法<a href="http://jwch.sdut.edu.cn/book/linux/ssh-proxy.html#linuxssh"></a></h2>
+<p>将SSH服务映射到本地端口来实现Socks代理服务器的功能</p>
+<p>执行:</p>
+<div class="hlcode"><pre><span class="n">ssh</span> <span class="o">-</span><span class="n">qTfnN</span> <span class="o">-</span><span class="n">D</span> <span class="mi">7070</span> <span class="n">xxx</span><span class="err">@</span><span class="n">x</span><span class="p">.</span><span class="n">x</span><span class="p">.</span><span class="n">x</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span><span class="n">p</span> <span class="n">port</span>
+</pre></div>
+
+
+<p>-D 加本地端口 <a href="mailto:xxx%40x.x.x.x">xxx@x.x.x.x</a> -p port 为ssh代理服务器</p>
+<p>chrome可用Auto Switch Mode进行配置代理规则</p>
+<p><img alt="../_images/switchysharp.png" src="http://jwch.sdut.edu.cn/book/_images/switchysharp.png" /></p>
+<h2 id="windowsssh">windows系统ssh代理使用方法<a href="http://jwch.sdut.edu.cn/book/linux/ssh-proxy.html#windowsssh"></a></h2>
+<blockquote>
+<p>SSH转Socks代理服务器工具：MyEnTunnel</p>
+<p><a href="http://truevue.org/sites/default/files/files/2010/02/myentunnel-%E4%B8%AD%E6%96%87%E7%89%88.zip">点此下载 MyEnTunnel</a></p>
+</blockquote>
+<p>使用MyEnTunnel将SSH服务映射到本地端口来实现Socks代理服务器的功能，默认socks代理的端口是7070，默认情况下是不启用代理的，需要选中“Enable Dynamic Socks”选项。</p>
+<p><img alt="../_images/myentunnel.gif" src="http://jwch.sdut.edu.cn/book/_images/myentunnel.gif" /></p>
+<h1 id="vim">vim<a href="http://jwch.sdut.edu.cn/book/linux/vim.html#vim"></a></h1>
+<h2 id="_4">教程资源<a href="http://jwch.sdut.edu.cn/book/linux/vim.html#id1"></a></h2>
+<ol>
+<li><a href="http://learnvimscriptthehardway.stevelosh.com/">Learn Vimscript the Hard Way</a></li>
+</ol>
+<h1 id="git-flow">git-flow<a href="http://jwch.sdut.edu.cn/book/linux/git_flow.html#git-flow"></a></h1>
+<p>文章：</p>
+<ol>
+<li><a href="http://www.jeffkit.info/2010/12/842/">http://www.jeffkit.info/2010/12/842/</a></li>
+<li><a href="http://ihower.tw/blog/archives/5140/">http://ihower.tw/blog/archives/5140/</a></li>
+<li><a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a></li>
+<li>git分支管理策略 <a href="http://www.ruanyifeng.com/blog/2012/07/git.html">http://www.ruanyifeng.com/blog/2012/07/git.html</a></li>
+</ol>
+<h2 id="git-flow_1">git-flow 是什么？<a href="http://jwch.sdut.edu.cn/book/linux/git_flow.html#id1"></a></h2>
+<p>github 主页:<br />
+<a href="https://github.com/nvie/gitflow">https://github.com/nvie/gitflow</a></p>
+<p>git flow是对 <a href="http://nvie.com/posts/a-successful-git-branching-model/">http://nvie.com/posts/a-successful-git-branching-model/</a> 这个分支模型的命令封装。</p>
+<p>git flow定义了下列分支</p>
+<p>主要分支:</p>
+<ol>
+<li>master: 永远在 production-ready 状态</li>
+<li>
+<p>develop: 最新的下次发布开发状态<br />
+支援性分支:</p>
+</li>
+<li>
+<p>Feature branches: 开发新功能都从 develop 分支出來，完成后 merge 回 develop</p>
+</li>
+<li>Release branches: 准备要 release 的版本，只修 bugs。从 develop 分支出來，完成后 merge 回 master 和 develop</li>
+<li>Hotfix branches: 等不及 release 版本就必须马上修 master 上线的情況。会从 master 分支出來，完成后 merge 回 master 和 develop</li>
+</ol>
+<h2 id="git-flow_2">安装git flow<a href="http://jwch.sdut.edu.cn/book/linux/git_flow.html#id2"></a></h2>
+<p>wiki: <a href="https://github.com/nvie/gitflow/wiki/Installation">https://github.com/nvie/gitflow/wiki/Installation</a></p>
+<p>ubuntu 下官方源里就有:</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">git</span><span class="o">-</span><span class="n">flow</span>
+</pre></div>
+
+
+<h2 id="_5">使用<a href="http://jwch.sdut.edu.cn/book/linux/git_flow.html#id3"></a></h2>
+<p>初始化:</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">flow</span> <span class="n">init</span> <span class="p">[</span><span class="o">-</span><span class="n">d</span><span class="p">]</span>
+</pre></div>
+
+
+<p>-d 参数表示所有按默认的来,不加-d 会手动配置</p>
+<div class="hlcode"><pre><span class="err">λ</span> <span class="o">~/</span><span class="n">clojure</span><span class="o">/</span><span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="o">/</span> <span class="n">git</span> <span class="n">flow</span> <span class="n">init</span>
+<span class="n">Initialized</span> <span class="n">empty</span> <span class="n">Git</span> <span class="n">repository</span> <span class="n">in</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">lidashuang</span><span class="o">/</span><span class="n">clojure</span><span class="o">/</span><span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="o">/</span><span class="p">.</span><span class="n">git</span><span class="o">/</span>
+<span class="n">No</span> <span class="n">branches</span> <span class="n">exist</span> <span class="n">yet</span><span class="p">.</span> <span class="n">Base</span> <span class="n">branches</span> <span class="n">must</span> <span class="n">be</span> <span class="n">created</span> <span class="n">now</span><span class="p">.</span>
+<span class="n">Branch</span> <span class="n">name</span> <span class="k">for</span> <span class="n">production</span> <span class="n">releases</span><span class="o">:</span> <span class="p">[</span><span class="n">master</span><span class="p">]</span>
+<span class="n">Branch</span> <span class="n">name</span> <span class="k">for</span> <span class="s">&quot;next release&quot;</span> <span class="n">development</span><span class="o">:</span> <span class="p">[</span><span class="n">develop</span><span class="p">]</span>
+
+<span class="n">How</span> <span class="n">to</span> <span class="n">name</span> <span class="n">your</span> <span class="n">supporting</span> <span class="n">branch</span> <span class="n">prefixes</span><span class="o">?</span>
+<span class="n">Feature</span> <span class="n">branches</span><span class="o">?</span> <span class="p">[</span><span class="n">feature</span><span class="o">/</span><span class="p">]</span>
+<span class="n">Release</span> <span class="n">branches</span><span class="o">?</span> <span class="p">[</span><span class="n">release</span><span class="o">/</span><span class="p">]</span>
+<span class="n">Hotfix</span> <span class="n">branches</span><span class="o">?</span> <span class="p">[</span><span class="n">hotfix</span><span class="o">/</span><span class="p">]</span>
+<span class="n">Support</span> <span class="n">branches</span><span class="o">?</span> <span class="p">[</span><span class="n">support</span><span class="o">/</span><span class="p">]</span>
+<span class="n">Version</span> <span class="n">tag</span> <span class="n">prefix</span><span class="o">?</span> <span class="p">[]</span>
+</pre></div>
+
+
+<h2 id="featurereleasehotfixsupport">创建 feature/release/hotfix/support 分支<a href="http://jwch.sdut.edu.cn/book/linux/git_flow.html#feature-release-hotfix-support"></a></h2>
+<p>列出，开始，完成 feature 分支用下面的命令:</p>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nx">flow</span> <span class="nx">feature</span>
+<span class="nx">git</span> <span class="nx">flow</span> <span class="nx">feature</span> <span class="nb">start</span> <span class="o">&lt;</span><span class="nb">name</span><span class="o">&gt;</span> <span class="err">[</span><span class="o">&lt;</span><span class="nx">base</span><span class="o">&gt;</span><span class="cp">]</span>
+git flow feature finish <span class="nt">&lt;name&gt;</span>
+</pre></div>
+
+
+<p>一个 feature完成 之后 ，会合并到develop 分支</p>
+<p>对 feature 分支 push/pull:</p>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nx">flow</span> <span class="nx">feature</span> <span class="nx">publish</span> <span class="o">&lt;</span><span class="nb">name</span><span class="o">&gt;</span>
+<span class="nx">git</span> <span class="nx">flow</span> <span class="nx">feature</span> <span class="nx">pull</span> <span class="o">&lt;</span><span class="nx">remote</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nb">name</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>release branches:</p>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nx">flow</span> <span class="nx">release</span>
+<span class="nx">git</span> <span class="nx">flow</span> <span class="nx">release</span> <span class="nb">start</span> <span class="o">&lt;</span><span class="nx">release</span><span class="o">&gt;</span> <span class="err">[</span><span class="o">&lt;</span><span class="nx">base</span><span class="o">&gt;</span><span class="cp">]</span>
+git flow release finish <span class="nt">&lt;release&gt;</span>
+For release branches, the <span class="nt">&lt;base&gt;</span> arg must be a commit on develop.
+</pre></div>
+
+
+<p>hotfix:</p>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nx">flow</span> <span class="nx">hotfix</span>
+<span class="nx">git</span> <span class="nx">flow</span> <span class="nx">hotfix</span> <span class="nb">start</span> <span class="o">&lt;</span><span class="nx">release</span><span class="o">&gt;</span> <span class="err">[</span><span class="o">&lt;</span><span class="nx">base</span><span class="o">&gt;</span><span class="cp">]</span>
+git flow hotfix finish <span class="nt">&lt;release&gt;</span>
+For hotfix branches, the <span class="nt">&lt;base&gt;</span> arg must be a commit on master.
+</pre></div>
+
+
+<p>branches:</p>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nx">flow</span> <span class="nx">support</span>
+<span class="nx">git</span> <span class="nx">flow</span> <span class="nx">support</span> <span class="nb">start</span> <span class="o">&lt;</span><span class="nx">release</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="nx">base</span><span class="o">&gt;</span>
+<span class="nb">For</span> <span class="nx">support</span> <span class="nx">branches</span><span class="p">,</span> <span class="nx">the</span> <span class="o">&lt;</span><span class="nx">base</span><span class="o">&gt;</span> <span class="nx">arg</span> <span class="nx">must</span> <span class="nx">be</span> <span class="nx">a</span> <span class="nx">commit</span> <span class="k">on</span> <span class="nx">master.</span>
+</pre></div>
+
+
+<h1 id="lvm">LVM (逻辑卷管理器)<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#lvm"></a></h1>
+<p>作者:<br />
+zhwei <a href="http://zhangweide.cn/">http://zhangweide.cn</a></p>
+<h2 id="_6">介绍<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id1"></a></h2>
+<p>LVM <em>Logical Volume Manager</em></p>
+<p>LVM是Linux环境下对磁盘分区进行管理的一种机制，LVM是建立在硬盘和分区之上的一个逻辑层，来提高磁盘分区管理的灵活性。</p>
+<h2 id="_7">能解决那些问题<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id2"></a></h2>
+<ul>
+<li>在线通过增加或减少物理卷组改变逻辑卷组的大小</li>
+<li>在小型系统上，比如个人电脑，不必在安装系统的时候费脑筋估算分区的大小，lvm上以后可以按需求轻易调整分区的大小。</li>
+<li>能够对逻辑分区实现一致性备份</li>
+<li>可以在多个物理卷或者整个硬盘上创建单个分区，有点像RAID 0, 但更像JBOD, 允许动态调整卷的大小。</li>
+</ul>
+<h2 id="lvm_1">创建LVM<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id3"></a></h2>
+<p>如果要在/dev/sda3, /dev/sda4, /dev/sda5上创建lvm</p>
+<ol>
+<li>
+<p>创建物理卷</p>
+<p>pvcreate /dev/sda{3..5}</p>
+</li>
+<li>
+<p>创建为卷组</p>
+<p>vgcreate test0 /dev/sda{3..5}</p>
+</li>
+<li>
+<p>在卷组test0上创建10G的逻辑卷 lv_0</p>
+<p>lvcreate -L 10G -n lv_0 test0</p>
+</li>
+<li>
+<p>创建文件系统并挂载</p>
+<p>mkfs.ext4 /dev/test0/lv_0</p>
+</li>
+</ol>
+<h2 id="_8">扩容<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id4"></a></h2>
+<p>需求： 将物理卷/dev/sda6 加入lvm并扩大为20G</p>
+<ol>
+<li>
+<p>创建物理卷</p>
+<p>pvcreate /dev/sda6</p>
+</li>
+<li>
+<p>添加到卷组test0</p>
+<p>vgextend test0 /dev/sda6</p>
+</li>
+<li>
+<p>扩展逻辑卷, 扩展到20G</p>
+<p>lvextend -L 20G /dev/test0/lv_0</p>
+</li>
+<li>
+<p>使增加的容量生效</p>
+<p>resize2fs /dev/test0/lv_0</p>
+</li>
+</ol>
+<p>搞定</p>
+<h2 id="_9">减容<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id5"></a></h2>
+<p>需求： 将逻辑卷减小成10G</p>
+<ol>
+<li>
+<p>先将该分区卸载</p>
+<p>umount /data</p>
+</li>
+<li>
+<p>检查逻辑卷</p>
+<p>e2fsck -f /dev/test0/lv_0</p>
+</li>
+<li>
+<p>调整文件系统大小</p>
+<p>resize2fs /dev/test0/lv_0 10G</p>
+</li>
+<li>
+<p>对逻辑卷进行调整</p>
+<p>lvreduce /dev/test0/lv_0 10G</p>
+</li>
+</ol>
+<h2 id="lvm_2">删除lvm<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id6"></a></h2>
+<div class="hlcode"><pre><span class="n">lvremove</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">test0</span><span class="o">/</span><span class="n">lv_0</span>
+
+<span class="n">vgremove</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">test0</span>
+
+<span class="n">pvremove</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">sda</span><span class="p">{</span><span class="mf">3..5</span><span class="p">}</span>
+</pre></div>
+
+
+<h2 id="_10">更多用法<a href="http://jwch.sdut.edu.cn/book/linux/lvm.html#id7"></a></h2>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">sudo</span> <span class="nx">lvm</span>
+
+<span class="nx">lvm</span><span class="o">&gt;</span> <span class="nx">help</span>
+  <span class="nx">Available</span> <span class="nx">lvm</span> <span class="nx">commands</span><span class="p">:</span>
+  <span class="nx">Use</span> <span class="s1">&#39;lvm help &lt;command&gt;&#39;</span> <span class="nb">for</span> <span class="nx">more</span> <span class="nx">information</span>
+
+  <span class="nx">dumpconfig</span>      <span class="nb">Dump</span> <span class="nx">active</span> <span class="nx">configuration</span>
+  <span class="nx">formats</span>         <span class="nb">List</span> <span class="nx">available</span> <span class="nx">metadata</span> <span class="nx">formats</span>
+  <span class="nx">help</span>            <span class="nx">Display</span> <span class="nx">help</span> <span class="nb">for</span> <span class="nx">commands</span>
+  <span class="nx">lvchange</span>        <span class="nx">Change</span> <span class="nx">the</span> <span class="nb">attributes</span> <span class="nx">of</span> <span class="nx">logical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">lvconvert</span>       <span class="nx">Change</span> <span class="nx">logical</span> <span class="nx">volume</span> <span class="nx">layout</span>
+  <span class="nx">lvcreate</span>        <span class="nb">Create</span> <span class="nx">a</span> <span class="nx">logical</span> <span class="nx">volume</span>
+  <span class="nx">lvdisplay</span>       <span class="nx">Display</span> <span class="nx">information</span> <span class="nx">about</span> <span class="nx">a</span> <span class="nx">logical</span> <span class="nx">volume</span>
+  <span class="nx">lvextend</span>        <span class="nb">Add</span> <span class="nx">space</span> <span class="k">to</span> <span class="nx">a</span> <span class="nx">logical</span> <span class="nx">volume</span>
+  <span class="nx">lvmchange</span>       <span class="k">With</span> <span class="nx">the</span> <span class="nx">device</span> <span class="nx">mapper</span><span class="p">,</span> <span class="nx">this</span> <span class="nx">is</span> <span class="nx">obsolete</span> <span class="ow">and</span> <span class="nx">does</span> <span class="nx">nothing.</span>
+  <span class="nx">lvmdiskscan</span>     <span class="nb">List</span> <span class="nx">devices</span> <span class="nx">that</span> <span class="nx">may</span> <span class="nx">be</span> <span class="nx">used</span> <span class="nx">as</span> <span class="nx">physical</span> <span class="nx">volumes</span>
+  <span class="nx">lvmsadc</span>         <span class="nx">Collect</span> <span class="nx">activity</span> <span class="kd">data</span>
+  <span class="nx">lvmsar</span>          <span class="nb">Create</span> <span class="nx">activity</span> <span class="nx">report</span>
+  <span class="nx">lvreduce</span>        <span class="nx">Reduce</span> <span class="nx">the</span> <span class="nb">size</span> <span class="nx">of</span> <span class="nx">a</span> <span class="nx">logical</span> <span class="nx">volume</span>
+  <span class="nx">lvremove</span>        <span class="nb">Remove</span> <span class="nx">logical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span> <span class="nb">from</span> <span class="nx">the</span> <span class="nx">system</span>
+  <span class="nx">lvrename</span>        <span class="nx">Rename</span> <span class="nx">a</span> <span class="nx">logical</span> <span class="nx">volume</span>
+  <span class="nx">lvresize</span>        <span class="nx">Resize</span> <span class="nx">a</span> <span class="nx">logical</span> <span class="nx">volume</span>
+  <span class="nx">lvs</span>             <span class="nx">Display</span> <span class="nx">information</span> <span class="nx">about</span> <span class="nx">logical</span> <span class="nx">volumes</span>
+  <span class="nx">lvscan</span>          <span class="nb">List</span> <span class="kc">all</span> <span class="nx">logical</span> <span class="n">volumes</span> <span class="k">in</span> <span class="kc">all</span> <span class="nx">volume</span> <span class="nx">groups</span>
+  <span class="nx">pvchange</span>        <span class="nx">Change</span> <span class="nb">attributes</span> <span class="nx">of</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">pvresize</span>        <span class="nx">Resize</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">pvck</span>            <span class="nx">Check</span> <span class="nx">the</span> <span class="nx">consistency</span> <span class="nx">of</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">pvcreate</span>        <span class="nb">Initialize</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span> <span class="nb">for</span> <span class="nx">use</span> <span class="k">by</span> <span class="nx">LVM</span>
+  <span class="nx">pvdata</span>          <span class="nx">Display</span> <span class="nx">the</span> <span class="k">on</span><span class="na">-disk</span> <span class="nx">metadata</span> <span class="nb">for</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">pvdisplay</span>       <span class="nx">Display</span> <span class="nx">various</span> <span class="nb">attributes</span> <span class="nx">of</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">pvmove</span>          <span class="nx">Move</span> <span class="nx">extents</span> <span class="nb">from</span> <span class="nx">one</span> <span class="nx">physical</span> <span class="nx">volume</span> <span class="k">to</span> <span class="nx">another</span>
+  <span class="nx">pvremove</span>        <span class="nb">Remove</span> <span class="nx">LVM</span> <span class="nb">label</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span> <span class="nb">from</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">pvs</span>             <span class="nx">Display</span> <span class="nx">information</span> <span class="nx">about</span> <span class="nx">physical</span> <span class="nx">volumes</span>
+  <span class="nx">pvscan</span>          <span class="nb">List</span> <span class="kc">all</span> <span class="nx">physical</span> <span class="nx">volumes</span>
+  <span class="nx">segtypes</span>        <span class="nb">List</span> <span class="nx">available</span> <span class="nx">segment</span> <span class="nx">types</span>
+  <span class="nx">vgcfgbackup</span>     <span class="nx">Backup</span> <span class="nx">volume</span> <span class="k">group</span> <span class="nx">configuration</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">vgcfgrestore</span>    <span class="nx">Restore</span> <span class="nx">volume</span> <span class="k">group</span> <span class="nx">configuration</span>
+  <span class="nx">vgchange</span>        <span class="nx">Change</span> <span class="nx">volume</span> <span class="k">group</span> <span class="nb">attributes</span>
+  <span class="nx">vgck</span>            <span class="nx">Check</span> <span class="nx">the</span> <span class="nx">consistency</span> <span class="nx">of</span> <span class="nx">volume</span> <span class="k">group</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">vgconvert</span>       <span class="nx">Change</span> <span class="nx">volume</span> <span class="k">group</span> <span class="nx">metadata</span> <span class="nb">format</span>
+  <span class="nx">vgcreate</span>        <span class="nb">Create</span> <span class="nx">a</span> <span class="nx">volume</span> <span class="k">group</span>
+  <span class="nx">vgdisplay</span>       <span class="nx">Display</span> <span class="nx">volume</span> <span class="k">group</span> <span class="nx">information</span>
+  <span class="nx">vgexport</span>        <span class="nx">Unregister</span> <span class="nx">volume</span> <span class="k">group</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span> <span class="nb">from</span> <span class="nx">the</span> <span class="nx">system</span>
+  <span class="nx">vgextend</span>        <span class="nb">Add</span> <span class="nx">physical</span> <span class="nx">volumes</span> <span class="k">to</span> <span class="nx">a</span> <span class="nx">volume</span> <span class="k">group</span>
+  <span class="nx">vgimport</span>        <span class="nb">Register</span> <span class="nx">exported</span> <span class="nx">volume</span> <span class="k">group</span> <span class="k">with</span> <span class="nx">system</span>
+  <span class="nx">vgmerge</span>         <span class="nb">Merge</span> <span class="nx">volume</span> <span class="nx">groups</span>
+  <span class="nx">vgmknodes</span>       <span class="nb">Create</span> <span class="nx">the</span> <span class="nx">special</span> <span class="nx">files</span> <span class="nb">for</span> <span class="nx">volume</span> <span class="k">group</span> <span class="n">devices</span> <span class="k">in</span> <span class="p">/</span><span class="nx">dev</span>
+  <span class="nx">vgreduce</span>        <span class="nb">Remove</span> <span class="nx">physical</span> <span class="nx">volume</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span> <span class="nb">from</span> <span class="nx">a</span> <span class="nx">volume</span> <span class="k">group</span>
+  <span class="nx">vgremove</span>        <span class="nb">Remove</span> <span class="nx">volume</span> <span class="k">group</span><span class="p">(</span><span class="nb">s</span><span class="p">)</span>
+  <span class="nx">vgrename</span>        <span class="nx">Rename</span> <span class="nx">a</span> <span class="nx">volume</span> <span class="k">group</span>
+  <span class="nx">vgs</span>             <span class="nx">Display</span> <span class="nx">information</span> <span class="nx">about</span> <span class="nx">volume</span> <span class="nx">groups</span>
+  <span class="nx">vgscan</span>          <span class="nb">Search</span> <span class="nb">for</span> <span class="kc">all</span> <span class="nx">volume</span> <span class="nx">groups</span>
+  <span class="nx">vgsplit</span>         <span class="nx">Move</span> <span class="nx">physical</span> <span class="nx">volumes</span> <span class="k">into</span> <span class="n">a</span> <span class="nb">new</span> <span class="ow">or</span> <span class="nx">existing</span> <span class="nx">volume</span> <span class="k">group</span>
+  <span class="nb">version</span>         <span class="nx">Display</span> <span class="nx">software</span> <span class="ow">and</span> <span class="nx">driver</span> <span class="nb">version</span> <span class="nx">information</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

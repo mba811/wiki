@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>开启 NFS 文件系统提升 Vagrant 共享目录的性能 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;开启 NFS 文件系统提升 Vagrant 共享目录的性能
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:27
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">开启 NFS 文件系统提升 Vagrant 共享目录的性能</div>
+
+  <p>Vagrant 默认的 VirtualBox 共享目录方式读写性能表现并不好，好在 Vagrant 支持 NFS 文件系统方式的共享，我们可以启用 NFS 提升性能。</p>
+<h2 id="_1">开启方法</h2>
+<p>首先要把虚拟机的网络设置成 <code>:private_network</code> 模式。</p>
+<p>然后确认宿主机系统是否安装了 <code>nfsd</code>，Mac OS X 默认是集成了的，部分 Linux 需要安装对应 package 才能支持（以 Ubuntu 为例）：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">nfs</span><span class="o">-</span><span class="n">kernel</span><span class="o">-</span><span class="n">server</span> <span class="n">nfs</span><span class="o">-</span><span class="n">common</span>
+</pre></div>
+
+
+<p>同时，虚拟机里的系统也要安装对应的 package：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">nfs</span><span class="o">-</span><span class="n">common</span>
+</pre></div>
+
+
+<p>接下来编辑配置文件 Vagrantfile，将共享的目录 <code>nfs</code> 设置为 <code>true</code>，如下：</p>
+<div class="hlcode"><pre><span class="n">Vagrant</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="err">#</span> <span class="p">...</span>
+
+  <span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">synced_folder</span> <span class="s">&quot;.&quot;</span><span class="p">,</span> <span class="s">&quot;/vagrant&quot;</span><span class="p">,</span> <span class="o">:</span><span class="n">nfs</span> <span class="o">=&gt;</span> <span class="nb">true</span>
+<span class="n">end</span>
+</pre></div>
+
+
+<p>保存后，使用命令 <code>vagrant reload</code> 重启虚拟机后才会生效，期间会修改宿主计算机的 <code>/etc/exports</code> 文件，因此可能要你输入密码，而且每次启动都要会求输入，稍微有点麻烦。</p>
+<h2 id="_2">测试结果</h2>
+<p>这样，NFS 就成功启动了，下次做单元测试的时候，可以测试一下速度，会不会快些呢？这里有个官方做<a href="http://docs-v1.vagrantup.com/v1/docs/nfs.html">单元测试</a>跑出的分数：</p>
+<div class="hlcode"><pre><span class="n">VirtualBox</span> <span class="n">Shared</span> <span class="n">Folders</span><span class="o">:</span>         <span class="mi">5</span><span class="n">m</span> <span class="mi">14</span><span class="n">s</span>
+<span class="n">Host</span> <span class="n">File</span> <span class="n">System</span><span class="o">:</span>                     <span class="mi">10</span><span class="n">s</span>
+<span class="n">Native</span> <span class="n">VM</span> <span class="n">File</span> <span class="n">System</span><span class="o">:</span>                <span class="mi">13</span><span class="n">s</span>
+<span class="n">NFS</span> <span class="n">Shared</span> <span class="n">Folders</span><span class="o">:</span>                   <span class="mi">22</span><span class="n">s</span>
+<span class="n">NFS</span> <span class="n">Shared</span> <span class="n">Folders</span> <span class="p">(</span><span class="n">warm</span> <span class="n">cache</span><span class="p">)</span><span class="o">:</span>      <span class="mi">14</span><span class="n">s</span>
+</pre></div>
+
+
+<blockquote>
+<p>由于 Windows 并不支持 NFS，所以 Windows 用户无法使用该功能。</p>
+</blockquote>
+<h3 id="_3">待解决疑问：</h3>
+<ol>
+<li>NFS 是否支持 <code>:public_network</code>？ 答：不支持</li>
+<li>有人说还得安装 <code>portmap</code>，能给我解释下为什么吗？</li>
+</ol>
+<p>参考来源：<a href="http://docs.vagrantup.com/v2/synced-folders/nfs.html">http://docs.vagrantup.com/v2/synced-folders/nfs.html</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

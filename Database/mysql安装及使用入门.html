@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>mysql安装及使用入门 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Database">Database</a>&nbsp;&#187;&nbsp;mysql安装及使用入门
+    <span class="updated">Page Updated&nbsp;
+      2015-05-17 20:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">mysql安装及使用入门</div>
+
+  <p>众所周知，MySql是个开源的关系型数据库，目前MySQL分为两个版本，商业版与社区版。其中社区版是免费提供的，因此我们只需到官网下载community server即可，直接下载免安装版，能够非常便捷的配置与使用。下面简单介绍mysql5.7的配置及简单使用入门。 ###Install and Configure 1.进入mysql主目录（建议将其移到C或D盘的根目录，并改名为mysql)</p>
+<p>2.配置path环境变量（如c:\mysql\bin\）添加到环境变量中。</p>
+<p>3.mysql主目录下的my-default.ini文件改名为my.ini，最简单配置如下</p>
+<div class="hlcode"><pre><span class="k">[mysqld]</span>
+
+<span class="c1"># Remove leading # and set to the amount of RAM for the most important data</span>
+<span class="c1"># cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.</span>
+<span class="c1"># innodb_buffer_pool_size = 128M</span>
+
+<span class="c1"># Remove leading # to turn on a very important data integrity option: logging</span>
+<span class="c1"># changes to the binary log between backups.</span>
+<span class="c1"># log_bin</span>
+
+<span class="c1"># These are commonly set, remove the # and set as required.</span>
+<span class="na">basedir</span> <span class="o">=</span> <span class="s">c:/mysql</span>
+<span class="na">datadir</span> <span class="o">=</span> <span class="s">c:/mysql/data</span>
+<span class="na">port</span> <span class="o">=</span> <span class="s">3306</span>
+<span class="c1"># server_id = .....</span>
+</pre></div>
+
+
+<p>（即去掉注释，并填写参数）</p>
+<p>4.在命令行中执行如下命令： 导航到mysql的根目录并执行命令</p>
+<div class="hlcode"><pre><span class="n">mysqld</span> <span class="n">install</span> <span class="n">mysql</span> <span class="o">--</span><span class="n">defaults</span><span class="o">-</span><span class="n">file</span><span class="o">=</span><span class="s">&quot;c:\mysql\my.ini&quot;</span>
+</pre></div>
+
+
+<p>若被命令执行失败，则使用管理员身份打开cmd窗口。</p>
+<p>5.在命令行中用 net start mysql文件启动Mysql服务</p>
+<p>6.默认情况下无密码，使用如下命令进入mysql</p>
+<div class="hlcode"><pre><span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span>
+</pre></div>
+
+
+<p>7.初次使用为root用户更改密码的话，使用如下命令</p>
+<div class="hlcode"><pre><span class="n">mysqladmin</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="n">password</span>
+<span class="cp">#輸入你的新密碼</span>
+<span class="cp">#然後</span>
+<span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="o">-</span><span class="n">p</span> <span class="err">新密碼</span>
+</pre></div>
+
+
+<h3 id="basic-usage">Basic Usage</h3>
+<p>下面主要简单说一下MySQL在使用过程中的一些使用技巧。安装好mysql后可以在环境变量的path变量中添加一下mysql主目录下的bin目录的路径，这样就可以通过在CMD中直接使用mysql命令。</p>
+<p>1）配置好mysql的环境变量后，可以使用如下命令在命令行中进入mysql：</p>
+<p>启动前使用如下命令启动mysql :</p>
+<div class="hlcode"><pre><span class="n">net</span> <span class="n">start</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<p>关闭mysql的指令为:</p>
+<div class="hlcode"><pre><span class="n">net</span> <span class="n">stop</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<p>可以在CMD中或者运行界面使用上面的命令。</p>
+<p>使用如下命令进入mysql: 前提是配置好环境变量，在Path变量中加入mysql下的bin目录路径</p>
+<div class="hlcode"><pre><span class="n">mysql</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="o">-</span><span class="n">p</span>
+<span class="o">&gt;&gt;</span><span class="err">提示输入密码</span>
+</pre></div>
+
+
+<p>2）在mysql中常用的操作有如下一些：</p>
+<div class="hlcode"><pre><span class="n">mysql</span> <span class="o">&gt;</span>
+        <span class="n">exit</span> <span class="c1">//退出mysql</span>
+        <span class="n">show</span> <span class="n">databases</span><span class="p">;</span>  <span class="c1">//显示已有数据库</span>
+        <span class="n">use</span> <span class="err">数据库名</span><span class="p">;</span> <span class="c1">//进入指定的数据库</span>
+        <span class="n">show</span> <span class="n">tables</span><span class="p">;</span> <span class="c1">//显示数据中的表</span>
+
+        <span class="n">select</span> <span class="o">*</span> <span class="n">form</span> <span class="n">TableName</span><span class="p">;</span>
+
+        <span class="c1">//创建数据库 </span>
+        <span class="n">create</span> <span class="n">database</span> <span class="n">mydb1</span><span class="p">;</span>
+        <span class="n">create</span> <span class="n">database</span> <span class="n">mydb1</span> <span class="n">character</span> <span class="n">set</span> <span class="n">UTF8</span><span class="p">;</span> <span class="c1">//指明编码方式为utf-8</span>
+
+        <span class="n">show</span> <span class="n">variables</span> <span class="n">like</span> <span class="err">&#39;</span><span class="n">character</span><span class="o">%</span><span class="err">&#39;</span>  <span class="c1">//查看当前平台中的可用字符编码</span>
+
+        <span class="c1">//---- 以下两个为mysql独有操作 ---</span>
+        <span class="c1">//数据库备份</span>
+        <span class="n">mysqldump</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="o">-</span><span class="n">p</span> <span class="n">mydb2</span> <span class="o">&gt;</span> <span class="n">d</span><span class="o">:</span><span class="err">\</span><span class="n">mydb2</span><span class="p">.</span><span class="n">sql</span>  <span class="err">回车</span>
+
+        <span class="c1">//数据库恢复</span>
+        <span class="n">source</span> <span class="n">d</span><span class="o">:</span><span class="err">\</span><span class="n">mydb2</span><span class="p">.</span><span class="n">sql</span>
+</pre></div>
+
+
+<p>具体关于mysql中特有的操作可以阅读mysql的参考手册。（网上可以下chm版）</p>
+<p>3）mysql中的常用数据类型：</p>
+<p>Date 使用 ‘yyyy-MM-dd’ 作为定界符 ‘2013-11-11’,对于日期类型，mysql数据库有一定的判断功能 Datetime 含时分秒 ‘2013-11-11 20:59:30’,若不输入时分秒，默认为 00:00:00 Timestamp 时间戳，默认直接使用当前操作的时间 //常用</p>
+<p>char 固定长度字符串 varchar 可变长度字符串</p>
+<p>Text 大于65536字符的数据 Blob 存储二进制多媒体数据，例如Mp3等 该二类型都有四个子类型，根据存储内容的大小进行选择</p>
+<p>例如：</p>
+<div class="hlcode"><pre><span class="n">create</span> <span class="n">table</span> <span class="nf">user</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="kt">int</span><span class="p">,</span>
+    <span class="n">name</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+    <span class="n">pwd</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">6</span><span class="p">),</span>
+    <span class="n">birthday</span> <span class="n">timestamp</span><span class="p">,</span>
+    <span class="n">memo</span> <span class="n">text</span><span class="p">,</span>
+    <span class="n">photo</span> <span class="n">blob</span>
+<span class="p">);</span>
+</pre></div>
+
+
+<p>关于Mysql的数据库引擎，早期使用的是MyISAM，但其不支持多表查询功能。因此目前主要使用InnoDB作为数据库引擎，其支持事务安全。InnoDB给MySQL提供了具有transcation\rollback\crash recovery\ACID等功能。</p>
+<p>在MySQL的主文件夹中，有一个文件值得一提。就是my.ini，在这个文件中我们可以设置客户端端口号、设置客户端默认编码、以及服务端的默认编码。对于免安装版，这个文件非常的重要。</p>
+<p>关于mysql的具体使用其实和sql并没有太大差异，但其拥有很多特色的功能函数，能够非常便捷的简化许多的开发操作，建议可以读读mysql的文档。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

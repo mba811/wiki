@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>利用 Vagrant 部署 CoreOS 和 Docker 容器 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;利用 Vagrant 部署 CoreOS 和 Docker 容器
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 04:16
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">利用 Vagrant 部署 CoreOS 和 Docker 容器</div>
+
+  <ul>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_0">一、为什么选择 CoreOS ?</a></li>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_1">二、CoreOS 是什么？</a></li>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_2">三、具体部署步骤</a><ul>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_3">1. 安装依赖软件</a></li>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_4">2. 克隆 CoreOS 的 Vagrantfile 仓库</a></li>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_5">3. 启动 Vagrant 虚拟机</a></li>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_6">4. 在 Vagrant 虚拟机上运行基于 CoreOS 的 Docker 容器</a></li>
+</ul>
+</li>
+<li><a href="http://laozhu.me/post/getting-started-with-coreos-and-docker-using-vagrant#toc_7">四、结束语</a></li>
+</ul>
+<p>这是关于 <a href="https://coreos.com/">CoreOS</a> 和 <a href="https://docker.com/">Docker</a> 系列文中的第一篇，这篇文章主要介绍以下内容：</p>
+<ol>
+<li>CoreOS 是什么？</li>
+<li>如何在 <a href="https://www.vagrantup.com/">Vagrant</a> 虚拟机上运行 CoreOS 系统？</li>
+<li>如何使用 <a href="https://github.com/coreos/fleet">fleet</a> 向 CoreOS 集群提交任务（比如：运行 Docker 容器）和执行基本管理任务？</li>
+</ol>
+<p>这一系列文章基本阐明了 fleet 介绍视频的内容： <a href="https://coreos.com/blog/cluster-level-container-orchestration/">利用 fleet 部署 Docker 容器集群</a> ，只是用 Vagrant 代替了 <a href="https://aws.amazon.com/cn/ec2/">Amazon EC2</a> 。</p>
+<h2 id="coreos">一、为什么选择 CoreOS ?</h2>
+<p>我喜欢 Docker ，它非常有趣。但如果你希望在生产环境中大规模使用 Docker ，还需要施加一些魔法。我们希望不构建 <a href="https://zh.wikipedia.org/zh/%E5%B9%B3%E5%8F%B0%E5%8D%B3%E6%9C%8D%E5%8A%A1">PaaS</a> 平台，也能充分释放 Docker 的潜力。在集群系统上运行服务，需要一个好的解决方案来解决服务发现、配置管理和部署等问题，单靠 Docker 无法完成这些。</p>
+<p>市场上已有很多基于 Docker 的有趣项目，比如： <a href="https://github.com/progrium/dokku">Dokku</a> ， <a href="https://flynn.io/">Flynn</a> 和 <a href="http://deis.io/">Deis</a> ， CoreOS 也算其中之一。但 CoreOS 并未努力成为另一个 PaaS 平台，它是一个专为大规模集群系统裁剪的 Linux 发行版，选择性吸收了一些 PaaS 平台特性。</p>
+<h2 id="coreos_1">二、CoreOS 是什么？</h2>
+<p>大多数 Linux 发行版自带很多软件包，有些包在服务部署时并不需要。 CoreOS 将不需要的统统裁掉，只保留系统核心，同时支持通过 Docker 按需创建应用容器。</p>
+<p>CoreOS 提供 <a href="https://github.com/coreos/etcd">etcd</a> （用于服务发现和配置管理的高可用、分布式键值存储服务）和 fleet （协助 etcd 提供分布式初始化服务，集群系统下的 <a href="http://www.freedesktop.org/wiki/Software/systemd/">systemd</a> ）两个工具。有了 CoreOS 和这些工具，就可以对集群系统而非单个主机执行所希望的操作。通常 CoreOS ， etcd 和 fleet 不会制造麻烦（参考 <a href="http://zookeeper.apache.org/">Apache ZooKeeper</a> ， <a href="https://github.com/ha/doozerd">doozerd</a> 和 <a href="https://github.com/substack/fleet">Substack's Fleet</a> 文档），有了 systemd 和 Docker 后，它们更加配合默契，已然是一个整体。</p>
+<h2 id="_1">三、具体部署步骤</h2>
+<p>以下步骤均在 OS X 环境下进行， Linux 下步骤雷同。</p>
+<h3 id="1">1. 安装依赖软件</h3>
+<ol>
+<li><a href="https://www.virtualbox.org/">VirtualBox</a> - 使用版本 4.3.10</li>
+<li>Vagrant - 使用版本 1.5.2</li>
+<li>fleetctl - fleet 的命令行客户端</li>
+</ol>
+<p>首先，直接下载解压安装 fleetctl 客户端：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">wget</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/coreos/fleet/releases/download/v0.3.2/fleet-v0.3.2-darwin-amd64.zip</span>
+<span class="err">$</span> <span class="n">unzip</span> <span class="n">fleet</span><span class="o">-</span><span class="n">v0</span><span class="mf">.3.2</span><span class="o">-</span><span class="n">darwin</span><span class="o">-</span><span class="n">amd64</span><span class="p">.</span><span class="n">zip</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">cp</span> <span class="n">fleet</span><span class="o">-</span><span class="n">v0</span><span class="mf">.3.2</span><span class="o">-</span><span class="n">darwin</span><span class="o">-</span><span class="n">amd64</span><span class="o">/</span><span class="n">fleetctl</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span>
+</pre></div>
+
+
+<p>或者通过 homebrew 安装：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">fleetctl</span>
+</pre></div>
+
+
+<blockquote>
+<p><strong>注意</strong>：考虑到 CoreOS 正在快速开发中， fleetctl 可能随时更新， CoreOS 及其 Vagrantfile 也是如此。使用之前，请确认这些工具和 CoreOS 版本保持一致。</p>
+</blockquote>
+<h3 id="2-coreos-vagrantfile">2. 克隆 CoreOS 的 Vagrantfile 仓库</h3>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">git</span> <span class="nx">clone</span> <span class="nx">https</span><span class="p">:</span><span class="c1">//github.com/coreos/coreos-vagrant/</span>
+<span class="err">$</span> <span class="nx">cd</span> <span class="nx">coreos</span><span class="na">-vagrant</span>
+<span class="err">$</span> <span class="n">DISCOVERY_TOKEN</span><span class="o">=</span><span class="sb">`curl -s https://discovery.etcd.io/new`</span>
+<span class="err">$</span> <span class="nx">perl</span> <span class="na">-p</span> <span class="na">-e</span> <span class="s2">&quot;s@#discovery: https://discovery.etcd.io/&lt;token&gt;@discovery:$DISCOVERY_TOKEN@g&quot;</span> <span class="nb">user</span><span class="na">-data.sample</span> <span class="o">&gt;</span> <span class="nb">user</span><span class="na">-data</span>
+<span class="err">$</span> <span class="nx">export</span> <span class="n">NUM_INSTANCES</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+
+
+<p>将 <code>user-data.sample</code> 重命名为 <code>user-data</code> ，为让 Vagrantfile 启动 CoreOS 中的 etcd 和 fleet 工具；生成一个 discovery token 作为集群的唯一标识，为让所有节点知道自己所属集群。最后一行告诉 Vagrant 共启动多少台虚拟机，默认一台。</p>
+<h3 id="3-vagrant">3. 启动 Vagrant 虚拟机</h3>
+<p>启动 Vagrant 虚拟机，并通过 SSH 登入。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">up</span>
+</pre></div>
+
+
+<blockquote>
+<p><strong>Vagrant 小贴士</strong>：执行 <code>vagrant ssh</code> 命令登入 Vagrant 虚拟机，执行 <code>Ctrl-d</code> 退出当前 SSH 会话，此时虚拟机仍在后台运行，通过 <code>vagrant ssh</code> 可重新登入。修改 Vagrantfile 后需要执行 <code>vagrant reload --provision</code> 命令重载配置文件并重启虚拟机。执行 <code>vagrant halt</code> 命令关闭虚拟机，执行 <code>vagrant destroy</code> 命令销毁虚拟机和所有内部数据。希望了解更多 Vagrant 相关知识，执行 <code>vagrant --help</code> 命令查看。</p>
+</blockquote>
+<p>到此为止，一个基本可用的 CoreOS 虚拟机已准备就绪。</p>
+<h3 id="4-vagrant-coreos-docker">4. 在 Vagrant 虚拟机上运行基于 CoreOS 的 Docker 容器</h3>
+<p>本节将介绍如何在 CoreOS 虚拟机中远程拉取公共仓库（public registry）里的 Docker 镜像，这里以运行预制的 <a href="http://dillinger.io/">dillinger.io</a>（一个基于 HTML5 的 Markdown 编辑器）镜像为例。首先在虚拟机中创建 dillinger.io 服务的 systemd unit 文件（告诉 systemd 如何启动和关闭一项服务的配置文件），命名为 <code>dillinger.service</code> ：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cat</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">service</span>
+<span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">dillinger</span><span class="p">.</span><span class="n">io</span>
+<span class="n">Requires</span><span class="o">=</span><span class="n">docker</span><span class="p">.</span><span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">docker</span><span class="p">.</span><span class="n">service</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">p</span> <span class="mi">3000</span><span class="o">:</span><span class="mi">8080</span> <span class="n">dscape</span><span class="o">/</span><span class="n">dillinger</span>
+</pre></div>
+
+
+<p>这个文件指导 systemd 如何通过 <code>docker run</code> 命令启动容器：基于 <code>dscape/dillinger</code> 镜像创建容器，绑定容器的 <code>8080</code> 端口到宿主（虚拟机）的 <code>3000</code> 端口。此外，我们需要创建环境变量，告诉 <code>fleetctl</code> 如何通过 SSH 与 虚拟机进行通信，简单测试一下：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">export</span> <span class="n">FLEETCTL_TUNNEL</span><span class="o">=</span><span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">2222</span>
+<span class="err">$</span> <span class="n">ssh</span><span class="o">-</span><span class="n">add</span> <span class="o">~/</span><span class="p">.</span><span class="n">vagrant</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">insecure_private_key</span>
+<span class="err">$</span> <span class="n">fleetctl</span> <span class="n">list</span><span class="o">-</span><span class="n">machines</span>
+<span class="n">MACHINE</span>      <span class="n">IP</span>            <span class="n">METADATA</span>
+<span class="n">c9f8bd2f</span><span class="p">...</span>  <span class="mf">172.17.8.101</span>  <span class="o">-</span>
+</pre></div>
+
+
+<p>然后顺序输入下面的命令（以 <code>$</code> 开头的行）：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">fleetctl</span> <span class="n">submit</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">service</span>
+<span class="err">$</span> <span class="n">fleetctl</span> <span class="n">list</span><span class="o">-</span><span class="n">units</span>
+<span class="n">UNIT</span>                    <span class="n">LOAD</span>    <span class="n">ACTIVE</span>   <span class="n">SUB</span>    <span class="n">DESC</span>           <span class="n">MACHINE</span>
+<span class="n">dillinger</span><span class="p">.</span><span class="n">service</span>       <span class="o">-</span>       <span class="o">-</span>        <span class="o">-</span>      <span class="n">dillinger</span><span class="p">.</span><span class="n">io</span>   <span class="o">-</span>
+<span class="err">$</span> <span class="n">fleetctl</span> <span class="n">start</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">service</span>
+<span class="n">Job</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">service</span> <span class="n">scheduled</span> <span class="n">to</span> <span class="n">c6d23f21</span><span class="p">...</span><span class="o">/</span><span class="mf">172.17.8.101</span>
+<span class="err">$</span> <span class="n">fleetctl</span> <span class="n">list</span><span class="o">-</span><span class="n">units</span>
+<span class="n">UNIT</span>                    <span class="n">LOAD</span>    <span class="n">ACTIVE</span>  <span class="n">SUB</span>     <span class="n">DESC</span>           <span class="n">MACHINE</span>
+<span class="n">dillinger</span><span class="p">.</span><span class="n">service</span>       <span class="n">loaded</span>  <span class="n">active</span>  <span class="n">running</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">io</span>   <span class="n">c6d23f21</span><span class="p">...</span><span class="o">/</span><span class="err">，以后可以为自己的</span> <span class="n">Django</span> <span class="err">应用自定义命令行，想想还有点小激动呢</span> <span class="o">&lt;</span><span class="p">(</span><span class="err">￣︶￣</span><span class="p">)</span><span class="o">&gt;</span><span class="mf">72.17.8.101</span>
+<span class="err">$</span> <span class="n">fleetctl</span> <span class="n">journal</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">service</span>
+<span class="o">--</span> <span class="n">Logs</span> <span class="n">begin</span> <span class="n">at</span> <span class="n">Sat</span> <span class="mi">2014</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">19</span> <span class="mi">22</span><span class="o">:</span><span class="mi">45</span><span class="o">:</span><span class="mi">43</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">end</span> <span class="n">at</span> <span class="n">Sat</span> <span class="mi">2014</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">19</span> <span class="mi">22</span><span class="o">:</span><span class="mi">48</span><span class="o">:</span><span class="mi">53</span> <span class="n">UTC</span><span class="p">.</span> <span class="o">--</span>
+<span class="n">Apr</span> <span class="mi">19</span> <span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="o">:</span><span class="mi">12</span> <span class="n">core</span><span class="o">-</span><span class="mo">01</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Starting</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">io</span><span class="p">...</span>
+<span class="n">Apr</span> <span class="mi">19</span> <span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="o">:</span><span class="mi">12</span> <span class="n">core</span><span class="o">-</span><span class="mo">01</span> <span class="n">systemd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Started</span> <span class="n">dillinger</span><span class="p">.</span><span class="n">io</span><span class="p">.</span>
+<span class="n">Apr</span> <span class="mi">19</span> <span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="o">:</span><span class="mi">12</span> <span class="n">core</span><span class="o">-</span><span class="mo">01</span> <span class="n">docker</span><span class="p">[</span><span class="mi">3136</span><span class="p">]</span><span class="o">:</span> <span class="n">Unable</span> <span class="n">to</span> <span class="n">find</span> <span class="n">image</span> <span class="err">&#39;</span><span class="n">dscape</span><span class="o">/</span><span class="n">dillinger</span><span class="err">&#39;</span> <span class="n">locally</span>
+<span class="n">Apr</span> <span class="mi">19</span> <span class="mi">22</span><span class="o">:</span><span class="mi">47</span><span class="o">:</span><span class="mi">12</span> <span class="n">core</span><span class="o">-</span><span class="mo">01</span> <span class="n">docker</span><span class="p">[</span><span class="mi">3136</span><span class="p">]</span><span class="o">:</span> <span class="n">Pulling</span> <span class="n">repository</span> <span class="n">dscape</span><span class="o">/</span><span class="n">dillinger</span>
+</pre></div>
+
+
+<p><code>fleetctl list-units</code> 命令将列出所有提交过的容器，告诉我们它的状态和集群中所属机器。 <code>fleetctl journal -f dillinger.service</code> 命令打印指定容器最近的日志，加上 <code>-f</code> 参数后自动刷新日志。如你所见，从远程仓库拉取 Docker 镜像会花费一些时间，等待之余，不妨通过 SSH 登入虚拟机，了解一些诊断工具。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vagrant</span> <span class="n">ssh</span>
+<span class="err">$</span> <span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
+<span class="n">CONTAINER</span> <span class="n">ID</span>        <span class="n">IMAGE</span>                     <span class="n">COMMAND</span>                <span class="n">CREATED</span>             <span class="n">STATUS</span>              <span class="n">PORTS</span>                    <span class="n">NAMES</span>  
+<span class="mo">01</span><span class="mi">8</span><span class="n">a1bbbaadd</span>        <span class="n">dscape</span><span class="o">/</span><span class="n">dillinger</span><span class="o">:</span><span class="n">latest</span>   <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span> <span class="o">-</span><span class="n">c</span> <span class="err">&#39;</span><span class="n">forever</span>    <span class="mi">7</span> <span class="n">seconds</span> <span class="n">ago</span>       <span class="n">Up</span> <span class="mi">7</span> <span class="n">seconds</span>        <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">3000</span><span class="o">-&gt;</span><span class="mi">8080</span><span class="o">/</span><span class="n">tcp</span>   <span class="n">agitated_babbage</span>  
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">netstat</span> <span class="o">-</span><span class="n">tulpn</span>
+<span class="n">Active</span> <span class="n">Internet</span> <span class="n">connections</span> <span class="p">(</span><span class="n">only</span> <span class="n">servers</span><span class="p">)</span>  
+<span class="n">Proto</span> <span class="n">Recv</span><span class="o">-</span><span class="n">Q</span> <span class="n">Send</span><span class="o">-</span><span class="n">Q</span> <span class="n">Local</span> <span class="n">Address</span>           <span class="n">Foreign</span> <span class="n">Address</span>         <span class="n">State</span>       <span class="n">PID</span><span class="o">/</span><span class="n">Program</span> <span class="n">name</span>  
+<span class="n">tcp6</span>       <span class="mi">0</span>      <span class="mi">0</span> <span class="o">:::</span><span class="mi">22</span>                   <span class="o">:::*</span>                    <span class="n">LISTEN</span>      <span class="mi">1</span><span class="o">/</span><span class="n">systemd</span>  
+<span class="n">tcp6</span>       <span class="mi">0</span>      <span class="mi">0</span> <span class="o">:::</span><span class="mi">3000</span>                 <span class="o">:::*</span>                    <span class="n">LISTEN</span>      <span class="mi">3125</span><span class="o">/</span><span class="n">docker</span>  
+<span class="n">tcp6</span>       <span class="mi">0</span>      <span class="mi">0</span> <span class="o">:::</span><span class="mi">7001</span>                 <span class="o">:::*</span>                    <span class="n">LISTEN</span>      <span class="mi">3064</span><span class="o">/</span><span class="n">etcd</span>  
+<span class="n">tcp6</span>       <span class="mi">0</span>      <span class="mi">0</span> <span class="o">:::</span><span class="mi">4001</span>                 <span class="o">:::*</span>                    <span class="n">LISTEN</span>      <span class="mi">3064</span><span class="o">/</span><span class="n">etcd</span>
+</pre></div>
+
+
+<p><code>docker ps -a</code> 命令显示容器已经开始运行，正如上文配置文件：容器的 <code>8080</code> 端口映射到虚拟机的 <code>3000</code> 端口， <code>netstat -tulpn</code> 列出所有正在监听端口的进程（加上 <code>sudo</code> 后显示最后一列进程ID和名称），不出所料 Docker 正在监听 <code>3000</code> 端口。通过浏览器访问 <a href="http://172.17.8.101:3000/">http://172.17.8.101:3000</a> ，你会看到 dillinger.io 实例已经运行起来。</p>
+<p>如果没有正常运行，检查步骤，查看日志，通过 <code>docker ps</code> 和 <code>netstat</code> 进行彻底排查。如果 <code>docker ps -a</code> 什么都没有返回，同时日志也未报错，也许虚拟机仍在下载镜像中。</p>
+<h2 id="_2">四、结束语</h2>
+<p>我们开启了一个运行简单服务的 CoreOS 虚拟机，同时了解了一些简单的管理和诊断工具。你可能希望将其作为一个开发沙箱，在里面折腾 Docker 容器和创建 Docker 镜像。下一篇文章里面，我们将学习利用 etcd 和 fleet 管理集群系统中的多台虚拟机。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

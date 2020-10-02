@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac OS X 10.10 Yosemite 安装 Ruby On Rails - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;Mac OS X 10.10 Yosemite 安装 Ruby On Rails
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 00:29
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac OS X 10.10 Yosemite 安装 Ruby On Rails</div>
+
+  <h2 id="_1">概观</h2>
+<p>__ 这将需要大约30分钟。</p>
+<p>我们将建立在Mac OS X 10.10约塞米蒂一个Ruby on Rails开发环境。</p>
+<p>旧版本的OS X的大多是兼容，所以跟着就可以，然后谷歌搜索您遇到任何问题。有很多谁已记录的解决方案为他们的人。</p>
+<h2 id="homebrew">安装 Homebrew</h2>
+<p>首先，我们需要安装<a href="http://brew.sh/">Homebrew</a>。家酿使我们能够安装和从源代码编译很容易软件包。</p>
+<p>家酿配备了一个非常简单的安装脚本。当它要求你安装了XCode命令行工具，说是的。</p>
+<p>打开终端并运行以下命令：</p>
+<div class="hlcode"><pre><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</span>
+</pre></div>
+
+
+<h2 id="ruby">安装Ruby</h2>
+<p><strong>选择红宝石要安装的版本：</strong></p>
+<p>2.2.2（推荐）、2.1.6、2.0.0-P645              </p>
+<p>现在我们已经安装了自制软件，我们可以用它来安装Ruby。</p>
+<p>我们将使用<a href="https://github.com/sstephenson/rbenv">rbenv</a>安装和管理我们的Ruby版本。</p>
+<p>要做到这一点，请在您的终端以下命令：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">rbenv</span> <span class="n">ruby</span><span class="o">-</span><span class="n">build</span>
+
+<span class="cp"># Add rbenv to bash so that it loads every time you open a terminal</span>
+<span class="n">echo</span> <span class="err">&#39;</span><span class="k">if</span> <span class="n">which</span> <span class="n">rbenv</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span><span class="p">;</span> <span class="n">then</span> <span class="n">eval</span> <span class="s">&quot;$(rbenv init -)&quot;</span><span class="p">;</span> <span class="n">fi</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+<span class="n">source</span> <span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+
+<span class="cp"># Install Ruby</span>
+<span class="n">rbenv</span> <span class="n">install</span> <span class="mf">2.2.2</span>
+<span class="n">rbenv</span> <span class="n">global</span> <span class="mf">2.2.2</span>
+<span class="n">ruby</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+
+
+<h2 id="git">配置的Git</h2>
+<p>我们将使用Git我们的版本控制系统，所以我们打算将它设置为符合我们的<a href="https://github.com/">Github上</a>的帐户。如果你不已经有一个Github上的帐户，请务必<a href="https://github.com/">注册</a>。它会派上用场的未来。</p>
+<p>替换例如姓名和电子邮件地址与您用于Github上的帐户那些下面的步骤。</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">color</span><span class="p">.</span><span class="n">ui</span> <span class="nb">true</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">user</span><span class="p">.</span><span class="n">name</span> <span class="s">&quot;YOUR NAME&quot;</span>
+<span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">user</span><span class="p">.</span><span class="n">email</span> <span class="s">&quot;YOUR@EMAIL.com&quot;</span>
+<span class="n">ssh</span><span class="o">-</span><span class="n">keygen</span> <span class="o">-</span><span class="n">t</span> <span class="n">rsa</span> <span class="o">-</span><span class="n">C</span> <span class="s">&quot;YOUR@EMAIL.com&quot;</span>
+</pre></div>
+
+
+<p>下一步骤是将新生成的SSH密钥，并将其添加到Github的帐户。要复制并粘贴以下命令的输出，<a href="https://github.com/settings/ssh">它粘贴在这里</a>。</p>
+<div class="hlcode"><pre><span class="n">cat</span> <span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">id_rsa</span><span class="p">.</span><span class="n">pub</span>
+</pre></div>
+
+
+<p>一旦你做到了这一点，你可以检查，看看它的工作：</p>
+<div class="hlcode"><pre><span class="n">ssh</span> <span class="o">-</span><span class="n">T</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
+<p>你应该得到这样的消息：</p>
+<div class="hlcode"><pre><span class="n">Hi</span> <span class="n">mba811</span><span class="o">!</span> <span class="n">You</span><span class="err">&#39;</span><span class="n">ve</span> <span class="n">successfully</span> <span class="n">authenticated</span><span class="p">,</span> <span class="n">but</span> <span class="n">GitHub</span> <span class="n">does</span> <span class="n">not</span> <span class="n">provide</span> <span class="n">shell</span> <span class="n">access</span><span class="p">.</span>
+</pre></div>
+
+
+<h2 id="rails">安装 Rails</h2>
+<p><strong>选择的Rails要安装的版本：</strong></p>
+<p>4.2.1（推荐）、4.1.10 、4.0.13 、3.2.21              </p>
+<p>安装rails很简单，只要运行在终端下面的命令：</p>
+<div class="hlcode"><pre><span class="n">gem</span> <span class="n">install</span> <span class="n">rails</span> <span class="o">-</span><span class="n">v</span> <span class="mf">4.2.1</span>
+</pre></div>
+
+
+<p>轨现在已经安装，但为了供我们使用的<code>rails</code>可执行文件，我们需要告诉<code>rbenv</code>看看吧：</p>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">rehash</span>
+</pre></div>
+
+
+<p>现在，我们可以验证安装rails：</p>
+<div class="hlcode"><pre><span class="n">rails</span> <span class="o">-</span><span class="n">v</span>
+<span class="cp"># Rails 4.2.1</span>
+</pre></div>
+
+
+<h2 id="_2">设置数据库</h2>
+<p>轨附带的sqlite3作为默认数据库。可能你不会想使用它，因为它是存储在磁盘上的简单文件。你可能要像MySQL或PostgreSQL更稳健。</p>
+<p>有很多关于这两个文件，​​所以你可以随便挑一个好像你会更舒服。如果你从PHP来了，你可能已经熟悉MySQL的。如果你是新来的数据库，我建议跳过来建立的PostgreSQL。</p>
+<h3 id="mysql">MySQL的</h3>
+<p>您可以安装<a href="http://www.mysql.com/">MySQL</a>服务器和客户端的家酿：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<p>一旦这个命令完成，它给你一对夫妇的命令来运行。按照说明，并运行它们：</p>
+<div class="hlcode"><pre><span class="cp"># To have launchd start mysql at login:</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mysql</span><span class="o">/*</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+
+<span class="cp"># Then to load mysql now:</span>
+<span class="n">launchctl</span> <span class="n">load</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>默认情况下，MySQL的用户是<code>root</code>，没有密码。</p>
+<p>当你完成，你可以<a href="https://gorails.com/setup/osx/10.10-yosemite#final-steps">跳过的最后步骤</a>。</p>
+<h3 id="postgresql">PostgreSQL的</h3>
+<p>您可以安装<a href="http://www.postgresql.org/">PostgreSQL</a>从家酿服务器和客户端：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">postgresql</span>
+</pre></div>
+
+
+<p>一旦这个命令完成，它给你一对夫妇的命令来运行。按照说明，并运行它们：</p>
+<div class="hlcode"><pre><span class="cp"># To have launchd start postgresql at login:</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">postgresql</span><span class="o">/*</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+
+<span class="cp"># Then to load postgresql now:</span>
+<span class="n">launchctl</span> <span class="n">load</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">postgresql</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>默认情况下，PostgreSQL用户是您当前的OS X的用户名，没有密码。例如，我的OS X的用户名为<code>chris</code>这样我就可以登录到PostgreSQL使用该用户名。</p>
+<h2 id="_3">最后的步骤</h2>
+<p>现在对于真理的时刻。让我们来创建你的第一个Rails应用程序：</p>
+<div class="hlcode"><pre><span class="n">rails</span> <span class="n">new</span> <span class="n">myapp</span>
+
+<span class="cp">#### If you want to use MySQL</span>
+<span class="n">rails</span> <span class="n">new</span> <span class="n">myapp</span> <span class="o">-</span><span class="n">d</span> <span class="n">mysql</span>
+
+<span class="cp">#### If you want to use Postgres</span>
+<span class="cp"># Note you will need to change config/database.yml&#39;s username to be</span>
+<span class="cp"># the same as your OSX user account. (for example, mine is &#39;chris&#39;)</span>
+<span class="n">rails</span> <span class="n">new</span> <span class="n">myapp</span> <span class="o">-</span><span class="n">d</span> <span class="n">postgresql</span>
+
+<span class="cp"># Move into the application directory</span>
+<span class="n">cd</span> <span class="n">myapp</span>
+
+<span class="cp"># If you setup MySQL or Postgres with a username/password, modify the</span>
+<span class="cp"># config/database.yml file to contain the username/password that you specified</span>
+
+<span class="cp"># Create the database</span>
+<span class="n">rake</span> <span class="n">db</span><span class="o">:</span><span class="n">create</span>
+
+<span class="n">rails</span> <span class="n">server</span>
+</pre></div>
+
+
+<p>现在，您可以访问<a href="http://localhost:3000/">的http：//本地主机：3000</a>，查看你的新网站！</p>
+<p>现在，你有你的机器配置，是时候开始建立一些Rails应用程序。</p>
+<p>如果您收到一个错误，表示<code>Access denied for user 'root'@'localhost' (using password: NO)</code>，那么你需要更新你的配置/ database.yml文件，以匹配数据库的用户名和密码。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

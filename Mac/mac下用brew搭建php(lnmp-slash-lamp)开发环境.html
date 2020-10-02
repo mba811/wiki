@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac下用brew搭建PHP(LNMP/LAMP)开发环境 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac下用brew搭建PHP(LNMP/LAMP)开发环境
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 07:01
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac下用brew搭建PHP(LNMP/LAMP)开发环境</div>
+
+  <blockquote>
+<p>Mac下搭建lamp开发环境很容易，有xampp和mamp现成的集成环境。但是集成环境对于经常需要自定义一些配置的开发者来说会非常麻烦，而且Mac本身自带apache和php，在brew的帮助下非常容易手动搭建，可控性很高</p>
+</blockquote>
+<h2 id="brew"><a href="http://brew.sh/">Brew</a></h2>
+<p>brew对于mac，就像apt-get对于ubuntu，安装软件的好帮手，不能方便更多…</p>
+<p>brew的安装方式如下：</p>
+<div class="hlcode"><pre><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)&quot;</span>
+</pre></div>
+
+
+<p>brew常用选项</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">xxx</span>
+<span class="n">brew</span> <span class="n">uninstall</span> <span class="n">xxx</span>
+<span class="n">brew</span> <span class="n">list</span> 
+<span class="n">brew</span> <span class="n">update</span> <span class="n">xxx</span>
+</pre></div>
+
+
+<h2 id="apache-nginx">Apache || Nginx</h2>
+<h3 id="apache">Apache</h3>
+<p>Apache的话使用mac自带的基本就够了，我的系统是10.9，可以使用以下命令控制Apache</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">start</span>
+<span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">restart</span>
+<span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">stop</span>
+</pre></div>
+
+
+<p>唯一要改的是主目录，mac默认在home下有个sites（站点）目录，访问路径是</p>
+<div class="hlcode"><pre><span class="nl">http:</span><span class="c1">//localhost/~user_name</span>
+</pre></div>
+
+
+<p>这样很不适合做开发用，修改<code>/etc/apache2/httpd.conf</code>内容</p>
+<div class="hlcode"><pre><span class="nb">DocumentRoot</span> <span class="s2">&quot;/Users/username/Sites&quot;</span>
+<span class="o">&lt;</span><span class="nx">Directory</span> <span class="o">/&gt;</span>
+    <span class="nx">Options</span> <span class="nx">Indexes</span> <span class="nx">MultiViews</span>
+    <span class="nx">AllowOverride</span> <span class="kc">All</span>
+    <span class="k">Order</span> <span class="nx">allow</span><span class="p">,</span><span class="nx">deny</span>
+    <span class="nx">Allow</span> <span class="nb">from</span> <span class="kc">all</span>
+<span class="o">&lt;/</span><span class="nx">Directory</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>这样sites目录就是网站根目录了，代码都往这个下头丢</p>
+<h3 id="nginx">Nginx</h3>
+<p>要使用Nginx也比较方便，首先安装</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">nginx</span>
+</pre></div>
+
+
+<p>启动关闭Nginx的命令如下（如果想要监听80端口，必须以管理员身份运行）</p>
+<div class="hlcode"><pre><span class="cp">#打开 nginx</span>
+<span class="n">sudo</span> <span class="n">nginx</span>
+<span class="cp">#重新加载配置|重启|停止|退出 nginx</span>
+<span class="n">nginx</span> <span class="o">-</span><span class="n">s</span> <span class="n">reload</span><span class="o">|</span><span class="n">reopen</span><span class="o">|</span><span class="n">stop</span><span class="o">|</span><span class="n">quit</span>
+<span class="cp">#测试配置是否有语法错误</span>
+<span class="n">nginx</span> <span class="o">-</span><span class="n">t</span>
+</pre></div>
+
+
+<p>配置Nginx</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span>
+<span class="n">mkdir</span> <span class="n">conf</span><span class="p">.</span><span class="n">d</span>
+</pre></div>
+
+
+<p>修改Nginx配置文件</p>
+<div class="hlcode"><pre><span class="n">vim</span> <span class="n">nginx</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>主要修改位置是最后的include</p>
+<div class="hlcode"><pre><span class="n">worker_processes</span>  <span class="mi">1</span><span class="p">;</span>
+
+<span class="n">error_log</span>       <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">error</span><span class="p">.</span><span class="n">log</span> <span class="n">warn</span><span class="p">;</span>
+
+<span class="n">pid</span>        <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">nginx</span><span class="p">.</span><span class="n">pid</span><span class="p">;</span>
+
+<span class="n">events</span> <span class="p">{</span>
+    <span class="n">worker_connections</span>  <span class="mi">256</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">http</span> <span class="p">{</span>
+    <span class="n">include</span>       <span class="n">mime</span><span class="p">.</span><span class="n">types</span><span class="p">;</span>
+    <span class="n">default_type</span>  <span class="n">application</span><span class="o">/</span><span class="n">octet</span><span class="o">-</span><span class="n">stream</span><span class="p">;</span>
+
+    <span class="n">log_format</span>  <span class="n">main</span>  <span class="err">&#39;$</span><span class="n">remote_addr</span> <span class="o">-</span> <span class="err">$</span><span class="n">remote_user</span> <span class="p">[</span><span class="err">$</span><span class="n">time_local</span><span class="p">]</span> <span class="s">&quot;$request&quot;</span> <span class="err">&#39;</span>
+                      <span class="err">&#39;$</span><span class="n">status</span> <span class="err">$</span><span class="n">body_bytes_sent</span> <span class="s">&quot;$http_referer&quot;</span> <span class="err">&#39;</span>
+                      <span class="err">&#39;</span><span class="s">&quot;$http_user_agent&quot;</span> <span class="s">&quot;$http_x_forwarded_for&quot;</span><span class="err">&#39;</span><span class="p">;</span>
+
+    <span class="n">access_log</span>      <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">access</span><span class="p">.</span><span class="n">log</span> <span class="n">main</span><span class="p">;</span>
+    <span class="n">port_in_redirect</span> <span class="n">off</span><span class="p">;</span>
+    <span class="n">sendfile</span>        <span class="n">on</span><span class="p">;</span> 
+    <span class="n">keepalive_timeout</span>  <span class="mi">65</span><span class="p">;</span>
+
+    <span class="n">include</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">conf</span><span class="p">.</span><span class="n">d</span><span class="o">/*</span><span class="p">.</span><span class="n">conf</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>修改自定义文件</p>
+<div class="hlcode"><pre><span class="n">vim</span> <span class="p">.</span><span class="o">/</span><span class="n">conf</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="k">default</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>增加一个监听端口</p>
+<div class="hlcode"><pre><span class="n">server</span> <span class="p">{</span>
+    <span class="n">listen</span>       <span class="mi">80</span><span class="p">;</span>
+    <span class="n">server_name</span>  <span class="n">localhost</span><span class="p">;</span>
+
+    <span class="n">root</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">username</span><span class="o">/</span><span class="n">Sites</span><span class="o">/</span><span class="p">;</span> <span class="err">#</span> <span class="err">该项要修改为你准备存放相关网页的路径</span>
+
+    <span class="n">location</span> <span class="o">/</span> <span class="p">{</span> 
+        <span class="n">index</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+        <span class="n">autoindex</span> <span class="n">on</span><span class="p">;</span> 
+    <span class="p">}</span>
+
+    <span class="err">#</span><span class="n">proxy</span> <span class="n">the</span> <span class="n">php</span> <span class="n">scripts</span> <span class="n">to</span> <span class="n">php</span><span class="o">-</span><span class="n">fpm</span>  
+    <span class="n">location</span> <span class="o">~</span> <span class="err">\</span><span class="p">.</span><span class="n">php</span><span class="err">$</span> <span class="p">{</span>
+        <span class="n">include</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">fastcgi</span><span class="p">.</span><span class="n">conf</span><span class="p">;</span>
+        <span class="n">fastcgi_intercept_errors</span> <span class="n">on</span><span class="p">;</span> 
+        <span class="n">fastcgi_pass</span>   <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">9000</span><span class="p">;</span> 
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+
+
+<p>这个时候还不能访问php站点，因为还没有开启php-fpm。</p>
+<p>虽然mac 10.9自带了php-fpm，但是由于我们使用了最新的PHP，PHP中自带php-fpm，所以使用PHP中的php-fpm可以保证版本的一致。</p>
+<p>这里的命令在安装完下一步的php后再执行</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">nginx</span>
+<span class="n">sudo</span> <span class="n">php</span><span class="o">-</span><span class="n">fpm</span> <span class="o">-</span><span class="n">D</span>
+</pre></div>
+
+
+<h2 id="php">PHP</h2>
+<p>PHP在mac下默认安装了，但是不好控制版本，利用brew可以再mac下安装最新版本，甚至是多个版本，我装了php5.5</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">update</span>
+<span class="n">brew</span> <span class="n">tap</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">dupes</span>
+<span class="n">brew</span> <span class="n">tap</span> <span class="n">josegonzalez</span><span class="o">/</span><span class="n">homebrew</span><span class="o">-</span><span class="n">php</span>
+<span class="cp"># brew install php55 --with-fpm #Nginx</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span> <span class="err">#</span><span class="n">Apache</span>
+</pre></div>
+
+
+<p>然后修改php的cli路径和apache使用的php模块。在.bashrc或.zshrc里头加以下内容</p>
+<div class="hlcode"><pre><span class="cp">#export PATH=&quot;$(brew --prefix josegonzalez/php/php55)/bin:$PATH&quot; </span>
+<span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s">&quot;/usr/local/bin:/usr/local/sbin:$PATH&quot;</span>
+</pre></div>
+
+
+<p>就用刚刚安装的php代替了系统默认cli的php版本。然后在<code>/etc/apache2/httpd.conf</code>下增加</p>
+<div class="hlcode"><pre><span class="n">LoadModule</span> <span class="n">php5_module</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">php55</span><span class="o">/</span><span class="mf">5.5.8</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">libphp5</span><span class="p">.</span><span class="n">so</span>
+</pre></div>
+
+
+<p>这样就对apache使用的php版本也进行了修改。</p>
+<p>后面会用到mongo和mysql，所以可以直接利用下面命令安装php模块，其他模块也类似</p>
+<div class="hlcode"><pre><span class="cp">#brew install php55-mysql #这个已经不需要再安装了</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span><span class="o">-</span><span class="n">mongo</span>
+</pre></div>
+
+
+<h2 id="mysql">MySQL</h2>
+<p>mac不自带mysql，这里需要重新安装，方法依然很简单</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">mysql</span>
+<span class="n">unset</span> <span class="n">TMPDIR</span>
+<span class="n">mysql_install_db</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">user</span><span class="o">=</span><span class="err">`</span><span class="n">whoami</span><span class="err">`</span> <span class="o">--</span><span class="n">basedir</span><span class="o">=</span><span class="s">&quot;$(brew --prefix mysql)&quot;</span> <span class="o">--</span><span class="n">datadir</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span> <span class="o">--</span><span class="n">tmpdir</span><span class="o">=/</span><span class="n">tmp</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">your_user</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span>
+</pre></div>
+
+
+<p>第一句是安装，后面的是确保正常使用。然后是启动命令</p>
+<div class="hlcode"><pre><span class="n">mysql</span><span class="p">.</span><span class="n">server</span> <span class="n">start</span>
+</pre></div>
+
+
+<p>最好给mysql设个密码，方法如下</p>
+<div class="hlcode"><pre><span class="n">mysqladmin</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="n">password</span> <span class="err">&#39;</span><span class="n">xxx</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>如果想修改mysql的配置，在<code>/usr/local/etc</code>下建立一个<code>my.cnf</code>，例如增加log</p>
+<div class="hlcode"><pre><span class="k">[mysqld]</span>
+<span class="err">general-log</span>
+<span class="na">general_log_file</span> <span class="o">=</span> <span class="s">/usr/local/var/log/mysqld.log</span>
+</pre></div>
+
+
+<h2 id="mongodb">MongoDB</h2>
+<p>MongoDB可以说是最简单的一个，直接执行</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">mongodb</span>
+</pre></div>
+
+
+<p>启动方法</p>
+<div class="hlcode"><pre><span class="n">mongod</span> <span class="o">--</span><span class="n">fork</span>
+</pre></div>
+
+
+<h2 id="phpmyadmin">PHPMyAdmin</h2>
+<p>phpmyadmin几乎是管理mysql最容易的web应用了吧，每次我都顺道装上。</p>
+<ul>
+<li>去<a href="http://www.phpmyadmin.net/home_page/downloads.php">官网</a>下载最新的版本</li>
+<li>解压到~/Sites/phpmyadmin下</li>
+<li>在phpmyadmin目录下创建一个可写的config目录</li>
+<li>打开http://localhost/phpmyadmin/setup，安装一个服务，最后保存（这里只需要输入帐号密码就够了）</li>
+<li>将config下生成的config.inc.php移到phpmyadmin根目录下</li>
+<li>删除config</li>
+</ul>
+<p>这样就装好了，虽然可能有点小复杂，但是来一次就习惯了。</p>
+<p>这里很可能会遇到2002错误，就是找不到mysql.sock的问题，用下面方法解决</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span>
+<span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">mysql</span><span class="p">.</span><span class="n">sock</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">mysql</span><span class="p">.</span><span class="n">sock</span>
+</pre></div>
+
+
+<h2 id="rockmongo">RockMongo</h2>
+<p>RockMongo是MongoDB很好用的一个web应用，安装也很容易</p>
+<ul>
+<li>去<a href="http://rockmongo.com/">官网</a>下载最新版本</li>
+<li>解压到~/Sites/rockmongo下</li>
+<li>运行http://localhost/rockmongo即可</li>
+</ul>
+<h2 id="_1">完成</h2>
+<p>这样就在mac下配置好一个php开发环境了，enjoy it!</p>
+<h2 id="_2">参考</h2>
+<ol>
+<li><a href="http://www.nabito.net/hot-to-install-nginx-php-fpm-5-5-6-mongo-and-mysql-on-mac-with-homebrew/">Hot to install nginx, PHP-fpm 5.5.6, mongo and MySql on mac with homebrew</a></li>
+<li><a href="http://my.oschina.net/chen0dgax/blog/190161">Mac OSX 10.9搭建nginx+mysql+php-fpm环境</a></li>
+</ol>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

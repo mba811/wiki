@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>如何使用 wget - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;如何使用 wget
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 00:55
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">如何使用 wget</div>
+
+  <p>比如说要下载好的在线资源，可以用wget命令: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">wget</span> <span class="o">-</span><span class="n">r</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">k</span> <span class="o">-</span><span class="n">np</span> <span class="n">http</span><span class="o">:</span>
+<span class="err">$</span> <span class="n">wget</span> <span class="o">-</span><span class="n">r</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">k</span> <span class="o">-</span><span class="n">np</span> <span class="n">http</span><span class="o">:</span>
+</pre></div>
+
+
+<p>下载[git-pro中文版][1]时，遇到错误: <code>Connecting to |216.34.181.97|:80... failed: Connection refused.</code>。可能是G F W的作用，因此需要使用代理，只需要设置： </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//git-scm.com/book/zh</span>
+</pre></div>
+
+
+<p>$ export http_proxy='127.0.0.1:8087' </p>
+<p>重试则可以下载成功，但是编码错误： </p>
+<div class="hlcode"><pre><span class="n">zsh</span><span class="err">➜</span> <span class="err">$</span> <span class="n">wget</span> <span class="o">-</span><span class="n">r</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">k</span> <span class="o">-</span><span class="n">np</span> <span class="n">http</span><span class="o">:</span><span class="c1">//git-scm.com/book/zh/起步 </span>
+<span class="o">--</span><span class="mi">2013</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">08</span> <span class="mi">14</span><span class="o">:</span><span class="mi">21</span><span class="o">:</span><span class="mi">43</span><span class="o">--</span> <span class="n">http</span><span class="o">:</span><span class="c1">//git-scm.com/book/zh/%E8%B5%B7%E6%AD%A5 </span>
+<span class="err">正在连接</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mf">8087.</span><span class="p">..</span> <span class="err">已连接。</span> 
+<span class="err">已发出</span> <span class="n">Proxy</span> <span class="err">请求，正在等待回应</span><span class="p">...</span> <span class="mi">200</span> 
+<span class="err">长度：</span> <span class="mi">17487</span> <span class="p">(</span><span class="mi">17</span><span class="n">K</span><span class="p">)</span> <span class="p">[</span><span class="n">text</span><span class="o">/</span><span class="n">html</span><span class="p">]</span> 
+<span class="p">....</span>
+</pre></div>
+
+
+<p>加上<code>--restrict-file-names=nocontrol</code>参数就可以了。 </p>
+<p>另外在下载<code>learn.jquery.com</code>完成后，在首页打开event时，链接转换为<code>file:///home/zhaofei/Documents/learn.jquery.com/index.html?page_id=13</code>, 实际上，浏览器在载入文件时忽略链接中的查询字串（也就是<code>?page_id=13</code>），因此打开的仍然是index.html。这时候加上<code>--restrict-file-names=windows</code>，转换为本地连接时将?转换为其他字符。  </p>
+<p><code>man wget</code></p>
+<p>wget是免费的网页下载工具，支持HTTP、HTTPS、FTP协议，同时还支持http代理。wget支持递归抓取页面，可以爬取HTML、XHTML、CSS，同时转换页面内链接地址，允许在没网的情况下浏览网站，因此是备份网站的强大工具。 wget遵守<code>Robot Exclusion Standard</code> (/robots.txt)。 </p>
+<p>上面各个选项含义： </p>
+<ul>
+<li>-r(—recursive): 递归下载页面，默认深度为5</li>
+<li>-p(—page-requisites): 下载页面中的所有资源，包括图片，声音，css等。</li>
+<li>-k(—convert-links): 下载完成后，转换链接地址，方便本地浏览。</li>
+<li>-np(—no-parent): 递归下载只往下搜索链接，不会下载父目录页面。</li>
+<li>—restrict-file-names=nocontrol: 设置转换链接地址时需要转换的字符集。默认情况下，wget转换系统文件名不允许的字符和不可显示的字符。值可以为unix, windows, nocontrol, ascii, lowercase, and uppercase.</li>
+</ul>
+<hr />
+<p>Mac 下可以使用<a href="http://sitesucker.us/home.html">SiteSucker</a>备份网站，SiteSucker简单易用同时又很强大，<code>setting</code>里面有许多选项可以设置，比如不下载指定文件类型等。 </p>
+<p><a href="http://www.v2ex.com/t/65208">Nginx 开发从入门到精通</a><br />
+<a href="http://www.thegeekstuff.com/2010/07/wget-connection-refused-error/">How to Fix wget Connection Refused Error when I’m behind a Proxy</a><br />
+<a href="http://moper.me/wget-download-the-file-name-garbled.html">解决wget下载文件名乱码的一些方法</a><br />
+<a href="http://superuser.com/questions/242597/escaping-query-strings-with-wget-mirror">Escaping query strings with wget —mirror</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

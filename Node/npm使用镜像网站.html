@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>npm使用镜像网站 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;npm使用镜像网站
+    <span class="updated">Page Updated&nbsp;
+      2015-05-17 20:09
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">npm使用镜像网站</div>
+
+  <p>基于众所周知的原因，在国内使用npm下载资源的时候非常缓慢，甚至失败。使用一个靠谱的国内代理镜像是较好地解决方案。</p>
+<ol>
+<li>
+<p>命令行临时指定<br />
+可以临时指定npm镜像</p>
+<p>npm --registry https://registry.npm.taobao.org info underscore</p>
+</li>
+<li>
+<p>通过config配置</p>
+<p>npm config set registry https://registry.npm.taobao.org</p>
+</li>
+<li>
+<p>编辑配置文件<code>~/.npmrc</code></p>
+<p>registry = https://registry.npm.taobao.org</p>
+</li>
+</ol>
+<p>一些国内的镜像<br />
+<a href="http://r.cnpmjs.org/">http://r.cnpmjs.org/</a><br />
+<a href="http://registry.npm.taobao.org/">http://registry.npm.taobao.org</a><br />
+<a href="http://npm.cbyun.com/">http://npm.cbyun.com</a></p>
+<p>其中淘宝的镜像可以用来代替官方版本(只读)，同步频率目前为 10分钟 一次以保证尽量与官方服务同步。<br />
+你可以使用淘宝定制的 cnpm (gzip 压缩支持) 命令行工具代替默认的 npm:</p>
+<div class="hlcode"><pre><span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="n">cnpm</span> <span class="o">--</span><span class="n">registry</span><span class="o">=</span><span class="n">https</span><span class="o">:</span><span class="c1">//registry.npm.taobao.org</span>
+</pre></div>
+
+
+<p>或者添加npm的alias:</p>
+<div class="hlcode"><pre><span class="o">--</span><span class="n">cache</span><span class="o">=</span><span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="p">.</span><span class="n">npm</span><span class="o">/</span><span class="p">.</span><span class="n">cache</span><span class="o">/</span><span class="n">cnpm</span> \
+
+<span class="o">--</span><span class="n">disturl</span><span class="o">=</span><span class="n">https</span><span class="o">:</span><span class="c1">//npm.taobao.org/dist \</span>
+
+<span class="o">--</span><span class="n">userconfig</span><span class="o">=</span><span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="p">.</span><span class="n">cnpmrc</span><span class="s">&quot;</span>
+
+<span class="cp">#Or alias it in .bashrc or .zshrc</span>
+
+<span class="err">$</span> <span class="n">echo</span> <span class="err">&#39;\</span><span class="n">n</span><span class="err">#</span><span class="n">alias</span> <span class="k">for</span> <span class="n">cnpm</span><span class="err">\</span><span class="n">nalias</span> <span class="n">cnpm</span><span class="o">=</span><span class="s">&quot;npm --registry=https://registry.npm.taobao.org \</span>
+
+  <span class="o">--</span><span class="n">cache</span><span class="o">=</span><span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="p">.</span><span class="n">npm</span><span class="o">/</span><span class="p">.</span><span class="n">cache</span><span class="o">/</span><span class="n">cnpm</span> \
+
+  <span class="o">--</span><span class="n">disturl</span><span class="o">=</span><span class="n">https</span><span class="o">:</span><span class="c1">//npm.taobao.org/dist \</span>
+
+  <span class="o">--</span><span class="n">userconfig</span><span class="o">=</span><span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="p">.</span><span class="n">cnpmrc</span><span class="s">&quot;&#39; &gt;&gt; ~/.zshrc &amp;&amp; source ~/.zshrc</span>
+</pre></div>
+
+
+<p>这样你就可以通过cnpm来管理模块了：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cnpm</span> <span class="n">install</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+
+
+<p><a href="http://colobu.com/2014/08/19/npm-local-mirror/#"></a><a href="http://colobu.com/2014/08/19/npm-local-mirror/#"></a><a href="http://colobu.com/2014/08/19/npm-local-mirror/#"></a><a href="http://colobu.com/2014/08/19/npm-local-mirror/#"></a><a href="http://colobu.com/2014/08/19/npm-local-mirror/#"></a><a href="http://colobu.com/2014/08/19/npm-local-mirror/#"></a></p>
+<p><a href="http://colobu.com/2014/08/19/npm-local-mirror/#comments">评论</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>DD-WRT无线设置详解 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;DD-WRT无线设置详解
+    <span class="updated">Page Updated&nbsp;
+      2015-02-27 00:46
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">DD-WRT无线设置详解</div>
+
+  <p><a href="http://lszb811.qiniudn.com/dd-wrt.png"><img alt="" src="http://lszb811.qiniudn.com/dd-wrt.png" /></a></p>
+<h2 id="_1">周围环境</h2>
+<p>用wirelessmon(win)或者wireless diagnostics(mac)扫描周围无线路由的情况</p>
+<p>找出周围的比较少的信道，结合手机上的app: wifi analyzer还可以看到周围路由的频宽占用情况</p>
+<h2 id="24ghz-80211b11mbps-80211g54mbps-80211n300mbps">2.4Ghz: 802.11b(11Mbps) / 802.11g(54Mbps) / 802.11n(300Mbps)</h2>
+<p>特点：传输距离远，衰减弱，能穿墙，信号好</p>
+<p>2.4G每个信道频宽为0.005GHz(5Mhz)，一共60Mhz，1信道频段为2.412GHz，2信道2.417GHz，依次增加无线路由设置中的频宽20Mhz、40Mhz、80Mhz频宽对应0.02Ghz、0.04Ghz、0.08Ghz，意为在设定的信道上下波动的范围</p>
+<p>因为国内无线路由一般默认1、6信道，所以设置的时候一定要避开6信道，11信道和9信道用的也较多，12、13、14信道一般网卡都不支持</p>
+<p>最好设置为3信道，同时选择低频宽，因为高频宽越高占用信道越多，跟其他无线路由重叠越大，噪声干扰也就越大</p>
+<p>另外无线鼠标、无线鼠标工作频率为: 2.4Ghz-2.485Ghz,跟无线路由2.4G有很大的重叠，也要引起注意</p>
+<h3 id="dd-wrt">DD-WRT设置：</h3>
+<ol>
+<li>无线网络模式：N</li>
+<li>信道：3</li>
+<li>频道宽度：20MHz (周围无线路由较少时推荐40Mhz)</li>
+<li>无线安全：AES加密</li>
+</ol>
+<h2 id="5ghz-80211a54mbps-80211n300mbps">5Ghz: 802.11a(54Mbps) / 802.11n(300Mbps)</h2>
+<p>特点：频率高，速度快，衰减比2.4G快，穿墙性能比2.4G弱</p>
+<p>5G的每个信道频宽为0.001Ghz(1Mhz)，一共也是60Mhz的带宽</p>
+<p>但5G这个频段非常特殊，与军用雷达频段重合，所以国内只有149、153、157、161、165这5个民用</p>
+<p>而且每个国家的5G信道限制差别很大，参见：</p>
+<p><a href="http://zh.wikipedia.org/wiki/WLAN%E4%BF%A1%E9%81%93%E5%88%97%E8%A1%A8">wikipedia WLAN信道列表</a></p>
+<p><a href="http://www.zhihu.com/question/20001576">http://www.zhihu.com/question/20001576</a></p>
+<p><a href="http://www.cnbeta.com/articles/286567.htm">http://www.cnbeta.com/articles/286567.htm</a></p>
+<p>所以如果你是欧、美、日、韩版本地电子产品可能搜不到中国的5G信号，这。。。</p>
+<h3 id="dd-wrt_1">DD-WRT荐设置：</h3>
+<ol>
+<li>无线网络模式：N</li>
+<li>信道：随便</li>
+<li>频道宽度：80MHz (5G的无线路由还非常少，放心占吧，都是你的)</li>
+<li>无线安全：AES加密</li>
+</ol>
+<h2 id="5ghz-80211ac1300mbps">5Ghz: 802.11ac(1300Mbps)</h2>
+<p>为什么802.11ac要单独拿出来说呢</p>
+<p>因为目前大部分网卡还不支持802.11ac协议，务必先查清楚你的无线网卡是否支持802.11ac，无线路由和网卡的天线是否支持MIMO</p>
+<p>如果天线不支持MIMO，802.11ac最多也就只有433Mbps，最大8×8天线，可达6Gbps</p>
+<p>但考虑到我们国内100mw的辐射安全标准和制造工艺，这个目前不现实</p>
+<p>笔记本的无线网卡一般采用PCI-E接口, 只要接口对的上是可以替换板载网卡升级的，想升级的可以参考：</p>
+<p><a href="http://www.leaskh.com/blog/2014/03/08/%E5%8D%87%E7%BA%A7-macbook-pro-with-retina-display-%E4%BB%A5%E6%94%AF%E6%8C%81-802-11ac-%E6%97%A0%E7%BA%BF%E7%BD%91%E7%BB%9C/">rMBP无线网卡升级</a></p>
+<p><a href="http://bbs.feng.com/read-htm-tid-7331167.html">http://bbs.feng.com/read-htm-tid-7331167.html</a></p>
+<p>当然更省事的是采用USB的直接插上即可，但是注意USB2.0速度上限只有480Mbps，首先你还得有个USB3.0，哈哈哈。。。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

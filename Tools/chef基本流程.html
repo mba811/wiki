@@ -1,0 +1,464 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Chef基本流程 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;Chef基本流程
+    <span class="updated">Page Updated&nbsp;
+      2015-02-09 04:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Chef基本流程</div>
+
+  <h2 id="_1">工具介绍</h2>
+<h3 id="chef-chef-solo">Chef 和 Chef Solo</h3>
+<p>Chef 是一个自动化工具，用 Opscode 开发， 使用 Ruby DSL 以一种可重复使用的格式表示配置服务器所需的命令<br />
+Chef 经常运行在服务器集群的枢纽，统筹安排其他服务器的配置</p>
+<p>可以在单机模式下使用 Chef (Chef Solo)<br />
+在这种模式下，我们在本地开发平台上定义服务器的各种角色和设置，然后根据需要手动应用这些设置</p>
+<p>如果项目不断扩大也不用担心，使用 Chef Solo 制定的自动化配置大多数都可以在 Chef 中使用</p>
+<h3 id="knife-knife-solo">Knife 和 Knife Solo</h3>
+<p>Knife 是一个命令行工具，为本地开发环境中的 Chef 仓库和远程服务器之间提供交互接口</p>
+<p>一般情况下，远程服务器必须是主 Chef 服务器。 不过 Knife Solo 允许在单机模式下使用 Chef, 可以直接和需要配置的服务器交互</p>
+<p><a href="https://matschaffer.github.io/knife-solo/">Knife Solo 使用介绍</a></p>
+<h3 id="berkshelf">Berkshelf</h3>
+<p>在 Chef 中，安装各组件所需的命令成为「配方」</p>
+<p>Berkshelf 就像是配方的 Bundler<br />
+我们使用 Berkshelf 获取配置服务器所需的 Chef 配方（特定的版本）</p>
+<h2 id="chef">Chef 术语介绍</h2>
+<ul>
+<li>配方 (recipe)</li>
+</ul>
+<p>定义安装单个组件（例如 Ruby, mysql-server, Monit 等）所需的命令</p>
+<ul>
+<li>食谱 (cookbook)</li>
+</ul>
+<p>相关的配方集合，例如，mysql 食谱中包含 mysql-server 配方和 mysql-client 配方</p>
+<ul>
+<li>节点 (node)</li>
+</ul>
+<p>要配置的远程服务器</p>
+<ul>
+<li>角色 (role)</li>
+</ul>
+<p>一系列配方的组合，应用在节点上</p>
+<p>例如，Postgres Server 角色可能会包含安装 postgres-server 的配方，安装和设置防火墙的操作， 以及安装合适的服务器监控工具的操作</p>
+<ul>
+<li>数据包 (data bag)</li>
+</ul>
+<p>配方所用的元数据，保存为 JSON 格式文件。 例如，要创建的用户列表，以及相应的公钥</p>
+<ul>
+<li>Chef 仓库 (chef repository)</li>
+</ul>
+<p>一系列节点和角色定义</p>
+<h2 id="chef-solo">创建 Chef Solo 仓库</h2>
+<ol>
+<li>
+<p>新建文件夹</p>
+<p>mkdir chef_repo<br />
+cd chef_repo</p>
+</li>
+<li>
+<p>安装工具</p>
+<ol>
+<li>初始化 bundler</li>
+</ol>
+<p>bundle init</p>
+<ol>
+<li>在刚生成的 Gemfile 文件中写入如下内容：</li>
+</ol>
+<p>source 'https://rubygems.org'</p>
+<p>gem 'knife-solo', '0.3.0'<br />
+gem 'chef', '~&gt; 11.10.0'<br />
+gem 'chef-zero', '1.7.2'<br />
+gem 'berkshelf', '~&gt; 2.0.14'</p>
+<ol>
+<li>然后运行如下命令来安装</li>
+</ol>
+<p>bundle install</p>
+</li>
+</ol>
+<h2 id="_2">初始化仓库</h2>
+<p>使用 bundle exec 确保使用的 Gemfile 中定义的 gem 版本来执行命令</p>
+<div class="hlcode"><pre><span class="n">bundle</span> <span class="n">exec</span> <span class="n">knife</span> <span class="n">solo</span> <span class="n">init</span> <span class="p">.</span>
+</pre></div>
+
+
+<p>生成若干文件，结构如下：</p>
+<div class="hlcode"><pre><span class="n">chef_repo</span>
+<span class="err">├──</span> <span class="p">.</span><span class="n">chef</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">knife</span><span class="p">.</span><span class="n">rb</span>
+<span class="err">├──</span> <span class="p">.</span><span class="n">gitignore</span>
+<span class="err">├──</span> <span class="n">Berksfile</span>
+<span class="err">├──</span> <span class="n">Gemfile</span>
+<span class="err">├──</span> <span class="n">Gemfile</span><span class="p">.</span><span class="n">lock</span>
+<span class="err">├──</span> <span class="n">cookbooks</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="p">.</span><span class="n">gitkeep</span>
+<span class="err">├──</span> <span class="n">data_bags</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="p">.</span><span class="n">gitkeep</span>
+<span class="err">├──</span> <span class="n">environments</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="p">.</span><span class="n">gitkeep</span>
+<span class="err">├──</span> <span class="n">nodes</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="p">.</span><span class="n">gitkeep</span>
+<span class="err">├──</span> <span class="n">roles</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="p">.</span><span class="n">gitkeep</span>
+<span class="err">└──</span> <span class="n">site</span><span class="o">-</span><span class="n">cookbooks</span>
+    <span class="err">└──</span> <span class="p">.</span><span class="n">gitkeep</span>
+</pre></div>
+
+
+<p>下面来说说各个文件及文件夹的作用</p>
+<h3 id="kniferb">knife.rb</h3>
+<p>Knife 是个命令行工具，可以和远程服务器上的 Chef 交互<br />
+Knife Solo 添加了额外的命令，可以在本地开发设备上直接和要配置的服务器交互 （而不用通过 Chef 中央服务器中转）</p>
+<p>knife.rb 中包含针对我们这个仓库的 Knife 设置。 这个文件在使用 Chef 中央服务器时更有用， 并不符合我们使用的单机模式，但却是 Knife 的主要设置（也是唯一的设置文件）</p>
+<p>Knife 的全部设置选项可以在 <a href="http://docs.opscode.com/config_rb_knife.html">http://docs.opscode.com/config_rb_knife.html</a> 中查看<br />
+目前，我们要设置的重要选项如下：</p>
+<ul>
+<li>
+<p>cookbook_path<br />
+这个选项是个数组，包含很多相对于仓库根目录的路径， 指定角色中使用的食谱和节点定义的存储位置</p>
+</li>
+<li>
+<p>node_path<br />
+相对仓库根目录的路径，指定节点定义存储的位置</p>
+</li>
+<li>
+<p>role_path<br />
+相对仓库根目录的路径，指定角色定义存储的位置</p>
+</li>
+<li>
+<p>data_bag_path<br />
+相对仓库根目录的路径，指定数据包的存储位置</p>
+</li>
+</ul>
+<p>一般情况下，都可以直接使用默认值</p>
+<h3 id="berksfile">Berksfile</h3>
+<p>在 Berkfile 中定义 Chef 仓库要使用的食谱，以及各自的版本。 然后执行 <code>bersk install</code> 命令安装这些食谱。 如果食谱在 metadata.rb 文件用 depends 定义了依赖食谱，Berkshelf 会负责安装这些依赖食谱</p>
+<p>和 Bundler 一样，Berkshelf 也会生成一个 Berksfile.lock 文件，写入食谱及相应的版本号</p>
+<h3 id="cookbooks">cookbooks</h3>
+<p>cookbooks 文件夹用来存放使用 Berkshelf 安装的他人编写的食谱<br />
+如想存放自己编写的食谱，应放在 site-cookbooks 文件夹</p>
+<p><strong>千万别在 cookbooks 文件夹中存放没有使用 Berkshel 来管理的食谱， 因为，每次运行 knife solo 后，cookbooks 文件夹中的内容都会被抹去重新写入</strong></p>
+<h3 id="data_bags">data_bags</h3>
+<p>如果食谱中要用到大量数据，就可以将数据存放在这里</p>
+<h3 id="environments">environments</h3>
+<p>对应现实中的工作流，比如说生产环境，准备环境，测试环境，开发环境</p>
+<h3 id="nodes">nodes</h3>
+<p>存放节点文件</p>
+<h3 id="roles">roles</h3>
+<p>存放角色文件</p>
+<h3 id="site-cookbooks">site-cookbooks</h3>
+<p>用来存放自己编写的食谱</p>
+<h2 id="_3">食谱介绍</h2>
+<p>以 redis-tlq 食谱为例：<a href="https://github.com/TalkingQuickly/redis-tlq">https://github.com/TalkingQuickly/redis-tlq</a><br />
+将其作为自己编写的食谱放到 <code>site-cookbooks</code> 文件夹下</p>
+<p>文件结构如下：</p>
+<div class="hlcode"><pre><span class="n">redis</span><span class="o">-</span><span class="n">tlq</span>
+<span class="err">├──</span> <span class="n">attributes</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="k">default</span><span class="p">.</span><span class="n">rb</span>
+<span class="err">├──</span> <span class="n">metadata</span><span class="p">.</span><span class="n">rb</span>
+<span class="err">├──</span> <span class="n">recipes</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="k">default</span><span class="p">.</span><span class="n">rb</span>
+<span class="err">└──</span> <span class="n">templates</span>
+    <span class="err">└──</span> <span class="k">default</span>
+        <span class="err">├──</span> <span class="n">redis</span><span class="o">-</span><span class="n">server</span><span class="p">.</span><span class="n">erb</span>
+        <span class="err">└──</span> <span class="n">redis</span><span class="p">.</span><span class="n">conf</span><span class="p">.</span><span class="n">erb</span>
+</pre></div>
+
+
+<p>下面是各个文件及文件夹的说明</p>
+<h3 id="metadatarb">metadata.rb</h3>
+<p>元数据文件中详细说明了这个食谱的作用，编写人，依赖件以及版本号</p>
+<p><code>metadata.rb:</code></p>
+<div class="hlcode"><pre><span class="cp"># 食谱的名称</span>
+<span class="n">name</span>              <span class="s">&quot;redis-tlq&quot;</span>
+<span class="n">maintainer</span>        <span class="s">&quot;Ben Dixon&quot;</span>
+<span class="n">maintainer_email</span>  <span class="s">&quot;ben@talkingquickly.co.uk&quot;</span>
+<span class="n">description</span>       <span class="s">&quot;Installs redis from rwky&#39;s ppa&quot;</span>
+<span class="cp"># 食谱的版本号</span>
+<span class="n">version</span>           <span class="s">&quot;0.0.6&quot;</span>
+
+<span class="cp"># 配方的名称</span>
+<span class="n">recipe</span> <span class="s">&quot;redis-tlq&quot;</span><span class="p">,</span> <span class="s">&quot;Installs redis&quot;</span>
+
+<span class="cp"># 指定这个食谱支持的操作系统</span>
+<span class="cp"># 这个设置很重要，因为我们这个简单的食谱只支持 Ubuntu, 会用到一些只有 Ubuntu 才支持的命令</span>
+<span class="n">supports</span> <span class="s">&quot;ubuntu&quot;</span>
+</pre></div>
+
+
+<p>使用 Berkshelf 时，version 和 recipe 这两行是关键的设置， Berkshelf 会查看 metadata.rb 文件，确认要使用的食谱中是否有匹配的配方</p>
+<p>还有一个选项 depends 这里没提到，用来指定要依赖的其他食谱</p>
+<h3 id="recipesdefaultrb">recipes/default.rb</h3>
+<p>Chef 食谱必须包含一个名为 default 的配方<br />
+如果在节点或角色定义中使用到了某个食谱，而没有指定要用哪个配方，就会使用这个默认配方</p>
+<p><code>cookbooks/redis-tlq/recipes/default.rb:</code></p>
+<div class="hlcode"><pre><span class="c1"># use redis from ppa rather than the one</span>
+<span class="c1"># available in the package manager. rwky</span>
+<span class="c1"># builds the stable version and is kept</span>
+<span class="c1"># consistently up to date. We need python-software-properties</span>
+<span class="c1"># for add-apt-repository to work</span>
+
+<span class="c1"># Chef 首先会使用操作系统的包管理工具检查是否安装了 python-software-properties 代码包</span>
+<span class="c1"># 如果没有，那就安装</span>
+package <span class="s">&#39;python-software-properties&#39;</span>
+
+<span class="c1"># 告诉 Chef, 其中包含的命令是在 bash 中执行的</span>
+<span class="c1"># 随后的文本会在配方执行时显示出来，让用户知道配方正在做什么</span>
+bash <span class="s">&#39;adding stable redis ppa&#39;</span> do
+  <span class="c1"># 以 root 这个用户身份去执行</span>
+  user <span class="s">&#39;root&#39;</span>
+  code <span class="o">&lt;&lt;-</span>EOC
+    add<span class="o">-</span>apt<span class="o">-</span>repository ppa<span class="o">:</span>chris<span class="o">-</span>lea<span class="o">/</span>redis<span class="o">-</span>server
+    apt<span class="o">-</span>get update
+  EOC
+end
+
+package <span class="s">&#39;redis-server&#39;</span>
+
+<span class="c1"># 上述操作只是安装了 Redis, 我们还要对其进行一些自定义设置，</span>
+<span class="c1"># 再添加初始化脚本用于启动、停止 Redis 服务器，这就轮到 template 出场了</span>
+<span class="c1">#</span>
+<span class="c1"># 这段代码的作用如下：</span>
+<span class="c1"># 1. 在 redis-tlq/template/default 文件夹中寻找文件 redis.conf.erb</span>
+<span class="c1"># 2. 解析这个文件中的所有 erb 代码，然后把文件复制到节点上，存放位置为 /etc/redis/redis.conf</span>
+<span class="c1"># 3. 把这个文件的拥有者设为 root 用户组的 root, 权限为 0644</span>
+template <span class="s">&quot;/etc/redis/redis.conf&quot;</span> do
+  owner <span class="s">&quot;root&quot;</span>
+  group <span class="s">&quot;root&quot;</span>
+  mode <span class="s">&quot;0644&quot;</span>
+  source <span class="s">&quot;redis.conf.erb&quot;</span>
+  notifies <span class="o">:</span>run<span class="p">,</span> <span class="s">&quot;execute[restart-redis]&quot;</span><span class="p">,</span> <span class="o">:</span>immediately
+end
+
+<span class="c1"># ...</span>
+</pre></div>
+
+
+<h4 id="_4">模板文件夹的说明</h4>
+<p>templates 文件夹中的子文件夹对应的是服务器上所安装的操作系统<br />
+如果使用的是 Ubuntu 12.04, 上面的 template 代码块就会在下面的路径中按顺序寻找 redis.conf.erb 文件：</p>
+<ol>
+<li><code>templates/ubuntu-12.04/redis.conf.erb</code></li>
+<li><code>templates/ubuntu/redis.conf.erb</code></li>
+<li><code>remplates/default/redis.conf.erb</code></li>
+</ol>
+<p>如果要编写复杂的食谱，照应多种操作系统，这种处理方式的强大就体现出来了<br />
+目前，我们仅仅使用 default 文件夹</p>
+<h3 id="_5">属性</h3>
+<p><strong>配方</strong>可以使用属性 (attribute) 进行定制。 属性可以在多个地方设定，包括：</p>
+<ul>
+<li>节点定义</li>
+<li>角色定义</li>
+<li>食谱默认值</li>
+</ul>
+<p>一般情况下，在食谱中会为属性指定默认值，如果需要，可以覆盖默认值</p>
+<p>在 <code>templates/default/redis.conf.erb</code> 文件中有这么一段代码：</p>
+<div class="hlcode"><pre><span class="cp">&lt;%</span> <span class="k">unless</span> <span class="n">node</span><span class="o">[</span><span class="ss">:redis</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="n">node</span><span class="o">[</span><span class="ss">:redis</span><span class="o">][</span><span class="ss">:dont_bind</span><span class="o">]</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  bind 127.0.0.1</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</pre></div>
+
+
+<p>如果在节点中有如下代码：</p>
+<div class="hlcode"><pre><span class="p">{</span>
+  <span class="s">&quot;redis&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s">&quot;dont_bind&quot;</span><span class="o">:</span> <span class="nb">true</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>那么就执行 <code>bind 127.0.0.1</code> 这段代码</p>
+<h4 id="_6">食谱属性的默认值</h4>
+<p>在食谱中可以为属性定义默认值。 这往往也是推荐的做法，大多数用户只要做少许改动就可使用</p>
+<p>属性的默认值在 <code>attributes/default.rb</code> 文件中定义：</p>
+<div class="hlcode"><pre><span class="cp"># whethere to prevent redis from binding to 127.0.0.1</span>
+<span class="k">default</span><span class="p">[</span><span class="o">:</span><span class="n">redis</span><span class="p">][</span><span class="o">:</span><span class="n">dont_bind</span><span class="p">]</span> <span class="o">=</span> <span class="nb">false</span>
+</pre></div>
+
+
+<p>上面代码的作用是：<br />
+会把 <code>false</code> 应用到食谱 <code>node[:redis][:dont_bind]</code>，除非默认值被覆盖了</p>
+<p>关于属性的更多说明，请阅读 OpsCode 网站上的文档：<br />
+<a href="http://docs.opscode.com/essentials_cookbook_attribute_files.html">http://docs.opscode.com/essentials_cookbook_attribute_files.html</a></p>
+<h2 id="_7">角色介绍</h2>
+<p>新建角色文件</p>
+<div class="hlcode"><pre><span class="n">touch</span> <span class="n">roles</span><span class="o">/</span><span class="n">redis</span><span class="o">-</span><span class="n">server</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+
+
+<p>写入如下内容：</p>
+<div class="hlcode"><pre><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;redis-server&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Redis server&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;default_attributes&quot;</span><span class="o">:</span> <span class="err">{</span>
+    <span class="s2">&quot;redis&quot;</span><span class="o">:</span> <span class="err">{</span>
+      <span class="s2">&quot;dont_bind&quot;</span><span class="o">:</span> <span class="n">false</span>
+    <span class="p">}</span>
+  <span class="err">}</span><span class="o">,</span>
+  <span class="s2">&quot;run_list&quot;</span><span class="o">:</span> <span class="cp">[</span>
+    <span class="s2">&quot;recipe[redis-tlq]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recipe[monit-tlq]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recipe[monit_configs-tlq::redis-server]&quot;</span>
+  <span class="cp">]</span><span class="o">,</span>
+  <span class="s2">&quot;json_class&quot;</span><span class="o">:</span> <span class="s2">&quot;Chef::Role&quot;</span>
+<span class="err">}</span>
+</pre></div>
+
+
+<p>代码解释如下：</p>
+<ul>
+<li>name</li>
+</ul>
+<p>指定角色的名称<br />
+当 Chef 在运行列表中见到 <code>rolo[redis-server]</code> 时，就会寻找名为 redis-server 的角色。 寻找的范围是 knife.rb 中<code>role_path</code> 对应文件夹中所有的 JSON 文件</p>
+<ul>
+<li>description</li>
+</ul>
+<p>描述这个角色的作用</p>
+<ul>
+<li>default_attributes</li>
+</ul>
+<p>用来设置默认属性</p>
+<ul>
+<li>run_list</li>
+</ul>
+<p>是一个数组，Chef 会依次安装执行列出的配方和角色</p>
+<p>角色使用如下格式：</p>
+<div class="hlcode"><pre><span class="n">role</span><span class="p">[</span><span class="n">role_name</span><span class="p">]</span>
+</pre></div>
+
+
+<p>配方使用如下格式：</p>
+<div class="hlcode"><pre><span class="n">recipe</span><span class="p">[</span><span class="n">cookbook_name</span><span class="o">::</span><span class="n">recipe</span><span class="p">]</span>
+</pre></div>
+
+
+<ul>
+<li>“json_class”: “Chef::Role”</li>
+</ul>
+<p>如果使用 JSON 格式，那么必须加上这一行<br />
+如果使用 Ruby 格式，则不用加</p>
+<p>因为使用到了 2 个额外的食谱 <a href="https://github.com/TalkingQuickly/monit-tlq">monit-tlq</a> 和 <a href="https://github.com/TalkingQuickly/monit_configs-tlq">monit_configs-tlq</a><br />
+前者用于监控系统的各种参数，如果进程崩溃或者超出了预设的参数，Monit 会重启该进程<br />
+后者是针对系统组件的 Monit 设置</p>
+<p>所以我们需要在仓库根目录的 <code>Berksfile</code> 文件中加入如下内容：</p>
+<div class="hlcode"><pre><span class="n">cookbook</span> <span class="err">&#39;</span><span class="n">monit</span><span class="o">-</span><span class="n">tlq</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">github</span><span class="o">:</span> <span class="err">&#39;</span><span class="n">TalkingQuickly</span><span class="o">/</span><span class="n">monit</span><span class="o">-</span><span class="n">tlq</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">branch</span><span class="o">:</span> <span class="err">&#39;</span><span class="n">master</span><span class="err">&#39;</span>
+<span class="n">cookbook</span> <span class="err">&#39;</span><span class="n">monit_configs</span><span class="o">-</span><span class="n">tlq</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">github</span><span class="o">:</span> <span class="err">&#39;</span><span class="n">TalkingQuickly</span><span class="o">/</span><span class="n">monit_configs</span><span class="o">-</span><span class="n">tlq</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">branch</span><span class="o">:</span> <span class="err">&#39;</span><span class="n">master</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h2 id="_8">配置远程服务器</h2>
+<ol>
+<li>
+<p>把公钥复制到远程服务器</p>
+<p>ssh-copy-id root@yourserverip</p>
+</li>
+<li>
+<p>在远程服务器上安装 Chef, 在本地仓库根目录执行如下命令：</p>
+<p>bundle exec knife solo prepare root@yourserverip</p>
+</li>
+</ol>
+<p>若使用 Vagrant 可以用 <code>vagrant ssh-config</code> 命令查看 ssh 配置，然后执行如下类似命令：</p>
+<div class="hlcode"><pre><span class="n">bundle</span> <span class="n">exec</span> <span class="n">knife</span> <span class="n">solo</span> <span class="n">prepare</span> <span class="n">vagrant</span><span class="err">@</span><span class="mf">127.0.0.1</span> <span class="o">-</span><span class="n">p</span> <span class="mi">2222</span> <span class="o">-</span><span class="n">i</span> <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">mwum</span><span class="o">/</span><span class="p">.</span><span class="n">vagrant</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">insecure_private_key</span>
+</pre></div>
+
+
+<p>安装时间稍长，耐心等待吧</p>
+<p>上述命令的作用如下：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">在</span> <span class="n">nodes</span> <span class="err">文件夹中新建文件</span> <span class="n">yourserverip</span><span class="p">.</span><span class="n">json</span>
+<span class="o">*</span> <span class="err">通过</span> <span class="n">SSH</span> <span class="err">登入远程服务器</span>
+<span class="o">*</span> <span class="err">检测操作系统的类型</span>
+<span class="o">*</span> <span class="err">安装相应的</span> <span class="n">Chef</span> <span class="err">版本</span>
+</pre></div>
+
+
+<h3 id="_9">可能会遇到的问题</h3>
+<p>如果不确定是什么问题，可以在安装 Chef 的命令加上 <code>-VV</code> 选项来查看 DEBUG 信息</p>
+<ul>
+<li>
+<p>远程服务器的网络有问题，需要设置代理</p>
+<ol>
+<li>
+<p>用 ssh 登录远程服务器</p>
+</li>
+<li>
+<p>在 ~/.bashrc 中加入如下内容：</p>
+</li>
+</ol>
+<p>export http_proxy="http://your-proxy.company.org:80"<br />
+export https_proxy="http://your-proxy.company.org:80"<br />
+export HTTP_PROXY="http://your-proxy.company.org:80"<br />
+export HTTPS_PROXY="http://your-proxy.company.org:80"</p>
+<ol>
+<li>退出远程服务器，重新安装 Chef</li>
+</ol>
+</li>
+</ul>
+<h2 id="_10">应用配方</h2>
+<ol>
+<li>
+<p>配置节点文件 <code>nodes/yourserverip.json</code>, 加入如下内容：</p>
+<p>{<br />
+  "redis": {<br />
+    "dont_bind": false<br />
+  },<br />
+  "run_list": [<br />
+    "role[redis-server]"<br />
+  ]<br />
+}</p>
+</li>
+</ol>
+<p>代码上半段是属性定义，<code>run_list</code> 的作用和角色文件中的一样</p>
+<ol>
+<li>
+<p>应用配方，在仓库根目录下执行如下命令：</p>
+<p>bundle exec knife solo cook root@yourserverip</p>
+</li>
+</ol>
+<p>这个命令的作用如下：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">根据</span> <span class="n">Berksfile</span> <span class="err">文件通过</span> <span class="n">Berkshelf</span> <span class="err">下载食谱（相当于此命令</span> <span class="err">`</span><span class="n">berks</span> <span class="n">vendor</span> <span class="n">cookbookss</span><span class="o">/</span><span class="err">）</span>
+<span class="o">*</span> <span class="err">通过</span> <span class="n">SSH</span> <span class="err">登入远程服务器</span>
+<span class="o">*</span> <span class="err">把本地的配方文件复制到远程服务器</span>
+<span class="o">*</span> <span class="err">应用配方，并显示输出结果</span>
+</pre></div>
+
+
+<p>如果要经常重用某个节点定义，可以将其另存为，例如 nodes/side_project_server.json, 然后执行如下命令：</p>
+<div class="hlcode"><pre><span class="n">bundle</span> <span class="n">exec</span> <span class="n">knife</span> <span class="n">solo</span> <span class="n">cook</span> <span class="n">root</span><span class="err">@</span><span class="n">yourserverip</span> <span class="n">nodes</span><span class="o">/</span><span class="n">side_project_server</span><span class="p">.</span><span class="n">json</span>
+</pre></div>
+
+
+<hr />
+<p>参考图书：<br />
+《<a href="https://leanpub.com/deploying_rails_applications-cn">Rails 程序部署之道</a>》</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

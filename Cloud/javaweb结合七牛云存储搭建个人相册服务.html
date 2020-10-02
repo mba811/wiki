@@ -1,0 +1,946 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>JavaWeb结合七牛云存储搭建个人相册服务 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Cloud">Cloud</a>&nbsp;&#187;&nbsp;JavaWeb结合七牛云存储搭建个人相册服务
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 22:22
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">JavaWeb结合七牛云存储搭建个人相册服务</div>
+
+  <p>JavaWeb结合七牛云存储搭建个人相册服务(http://www.shiyanlou.com/courses/54)<br />
+    一、引言<br />
+    1. 课程概述<br />
+    相信很多人都知道网站一般会有很多图片，对于小型网站来说，图片放在网站服务器上不算什么，但当图片数量很大时，会造成服务器很臃肿，相应地对带宽要求也会提高，这就造成了成本的增加。其实现在已经流行云存储，我们可以把图片、大文件等放到第三方提供的云存储服务上，这会减少一部分成本。这门课程就介绍了JavaWeb结合七牛云存储来搭建个人相册服务。<br />
+    2. 预备知识<br />
+    掌握Servlet+JSP，能了解Bootstrap更好。<br />
+    二、Just Do It!<br />
+    项目开始前，你需要有一个七牛云存储的标准用户账号，新建一个Bucket，知道你自己的Access Key和Secret Key。<br />
+    1. 创建数据库<br />
+<br />
+    这里我们使用MySQL数据库，创建名称为photo的数据库：</p>
+<div class="hlcode"><pre><span class="n">create</span> <span class="n">database</span> <span class="n">photo</span> <span class="n">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="err">`</span><span class="n">image</span><span class="err">`</span> <span class="p">(</span>
+ <span class="err">`</span><span class="n">id</span><span class="err">`</span> <span class="kt">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="n">NOT</span> <span class="nb">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+ <span class="err">`</span><span class="n">name</span><span class="err">`</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="n">DEFAULT</span> <span class="nb">NULL</span><span class="p">,</span>
+ <span class="err">`</span><span class="n">url</span><span class="err">`</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="n">DEFAULT</span> <span class="nb">NULL</span><span class="p">,</span>
+ <span class="err">`</span><span class="n">date</span><span class="err">`</span> <span class="n">datetime</span> <span class="n">DEFAULT</span> <span class="nb">NULL</span><span class="p">,</span>
+ <span class="err">`</span><span class="n">user_id</span><span class="err">`</span> <span class="kt">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="n">DEFAULT</span> <span class="nb">NULL</span><span class="p">,</span>
+ <span class="n">PRIMARY</span> <span class="n">KEY</span> <span class="p">(</span><span class="err">`</span><span class="n">id</span><span class="err">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">1</span> <span class="n">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+<span class="n">CREATE</span> <span class="n">TABLE</span> <span class="err">`</span><span class="n">user</span><span class="err">`</span> <span class="p">(</span>
+ <span class="err">`</span><span class="n">id</span><span class="err">`</span> <span class="kt">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="n">NOT</span> <span class="nb">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+ <span class="err">`</span><span class="n">username</span><span class="err">`</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="n">DEFAULT</span> <span class="nb">NULL</span><span class="p">,</span>
+ <span class="err">`</span><span class="n">password</span><span class="err">`</span> <span class="n">varchar</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="n">DEFAULT</span> <span class="nb">NULL</span><span class="p">,</span>
+ <span class="n">PRIMARY</span> <span class="n">KEY</span> <span class="p">(</span><span class="err">`</span><span class="n">id</span><span class="err">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">1</span> <span class="n">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+</pre></div>
+
+
+<p>2. 创建JavaWeb项目   这里使用Eclipse创建一个名称为Photo的动态Web项目，加入Tomcat 7服务器，加入所需的jar包（源码中包含jar包），把Photo项目部署到Tomcat上。 3. 编写前端代码   前端使用Bootsrap，把css、fonts和js文件夹放到WebContent目录下。   创建index.jsp:   </p>
+<div class="hlcode"><pre><span class="cp">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;java&quot;</span> <span class="n">contentType</span><span class="o">=</span><span class="s2">&quot;text/html; charset=UTF-8&quot;</span>
+ <span class="n">pageEncoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="cp">%&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;zh-cn&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;head&gt;</span>
+ <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;X-UA-Compatible&quot;</span> <span class="na">content=</span><span class="s">&quot;IE=edge&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;title&gt;</span>实验楼个人相册<span class="nt">&lt;/title&gt;</span>
+ <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/bootstrap.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+ <span class="c">&lt;!--[if lt IE 9]&gt;</span>
+<span class="c"> &lt;script src=&quot;http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c"> &lt;script src=&quot;http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c"> &lt;![endif]--&gt;</span>
+ <span class="nt">&lt;/head&gt;</span>
+ <span class="nt">&lt;body&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-12 text-center&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h2&gt;</span>实验楼个人相册<span class="nt">&lt;/h2&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;alert1&quot;</span> <span class="na">class=</span><span class="s">&quot;alert alert-success fade in text-center col-xs-2 col-xs-offset-5 hide&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;strong&gt;</span>注册成功<span class="nt">&lt;/strong&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">&quot;form&quot;</span> <span class="na">class=</span><span class="s">&quot;form-horizontal&quot;</span> <span class="na">role=</span><span class="s">&quot;form&quot;</span> <span class="na">style=</span><span class="s">&quot;margin-top: 73px;&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span> <span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;username&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label col-sm-offset-3&quot;</span> <span class="nt">&gt;</span>用户名<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-2&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control&quot;</span> <span class="na">id=</span><span class="s">&quot;username&quot;</span> <span class="na">rel=</span><span class="s">&quot;tooltip&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;password&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label col-sm-offset-3&quot;</span><span class="nt">&gt;</span>密码<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-2&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control&quot;</span> <span class="na">id=</span><span class="s">&quot;password&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-sm-offset-5 col-xs-1&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-success&quot;</span> <span class="na">id=</span><span class="s">&quot;login&quot;</span><span class="nt">&gt;</span>登录<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-sm-1&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-danger&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;modal&quot;</span> <span class="na">data-target=</span><span class="s">&quot;#myModal&quot;</span><span class="nt">&gt;</span>注册<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/form&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 注册对话框 begin --&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal fade&quot;</span> <span class="na">id=</span><span class="s">&quot;myModal&quot;</span> <span class="na">tabindex=</span><span class="s">&quot;-1&quot;</span> <span class="na">role=</span><span class="s">&quot;dialog&quot;</span> <span class="na">aria-labelledby=</span><span class="s">&quot;myModalLabel&quot;</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-dialog&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-content&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-header&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;close&quot;</span> <span class="na">data-dismiss=</span><span class="s">&quot;modal&quot;</span><span class="nt">&gt;&lt;span</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>×<span class="nt">&lt;/span&gt;&lt;span</span> <span class="na">class=</span><span class="s">&quot;sr-only&quot;</span><span class="nt">&gt;</span>Close<span class="nt">&lt;/span&gt;&lt;/button&gt;</span>
+ <span class="nt">&lt;h4</span> <span class="na">class=</span><span class="s">&quot;modal-title&quot;</span> <span class="na">id=</span><span class="s">&quot;myModalLabel&quot;</span><span class="nt">&gt;</span>用户注册<span class="nt">&lt;/h4&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-body&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;form</span> <span class="na">class=</span><span class="s">&quot;form-horizontal&quot;</span> <span class="na">role=</span><span class="s">&quot;form&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span> <span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;reg_username&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label&quot;</span> <span class="nt">&gt;</span>用户名<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-4&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control&quot;</span> <span class="na">id=</span><span class="s">&quot;reg_username&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;reg_password&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label&quot;</span><span class="nt">&gt;</span>密码<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-4&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control&quot;</span> <span class="na">id=</span><span class="s">&quot;reg_password&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;reg_repassword&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label&quot;</span><span class="nt">&gt;</span>重复密码<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-4&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;password&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control&quot;</span> <span class="na">id=</span><span class="s">&quot;reg_repassword&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/form&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-footer&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-default&quot;</span> <span class="na">data-dismiss=</span><span class="s">&quot;modal&quot;</span><span class="nt">&gt;</span>取消<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-primary&quot;</span> <span class="na">id=</span><span class="s">&quot;register&quot;</span><span class="nt">&gt;</span>注册<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 注册对话框 end --&gt;</span>
+ <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+ <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;js/bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+ <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+ $(document).ready(function() {
+ //点击登录
+ $(&#39;#login&#39;).click(function() {
+ //提交登录表单
+ $.post(&#39;${pageContext.request.contextPath}&#39; + &#39;/UserAction?type=1&#39;,
+ {
+  username: $(&#39;#username&#39;).val(),
+  password: $(&#39;#password&#39;).val()
+ },
+ function(data, status) {
+  if (data == &#39;1&#39;) {
+  createPopOver(&#39;#username&#39;, &#39;right&#39;, &#39;用户名不能为空&#39;, &#39;show&#39;);
+  } else if (data == &#39;2&#39;) {
+  createPopOver(&#39;#password&#39;, &#39;right&#39;, &#39;密码不能为空&#39;, &#39;show&#39;);
+  } else if (data == &#39;3&#39;) {
+  createPopOver(&#39;#username&#39;, &#39;right&#39;, &#39;用户名不存在&#39;, &#39;show&#39;);
+  } else if (data == &#39;4&#39;) {
+  createPopOver(&#39;#password&#39;, &#39;right&#39;, &#39;密码错误&#39;, &#39;show&#39;);
+  } else if (data == 5) {
+  location.href = &#39;${pageContext.request.contextPath}&#39; + &#39;/home.jsp&#39;;
+  }
+ });
+ });
+ //点击注册按钮
+ $(&#39;#register&#39;).click(function() {
+ //提交注册表单
+ $.post(&#39;${pageContext.request.contextPath}&#39; + &#39;/UserAction?type=2&#39;,
+ {
+  username: $(&#39;#reg_username&#39;).val(),
+  password: $(&#39;#reg_password&#39;).val(),
+  repassword: $(&#39;#reg_repassword&#39;).val()
+ },
+ function(data, status) {
+  if (data == &#39;1&#39;) {
+  createPopOver(&#39;#reg_username&#39;, &#39;right&#39;, &#39;不能为空&#39;, &#39;show&#39;);
+  } else if (data == &#39;2&#39;) {
+  createPopOver(&#39;#reg_password&#39;, &#39;right&#39;, &#39;不能为空&#39;, &#39;show&#39;);
+  } else if (data == &#39;3&#39;) {
+  createPopOver(&#39;#reg_repassword&#39;, &#39;right&#39;, &#39;不能为空&#39;, &#39;show&#39;);
+  } else if (data == &#39;4&#39;) {
+  createPopOver(&#39;#reg_repassword&#39;, &#39;right&#39;, &#39;密码不一致&#39;, &#39;show&#39;);
+  } else if (data == &#39;5&#39;) {
+  createPopOver(&#39;#reg_username&#39;, &#39;right&#39;, &#39;用户名已存在&#39;, &#39;show&#39;);
+  } else if (data == &#39;6&#39;) {
+  $(&#39;#reg_username&#39;).val(&#39;&#39;);
+  $(&#39;#reg_password&#39;).val(&#39;&#39;);
+  $(&#39;#reg_repassword&#39;).val(&#39;&#39;);
+  $(&#39;#myModal&#39;).modal(&#39;hide&#39;);
+  $(&#39;#alert1&#39;).removeClass(&#39;hide&#39;);
+  $(&#39;#form&#39;).css(&#39;margin-top&#39;, &#39;0px&#39;);
+  }
+ });
+ }); 
+ //显示弹出框
+ function createPopOver(id, placement, content, action) {
+ $(id).popover({
+  placement: placement,
+  content: content
+ });
+ $(id).popover(action);
+ }
+ //点击输入框时销毁弹出框
+ $(&#39;#username&#39;).click(function() {
+ $(&#39;#username&#39;).popover(&#39;destroy&#39;);
+ });
+ $(&#39;#password&#39;).click(function() {
+ $(&#39;#password&#39;).popover(&#39;destroy&#39;);
+ });
+ $(&#39;#reg_username&#39;).click(function() {
+ $(&#39;#reg_username&#39;).popover(&#39;destroy&#39;);
+ });
+ $(&#39;#reg_password&#39;).click(function() {
+ $(&#39;#reg_password&#39;).popover(&#39;destroy&#39;);
+ });
+ $(&#39;#reg_repassword&#39;).click(function() {
+ $(&#39;#reg_repassword&#39;).popover(&#39;destroy&#39;);
+ });
+ });
+ <span class="nt">&lt;/script&gt;</span>
+ <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>创建home.jsp:   </p>
+<div class="hlcode"><pre><span class="cp">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;java&quot;</span> <span class="n">contentType</span><span class="o">=</span><span class="s2">&quot;text/html; charset=UTF-8&quot;</span>
+ <span class="n">pageEncoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span><span class="err">@</span> <span class="n">taglib</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;c&quot;</span> <span class="n">uri</span><span class="o">=</span><span class="s2">&quot;http://java.sun.com/jsp/jstl/core&quot;</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span><span class="err">@</span> <span class="n">taglib</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;fmt&quot;</span> <span class="n">uri</span><span class="o">=</span><span class="s2">&quot;http://java.sun.com/jsp/jstl/fmt&quot;</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">&quot;zh-cn&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;head&gt;</span>
+ <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">&quot;X-UA-Compatible&quot;</span> <span class="na">content=</span><span class="s">&quot;IE=edge&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;title&gt;</span>${user.username}的个人相册<span class="nt">&lt;/title&gt;</span>
+ <span class="nt">&lt;link</span> <span class="na">href=</span><span class="s">&quot;css/bootstrap.min.css&quot;</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span><span class="nt">&gt;</span>
+ <span class="c">&lt;!--[if lt IE 9]&gt;</span>
+<span class="c"> &lt;script src=&quot;http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c"> &lt;script src=&quot;http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js&quot;&gt;&lt;/script&gt;</span>
+<span class="c"> &lt;![endif]--&gt;</span>
+ <span class="nt">&lt;/head&gt;</span>
+ <span class="nt">&lt;body&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+ <span class="c">&lt;!-- 首部 start --&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-8 col-xs-offset-2&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h3</span> <span class="na">class=</span><span class="s">&quot;page-header&quot;</span><span class="nt">&gt;</span>
+  ${user.username} <span class="nt">&lt;small&gt;</span>共<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;badge&quot;</span><span class="nt">&gt;</span>${imageList.size()}<span class="nt">&lt;/span&gt;</span>张<span class="nt">&lt;/small&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;btn-group pull-right&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-primary dropdown-toggle&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;dropdown&quot;</span><span class="nt">&gt;</span>
+  操作<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;caret&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+  <span class="nt">&lt;/button&gt;</span>
+  <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;dropdown-menu&quot;</span> <span class="na">role=</span><span class="s">&quot;menu&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;modal&quot;</span> <span class="na">data-target=</span><span class="s">&quot;#myModa2&quot;</span><span class="nt">&gt;</span>上传<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;modal&quot;</span> <span class="na">data-target=</span><span class="s">&quot;#myModa3&quot;</span><span class="nt">&gt;</span>删除<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;modal&quot;</span> <span class="na">data-target=</span><span class="s">&quot;#myModa4&quot;</span><span class="nt">&gt;</span>退出<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+  <span class="nt">&lt;/ul&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/h3&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 首部 end --&gt;</span>
+ <span class="c">&lt;!-- 显示图片列表 --&gt;</span>
+ <span class="nt">&lt;c:forEach</span> <span class="na">items=</span><span class="s">&quot;${imageList}&quot;</span> <span class="na">varStatus=</span><span class="s">&quot;status&quot;</span> <span class="na">var=</span><span class="s">&quot;image&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;c:choose&gt;</span>
+ <span class="nt">&lt;c:when</span> <span class="na">test=</span><span class="s">&quot;${status.first or status.index % 4 eq 0}&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 col-xs-offset-2&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">class=</span><span class="s">&quot;thumbnail text-center&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;img</span> <span class="na">name=</span><span class="s">&quot;${image.name}&quot;</span> <span class="na">date=</span><span class="s">&quot;&lt;fmt:formatDate value=&#39;${image.date}&#39; pattern=&#39;yyyy-MM-dd HH:mm&#39;/&gt;&quot;</span> <span class="na">style=</span><span class="s">&quot;width: 140px; height: 130px;&quot;</span> <span class="na">src=</span><span class="s">&quot;http://shiyanlouphoto.qiniudn.com/${image.url}&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;pull-left&quot;</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">value=</span><span class="s">&quot;${image.id}&quot;</span> <span class="na">url=</span><span class="s">&quot;${image.url}&quot;</span><span class="nt">/&gt;</span>${image.name }
+  <span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/c:when&gt;</span>
+ <span class="nt">&lt;c:when</span> <span class="na">test=</span><span class="s">&quot;${status.index % 4 eq 3 and not status.last }&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-2&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">class=</span><span class="s">&quot;thumbnail text-center&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;img</span> <span class="na">name=</span><span class="s">&quot;${image.name}&quot;</span> <span class="na">date=</span><span class="s">&quot;&lt;fmt:formatDate value=&#39;${image.date}&#39; pattern=&#39;yyyy-MM-dd HH:mm&#39;/&gt;&quot;</span> <span class="na">style=</span><span class="s">&quot;width: 140px; height: 130px;&quot;</span> <span class="na">src=</span><span class="s">&quot;http://shiyanlouphoto.qiniudn.com/${image.url}&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;pull-left&quot;</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">value=</span><span class="s">&quot;${image.id}&quot;</span> <span class="na">url=</span><span class="s">&quot;${image.url}&quot;</span> <span class="nt">/&gt;</span>${image.name }
+  <span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/c:when&gt;</span>
+ <span class="nt">&lt;c:otherwise&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-2&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#&quot;</span> <span class="na">class=</span><span class="s">&quot;thumbnail text-center&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;img</span> <span class="na">name=</span><span class="s">&quot;${image.name}&quot;</span> <span class="na">date=</span><span class="s">&quot;&lt;fmt:formatDate value=&#39;${image.date}&#39; pattern=&#39;yyyy-MM-dd HH:mm&#39;/&gt;&quot;</span> <span class="na">style=</span><span class="s">&quot;width: 140px; height: 130px;&quot;</span> <span class="na">src=</span><span class="s">&quot;http://shiyanlouphoto.qiniudn.com/${image.url}&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">class=</span><span class="s">&quot;pull-left&quot;</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">value=</span><span class="s">&quot;${image.id}&quot;</span> <span class="na">url=</span><span class="s">&quot;${image.url}&quot;</span><span class="nt">/&gt;</span>${image.name }
+  <span class="nt">&lt;/a&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/c:otherwise&gt;</span>
+ <span class="nt">&lt;/c:choose&gt;</span>
+ <span class="nt">&lt;c:if</span> <span class="na">test=</span><span class="s">&quot;${status.last}&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/c:if&gt;</span>
+ <span class="nt">&lt;/c:forEach&gt;</span>
+ <span class="c">&lt;!-- 显示图片列表 end --&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 显示图片对话框 start --&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal fade&quot;</span> <span class="na">id=</span><span class="s">&quot;myModal&quot;</span> <span class="na">tabindex=</span><span class="s">&quot;-1&quot;</span> <span class="na">role=</span><span class="s">&quot;dialog&quot;</span> <span class="na">aria-labelledby=</span><span class="s">&quot;myModalLabel&quot;</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-dialog&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-content&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-header&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;close&quot;</span> <span class="na">data-dismiss=</span><span class="s">&quot;modal&quot;</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>×<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;h4</span> <span class="na">class=</span><span class="s">&quot;modal-title&quot;</span> <span class="na">id=</span><span class="s">&quot;myModalLabel&quot;</span><span class="nt">&gt;&lt;/h4&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-body&quot;</span> <span class="na">id=</span><span class="s">&quot;modal-content&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 显示图片对话框 end --&gt;</span>
+ <span class="c">&lt;!-- 上传图片对话框 start --&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal fade&quot;</span> <span class="na">id=</span><span class="s">&quot;myModa2&quot;</span> <span class="na">tabindex=</span><span class="s">&quot;-1&quot;</span> <span class="na">role=</span><span class="s">&quot;dialog&quot;</span> <span class="na">aria-labelledby=</span><span class="s">&quot;myModalLabel&quot;</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-dialog&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-content&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-header&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h4</span> <span class="na">class=</span><span class="s">&quot;modal-title&quot;</span> <span class="na">id=</span><span class="s">&quot;myModalLabe2&quot;</span><span class="nt">&gt;</span>图片上传<span class="nt">&lt;/h4&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-body&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;form</span> <span class="na">class=</span><span class="s">&quot;form-horizontal&quot;</span> <span class="na">role=</span><span class="s">&quot;form&quot;</span> <span class="na">id=</span><span class="s">&quot;form&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span> <span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;image_name&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label&quot;</span> <span class="nt">&gt;</span>名称<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-4&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control&quot;</span> <span class="na">id=</span><span class="s">&quot;image_name&quot;</span> <span class="na">name=</span><span class="s">&quot;image_name&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;form-group&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;image&quot;</span> <span class="na">class=</span><span class="s">&quot;col-xs-2 control-label&quot;</span><span class="nt">&gt;</span>图片<span class="nt">&lt;/label&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-xs-4&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;file&quot;</span> <span class="na">id=</span><span class="s">&quot;image&quot;</span> <span class="na">name=</span><span class="s">&quot;image&quot;</span><span class="nt">/&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/form&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-footer&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-default&quot;</span> <span class="na">data-dismiss=</span><span class="s">&quot;modal&quot;</span><span class="nt">&gt;</span>取消<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-primary&quot;</span> <span class="na">id=</span><span class="s">&quot;upload&quot;</span><span class="nt">&gt;</span>上传<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 上传图片对话框 end --&gt;</span>
+ <span class="c">&lt;!-- 删除图片对话框 start --&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal fade&quot;</span> <span class="na">id=</span><span class="s">&quot;myModa3&quot;</span> <span class="na">tabindex=</span><span class="s">&quot;-1&quot;</span> <span class="na">role=</span><span class="s">&quot;dialog&quot;</span> <span class="na">aria-labelledby=</span><span class="s">&quot;myModalLabel&quot;</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-dialog&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-content&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-header&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h4</span> <span class="na">class=</span><span class="s">&quot;modal-title&quot;</span> <span class="na">id=</span><span class="s">&quot;myModalLabe3&quot;</span><span class="nt">&gt;</span>确定删除吗？<span class="nt">&lt;/h4&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-footer&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-default&quot;</span> <span class="na">data-dismiss=</span><span class="s">&quot;modal&quot;</span><span class="nt">&gt;</span>取消<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-danger&quot;</span> <span class="na">id=</span><span class="s">&quot;delete&quot;</span><span class="nt">&gt;</span>确定<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 删除图片对话框 end --&gt;</span>
+ <span class="c">&lt;!-- 退出对话框 start --&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal fade&quot;</span> <span class="na">id=</span><span class="s">&quot;myModa4&quot;</span> <span class="na">tabindex=</span><span class="s">&quot;-1&quot;</span> <span class="na">role=</span><span class="s">&quot;dialog&quot;</span> <span class="na">aria-labelledby=</span><span class="s">&quot;myModalLabel&quot;</span> <span class="na">aria-hidden=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-dialog&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-content&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-header&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;h4</span> <span class="na">class=</span><span class="s">&quot;modal-title&quot;</span> <span class="na">id=</span><span class="s">&quot;myModalLabe4&quot;</span><span class="nt">&gt;</span>确定退出吗？<span class="nt">&lt;/h4&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;modal-footer&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-default&quot;</span> <span class="na">data-dismiss=</span><span class="s">&quot;modal&quot;</span><span class="nt">&gt;</span>取消<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-danger&quot;</span> <span class="na">id=</span><span class="s">&quot;exit&quot;</span><span class="nt">&gt;</span>确定<span class="nt">&lt;/button&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+ <span class="c">&lt;!-- 退出对话框 end --&gt;</span>
+ <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+ <span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;js/bootstrap.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+ <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+ $(document).ready(function() {
+ //点击图片
+ $(&#39;img&#39;).click(function() {
+ $(&#39;#myModalLabel&#39;).html($(this).attr(&#39;name&#39;) + &#39; <span class="nt">&lt;small&gt;</span>&#39; + $(this).attr(&#39;date&#39;) + &#39;<span class="nt">&lt;/small&gt;</span>&#39;);
+ $(&#39;#modal-content&#39;).html(&#39;<span class="nt">&lt;img</span> <span class="na">class=</span><span class="s">\&#39;img-responsive\&#39;</span> <span class="na">src=</span><span class="s">\&#39;&#39;</span> <span class="err">+</span> <span class="err">$(this).attr(&#39;src&#39;)</span> <span class="err">+</span> <span class="err">&#39;\&#39;</span><span class="nt">/&gt;</span>&#39;);
+ $(&#39;#myModal&#39;).modal(&#39;show&#39;);
+ });
+ //点击上传
+ $(&#39;#upload&#39;).click(function() {
+ if ($(&#39;#image_name&#39;).val() == &#39;&#39; || $(&#39;#image&#39;).val() == &#39;&#39;) {
+ } else {
+  $(&#39;#form&#39;).attr(&#39;action&#39;, &#39;${pageContext.request.contextPath}&#39; + &#39;/ImageAction?type=1&#39;);
+  $(&#39;#form&#39;).attr(&#39;enctype&#39;, &#39;multipart/form-data&#39;);
+  $(&#39;#form&#39;).attr(&#39;method&#39;, &#39;post&#39;);
+  $(&#39;#form&#39;).submit();
+ }
+ });
+ //点击确定退出
+ $(&#39;#exit&#39;).click(function() {
+ $.get(&#39;${pageContext.request.contextPath}&#39; + &#39;/UserAction?type=3&#39;, function(data, status) {
+  location.href = &#39;${pageContext.request.contextPath}&#39; + &#39;/index.jsp&#39;;
+ });
+ });
+ //点击确定删除图片
+ $(&#39;#delete&#39;).click(function() {
+ var ids = &quot;&quot;;
+ var urls = &quot;&quot;;
+ $(&#39;input[type=checkbox]:checked&#39;).each(function() {
+  ids += $(this).val() + &#39;,&#39;;
+  urls += $(this).attr(&#39;url&#39;) + &#39;,&#39;;
+ }); 
+ $.post(&#39;${pageContext.request.contextPath}&#39; + &#39;/ImageAction?type=2&#39;, {
+  ids: ids,
+  urls: urls
+ },function(data, status) {
+  $(&#39;#myModa3&#39;).modal(&#39;hide&#39;);
+  location.href = &#39;${pageContext.request.contextPath}&#39; + &#39;/home.jsp&#39;;
+ });
+ });
+ });
+ <span class="nt">&lt;/script&gt;</span>
+ <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>4. 编写后台代码 创建User类： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 用户类</span>
+<span class="cm"> * [url=home.php?mod=space&amp;uid=9083]@author[/url] www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="p">@</span><span class="n">SuppressWarnings</span><span class="p">(</span><span class="s">&quot;serial&quot;</span><span class="p">)</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">User</span> <span class="n">implements</span> <span class="n">Serializable</span> <span class="p">{</span>
+ <span class="n">private</span> <span class="k">int</span> <span class="n">id</span><span class="p">;</span> <span class="c1">//用户ID</span>
+ <span class="n">private</span> <span class="n">String</span> <span class="n">username</span><span class="p">;</span> <span class="c1">//用户名</span>
+ <span class="n">private</span> <span class="n">String</span> <span class="n">password</span><span class="p">;</span> <span class="c1">//密码</span>
+ <span class="n">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">images</span><span class="p">;</span> <span class="c1">//图片列表</span>
+ <span class="n">public</span> <span class="n">User</span><span class="p">()</span> <span class="p">{</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">User</span><span class="p">(</span><span class="k">int</span> <span class="n">id</span><span class="p">,</span> <span class="n">String</span> <span class="n">username</span><span class="p">,</span> <span class="n">String</span> <span class="n">password</span><span class="p">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">images</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id</span><span class="p">;</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span><span class="p">;</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span><span class="p">;</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">User</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">,</span> <span class="n">String</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span><span class="p">;</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">User</span><span class="p">(</span><span class="k">int</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">getImages</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">images</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setImages</span><span class="p">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">images</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">int</span> <span class="n">getId</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">id</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setId</span><span class="p">(</span><span class="k">int</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">String</span> <span class="n">getUsername</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">username</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setUsername</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">String</span> <span class="n">getPassword</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">password</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setPassword</span><span class="p">(</span><span class="n">String</span> <span class="n">password</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span><span class="p">;</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建Image类： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 图片类</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="p">@</span><span class="n">SuppressWarnings</span><span class="p">(</span><span class="s">&quot;serial&quot;</span><span class="p">)</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">Image</span> <span class="n">implements</span> <span class="n">Serializable</span> <span class="p">{</span>
+ <span class="n">private</span> <span class="k">int</span> <span class="n">id</span><span class="p">;</span> <span class="c1">//图片ID</span>
+ <span class="n">private</span> <span class="n">String</span> <span class="n">name</span><span class="p">;</span> <span class="c1">//图片名</span>
+ <span class="n">private</span> <span class="n">String</span> <span class="n">url</span><span class="p">;</span> <span class="c1">//图片URL</span>
+ <span class="n">private</span> <span class="n">Date</span> <span class="n">date</span><span class="p">;</span> <span class="c1">//上传时间</span>
+ <span class="n">private</span> <span class="n">User</span> <span class="n">user</span><span class="p">;</span> <span class="c1">//所属用户</span>
+ <span class="n">public</span> <span class="k">int</span> <span class="n">getId</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">id</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setId</span><span class="p">(</span><span class="k">int</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">String</span> <span class="n">getName</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">name</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setName</span><span class="p">(</span><span class="n">String</span> <span class="n">name</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">String</span> <span class="n">getUrl</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">url</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setUrl</span><span class="p">(</span><span class="n">String</span> <span class="n">url</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">Date</span> <span class="n">getDate</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">date</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setDate</span><span class="p">(</span><span class="n">Date</span> <span class="n">date</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="n">User</span> <span class="n">getUser</span><span class="p">()</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="n">user</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">setUser</span><span class="p">(</span><span class="n">User</span> <span class="n">user</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span><span class="p">;</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建数据库工具类： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 数据库工具类</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">DBUtils</span> <span class="p">{</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="n">Connection</span> <span class="n">connection</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="n">PreparedStatement</span> <span class="n">preparedStatement</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="n">ResultSet</span> <span class="n">resultSet</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="c1">//初始化</span>
+ <span class="k">static</span> <span class="p">{</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="n">Class</span><span class="p">.</span><span class="n">forName</span><span class="p">(</span><span class="s">&quot;com.mysql.jdbc.Driver&quot;</span><span class="p">);</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 获取连接</span>
+<span class="cm"> * @return</span>
+<span class="cm"> */</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="n">Connection</span> <span class="n">getConnection</span><span class="p">()</span> <span class="p">{</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="n">connection</span> <span class="o">=</span> <span class="n">DriverManager</span><span class="p">.</span><span class="n">getConnection</span><span class="p">(</span><span class="s">&quot;jdbc:mysql://localhost:3306/photo?useUnicode=true&amp;characterEncoding=UTF-8&quot;</span><span class="p">,</span> <span class="s">&quot;root&quot;</span><span class="p">,</span> <span class="s">&quot;root&quot;</span><span class="p">);</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">SQLException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="k">return</span> <span class="n">connection</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 关闭连接、预处理语句和结果集</span>
+<span class="cm"> * @param connection</span>
+<span class="cm"> * @param preparedStatement</span>
+<span class="cm"> * @param resultSet</span>
+<span class="cm"> */</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="k">void</span> <span class="n">close</span><span class="p">(</span><span class="n">Connection</span> <span class="n">connection</span><span class="p">,</span> <span class="n">PreparedStatement</span> <span class="n">preparedStatement</span><span class="p">,</span> <span class="n">ResultSet</span> <span class="n">resultSet</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">resultSet</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">resultSet</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+ <span class="n">resultSet</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">preparedStatement</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">preparedStatement</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+ <span class="n">preparedStatement</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">connection</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">connection</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+ <span class="n">connection</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="p">}</span> 
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 查询数据库</span>
+<span class="cm"> * @param sql SQL语句</span>
+<span class="cm"> * @param parameters 参数</span>
+<span class="cm"> * @return</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">static</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">query</span><span class="p">(</span><span class="n">String</span> <span class="n">sql</span><span class="p">,</span> <span class="n">String</span><span class="p">[]</span> <span class="n">parameters</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Object</span><span class="p">[]</span><span class="o">&gt;</span><span class="p">();</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="n">connection</span> <span class="o">=</span> <span class="n">getConnection</span><span class="p">();</span>
+ <span class="n">preparedStatement</span> <span class="o">=</span> <span class="n">connection</span><span class="p">.</span><span class="n">prepareStatement</span><span class="p">(</span><span class="n">sql</span><span class="p">);</span>
+ <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">parameters</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">preparedStatement</span><span class="p">.</span><span class="n">setString</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mh">1</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+ <span class="p">}</span>
+ <span class="n">resultSet</span> <span class="o">=</span> <span class="n">preparedStatement</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">();</span>
+ <span class="k">int</span> <span class="n">columnCount</span> <span class="o">=</span> <span class="n">resultSet</span><span class="p">.</span><span class="n">getMetaData</span><span class="p">().</span><span class="n">getColumnCount</span><span class="p">();</span>
+ <span class="k">while</span> <span class="p">(</span><span class="n">resultSet</span><span class="p">.</span><span class="n">next</span><span class="p">())</span> <span class="p">{</span>
+ <span class="n">Object</span><span class="p">[]</span> <span class="n">objects</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="p">[</span><span class="n">columnCount</span><span class="p">];</span>
+ <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">columnCount</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">objects</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">resultSet</span><span class="p">.</span><span class="n">getObject</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mh">1</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="n">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">objects</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+ <span class="n">close</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">preparedStatement</span><span class="p">,</span> <span class="n">resultSet</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="k">return</span> <span class="n">list</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 更新数据库</span>
+<span class="cm"> * @param sqls SQL语句数组</span>
+<span class="cm"> * @param parameters 参数数组</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">static</span> <span class="k">void</span> <span class="n">updates</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">sqls</span><span class="p">,</span> <span class="n">String</span><span class="p">[][]</span> <span class="n">parameters</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="n">connection</span> <span class="o">=</span> <span class="n">getConnection</span><span class="p">();</span>
+ <span class="n">connection</span><span class="p">.</span><span class="n">setAutoCommit</span><span class="p">(</span><span class="n">false</span><span class="p">);</span>
+ <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sqls</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">preparedStatement</span> <span class="o">=</span> <span class="n">connection</span><span class="p">.</span><span class="n">prepareStatement</span><span class="p">(</span><span class="n">sqls</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+ <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">length</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">preparedStatement</span><span class="p">.</span><span class="n">setString</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mh">1</span><span class="p">,</span> <span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]);</span>
+ <span class="p">}</span>
+ <span class="n">preparedStatement</span><span class="p">.</span><span class="n">executeUpdate</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="n">connection</span><span class="p">.</span><span class="n">commit</span><span class="p">();</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="n">connection</span><span class="p">.</span><span class="n">rollback</span><span class="p">();</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">SQLException</span> <span class="n">e1</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e1</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span> <span class="n">finally</span> <span class="p">{</span>
+ <span class="n">close</span><span class="p">(</span><span class="n">connection</span><span class="p">,</span> <span class="n">preparedStatement</span><span class="p">,</span> <span class="n">resultSet</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建文件工具类（使用了七牛云存储服务）： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 图片工具类（使用七牛云存储服务）</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">FileUtils</span> <span class="p">{</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="k">final</span> <span class="n">String</span> <span class="no">ACCESS_KEY</span> <span class="o">=</span> <span class="s">&quot;你自己的Access Key&quot;</span><span class="p">;</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="k">final</span> <span class="n">String</span> <span class="no">SECRET_KEY</span> <span class="o">=</span> <span class="s">&quot;你自己的Secret Key&quot;</span><span class="p">;</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="k">final</span> <span class="n">String</span> <span class="no">BUCKET_NAME</span> <span class="o">=</span> <span class="s">&quot;创建的Bucket的名称&quot;</span><span class="p">;</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 上传图片到七牛云存储</span>
+<span class="cm"> * @param reader</span>
+<span class="cm"> * @param fileName</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">static</span> <span class="k">void</span> <span class="n">upload</span><span class="p">(</span><span class="n">InputStream</span> <span class="n">reader</span><span class="p">,</span> <span class="n">String</span> <span class="n">fileName</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">String</span> <span class="n">uptoken</span><span class="p">;</span>
+ <span class="n">try</span> <span class="p">{</span>
+ <span class="n">Mac</span> <span class="n">mac</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Mac</span><span class="p">(</span><span class="no">ACCESS_KEY</span><span class="p">,</span> <span class="no">SECRET_KEY</span><span class="p">);</span>
+ <span class="n">PutPolicy</span> <span class="n">putPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PutPolicy</span><span class="p">(</span><span class="no">BUCKET_NAME</span><span class="p">);</span>
+ <span class="n">uptoken</span> <span class="o">=</span> <span class="n">putPolicy</span><span class="p">.</span><span class="n">token</span><span class="p">(</span><span class="n">mac</span><span class="p">);</span>
+ <span class="n">IoApi</span><span class="p">.</span><span class="n">Put</span><span class="p">(</span><span class="n">uptoken</span><span class="p">,</span> <span class="n">fileName</span><span class="p">,</span> <span class="n">reader</span><span class="p">,</span> <span class="k">null</span><span class="p">);</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">AuthException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">JSONException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 删除七牛云存储上的图片</span>
+<span class="cm"> * @param key</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">static</span> <span class="k">void</span> <span class="n">delete</span><span class="p">(</span> <span class="n">String</span> <span class="n">key</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">Mac</span> <span class="n">mac</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Mac</span><span class="p">(</span><span class="no">ACCESS_KEY</span><span class="p">,</span> <span class="no">SECRET_KEY</span><span class="p">);</span>
+ <span class="n">RSClient</span> <span class="n">client</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RSClient</span><span class="p">(</span><span class="n">mac</span><span class="p">);</span>
+ <span class="n">client</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="no">BUCKET_NAME</span><span class="p">,</span> <span class="n">key</span><span class="p">);</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建用户服务类： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 用户服务类</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">UserService</span> <span class="p">{</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 通过用户名获取用户</span>
+<span class="cm"> * @param username 用户名</span>
+<span class="cm"> * [url=home.php?mod=space&amp;uid=105031]@return[/url] 用户</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="n">User</span> <span class="n">getUserByUsername</span><span class="p">(</span><span class="n">String</span> <span class="n">username</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select id, username, password from user where username = ?&quot;</span><span class="p">;</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">username</span><span class="p">};</span>
+ <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">users</span> <span class="o">=</span> <span class="n">DBUtils</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">parameters</span><span class="p">);</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">users</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0</span><span class="p">)</span> <span class="p">{</span>
+ <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+ <span class="n">Object</span><span class="p">[]</span> <span class="n">objects</span> <span class="o">=</span> <span class="n">users</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mh">0</span><span class="p">);</span>
+ <span class="k">return</span> <span class="n">objects</span> <span class="o">==</span> <span class="k">null</span> <span class="o">?</span> <span class="k">null</span> <span class="o">:</span> <span class="k">new</span> <span class="n">User</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mh">0</span><span class="p">].</span><span class="n">toString</span><span class="p">()),</span> <span class="n">objects</span><span class="p">[</span><span class="mh">1</span><span class="p">].</span><span class="n">toString</span><span class="p">(),</span> <span class="n">objects</span><span class="p">[</span><span class="mh">2</span><span class="p">].</span><span class="n">toString</span><span class="p">(),</span> <span class="k">null</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 添加用户</span>
+<span class="cm"> * @param user 用户</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">addUser</span><span class="p">(</span><span class="n">User</span> <span class="n">user</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">sqls</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;insert into user(username, password) values(?, ?)&quot;</span><span class="p">};</span>
+ <span class="n">String</span><span class="p">[][]</span> <span class="n">parameters</span> <span class="o">=</span> <span class="p">{{</span><span class="n">user</span><span class="p">.</span><span class="n">getUsername</span><span class="p">(),</span> <span class="n">user</span><span class="p">.</span><span class="n">getPassword</span><span class="p">()}};</span>
+ <span class="n">DBUtils</span><span class="p">.</span><span class="n">updates</span><span class="p">(</span><span class="n">sqls</span><span class="p">,</span> <span class="n">parameters</span><span class="p">);</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建图片服务类： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 图片服务类</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">ImageService</span> <span class="p">{</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 通过用户ID获取图片列表</span>
+<span class="cm"> * @param userId 用户ID</span>
+<span class="cm"> * @return 图片列表</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">getByUserId</span><span class="p">(</span><span class="k">int</span> <span class="n">userId</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span> <span class="n">images</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Image</span><span class="o">&gt;</span><span class="p">();</span>
+ <span class="n">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">&quot;select id, name, url, date, user_id from image where user_id = ? order by date desc&quot;</span><span class="p">;</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">userId</span> <span class="o">+</span> <span class="s">&quot;&quot;</span><span class="p">};</span>
+ <span class="n">List</span><span class="o">&lt;</span><span class="n">Object</span><span class="p">[]</span><span class="o">&gt;</span> <span class="n">imageList</span> <span class="o">=</span> <span class="n">DBUtils</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">parameters</span><span class="p">);</span>
+ <span class="k">for</span> <span class="p">(</span><span class="n">Object</span><span class="p">[]</span> <span class="n">objects</span> <span class="o">:</span> <span class="n">imageList</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">Image</span> <span class="n">image</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Image</span><span class="p">();</span>
+ <span class="n">image</span><span class="p">.</span><span class="n">setId</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mh">0</span><span class="p">].</span><span class="n">toString</span><span class="p">()));</span>
+ <span class="n">image</span><span class="p">.</span><span class="n">setName</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mh">1</span><span class="p">].</span><span class="n">toString</span><span class="p">());</span>
+ <span class="n">image</span><span class="p">.</span><span class="n">setUrl</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mh">2</span><span class="p">].</span><span class="n">toString</span><span class="p">());</span>
+ <span class="n">image</span><span class="p">.</span><span class="n">setDate</span><span class="p">((</span><span class="n">Date</span><span class="p">)</span> <span class="n">objects</span><span class="p">[</span><span class="mh">3</span><span class="p">]);</span>
+ <span class="n">image</span><span class="p">.</span><span class="n">setUser</span><span class="p">(</span><span class="k">new</span> <span class="n">User</span><span class="p">(</span><span class="n">Integer</span><span class="p">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">objects</span><span class="p">[</span><span class="mh">4</span><span class="p">].</span><span class="n">toString</span><span class="p">())));</span>
+ <span class="n">images</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">image</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="k">return</span> <span class="n">images</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 上传图片</span>
+<span class="cm"> * @param image 图片</span>
+<span class="cm"> * @param inputStream 输入流</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">addImage</span><span class="p">(</span><span class="n">Image</span> <span class="n">image</span><span class="p">,</span> <span class="n">InputStream</span> <span class="n">inputStream</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">FileUtils</span><span class="p">.</span><span class="n">upload</span><span class="p">(</span><span class="n">inputStream</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">getUrl</span><span class="p">());</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">sqls</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;insert into image(name, url, date, user_id) values(?, ?, ?, ?)&quot;</span><span class="p">};</span>
+ <span class="n">String</span><span class="p">[][]</span> <span class="n">parameters</span> <span class="o">=</span> <span class="p">{{</span><span class="n">image</span><span class="p">.</span><span class="n">getName</span><span class="p">(),</span> <span class="n">image</span><span class="p">.</span><span class="n">getUrl</span><span class="p">(),</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="p">(</span><span class="s">&quot;yyyy-MM-dd HH:mm&quot;</span><span class="p">).</span><span class="n">format</span><span class="p">(</span><span class="n">image</span><span class="p">.</span><span class="n">getDate</span><span class="p">()),</span> <span class="n">image</span><span class="p">.</span><span class="n">getUser</span><span class="p">().</span><span class="n">getId</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;&quot;</span><span class="p">}};</span>
+ <span class="n">DBUtils</span><span class="p">.</span><span class="n">updates</span><span class="p">(</span><span class="n">sqls</span><span class="p">,</span> <span class="n">parameters</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * 通过图片ID数组和图片URL数组删除图片</span>
+<span class="cm"> * @param ids 图片ID数组</span>
+<span class="cm"> * @param urls 图片URL数组</span>
+<span class="cm"> */</span>
+ <span class="n">public</span> <span class="k">void</span> <span class="n">delByIdsAndUrls</span><span class="p">(</span><span class="n">String</span> <span class="n">ids</span><span class="p">,</span> <span class="n">String</span> <span class="n">urls</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">idArray</span> <span class="o">=</span> <span class="n">ids</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">);</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">urlArray</span> <span class="o">=</span> <span class="n">urls</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">);</span>
+ <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="s">&quot;&quot;</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">idArray</span><span class="p">[</span><span class="mh">0</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">&quot;&quot;</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">urlArray</span><span class="p">[</span><span class="mh">0</span><span class="p">]))</span> <span class="p">{</span>
+ <span class="n">String</span><span class="p">[]</span> <span class="n">sqls</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="p">[</span><span class="n">idArray</span><span class="p">.</span><span class="n">length</span><span class="p">];</span>
+ <span class="n">String</span><span class="p">[][]</span> <span class="n">parameters</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="p">[</span><span class="n">idArray</span><span class="p">.</span><span class="n">length</span><span class="p">][</span><span class="mh">1</span><span class="p">];</span>
+ <span class="k">for</span> <span class="p">(</span><span class="k">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mh">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">idArray</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">FileUtils</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">urlArray</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+ <span class="n">sqls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;delete from image where id = ?&quot;</span><span class="p">;</span>
+ <span class="n">parameters</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mh">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">idArray</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+ <span class="p">}</span>
+ <span class="n">DBUtils</span><span class="p">.</span><span class="n">updates</span><span class="p">(</span><span class="n">sqls</span><span class="p">,</span> <span class="n">parameters</span><span class="p">);</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建用户控制器类： </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 用户控制器</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="p">@</span><span class="n">WebServlet</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/UserAction&quot;</span><span class="p">)</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">UserAction</span> <span class="k">extends</span> <span class="n">HttpServlet</span> <span class="p">{</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="k">final</span> <span class="n">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mh">1</span><span class="no">L</span><span class="p">;</span>
+ <span class="cm">/**</span>
+<span class="cm"> * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)</span>
+<span class="cm"> */</span>
+ <span class="k">protected</span> <span class="k">void</span> <span class="n">doGet</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ServletException</span><span class="p">,</span> <span class="n">IOException</span> <span class="p">{</span>
+ <span class="n">request</span><span class="p">.</span><span class="n">setCharacterEncoding</span><span class="p">(</span><span class="s">&quot;UTF-8&quot;</span><span class="p">);</span>
+ <span class="n">response</span><span class="p">.</span><span class="n">setCharacterEncoding</span><span class="p">(</span><span class="s">&quot;Utf-8&quot;</span><span class="p">);</span>
+ <span class="n">response</span><span class="p">.</span><span class="n">setContentType</span><span class="p">(</span><span class="s">&quot;text/html;charset=UTF-8&quot;</span><span class="p">);</span>
+ <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="p">.</span><span class="n">getWriter</span><span class="p">();</span>
+ <span class="n">UserService</span> <span class="n">userService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UserService</span><span class="p">();</span>
+ <span class="n">ImageService</span> <span class="n">imageService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ImageService</span><span class="p">();</span>
+ <span class="n">Integer</span> <span class="k">type</span> <span class="o">=</span> <span class="n">Integer</span><span class="p">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">));</span>
+ <span class="k">if</span> <span class="p">(</span><span class="k">type</span> <span class="o">==</span> <span class="mh">1</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//用户登录</span>
+ <span class="n">String</span> <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;username&quot;</span><span class="p">);</span>
+ <span class="n">String</span> <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">);</span>
+ <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="c1">//验证用户是否有效</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">username</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">password</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;2&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">((</span><span class="n">user</span> <span class="o">=</span> <span class="n">userService</span><span class="p">.</span><span class="n">getUserByUsername</span><span class="p">(</span><span class="n">username</span><span class="p">))</span> <span class="o">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;3&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+ <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">user</span><span class="p">.</span><span class="n">getPassword</span><span class="p">().</span><span class="n">equals</span><span class="p">(</span><span class="n">password</span><span class="p">))</span> <span class="p">{</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;4&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">setAttribute</span><span class="p">(</span><span class="s">&quot;user&quot;</span><span class="p">,</span> <span class="n">user</span><span class="p">);</span>
+  <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">setAttribute</span><span class="p">(</span><span class="s">&quot;imageList&quot;</span><span class="p">,</span> <span class="n">imageService</span><span class="p">.</span><span class="n">getByUserId</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="n">getId</span><span class="p">()));</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;5&quot;</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="n">out</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">type</span> <span class="o">==</span> <span class="mh">2</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//用户注册</span>
+ <span class="n">String</span> <span class="n">username</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;username&quot;</span><span class="p">);</span>
+ <span class="n">String</span> <span class="n">password</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;password&quot;</span><span class="p">);</span>
+ <span class="n">String</span> <span class="n">repassword</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;repassword&quot;</span><span class="p">);</span>
+ <span class="n">String</span> <span class="n">result</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+ <span class="c1">//验证有效性</span>
+ <span class="k">if</span> <span class="p">(</span><span class="n">username</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">password</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;2&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">repassword</span><span class="p">.</span><span class="n">isEmpty</span><span class="p">())</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;3&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">repassword</span><span class="p">.</span><span class="n">equals</span><span class="p">(</span><span class="n">password</span><span class="p">))</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;4&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">userService</span><span class="p">.</span><span class="n">getUserByUsername</span><span class="p">(</span><span class="n">username</span><span class="p">)</span> <span class="o">!=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;5&quot;</span><span class="p">;</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+ <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
+ <span class="c1">//添加用户</span>
+ <span class="n">userService</span><span class="p">.</span><span class="n">addUser</span><span class="p">(</span><span class="n">user</span><span class="p">);</span>
+ <span class="n">result</span> <span class="o">=</span> <span class="s">&quot;6&quot;</span><span class="p">;</span>
+ <span class="p">}</span>
+ <span class="n">out</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">type</span> <span class="o">==</span> <span class="mh">3</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//用户退出</span>
+ <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">invalidate</span><span class="p">();</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)</span>
+<span class="cm"> */</span>
+ <span class="k">protected</span> <span class="k">void</span> <span class="n">doPost</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ServletException</span><span class="p">,</span> <span class="n">IOException</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">doGet</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>创建图片控制器类：   </p>
+<div class="hlcode"><pre><span class="cm">/**</span>
+<span class="cm"> * 图片控制器</span>
+<span class="cm"> * @author www.shiyanlou.com</span>
+<span class="cm"> *</span>
+<span class="cm"> */</span>
+<span class="p">@</span><span class="n">WebServlet</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/ImageAction&quot;</span><span class="p">)</span>
+<span class="p">@</span><span class="n">MultipartConfig</span>
+<span class="n">public</span> <span class="k">class</span> <span class="n">ImageAction</span> <span class="k">extends</span> <span class="n">HttpServlet</span> <span class="p">{</span>
+ <span class="n">private</span> <span class="k">static</span> <span class="k">final</span> <span class="n">long</span> <span class="n">serialVersionUID</span> <span class="o">=</span> <span class="mh">1</span><span class="no">L</span><span class="p">;</span>
+ <span class="cm">/**</span>
+<span class="cm"> * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)</span>
+<span class="cm"> */</span>
+ <span class="k">protected</span> <span class="k">void</span> <span class="n">doGet</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ServletException</span><span class="p">,</span> <span class="n">IOException</span> <span class="p">{</span>
+ <span class="n">request</span><span class="p">.</span><span class="n">setCharacterEncoding</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">);</span>
+ <span class="n">response</span><span class="p">.</span><span class="n">setCharacterEncoding</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">);</span>
+ <span class="n">response</span><span class="p">.</span><span class="n">setContentType</span><span class="p">(</span><span class="s">&quot;text/html;charset=utf-8&quot;</span><span class="p">);</span>
+ <span class="n">Integer</span> <span class="k">type</span> <span class="o">=</span> <span class="n">Integer</span><span class="p">.</span><span class="n">valueOf</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">));</span>
+ <span class="n">ImageService</span> <span class="n">imageService</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ImageService</span><span class="p">();</span>
+ <span class="k">if</span> <span class="p">(</span><span class="k">type</span> <span class="o">==</span> <span class="mh">1</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//上传图片</span>
+ <span class="n">String</span> <span class="n">imageName</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;image_name&quot;</span><span class="p">);</span>
+ <span class="n">Part</span> <span class="n">image</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getPart</span><span class="p">(</span><span class="s">&quot;image&quot;</span><span class="p">);</span>
+ <span class="n">Image</span> <span class="n">img</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Image</span><span class="p">();</span>
+ <span class="n">img</span><span class="p">.</span><span class="n">setDate</span><span class="p">(</span><span class="k">new</span> <span class="n">Date</span><span class="p">());</span>
+ <span class="n">img</span><span class="p">.</span><span class="n">setName</span><span class="p">(</span><span class="n">imageName</span><span class="p">);</span>
+ <span class="n">img</span><span class="p">.</span><span class="n">setUser</span><span class="p">((</span><span class="n">User</span><span class="p">)</span> <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">getAttribute</span><span class="p">(</span><span class="s">&quot;user&quot;</span><span class="p">));</span>
+ <span class="n">img</span><span class="p">.</span><span class="n">setUrl</span><span class="p">(</span><span class="n">img</span><span class="p">.</span><span class="n">getUser</span><span class="p">().</span><span class="n">getUsername</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="no">UUID</span><span class="p">.</span><span class="n">randomUUID</span><span class="p">());</span>
+ <span class="n">imageService</span><span class="p">.</span><span class="n">addImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">image</span><span class="p">.</span><span class="n">getInputStream</span><span class="p">());</span>
+ <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">setAttribute</span><span class="p">(</span><span class="s">&quot;imageList&quot;</span><span class="p">,</span> <span class="n">imageService</span><span class="p">.</span><span class="n">getByUserId</span><span class="p">(</span><span class="n">img</span><span class="p">.</span><span class="n">getUser</span><span class="p">().</span><span class="n">getId</span><span class="p">()));</span>
+ <span class="n">response</span><span class="p">.</span><span class="n">sendRedirect</span><span class="p">(</span><span class="n">request</span><span class="p">.</span><span class="n">getContextPath</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;/home.jsp&quot;</span><span class="p">);</span>
+ <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">type</span> <span class="o">==</span> <span class="mh">2</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//删除图片</span>
+ <span class="n">String</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;ids&quot;</span><span class="p">);</span>
+ <span class="n">String</span> <span class="n">urls</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s">&quot;urls&quot;</span><span class="p">);</span>
+ <span class="n">imageService</span><span class="p">.</span><span class="n">delByIdsAndUrls</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">urls</span><span class="p">);</span>
+ <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">setAttribute</span><span class="p">(</span><span class="s">&quot;imageList&quot;</span><span class="p">,</span> <span class="n">imageService</span><span class="p">.</span><span class="n">getByUserId</span><span class="p">(((</span><span class="n">User</span><span class="p">)</span> <span class="n">request</span><span class="p">.</span><span class="n">getSession</span><span class="p">().</span><span class="n">getAttribute</span><span class="p">(</span><span class="s">&quot;user&quot;</span><span class="p">)).</span><span class="n">getId</span><span class="p">()));</span>
+ <span class="p">}</span>
+ <span class="p">}</span>
+ <span class="cm">/**</span>
+<span class="cm"> * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)</span>
+<span class="cm"> */</span>
+ <span class="k">protected</span> <span class="k">void</span> <span class="n">doPost</span><span class="p">(</span><span class="n">HttpServletRequest</span> <span class="n">request</span><span class="p">,</span> <span class="n">HttpServletResponse</span> <span class="n">response</span><span class="p">)</span> <span class="n">throws</span> <span class="n">ServletException</span><span class="p">,</span> <span class="n">IOException</span> <span class="p">{</span>
+ <span class="k">this</span><span class="p">.</span><span class="n">doGet</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">);</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>5. 发布   把Photo部署到Tomcat上，启动服务器，访问http://127.0.0.1:8080/Photo(http://127.0.0.1:8080/Photo) 6.项目截图 图片1   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31357760291318.png" /></p>
+<p>图片2   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31357893528880.png" /></p>
+<p>图片3   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31357949216472.png" /></p>
+<p>图片4   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31358112567041.png" /></p>
+<p>图片5   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31358355031493.png" /></p>
+<p>图片6   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31358471485543.png" /></p>
+<p>图片7   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31358685169326.png" /></p>
+<p>图片8   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31359039708488.png" /></p>
+<p>图片9   </p>
+<p><img alt="烟雨林-关注程序员的IT科技博客" src="http://www.yanyulin.info/pics/31359321314045.png" /></p>
+<p>如果有不懂和疑问欢迎登陆实验楼官方网站，http://www.shiyanlou.com/courses/(http://www.shiyanlou.com/courses/)</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Yosemite上为Go语言安装GDB断点调试工具 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Go">Go</a>&nbsp;&#187;&nbsp;Yosemite上为Go语言安装GDB断点调试工具
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 23:59
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Yosemite上为Go语言安装GDB断点调试工具</div>
+
+  <p>最近研究golang，而golang的调试功能要借助gdb，这个东东在golang的安装包中是没有的，需要自己搞定。过程如下：</p>
+<h2 id="gdb">安装GDB</h2>
+<p>最简单的方法就是借助brew，二行命令按定：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">dupes</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">gdb</span>
+</pre></div>
+
+
+<h2 id="gdb_1">为GDB配置自签证书</h2>
+<p>打开应用『钥匙访问』，从菜单上依次点击：『钥匙串访问』-&gt;『证书助理』-&gt;『创建证书』，</p>
+<p><img alt="" src="http://img0.tuicool.com/U7ZJRrz.png" />注：证书类型选择『代码签名』和『让我覆盖这些默认值』</p>
+<p><img alt="" src="http://img0.tuicool.com/6rINZn.png" />注：更改完『有效期』后，一直点『继续』直到点到『指定用于该证书的位置』这一页，如下图：</p>
+<p><img alt="" src="http://img2.tuicool.com/vIVbuaE.png" /></p>
+<p><img alt="" src="http://img2.tuicool.com/rMRjUn.png" />注：在『系统』中找到已创建的证书，右键点击『选择简介』</p>
+<p><img alt="" src="http://img0.tuicool.com/FBryey.png" />注：在『信任』中将『代码签名』选择为『始终信任』</p>
+<h2 id="gdb_2">签名GDB</h2>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">ps</span> <span class="o">-</span><span class="n">e</span><span class="o">|</span><span class="n">grep</span> <span class="n">taskgated</span>
+   <span class="mi">78</span> <span class="o">??</span>         <span class="mi">0</span><span class="o">:</span><span class="mf">02.23</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">taskgated</span> <span class="o">-</span><span class="n">s</span>
+ <span class="mi">6699</span> <span class="n">ttys000</span>    <span class="mi">0</span><span class="o">:</span><span class="mf">00.00</span> <span class="n">grep</span> <span class="n">taskgated</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">kill</span> <span class="o">-</span><span class="mi">9</span> <span class="mi">78</span>
+
+<span class="err">$</span> <span class="n">codesign</span> <span class="o">-</span><span class="n">s</span> <span class="n">gdb</span><span class="o">-</span><span class="n">cert</span> <span class="err">$</span><span class="p">(</span><span class="n">which</span> <span class="n">gdb</span><span class="p">)</span>
+</pre></div>
+
+
+<p>完成！我已在LiteIDE中测试通过！</p>
+<p><a href="http://www.yekki.me/tags/#Yosemite">Yosemite</a> <a href="http://www.yekki.me/tags/#Golang">Golang</a> <a href="http://www.yekki.me/tags/#gdb">gdb</a> <a href="http://www.yekki.me/tags/#证书">证书</a> Updated on April 08, 2015 Yekki</p>
+<ul>
+<li><a href="https://www.facebook.com/sharer/sharer.php?u=http://www.yekki.me/installing-gdb-on-os-x-yosemite/">__Like</a></li>
+<li><a href="https://plus.google.com/share?url=http://www.yekki.me/installing-gdb-on-os-x-yosemite/">__+1</a></li>
+</ul>
+<p>阅读更多</p>
+<h3 id="dont-steal-mac-os-xkext"><a href="http://www.yekki.me/what-is-dont-steal-mac-os-x-dot-kext/">Dont Steal Mac OS X.kext 有什么用</a></h3>
+<p>无意中发现在SLE目录下有个Dont Steal Mac OS X.kext这么个东东，苹果居然用这么个雷人名子！这玩意儿何用呢？查了下资料，原来这东东是防止不良用户将苹果操作系统安装在PC兼容机上的！具体来讲，这东东就是用来解密的！解密啥？看看他包含的解密函数名page_...…继续阅读</p>
+<p><a href="http://www.yekki.me/downgrade-jre/">如何降级JRE版本</a></p>
+<p>发布于 March 27, 2015</p>
+<p><a href="http://www.yekki.me/fix-mouse-jump-top-left/">修复蓝牙鼠标跳屏幕左上角的问题</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

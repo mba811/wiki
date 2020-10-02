@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>同时托管 GitHub 和 GitCafe - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;同时托管 GitHub 和 GitCafe
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 21:53
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">同时托管 GitHub 和 GitCafe</div>
+
+  <p>将博客同时托管在 GitHub 和 GitCafe 上，国外访客解析到 GitHub，国内访客解析到 GitCafe。禁不住 GitCafe 速度的诱惑，于是也动手在 GitCafe 上创建了一个博客镜像，并通过修改 git 设置实现了同步提交。</p>
+<h2 id="gitcafe">一、将仓库拷贝到 GitCafe</h2>
+<p>在 GitCafe 上创建一个和用户名相同的仓库，如我的是 liberize。</p>
+<p>在账户设置中添加公钥，可以使用之前 GitHub 的公钥，只需要复制 ~/.ssh/id_rsa.pub 的内容。</p>
+<p>打开 .git/config，修改远程仓库，将 origin 改为 github，并添加 gitcafe：</p>
+<div class="hlcode"><pre><span class="k">[remote &quot;github&quot;]</span>
+    <span class="na">fetch</span> <span class="o">=</span> <span class="s">+refs/heads/*:refs/remotes/github/*</span>
+<span class="s">    url = git@github.com:liberize/liberize.github.com.git</span>
+<span class="k">[remote &quot;gitcafe&quot;]</span>
+    <span class="na">fetch</span> <span class="o">=</span> <span class="s">+refs/heads/*:refs/remotes/gitcafe/*</span>
+<span class="s">    url = git@gitcafe.com:liberize/liberize.git</span>
+</pre></div>
+
+
+<p>之后将仓库 push 到 GitCafe 上（必须使用 gitcafe-pages 分支）：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">gitcafe</span> <span class="n">master</span><span class="o">:</span><span class="n">gitcafe</span><span class="o">-</span><span class="n">pages</span>
+</pre></div>
+
+
+<p>GitCafe 上在“项目管理”中找到“自定义域名”，添加要绑定的域名，比如我是 liberize.me。</p>
+<h2 id="_1">二、实现同步提交</h2>
+<p>因为 GitHub 和 GitCafe 的 Pages 使用不同的分支，所以无法使用下面这种方式：</p>
+<div class="hlcode"><pre><span class="k">[remote &quot;all&quot;]</span>
+    <span class="na">url</span> <span class="o">=</span> <span class="s">git@github.com:liberize/liberize.github.com.git</span>
+<span class="s">    url = git@gitcafe.com:liberize/liberize.git</span>
+</pre></div>
+
+
+<p>然后执行 <code>git push all master</code> 同时 push。</p>
+<p>可以在 .git/config 中添加一个 alias 来实现：</p>
+<div class="hlcode"><pre><span class="k">[alias]</span>
+    <span class="na">publish</span> <span class="o">=</span> <span class="s">!sh -c \&quot;git push github master &amp;&amp; git push gitcafe master:gitcafe-pages\&quot;</span>
+</pre></div>
+
+
+<p>当需要 push 的时候，只需执行 <code>git publish</code> 就可以了。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

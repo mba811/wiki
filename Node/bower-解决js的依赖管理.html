@@ -1,0 +1,436 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>bower 解决js的依赖管理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;bower 解决js的依赖管理
+    <span class="updated">Page Updated&nbsp;
+      2015-05-24 23:06
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">bower 解决js的依赖管理</div>
+
+  <p><strong>前言</strong><br />
+一个新的web项目开始，我们总是很自然地去下载需要用到的js类库文件，比如jQuery，去官网下载名为jquery-1.10.2.min.js文件，放到我们的项目里。当项目又需要bootstrap的时候，我们会重复刚才的工作，去bootstrap官网下载对应的类库。如果bootstrap所依赖的jQuery并不是1.10.2，而是2.0.3时，我们会再重新下载一个对应版本的jQuery替换原来的。</p>
+<p>包管理是个复杂的问题，我们要知道谁依赖谁，还要明确哪个版本依赖哪个版本。这些对于开发人员来说，负担过重了。bower作为一个js依赖管理的工具，提供一种理想包管理方式，借助了npm的一些思想，为我们提供一个舒服的开发环境。</p>
+<p>你要还不动起手来试试bower，那你一定不会知道，前端开发是件多么享受的事。</p>
+<p><strong>目录</strong></p>
+<ol>
+<li>bower介绍</li>
+<li>bower安装</li>
+<li>bower命令</li>
+<li>bower使用</li>
+<li>用bower提交自己类库</li>
+</ol>
+<h2 id="1-bower">1. bower介绍</h2>
+<p>Bower 是 twitter 推出的一款包管理工具，基于nodejs的模块化思想，把功能分散到各个模块中，让模块和模块之间存在联系，通过 Bower 来管理模块间的这种联系。</p>
+<p>包管理工具一般有以下的功能：</p>
+<ul>
+<li>注册机制：每个包需要确定一个唯一的 ID 使得搜索和下载的时候能够正确匹配，所以包管理工具需要维护注册信息，可以依赖其他平台。</li>
+<li>文件存储：确定文件存放的位置，下载的时候可以找到，当然这个地址在网络上是可访问的。</li>
+<li>上传下载：这是工具的主要功能，能提高包使用的便利性。比如想用 jquery 只需要 install 一下就可以了，不用到处找下载。上传并不是必备的，根据文件存储的位置而定，但需要有一定的机制保障。</li>
+<li>依赖分析：这也是包管理工具主要解决的问题之一，既然包之间是有联系的，那么下载的时候就需要处理他们之间的依赖。下载一个包的时候也需要下载依赖的包。</li>
+</ul>
+<p>功能介绍，摘自文章：<a href="http://chuo.me/2013/02/twitter-bower.html">http://chuo.me/2013/02/twitter-bower.html</a></p>
+<h2 id="2-bower">2. bower安装</h2>
+<p>bower插件是通过npm, Node.js包管理器安装和管理的.</p>
+<p><strong>我的系统环境</strong></p>
+<ul>
+<li>win7 64bit</li>
+<li>Nodejs:v0.10.5</li>
+<li>
+<p>Npm:1.2.19</p>
+<p>~ D:\workspace\javascript&gt;node -v<br />
+v0.10.5</p>
+<p>~ D:\workspace\javascript&gt;npm -v<br />
+1.2.19</p>
+</li>
+</ul>
+<p>在系统中，我们已经安装好了Nodejs和npm。win7安装nodejs请参考文章：<a href="http://blog.fens.me/nodejs-express3/">Nodejs开发框架Express3.0开发手记–从零开始</a></p>
+<p><strong>安装bower </strong><br />
+全局安装bower</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="o">&gt;</span><span class="n">npm</span> <span class="n">install</span> <span class="n">bower</span> <span class="o">-</span><span class="n">g</span>
+</pre></div>
+
+
+<p>新建一个express3的项目nodejs-bower</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="o">&gt;</span><span class="n">express</span> <span class="o">-</span><span class="n">e</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="o">&gt;</span><span class="n">cd</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span> <span class="o">&amp;&amp;</span> <span class="n">npm</span> <span class="n">install</span>
+</pre></div>
+
+
+<h2 id="3-bower">3. bower命令</h2>
+<p>bower安装后，我们就可以用bower这个命令了。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span>
+<span class="nl">Usage:</span>
+    <span class="n">bower</span>  <span class="p">[]</span> <span class="p">[]</span>
+<span class="nl">Commands:</span>
+    <span class="n">cache</span>                   <span class="n">Manage</span> <span class="n">bower</span> <span class="n">cache</span>
+    <span class="n">help</span>                    <span class="n">Display</span> <span class="n">help</span> <span class="n">information</span> <span class="n">about</span> <span class="n">Bower</span>
+    <span class="n">home</span>                    <span class="n">Opens</span> <span class="n">a</span> <span class="n">package</span> <span class="n">homepage</span> <span class="n">into</span> <span class="n">your</span> <span class="n">favorite</span> <span class="n">browser</span>
+    <span class="n">info</span>                    <span class="n">Info</span> <span class="n">of</span> <span class="n">a</span> <span class="n">particular</span> <span class="n">package</span>
+    <span class="n">init</span>                    <span class="n">Interactively</span> <span class="n">create</span> <span class="n">a</span> <span class="n">bower</span><span class="p">.</span><span class="n">json</span> <span class="n">file</span>
+    <span class="n">install</span>                 <span class="n">Install</span> <span class="n">a</span> <span class="n">package</span> <span class="n">locally</span>
+    <span class="n">link</span>                    <span class="n">Symlink</span> <span class="n">a</span> <span class="n">package</span> <span class="n">folder</span>
+    <span class="n">list</span>                    <span class="n">List</span> <span class="n">local</span> <span class="n">packages</span>
+    <span class="n">lookup</span>                  <span class="n">Look</span> <span class="n">up</span> <span class="n">a</span> <span class="n">package</span> <span class="n">URL</span> <span class="n">by</span> <span class="n">name</span>
+    <span class="n">prune</span>                   <span class="n">Removes</span> <span class="n">local</span> <span class="n">extraneous</span> <span class="n">packages</span>
+    <span class="k">register</span>                <span class="n">Register</span> <span class="n">a</span> <span class="n">package</span>
+    <span class="n">search</span>                  <span class="n">Search</span> <span class="k">for</span> <span class="n">a</span> <span class="n">package</span> <span class="n">by</span> <span class="n">name</span>
+    <span class="n">update</span>                  <span class="n">Update</span> <span class="n">a</span> <span class="n">local</span> <span class="n">package</span>
+    <span class="n">uninstall</span>               <span class="n">Remove</span> <span class="n">a</span> <span class="n">local</span> <span class="n">package</span>
+<span class="nl">Options:</span>
+    <span class="o">-</span><span class="n">f</span><span class="p">,</span> <span class="o">--</span><span class="n">force</span>             <span class="n">Makes</span> <span class="n">various</span> <span class="n">commands</span> <span class="n">more</span> <span class="n">forceful</span>
+    <span class="o">-</span><span class="n">j</span><span class="p">,</span> <span class="o">--</span><span class="n">json</span>              <span class="n">Output</span> <span class="n">consumable</span> <span class="n">JSON</span>
+    <span class="o">-</span><span class="n">l</span><span class="p">,</span> <span class="o">--</span><span class="n">log</span><span class="o">-</span><span class="n">level</span>         <span class="n">What</span> <span class="n">level</span> <span class="n">of</span> <span class="n">logs</span> <span class="n">to</span> <span class="n">report</span>
+    <span class="o">-</span><span class="n">o</span><span class="p">,</span> <span class="o">--</span><span class="n">offline</span>           <span class="n">Do</span> <span class="n">not</span> <span class="n">hit</span> <span class="n">the</span> <span class="n">network</span>
+    <span class="o">-</span><span class="n">q</span><span class="p">,</span> <span class="o">--</span><span class="n">quiet</span>             <span class="n">Only</span> <span class="n">output</span> <span class="n">important</span> <span class="n">information</span>
+    <span class="o">-</span><span class="n">s</span><span class="p">,</span> <span class="o">--</span><span class="n">silent</span>            <span class="n">Do</span> <span class="n">not</span> <span class="n">output</span> <span class="n">anything</span><span class="p">,</span> <span class="n">besides</span> <span class="n">errors</span>
+    <span class="o">-</span><span class="n">V</span><span class="p">,</span> <span class="o">--</span><span class="n">verbose</span>           <span class="n">Makes</span> <span class="n">output</span> <span class="n">more</span> <span class="n">verbose</span>
+    <span class="o">--</span><span class="n">allow</span><span class="o">-</span><span class="n">root</span>            <span class="n">Allows</span> <span class="n">running</span> <span class="n">commands</span> <span class="n">as</span> <span class="n">root</span>
+<span class="n">See</span> <span class="err">&#39;</span><span class="n">bower</span> <span class="n">help</span> <span class="err">&#39;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span> <span class="n">on</span> <span class="n">a</span> <span class="n">specific</span> <span class="n">command</span><span class="p">.</span>
+</pre></div>
+
+
+<p>Commands，列出了bower支持的各种命令。</p>
+<ul>
+<li>cache:bower缓存管理</li>
+<li>help:显示Bower命令的帮助信息</li>
+<li>home:通过浏览器打开一个包的github发布页</li>
+<li>info:查看包的信息</li>
+<li>init:创建bower.json文件</li>
+<li>install:安装包到项目</li>
+<li>link:在本地bower库建立一个项目链接</li>
+<li>list:列出项目已安装的包</li>
+<li>lookup:根据包名查询包的URL</li>
+<li>prune:删除项目无关的包</li>
+<li>register:注册一个包</li>
+<li>search:搜索包</li>
+<li>update:更新项目的包</li>
+<li>uninstall:删除项目的包</li>
+</ul>
+<h2 id="4-bower">4. bower使用</h2>
+<p><strong>1). 安装jQuery到项目nodejs-bower</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">install</span> <span class="n">jquery</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">*</span>              <span class="n">not</span><span class="o">-</span><span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#*</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">*</span>                 <span class="n">resolve</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#*</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">*</span>                <span class="n">download</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/components/jquery/archive/2.0.3.tar.gz</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">*</span>                 <span class="n">extract</span> <span class="n">archive</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">*</span>                <span class="n">resolved</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span>            <span class="n">install</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+
+<span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span> <span class="n">bower_components</span><span class="err">\</span><span class="n">jquery</span>
+</pre></div>
+
+
+<p>通过执行命令，我们可以看到jQuery的最新版本被下载，并安装到项目的bower_components\jquery目录</p>
+<p>查看bower_components/jquery目录，发现了3个文件。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">ls</span> <span class="n">bower_components</span><span class="o">/</span><span class="n">jquery</span> <span class="o">-</span><span class="n">a</span>
+<span class="p">.</span>  <span class="p">..</span>  <span class="p">.</span><span class="n">bower</span><span class="p">.</span><span class="n">json</span>  <span class="n">component</span><span class="p">.</span><span class="n">json</span>  <span class="n">jquery</span><span class="p">.</span><span class="n">js</span>
+</pre></div>
+
+
+<p>同样地，我们的项目还需要d3的类库</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">install</span> <span class="n">d3</span>
+<span class="n">bower</span> <span class="n">d3</span><span class="err">#</span><span class="o">*</span>                  <span class="n">not</span><span class="o">-</span><span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/mbostock/d3.git#*</span>
+<span class="n">bower</span> <span class="n">d3</span><span class="err">#</span><span class="o">*</span>                     <span class="n">resolve</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/mbostock/d3.git#*</span>
+<span class="n">bower</span> <span class="n">d3</span><span class="err">#</span><span class="o">*</span>                    <span class="n">download</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/mbostock/d3/archive/v3.2.8.tar.gz</span>
+<span class="n">bower</span> <span class="n">d3</span><span class="err">#</span><span class="o">*</span>                     <span class="n">extract</span> <span class="n">archive</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">bower</span> <span class="n">d3</span><span class="err">#</span><span class="o">*</span>                    <span class="n">resolved</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/mbostock/d3.git#3.2.8</span>
+<span class="n">bower</span> <span class="n">d3</span><span class="err">#</span><span class="o">~</span><span class="mf">3.2.8</span>                <span class="n">install</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+
+<span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span> <span class="n">bower_components</span><span class="err">\</span><span class="n">d3</span>
+</pre></div>
+
+
+<p>非常方便，下载并安装完成！</p>
+<p><strong>2). 查看项目中已导入的类库</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">list</span>
+<span class="n">bower</span> <span class="n">check</span><span class="o">-</span><span class="n">new</span>     <span class="n">Checking</span> <span class="k">for</span> <span class="n">new</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">the</span> <span class="n">project</span> <span class="n">dependencies</span><span class="p">..</span>
+<span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="mf">0.0.0</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="err">├──</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+<span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+</pre></div>
+
+
+<p><strong>3). 安装bootstrap库，并查看依赖情况</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">install</span> <span class="n">bootstrap</span>
+<span class="n">bower</span> <span class="n">bootstrap</span><span class="err">#</span><span class="o">*</span>               <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/twbs/bootstrap.git#3.0.0-rc1</span>
+<span class="n">bower</span> <span class="n">bootstrap</span><span class="err">#</span><span class="o">*</span>             <span class="n">validate</span> <span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/twbs/bootstrap.git#*</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span>           <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span>         <span class="n">validate</span> <span class="mf">2.0.3</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#&gt;= 1.9.0</span>
+<span class="n">bower</span> <span class="n">bootstrap</span><span class="err">#</span><span class="o">~</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span>     <span class="n">install</span> <span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span>
+
+<span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">bower_components</span><span class="err">\</span><span class="n">bootstrap</span>
+<span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">list</span>
+<span class="n">bower</span> <span class="n">check</span><span class="o">-</span><span class="n">new</span>     <span class="n">Checking</span> <span class="k">for</span> <span class="n">new</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">the</span> <span class="n">project</span> <span class="n">dependencies</span><span class="p">..</span>
+<span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="mf">0.0.0</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="err">├─┬</span> <span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">extraneous</span>
+<span class="err">│</span> <span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+<span class="err">├──</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+<span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+</pre></div>
+
+
+<p>我们发现bootstrap，对jquery是有依赖的。</p>
+<p><strong>4). 删除jQuery库，破坏依赖关系</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">uninstall</span> <span class="n">jquery</span>
+<span class="n">bower</span> <span class="n">conflict</span>      <span class="n">bootstrap</span> <span class="n">depends</span> <span class="n">on</span> <span class="n">jquery</span>
+<span class="n">Continue</span> <span class="n">anyway</span><span class="o">?</span> <span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="n">n</span><span class="p">)</span> <span class="n">y</span>
+<span class="n">bower</span> <span class="n">uninstall</span>     <span class="n">jquery</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">list</span>
+<span class="n">bower</span> <span class="n">check</span><span class="o">-</span><span class="n">new</span>     <span class="n">Checking</span> <span class="k">for</span> <span class="n">new</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">the</span> <span class="n">project</span> <span class="n">dependencies</span><span class="p">..</span>
+<span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="mf">0.0.0</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="err">├─┬</span> <span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">extraneous</span>
+<span class="err">│</span> <span class="err">└──</span> <span class="n">jquery</span> <span class="n">missing</span>
+<span class="err">├──</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+<span class="err">└──</span> <span class="n">jquery</span> <span class="n">missing</span>
+</pre></div>
+
+
+<p><strong>5). 安装低版本的jQuery，制造不版本兼容</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">install</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span>             <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span>           <span class="n">validate</span> <span class="mf">2.0.3</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#~2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span>           <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span>         <span class="n">validate</span> <span class="mf">2.0.3</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#&gt;= 1.9.0</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span>              <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#1.7.2</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span>            <span class="n">validate</span> <span class="mf">1.7.2</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#1.7.2</span>
+
+<span class="n">Unable</span> <span class="n">to</span> <span class="n">find</span> <span class="n">a</span> <span class="n">suitable</span> <span class="n">version</span> <span class="k">for</span> <span class="n">jquery</span><span class="p">,</span> <span class="n">please</span> <span class="n">choose</span> <span class="n">one</span><span class="o">:</span>
+    <span class="mi">1</span><span class="p">)</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span> <span class="n">which</span> <span class="n">resolved</span> <span class="n">to</span> <span class="mf">1.7.2</span>
+    <span class="mi">2</span><span class="p">)</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span> <span class="n">which</span> <span class="n">resolved</span> <span class="n">to</span> <span class="mf">2.0.3</span> <span class="n">and</span> <span class="n">has</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span> <span class="n">as</span> <span class="n">dependants</span>
+    <span class="mi">3</span><span class="p">)</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span> <span class="n">which</span> <span class="n">resolved</span> <span class="n">to</span> <span class="mf">2.0.3</span> <span class="n">and</span> <span class="n">has</span> <span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">as</span> <span class="n">dependants</span>
+
+<span class="n">Prefix</span> <span class="n">the</span> <span class="n">choice</span> <span class="n">with</span> <span class="o">!</span> <span class="n">to</span> <span class="n">persist</span> <span class="n">it</span> <span class="n">to</span> <span class="n">bower</span><span class="p">.</span><span class="n">json</span>
+
+<span class="nl">Choice:</span> <span class="mi">1</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span>             <span class="n">install</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span>
+
+<span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span> <span class="n">bower_components</span><span class="err">\</span><span class="n">jquery</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">list</span>
+<span class="n">bower</span> <span class="n">check</span><span class="o">-</span><span class="n">new</span>     <span class="n">Checking</span> <span class="k">for</span> <span class="n">new</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">the</span> <span class="n">project</span> <span class="n">dependencies</span><span class="p">..</span>
+<span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="mf">0.0.0</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="err">├─┬</span> <span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">extraneous</span>
+<span class="err">│</span> <span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span> <span class="n">incompatible</span> <span class="n">with</span> <span class="o">&gt;=</span> <span class="mf">1.9.0</span> <span class="p">(</span><span class="mf">2.0.3</span> <span class="n">available</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+<span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">1.7.2</span> <span class="n">incompatible</span> <span class="n">with</span> <span class="o">~</span><span class="mf">2.0.3</span> <span class="p">(</span><span class="mf">2.0.3</span> <span class="n">available</span><span class="p">)</span>
+</pre></div>
+
+
+<p>我们可以清楚的看到bower，很明确的告诉了我们，jquery和bootstrap是不兼容的，强大之处大家应该有所体会。</p>
+<p><strong>6).升级jQuery，让版本兼容</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">update</span> <span class="n">jquery</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span>             <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span>           <span class="n">validate</span> <span class="mf">2.0.3</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#~2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span>           <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">&gt;=</span> <span class="mf">1.9.0</span>         <span class="n">validate</span> <span class="mf">2.0.3</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#&gt;= 1.9.0</span>
+<span class="n">bower</span> <span class="n">jquery</span><span class="err">#</span><span class="o">~</span><span class="mf">2.0.3</span>            <span class="n">install</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+
+<span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span> <span class="n">bower_components</span><span class="err">\</span><span class="n">jquery</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">list</span>
+<span class="n">bower</span> <span class="n">check</span><span class="o">-</span><span class="n">new</span>     <span class="n">Checking</span> <span class="k">for</span> <span class="n">new</span> <span class="n">versions</span> <span class="n">of</span> <span class="n">the</span> <span class="n">project</span> <span class="n">dependencies</span><span class="p">..</span>
+<span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="mf">0.0.0</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="err">├─┬</span> <span class="n">bootstrap</span><span class="err">#</span><span class="mf">3.0.0</span><span class="o">-</span><span class="n">rc1</span> <span class="n">extraneous</span>
+<span class="err">│</span> <span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+<span class="err">├──</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+<span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+</pre></div>
+
+
+<p>多么智能，一键搞定，这才是高效的开发。</p>
+<p><strong>7). 查看本地bower已经缓存的类库</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">cache</span> <span class="n">list</span>
+<span class="n">bootstrap</span><span class="o">=</span><span class="n">git</span><span class="o">:</span><span class="c1">//github.com/twbs/bootstrap.git#3.0.0-rc1</span>
+<span class="n">d3</span><span class="o">=</span><span class="n">git</span><span class="o">:</span><span class="c1">//github.com/mbostock/d3.git#3.2.8</span>
+<span class="n">jquery</span><span class="o">=</span><span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#1.7.2</span>
+<span class="n">jquery</span><span class="o">=</span><span class="n">git</span><span class="o">:</span><span class="c1">//github.com/components/jquery.git#2.0.3</span>
+</pre></div>
+
+
+<p><strong>8). 查看D3库信息</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">info</span> <span class="n">d3</span>
+<span class="n">d3</span>
+
+  <span class="nl">Versions:</span>
+    <span class="o">-</span> <span class="mf">3.2.8</span>
+    <span class="o">-</span> <span class="mf">3.2.7</span>
+    <span class="o">-</span> <span class="mf">3.2.6</span>
+    <span class="o">-</span> <span class="mf">3.2.5</span>
+    <span class="o">-</span> <span class="mf">3.2.4</span>
+    <span class="o">-</span> <span class="mf">3.2.3</span>
+    <span class="p">...</span>
+</pre></div>
+
+
+<p><strong>9). 查看dojo库的url</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">lookup</span> <span class="n">dojo</span>
+<span class="n">dojo</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/dojo.git</span>
+</pre></div>
+
+
+<p><strong>10). 用浏览器打开dojo的发布主页</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">home</span> <span class="n">dojo</span>
+<span class="n">bower</span> <span class="n">dojo</span><span class="err">#</span><span class="o">*</span>                <span class="n">not</span><span class="o">-</span><span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/dojo.git#*</span>
+<span class="n">bower</span> <span class="n">dojo</span><span class="err">#</span><span class="o">*</span>                   <span class="n">resolve</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/dojo.git#*</span>
+<span class="n">bower</span> <span class="n">dojo</span><span class="err">#</span><span class="o">*</span>                  <span class="n">download</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/dojo/dojo/archive/1.9.1.tar.gz</span>
+<span class="n">bower</span> <span class="n">dojo</span><span class="err">#</span><span class="o">*</span>                   <span class="n">extract</span> <span class="n">archive</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">bower</span> <span class="n">dojo</span><span class="err">#</span><span class="o">*</span>                  <span class="n">resolved</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/dojo.git#1.9.1</span>
+</pre></div>
+
+
+<p>浏览器自动打开：https://github.com/dojo/dojo</p>
+<p><strong>11). 查询包含dojo的类库</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">search</span> <span class="n">dojo</span>
+<span class="n">Search</span> <span class="n">results</span><span class="o">:</span>
+
+    <span class="n">dojo</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/dojo.git</span>
+    <span class="n">dojox</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/dojox.git</span>
+    <span class="n">dojo</span><span class="o">-</span><span class="n">util</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/dojo/util.git</span>
+    <span class="n">dojo</span><span class="o">-</span><span class="n">bootstrap</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/samvdb/Dojo-Bootstrap</span>
+</pre></div>
+
+
+<p>真是方便实用的技术。</p>
+<h2 id="5-bower">5. 用bower提交自己类库</h2>
+<p><strong>1). 生成bower.json配置文件</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">init</span>
+<span class="n">bower</span> <span class="n">existing</span>      <span class="n">The</span> <span class="n">existing</span> <span class="n">bower</span><span class="p">.</span><span class="n">json</span> <span class="n">file</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="n">and</span> <span class="n">filled</span> <span class="n">in</span>
+<span class="p">[</span><span class="o">?</span><span class="p">]</span> <span class="n">name</span><span class="o">:</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="p">[</span><span class="o">?</span><span class="p">]</span> <span class="n">version</span><span class="o">:</span> <span class="mf">0.0.0</span>
+<span class="p">[</span><span class="o">?</span><span class="p">]</span> <span class="n">main</span> <span class="n">file</span><span class="o">:</span>
+<span class="p">[</span><span class="o">?</span><span class="p">]</span> <span class="n">set</span> <span class="n">currently</span> <span class="n">installed</span> <span class="n">components</span> <span class="n">as</span> <span class="n">dependencies</span><span class="o">?</span> <span class="n">No</span>
+<span class="p">[</span><span class="o">?</span><span class="p">]</span> <span class="n">add</span> <span class="n">commonly</span> <span class="n">ignored</span> <span class="n">files</span> <span class="n">to</span> <span class="n">ignore</span> <span class="n">list</span><span class="o">?</span> <span class="n">Yes</span>
+</pre></div>
+
+
+<p>查看生成的文件bower.json</p>
+<div class="hlcode"><pre><span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;nodejs-bower&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;version&quot;</span><span class="o">:</span> <span class="s2">&quot;0.0.0&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;ignore&quot;</span><span class="o">:</span> <span class="cp">[</span>
+    <span class="s2">&quot;**/.*&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;node_modules&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bower_components&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;test&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;tests&quot;</span>
+  <span class="cp">]</span><span class="o">,</span>
+  <span class="s2">&quot;dependencies&quot;</span><span class="o">:</span> <span class="err">{</span>
+    <span class="s2">&quot;d3&quot;</span><span class="o">:</span> <span class="s2">&quot;git://github.com/mbostock/d3.git#~3.2.8&quot;</span><span class="o">,</span>
+    <span class="s2">&quot;jquery&quot;</span><span class="o">:</span> <span class="s2">&quot;git://github.com/components/jquery.git#~2.0.3&quot;</span>
+  <span class="p">}</span>
+<span class="err">}</span>
+</pre></div>
+
+
+<p><strong>2). 在github创建一个资源库：nodejs-bower</strong><br />
+<strong>3). 本地工程绑定github</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">git</span> <span class="n">init</span>
+<span class="n">Initialized</span> <span class="n">empty</span> <span class="n">Git</span> <span class="n">repository</span> <span class="k">in</span> <span class="n">D</span><span class="o">:/</span><span class="n">workspace</span><span class="o">/</span><span class="n">javascript</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">/</span><span class="p">.</span><span class="n">git</span><span class="o">/</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">git</span> <span class="n">add</span> <span class="p">.</span>
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;first commit&quot;</span>
+<span class="cp"># On branch master</span>
+<span class="cp">#</span>
+<span class="cp"># Initial commit</span>
+<span class="cp">#</span>
+<span class="cp"># Untracked files:</span>
+<span class="cp">#   (use &quot;git add ...&quot; to include in what will be committed)</span>
+<span class="cp">#</span>
+<span class="cp">#       app.js</span>
+<span class="cp">#       bower.json</span>
+<span class="cp">#       bower_components/</span>
+<span class="cp">#       node_modules/</span>
+<span class="cp">#       package.json</span>
+<span class="cp">#       public/</span>
+<span class="cp">#       routes/</span>
+<span class="cp">#       views/</span>
+<span class="n">nothing</span> <span class="n">added</span> <span class="n">to</span> <span class="n">commit</span> <span class="n">but</span> <span class="n">untracked</span> <span class="n">files</span> <span class="n">present</span> <span class="p">(</span><span class="n">use</span> <span class="s">&quot;git add&quot;</span> <span class="n">to</span> <span class="n">track</span><span class="p">)</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower</span>
+
+<span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">origin</span> <span class="n">master</span>
+<span class="n">Counting</span> <span class="n">objects</span><span class="o">:</span> <span class="mi">565</span><span class="p">,</span> <span class="n">done</span><span class="p">.</span>
+<span class="n">Delta</span> <span class="n">compression</span> <span class="n">using</span> <span class="n">up</span> <span class="n">to</span> <span class="mi">4</span> <span class="n">threads</span><span class="p">.</span>
+<span class="n">Compressing</span> <span class="n">objects</span><span class="o">:</span> <span class="mi">100</span><span class="o">%</span> <span class="p">(</span><span class="mi">516</span><span class="o">/</span><span class="mi">516</span><span class="p">),</span> <span class="n">done</span><span class="p">.</span>
+<span class="n">Writing</span> <span class="n">objects</span><span class="o">:</span> <span class="mi">100</span><span class="o">%</span> <span class="p">(</span><span class="mi">565</span><span class="o">/</span><span class="mi">565</span><span class="p">),</span> <span class="mf">803.08</span> <span class="n">KiB</span><span class="p">,</span> <span class="n">done</span><span class="p">.</span>
+<span class="n">Total</span> <span class="mi">565</span> <span class="p">(</span><span class="n">delta</span> <span class="mi">26</span><span class="p">),</span> <span class="n">reused</span> <span class="mi">0</span> <span class="p">(</span><span class="n">delta</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">To</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower</span>
+ <span class="o">*</span> <span class="p">[</span><span class="n">new</span> <span class="n">branch</span><span class="p">]</span>      <span class="n">master</span> <span class="o">-&gt;</span> <span class="n">master</span>
+<span class="n">Branch</span> <span class="n">master</span> <span class="n">set</span> <span class="n">up</span> <span class="n">to</span> <span class="n">track</span> <span class="n">remote</span> <span class="n">branch</span> <span class="n">master</span> <span class="n">from</span> <span class="n">origin</span><span class="p">.</span>
+</pre></div>
+
+
+<p><strong>4). 注册到bower官方类库</strong></p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="k">register</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">bsspirit</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="p">.</span><span class="n">git</span>
+<span class="n">bower</span>                          <span class="n">convert</span> <span class="n">Converted</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">bsspirit</span><span class="o">/</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="p">.</span><span class="n">git</span> <span class="n">to</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/n</span>
+<span class="n">odejs</span><span class="o">-</span><span class="n">bower</span><span class="p">.</span><span class="n">git</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="o">*</span>           <span class="n">resolve</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git#*</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="o">*</span>          <span class="n">checkout</span> <span class="n">master</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="o">*</span>          <span class="n">resolved</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git#af3ceaac07</span>
+<span class="n">Registering</span> <span class="n">a</span> <span class="n">package</span> <span class="n">will</span> <span class="n">make</span> <span class="n">it</span> <span class="n">visible</span> <span class="n">and</span> <span class="n">installable</span> <span class="n">via</span> <span class="n">the</span> <span class="n">registry</span> <span class="p">(</span><span class="n">https</span><span class="o">:</span><span class="c1">//bower.herokuapp.com), continue? (y/</span>
+<span class="n">n</span><span class="p">)</span>                    <span class="n">y</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>            <span class="k">register</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git</span>
+
+<span class="n">Package</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span> <span class="n">registered</span> <span class="n">successfully</span><span class="o">!</span>
+<span class="n">All</span> <span class="n">valid</span> <span class="n">semver</span> <span class="n">tags</span> <span class="n">on</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git will be available as versions.</span>
+<span class="n">To</span> <span class="n">publish</span> <span class="n">a</span> <span class="n">new</span> <span class="n">version</span><span class="p">,</span> <span class="n">you</span> <span class="n">just</span> <span class="n">need</span> <span class="n">release</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">semver</span> <span class="n">tag</span><span class="p">.</span>
+
+<span class="n">Run</span> <span class="n">bower</span> <span class="n">info</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span> <span class="n">to</span> <span class="n">list</span> <span class="n">the</span> <span class="n">package</span> <span class="n">versions</span><span class="p">.</span>
+</pre></div>
+
+
+<p><strong>5). 查询我们自己的包</strong></p>
+<div class="hlcode"><pre><span class="nl">D:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">search</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="n">Search</span> <span class="n">results</span><span class="o">:</span>
+
+    <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git</span>
+</pre></div>
+
+
+<p><strong>6). 安装我们自己的包</strong></p>
+<div class="hlcode"><pre><span class="nl">D:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="o">&gt;</span><span class="n">bower</span> <span class="n">install</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="o">*</span>            <span class="n">cached</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git#af3ceaac07</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="o">*</span>          <span class="n">validate</span> <span class="n">af3ceaac07</span> <span class="n">against</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/bsspirit/nodejs-bower.git#*</span>
+<span class="n">bower</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="o">*</span>           <span class="n">install</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="n">af3ceaac07</span>
+
+<span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span><span class="err">#</span><span class="n">af3ceaac07</span> <span class="n">bower_components</span><span class="err">\</span><span class="n">nodejs</span><span class="o">-</span><span class="n">bower</span>
+<span class="err">├──</span> <span class="n">d3</span><span class="err">#</span><span class="mf">3.2.8</span>
+<span class="err">└──</span> <span class="n">jquery</span><span class="err">#</span><span class="mf">2.0.3</span>
+</pre></div>
+
+
+<p>其实模块化，版本依赖，开发类库，发布类库，安装类库，都是一条命令！还能再简单一点么！快把项目模块化，然后分享给大家吧！！未来是属于开发者的。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

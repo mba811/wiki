@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>GoAgentX Shadowsocks 通过 HTTP 代理连接 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;GoAgentX Shadowsocks 通过 HTTP 代理连接
+    <span class="updated">Page Updated&nbsp;
+      2015-05-13 17:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">GoAgentX Shadowsocks 通过 HTTP 代理连接</div>
+
+  <p>公司内上网必须要通过 HTTP 代理，而我们个人翻墙的时候用到的利器 GoAgentX 必须也要通过 http 代理才能连上 Shadowsocks 的代理服务器（这是多么的蛋疼）。 </p>
+<p>这时候，我们需要一个叫做 <a href="http://www.proxifier.com/">Proxifier</a>（<a href="http://pan.baidu.com/s/1pJkFybh">网盘下载</a>）的应用来实现那些不能设置代理的软件来通过代理。 </p>
+<p>1、添加 HTTPS 代理 </p>
+<p><img alt="Proxifier-http-proxy.png" src="http://user-image.logdown.io/user/3593/blog/3642/post/238412/DcZWkTVYTJS879aTasvF_Proxifier-http-proxy.png" /><br />
+<img alt="Proxifier-add-proxy.png" src="http://user-image.logdown.io/user/3593/blog/3642/post/238412/EQARy6w4SmObcOrVqnHH_Proxifier-add-proxy.png" /></p>
+<p>2、Rules 添加 GoAgentX 通过代理。 <code>GoAgentX;ss-local</code><br />
+<img alt="Proxifier-add-rule.png" src="http://user-image.logdown.io/user/3593/blog/3642/post/238412/XKND5bdIQGK3rKn0fqpy_Proxifier-add-rule.png" /><br />
+<img alt="Proxifier-goagentx.png" src="http://user-image.logdown.io/user/3593/blog/3642/post/238412/fiaxV6xeRwqIAQmfzt1a_Proxifier-goagentx.png" /></p>
+<p>3、大功告成。 </p>
+<p>其他一些不能设置代理的应用亦可如法炮制。<br />
+如： </p>
+<div class="hlcode"><pre><span class="s">&quot;Alfred 2&quot;</span><span class="p">;</span> <span class="n">idea</span><span class="p">;</span><span class="n">Thunder</span><span class="o">*</span><span class="p">;</span> <span class="n">iTerm</span><span class="p">;</span> <span class="n">Terminal</span><span class="p">;</span><span class="n">php</span><span class="p">;</span> <span class="n">Dropbox</span><span class="p">;</span> <span class="n">Sparrow</span><span class="p">;</span> <span class="s">&quot;Sequel Pro&quot;</span><span class="p">;</span> <span class="n">python</span><span class="p">;</span> <span class="n">ruby</span><span class="p">;</span> <span class="n">wget</span><span class="p">;</span> <span class="n">curl</span><span class="p">;</span> <span class="n">GitHub</span><span class="p">;</span> <span class="n">git</span><span class="o">-</span><span class="n">remote</span><span class="o">-</span><span class="n">https</span><span class="p">;</span> <span class="n">java</span><span class="p">;</span><span class="n">npm</span><span class="p">;</span> <span class="n">node</span><span class="p">;</span> <span class="n">perl</span><span class="p">;</span><span class="n">prl</span><span class="o">*</span><span class="p">;</span><span class="n">itunes</span><span class="p">;</span> <span class="n">sftp</span><span class="p">;</span><span class="n">java</span><span class="p">;</span><span class="n">Justinmind</span><span class="p">;</span><span class="n">plugin_</span><span class="o">*</span><span class="p">;</span><span class="n">ascp</span><span class="p">;</span><span class="s">&quot;Application;Loader&quot;</span><span class="p">;</span><span class="n">geny</span><span class="o">*</span><span class="p">;</span><span class="n">Vbox</span><span class="o">*</span><span class="p">;</span><span class="n">whois</span><span class="p">;</span><span class="n">traceroute</span><span class="p">;</span><span class="n">stroke</span><span class="p">;</span><span class="n">ssh</span><span class="p">;</span><span class="n">ALiWangwang</span><span class="p">;</span><span class="n">MacUpdate</span><span class="o">*</span><span class="p">;</span><span class="n">git</span><span class="o">*</span><span class="p">;</span><span class="n">Git</span><span class="p">;</span><span class="n">fzs</span><span class="o">*</span><span class="p">;</span><span class="n">mail</span><span class="p">;</span><span class="n">flickr</span><span class="o">*</span><span class="p">;</span><span class="n">xulr</span><span class="o">*</span><span class="p">;</span><span class="n">imess</span><span class="o">*</span><span class="p">;</span><span class="n">com</span><span class="p">.</span><span class="n">apple</span><span class="p">.</span><span class="n">im</span><span class="o">*</span><span class="p">;</span><span class="n">Airmail</span><span class="p">;</span><span class="n">Adium</span><span class="p">;</span><span class="n">Prot</span><span class="o">*</span><span class="p">;</span><span class="n">Tokens</span><span class="p">;</span><span class="n">Ali</span><span class="o">*</span><span class="p">;</span><span class="n">Lite</span><span class="o">*</span><span class="p">;</span><span class="n">file</span><span class="o">*</span><span class="p">;</span><span class="n">ssh</span><span class="p">;</span><span class="n">ftp</span><span class="p">;</span><span class="n">Adobe</span><span class="o">*</span><span class="p">;</span><span class="n">PDApp</span><span class="o">*</span><span class="p">;</span><span class="n">Creative</span><span class="o">*</span><span class="p">;</span><span class="n">Vbox</span><span class="o">*</span><span class="p">;</span><span class="n">xulrunner</span><span class="p">;</span><span class="n">Virtual</span><span class="o">*</span><span class="p">;</span><span class="n">PDApp</span><span class="p">;</span><span class="n">Bit</span><span class="o">*</span><span class="p">;</span><span class="n">Domainers</span><span class="p">;</span><span class="n">fire</span><span class="o">*</span><span class="p">;</span><span class="n">plugin</span><span class="o">*</span><span class="p">;</span><span class="n">Atom</span><span class="o">*</span><span class="p">;</span><span class="n">Tokens</span><span class="p">;.</span><span class="n">com</span><span class="p">.</span><span class="n">realmacsoftware</span><span class="o">*</span><span class="p">;</span><span class="n">Xcode</span><span class="p">;</span><span class="n">java</span><span class="p">;</span><span class="n">httpd</span><span class="p">;</span><span class="n">qboxrsctl</span><span class="p">;</span><span class="n">Wunderlist</span><span class="p">;</span><span class="s">&quot;Mark Man&quot;</span><span class="p">;</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Flask搭建静态博客 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Python">Python</a>&nbsp;&#187;&nbsp;Flask搭建静态博客
+    <span class="updated">Page Updated&nbsp;
+      2015-05-17 21:52
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Flask搭建静态博客</div>
+
+  <p>现在流行的静态博客/网站生成工具有很多，比如 Jekyll, Pelican, Middleman, Hyde 等等，StaticGen 列出了目前最流行的一些静态网站生成工具。</p>
+<p>我们的内部工具由 Python/Flask/MongoDB 搭建，现在需要加上文档功能，写作格式是 Markdown，不想把文档放到数据库里，也不想再弄一套静态博客工具来管理文档，于是找到了 <a href="https://pythonhosted.org/Flask-FlatPages/">Flask-FlatPages</a> 这个好用的 Flask 模块。熟悉 Flask 的同学花几分钟的时间就可以用搭建一个简单博客，加上 Bootstrap 的帮助，不到一小时内就可以用 Flask-Flatpages 弄个像模像样的网站出来。</p>
+<h2 id="_1">创建开发环境</h2>
+<p>首先我们需要 pip，在 Mac 上最简单的安装办法是：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">easy_install</span> <span class="n">pip</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">easy_install</span> <span class="n">virtualenv</span>
+</pre></div>
+
+
+<p>如果你在 Mac 上用 Homebrew 包管理工具的话的话，也可以用 brew 升级 Python 和安装 pip：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">python</span>
+</pre></div>
+
+
+<p>创建一个 blog 目录、生成 Python 独立虚拟环境并在这个环境里安装需要的 Flask, Flask-FlatPages 模块：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mkdir</span> <span class="n">blog</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="n">blog</span>
+
+<span class="err">$</span> <span class="n">virtualenv</span> <span class="n">flask</span>
+<span class="n">New</span> <span class="n">python</span> <span class="n">executable</span> <span class="n">in</span> <span class="n">flask</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">python</span>
+<span class="n">Installing</span> <span class="n">setuptools</span><span class="p">,</span> <span class="n">pip</span><span class="p">...</span><span class="n">done</span><span class="p">.</span>
+
+<span class="err">$</span> <span class="n">flask</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">flask</span>
+<span class="err">$</span> <span class="n">flask</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">flask</span><span class="o">-</span><span class="n">flatpages</span>
+</pre></div>
+
+
+<p>在 blog 目录下我们分别新建几个目录：static 用来存放 css/js 等文件，templates 用来存放 flask 要用的 Jinja2 模版，pages 用来存放我们静态博客（Markdown 格式）：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">app</span><span class="o">/</span><span class="k">static</span> <span class="n">app</span><span class="o">/</span><span class="n">templates</span> <span class="n">app</span><span class="o">/</span><span class="n">pages</span>
+</pre></div>
+
+
+<p><a href="http://www.open-open.com/lib/view/open1416040872367.html#_labelTop">回到顶部</a></p>
+<h2 id="_2">程序</h2>
+<p>主程序 blog.py 的功能是，导入必要的模块、配置 Flask-FlatPages 模块需要的参数、创建 Flask 应用、写几个 URL 路由函数，最后运行这个应用：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vi</span> <span class="n">app</span><span class="o">/</span><span class="n">blog</span><span class="p">.</span><span class="n">py</span>
+<span class="cp">#!flask/bin/python</span>
+<span class="n">from</span> <span class="n">flask</span> <span class="n">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="n">from</span> <span class="n">flask_flatpages</span> <span class="n">import</span> <span class="n">FlatPages</span>
+
+<span class="n">DEBUG</span> <span class="o">=</span> <span class="n">True</span>
+<span class="n">FLATPAGES_AUTO_RELOAD</span> <span class="o">=</span> <span class="n">DEBUG</span>
+<span class="n">FLATPAGES_EXTENSION</span> <span class="o">=</span> <span class="err">&#39;</span><span class="p">.</span><span class="n">md</span><span class="err">&#39;</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="p">.</span><span class="n">config</span><span class="p">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">flatpages</span> <span class="o">=</span> <span class="n">FlatPages</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+<span class="err">@</span><span class="n">app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="sc">&#39;/&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">index</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">pages</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="n">in</span> <span class="n">flatpages</span> <span class="k">if</span> <span class="err">&#39;</span><span class="n">date</span><span class="err">&#39;</span> <span class="n">in</span> <span class="n">p</span><span class="p">.</span><span class="n">meta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="err">&#39;</span><span class="n">index</span><span class="p">.</span><span class="n">html</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">pages</span><span class="o">=</span><span class="n">pages</span><span class="p">)</span>
+
+<span class="err">@</span><span class="n">app</span><span class="p">.</span><span class="n">route</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">pages</span><span class="o">/&lt;</span><span class="n">path</span><span class="o">:</span><span class="n">path</span><span class="o">&gt;/</span><span class="err">&#39;</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">page</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">:</span>
+    <span class="n">page</span> <span class="o">=</span> <span class="n">flatpages</span><span class="p">.</span><span class="n">get_or_404</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="err">&#39;</span><span class="n">page</span><span class="p">.</span><span class="n">html</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="err">&#39;</span><span class="n">__main__</span><span class="err">&#39;</span><span class="o">:</span>
+    <span class="n">app</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+</pre></div>
+
+
+<p><a href="http://www.open-open.com/lib/view/open1416040872367.html#_labelTop">回到顶部</a></p>
+<h2 id="_3">模版</h2>
+<p>在 Python 中直接生成 HTML 很繁琐并不好玩（那是上个世纪90年代的 PHP 搞的事情），在现代社会，我们使用模版引擎，Flask 已经自动配置好了 Jinja2 模版，使用方法 render_template() 来渲染模版就可以了。Flask 会默认在 templates 目录里中寻找模版，我们只需要创建几个模版文件就可以了，这里我们创建 base.html, index.html 和 page.html.</p>
+<div class="hlcode"><pre>$ vi app/templates/base.html
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;title&gt;</span>vpsee.com static blog<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;h1&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">url_for</span><span class="o">(</span><span class="s2">&quot;index&quot;</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span>vpsee.com blog<span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
+    <span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+    <span class="cp">{%</span> <span class="k">endblock</span> <span class="nv">content</span> <span class="cp">%}</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>代码里 extends “base.html” 的意思是从 base.html 里继承基本的 “骨架”。</p>
+<div class="hlcode"><pre>$ vi app/templates/index.html
+<span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;base.html&quot;</span> <span class="cp">%}</span>
+
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+    <span class="nt">&lt;h2&gt;</span>List of pages
+    <span class="nt">&lt;ul&gt;</span>
+        <span class="cp">{%</span> <span class="k">for</span> <span class="nv">page</span> <span class="k">in</span> <span class="nv">pages</span> <span class="cp">%}</span>
+        <span class="nt">&lt;li&gt;</span>
+            <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;</span><span class="cp">{{</span> <span class="nv">url_for</span><span class="o">(</span><span class="s2">&quot;page&quot;</span><span class="o">,</span> <span class="nv">path</span><span class="o">=</span><span class="nv">page.path</span><span class="o">)</span> <span class="cp">}}</span><span class="s">&quot;</span><span class="nt">&gt;</span><span class="cp">{{</span> <span class="nv">page.title</span> <span class="cp">}}</span><span class="nt">&lt;/a&gt;</span>
+        <span class="nt">&lt;/li&gt;</span>
+        <span class="cp">{%</span> <span class="k">else</span> <span class="cp">%}</span>
+        <span class="nt">&lt;li&gt;</span>No post.<span class="nt">&lt;/li&gt;</span>
+        <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span>
+    <span class="nt">&lt;/ul&gt;</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="nv">content</span> <span class="cp">%}</span>
+
+$ vi app/templates/page.html
+<span class="cp">{%</span> <span class="k">extends</span> <span class="s2">&quot;base.html&quot;</span> <span class="cp">%}</span>
+
+<span class="cp">{%</span> <span class="k">block</span> <span class="nv">content</span> <span class="cp">%}</span>
+    <span class="nt">&lt;h2&gt;</span><span class="cp">{{</span> <span class="nv">page.title</span> <span class="cp">}}</span><span class="nt">&lt;/h2&gt;</span>
+    <span class="cp">{{</span> <span class="nv">page.html</span><span class="o">|</span><span class="nf">safe</span> <span class="cp">}}</span>
+<span class="cp">{%</span> <span class="k">endblock</span> <span class="nv">content</span> <span class="cp">%}</span>
+</pre></div>
+
+
+<p>Flask-FlatPages 模块会默认从 pages 目录里寻找 .md 结尾的 Markdown 文档，所以我们把静态博客的内容都放在这个目录里：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vi</span> <span class="n">app</span><span class="o">/</span><span class="n">pages</span><span class="o">/</span><span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="p">.</span><span class="n">md</span>
+<span class="nl">title:</span> <span class="n">Hello</span> <span class="n">World</span>
+<span class="nl">date:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">14</span>
+<span class="nl">tags:</span> <span class="p">[</span><span class="n">general</span><span class="p">,</span> <span class="n">blog</span><span class="p">]</span>
+
+<span class="o">**</span><span class="n">Hello</span> <span class="n">World</span><span class="o">**!</span>
+
+<span class="err">$</span> <span class="n">vi</span> <span class="n">app</span><span class="o">/</span><span class="n">pages</span><span class="o">/</span><span class="n">test</span><span class="o">-</span><span class="n">flatpages</span><span class="p">.</span><span class="n">md</span>
+<span class="nl">title:</span> <span class="n">Test</span> <span class="n">Flask</span> <span class="n">FlatPages</span>
+<span class="nl">date:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">15</span>
+<span class="nl">tags:</span> <span class="p">[</span><span class="n">python</span><span class="p">,</span> <span class="n">flask</span><span class="p">]</span>
+
+<span class="n">Test</span> <span class="p">[</span><span class="n">Flask</span><span class="o">-</span><span class="n">FlatPages</span><span class="p">](</span><span class="n">https</span><span class="o">:</span><span class="c1">//pythonhosted.org/Flask-FlatPages/)</span>
+</pre></div>
+
+
+<p><a href="http://www.open-open.com/lib/view/open1416040872367.html#_labelTop">回到顶部</a></p>
+<h2 id="_4">运行</h2>
+<p>基本搞定，运行看看效果吧：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">flask</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">python</span> <span class="n">app</span><span class="o">/</span><span class="n">blog</span><span class="p">.</span><span class="n">py</span>
+ <span class="o">*</span> <span class="n">Running</span> <span class="n">on</span> <span class="n">http</span><span class="o">:</span><span class="c1">//127.0.0.1:8000/</span>
+ <span class="o">*</span> <span class="n">Restarting</span> <span class="n">with</span> <span class="n">reloader</span>
+</pre></div>
+
+
+<p><img alt="build a static blog with flask" src="http://www.codeceo.com/wp-content/uploads/2014/10/58e4740cdced654caec3475c2b54ae4b.png" /></p>
+<p><a href="http://www.open-open.com/lib/view/open1416040872367.html#_labelTop">回到顶部</a></p>
+<h2 id="_5">静态化</h2>
+<p>到目前为止，上面的博客运行良好，但是有个问题，这个博客还不是 “静态” 的，没有生成任何 html 文件，不能直接放到 nginx/apache 这样的 web 服务器下用。所以我们需要另一个 Flask 模块 <a href="http://pythonhosted.org/Frozen-Flask/">Frozen-Flask</a>的帮助。</p>
+<p>安装 Frozen-Flask：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">flask</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">frozen</span><span class="o">-</span><span class="n">flask</span>
+</pre></div>
+
+
+<p>修改 blog.py，导入 Flask-Frozen 模块，初始化 Freezer，使用 freezer.freeze() 生成静态 HTML：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">vi</span> <span class="n">app</span><span class="o">/</span><span class="n">blog</span><span class="p">.</span><span class="n">py</span>
+<span class="p">...</span>
+<span class="n">from</span> <span class="n">flask_flatpages</span> <span class="n">import</span> <span class="n">FlatPages</span>
+<span class="n">from</span> <span class="n">flask_frozen</span> <span class="n">import</span> <span class="n">Freezer</span>
+<span class="n">import</span> <span class="n">sys</span>
+<span class="p">...</span>
+<span class="n">flatpages</span> <span class="o">=</span> <span class="n">FlatPages</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="n">freezer</span> <span class="o">=</span> <span class="n">Freezer</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+<span class="p">...</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="err">&#39;</span><span class="n">__main__</span><span class="err">&#39;</span><span class="o">:</span>
+    <span class="k">if</span> <span class="n">len</span><span class="p">(</span><span class="n">sys</span><span class="p">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="n">and</span> <span class="n">sys</span><span class="p">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;build&quot;</span><span class="o">:</span>
+        <span class="n">freezer</span><span class="p">.</span><span class="n">freeze</span><span class="p">()</span>
+    <span class="nl">else:</span>
+        <span class="n">app</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+</pre></div>
+
+
+<p>运行 blog.py build 后就在 app 目录下生成 build 目录，build 目录里面就是我们要的 HTML 静态文件：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">flask</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">python</span> <span class="n">app</span><span class="o">/</span><span class="n">blog</span><span class="p">.</span><span class="n">py</span> <span class="n">build</span>
+
+<span class="err">$</span> <span class="n">ls</span> <span class="n">app</span><span class="o">/</span>
+<span class="n">blog</span><span class="p">.</span><span class="n">py</span>   <span class="n">build</span>     <span class="n">pages</span>     <span class="k">static</span>    <span class="n">templates</span>
+</pre></div>
+
+
+<p>更清晰的目录结构如下：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">tree</span> <span class="n">app</span>
+<span class="n">app</span>
+<span class="err">├──</span> <span class="n">blog</span><span class="p">.</span><span class="n">py</span>
+<span class="err">├──</span> <span class="n">build</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">pages</span>
+<span class="err">│</span>       <span class="err">├──</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span>
+<span class="err">│</span>       <span class="err">│</span>   <span class="err">└──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>       <span class="err">└──</span> <span class="n">test</span><span class="o">-</span><span class="n">flatpages</span>
+<span class="err">│</span>           <span class="err">└──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>
+<span class="err">├──</span> <span class="n">pages</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">hello</span><span class="o">-</span><span class="n">world</span><span class="p">.</span><span class="n">md</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">test</span><span class="o">-</span><span class="n">flatpages</span><span class="p">.</span><span class="n">md</span>
+<span class="err">├──</span> <span class="k">static</span>
+<span class="err">└──</span> <span class="n">templates</span>
+    <span class="err">├──</span> <span class="n">base</span><span class="p">.</span><span class="n">html</span>
+    <span class="err">├──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>
+    <span class="err">└──</span> <span class="n">page</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

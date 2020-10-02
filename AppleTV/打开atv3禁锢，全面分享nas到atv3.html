@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>打开ATV3禁锢，全面分享NAS到ATV3 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#AppleTV">AppleTV</a>&nbsp;&#187;&nbsp;打开ATV3禁锢，全面分享NAS到ATV3
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:54
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">打开ATV3禁锢，全面分享NAS到ATV3</div>
+
+  <p>感谢威锋的ttvast通过劫持DNS实现了ATV3的一系列功能，当然这里要用到就是后来推出个人服务器功能。</p>
+<p>DNS劫持方法很好设置，在ATV的设置》》通用》》网络》》TCP网络设置，设置为固定IP，然后修改DNS即可，可以用的DNS如下：</p>
+<div class="hlcode"><pre><span class="mf">180.153.225.136</span>
+</pre></div>
+
+
+<p>好了，我们下面开始：</p>
+<p>DSM打开web服务</p>
+<p><a href="http://lszb811.qiniudn.com/na1.jpg"><img alt="" src="http://lszb811.qiniudn.com/na1.jpg" /></a></p>
+<p>开启即可</p>
+<p><a href="http://lszb811.qiniudn.com/na2.jpg"><img alt="" src="http://lszb811.qiniudn.com/na2.jpg" /></a></p>
+<p>打开File Station，在web目录下建立atv目录</p>
+<p><a href="http://lszb811.qiniudn.com/na3.jpg"><img alt="" src="http://lszb811.qiniudn.com/na3.jpg" /></a></p>
+<p>在atv目录下建立photo, music, video子目录</p>
+<p><a href="http://lszb811.qiniudn.com/na4.jpg"><img alt="" src="http://lszb811.qiniudn.com/na4.jpg" /></a></p>
+<p>telnet到你的NAS（telnet不熟悉的朋友百度一下aria2的教程部分）</p>
+<p><a href="http://lszb811.qiniudn.com/na5.jpg"><img alt="" src="http://lszb811.qiniudn.com/na5.jpg" /></a></p>
+<p>分别输入代码：</p>
+<div class="hlcode"><pre><span class="n">mount</span> <span class="o">--</span><span class="n">blind</span> <span class="o">/</span><span class="n">volume1</span><span class="o">/</span><span class="n">photo</span> <span class="o">/</span><span class="n">volume1</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">atv</span><span class="o">/</span><span class="n">photo</span>
+</pre></div>
+
+
+<p><a href="http://lszb811.qiniudn.com/na6.jpg"><img alt="" src="http://lszb811.qiniudn.com/na6.jpg" /></a>  </p>
+<div class="hlcode"><pre><span class="n">mount</span> <span class="o">--</span><span class="n">blind</span> <span class="o">/</span><span class="n">volume1</span><span class="o">/</span><span class="n">music</span> <span class="o">/</span><span class="n">volume1</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">atv</span><span class="o">/</span><span class="n">music</span>
+
+
+<span class="n">mount</span> <span class="o">--</span><span class="n">blind</span> <span class="o">/</span><span class="n">volume1</span><span class="o">/</span><span class="n">video</span> <span class="o">/</span><span class="n">volume1</span><span class="o">/</span><span class="n">web</span><span class="o">/</span><span class="n">atv</span><span class="o">/</span><span class="n">video</span>
+</pre></div>
+
+
+<p><a href="http://lszb811.qiniudn.com/na7.jpg"><img alt="" src="http://lszb811.qiniudn.com/na7.jpg" /></a></p>
+<p>再进入file station看看atv下面的子目录，已经完全和你默认video目录映射好了</p>
+<p><a href="http://lszb811.qiniudn.com/na8.jpg"><img alt="" src="http://lszb811.qiniudn.com/na8.jpg" /></a></p>
+<p>下面要用到一个小附件：</p>
+<p>下载解压后放置到如下图的位置</p>
+<p><a href="http://lszb811.qiniudn.com/na9.jpg"><img alt="" src="http://lszb811.qiniudn.com/na9.jpg" /></a></p>
+<p>ok，NAS端我们就设置完成了。下面进入ATV<br />
+设置好DNS以后，默认的预告片就被劫持了</p>
+<p><a href="http://lszb811.qiniudn.com/na10.jpg"><img alt="" src="http://lszb811.qiniudn.com/na10.jpg" /></a></p>
+<p>进入预告片，再进入个人部分</p>
+<p><a href="http://lszb811.qiniudn.com/na11.jpg"><img alt="" src="http://lszb811.qiniudn.com/na11.jpg" /></a></p>
+<p>注册账号</p>
+<p><a href="http://lszb811.qiniudn.com/na12.jpg"><img alt="" src="http://lszb811.qiniudn.com/na12.jpg" /></a></p>
+<p>然后打开下面网址：</p>
+<p><a href="http://www.atvttvv.net/">http://www.atvttvv.net/</a></p>
+<p>用你注册好的账户登录</p>
+<p><a href="http://lszb811.qiniudn.com/na13.jpg"><img alt="" src="http://lszb811.qiniudn.com/na13.jpg" /></a></p>
+<p>全部设置完成，使用很简单，看我下面视频的使用方法</p>
+<p><a href="http://player.youku.com/player.php/sid/XNDc5Nzc1ODMy/v.swf">http://player.youku.com/player.php/sid/XNDc5Nzc1ODMy/v.swf</a></p>
+<blockquote>
+<p>小节：</p>
+</blockquote>
+<ol>
+<li>目前可以支持照片，音乐，视频浏览</li>
+<li>音乐支持MP3</li>
+<li>视频目前支持MP4</li>
+</ol>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

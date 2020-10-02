@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>SVN 常用资源 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Resources">Resources</a>&nbsp;&#187;&nbsp;SVN 常用资源
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 07:13
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">SVN 常用资源</div>
+
+  <h2 id="_1">常用指令</h2>
+<h3 id="checkout">将文件checkout到本地目录</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">checkout</span> <span class="n">path</span><span class="err">（</span><span class="n">path</span><span class="err">是服务器上的目录）</span>
+<span class="n">svn</span> <span class="n">checkout</span> <span class="n">svn</span><span class="o">:</span><span class="c1">//192.168.1.1/pro/domain</span>
+<span class="n">svn</span> <span class="n">co</span>
+</pre></div>
+
+
+<h3 id="_2">往版本库中添加新的文件</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">add</span> <span class="n">file</span>
+<span class="n">svn</span> <span class="n">add</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span><span class="p">(</span><span class="err">添加</span><span class="n">test</span><span class="p">.</span><span class="n">php</span><span class="p">)</span>
+<span class="n">svn</span> <span class="n">add</span> <span class="o">*</span><span class="p">.</span><span class="n">php</span><span class="p">(</span><span class="err">添加当前目录下所有的</span><span class="n">php</span><span class="err">文件</span><span class="p">)</span>
+<span class="n">svn</span> <span class="n">add</span> <span class="o">*</span><span class="p">.</span><span class="n">php</span> <span class="o">--</span><span class="n">force</span><span class="p">(</span><span class="err">增加所有文件</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="_3">将改动的文件提交到版本库</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">“</span><span class="n">LogMessage</span><span class="err">“</span> <span class="p">[</span><span class="o">-</span><span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">unlock</span><span class="p">]</span> <span class="n">PATH</span><span class="p">(</span><span class="err">如果选择了保持锁，就使用–</span><span class="n">no</span><span class="o">-</span><span class="n">unlock</span><span class="err">开关</span><span class="p">)</span>
+<span class="n">svn</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">“</span><span class="n">add</span> <span class="n">test</span> <span class="n">file</span> <span class="k">for</span> <span class="n">my</span> <span class="n">test</span><span class="err">“</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span>
+<span class="n">svn</span> <span class="n">ci</span>
+</pre></div>
+
+
+<h3 id="_4">加锁/解锁</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">lock</span> <span class="o">-</span><span class="n">m</span> <span class="err">“</span><span class="n">LockMessage</span><span class="err">“</span> <span class="p">[</span><span class="o">--</span><span class="n">force</span><span class="p">]</span> <span class="n">PATH</span>
+<span class="n">svn</span> <span class="n">lock</span> <span class="o">-</span><span class="n">m</span> <span class="err">“</span><span class="n">lock</span> <span class="n">test</span> <span class="n">file</span><span class="err">“</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span>
+<span class="n">svn</span> <span class="n">unlock</span> <span class="n">PATH</span>
+</pre></div>
+
+
+<h3 id="_5">更新到某个版本</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">update</span> <span class="o">-</span><span class="n">r</span> <span class="n">m</span> <span class="n">path</span>
+<span class="n">svn</span> <span class="n">update</span> <span class="err">如果后面没有目录，默认将当前目录以及子目录下的所有文件都更新到最新版本。</span>
+<span class="n">svn</span> <span class="n">update</span> <span class="o">-</span><span class="n">r</span> <span class="mi">200</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span><span class="p">(</span><span class="err">将版本库中的文件</span><span class="n">test</span><span class="p">.</span><span class="n">php</span><span class="err">还原到版本</span><span class="mi">200</span><span class="p">)</span>
+
+<span class="n">svn</span> <span class="n">update</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span><span class="p">(</span><span class="err">更新，于版本库同步。如果在提交的时候提示过期的话，是因为冲突，需要先</span><span class="n">update</span><span class="err">，修改文件，然后清除</span><span class="n">svn</span> <span class="n">resolved</span><span class="err">，最后再提交</span><span class="n">commit</span><span class="p">)</span>
+
+<span class="n">svn</span> <span class="n">up</span>
+</pre></div>
+
+
+<h3 id="_6">查看文件或者目录状态</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">status</span> <span class="n">path</span><span class="err">（目录下的文件和子目录的状态，正常状态不显示）</span>
+<span class="err">【</span><span class="o">?</span><span class="err">：不在</span><span class="n">svn</span><span class="err">的控制中；</span><span class="n">M</span><span class="err">：内容被修改；</span><span class="n">C</span><span class="err">：发生冲突；</span><span class="n">A</span><span class="err">：预定加入到版本库；</span><span class="n">K</span><span class="err">：被锁定】</span>
+
+<span class="n">svn</span> <span class="n">status</span> <span class="o">-</span><span class="n">v</span> <span class="n">path</span><span class="p">(</span><span class="err">显示文件和子目录状态</span><span class="p">)</span>
+<span class="err">第一列保持相同，第二列显示工作版本号，第三和第四列显示最后一次修改的版本号和修改人。</span>
+
+<span class="err">注：</span><span class="n">svn</span> <span class="n">status</span><span class="err">、</span><span class="n">svn</span> <span class="n">diff</span><span class="err">和</span> <span class="n">svn</span> <span class="n">revert</span><span class="err">这三条命令在没有网络的情况下也可以执行的，原因是</span><span class="n">svn</span><span class="err">在本地的</span><span class="p">.</span><span class="n">svn</span><span class="err">中保留了本地版本的原始拷贝。</span>
+
+<span class="n">svn</span> <span class="n">st</span>
+</pre></div>
+
+
+<h3 id="_7">删除文件</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">delete</span> <span class="n">path</span> <span class="o">-</span><span class="n">m</span> <span class="err">“</span><span class="n">delete</span> <span class="n">test</span> <span class="n">fle</span><span class="err">“</span>
+<span class="n">svn</span> <span class="n">delete</span> <span class="n">svn</span><span class="o">:</span><span class="c1">//192.168.1.1/pro/domain/test.php -m “delete test file”</span>
+<span class="err">或者直接</span><span class="n">svn</span> <span class="n">delete</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span> <span class="err">然后再</span><span class="n">svn</span> <span class="n">ci</span> <span class="o">-</span><span class="n">m</span> <span class="err">‘</span><span class="n">delete</span> <span class="n">test</span> <span class="n">file</span><span class="err">‘，推荐使用这种</span>
+<span class="n">svn</span> <span class="p">(</span><span class="n">del</span><span class="p">,</span> <span class="n">remove</span><span class="p">,</span> <span class="n">rm</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="_8">查看日志</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">log</span> <span class="n">path</span> 
+<span class="n">svn</span> <span class="n">log</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span> <span class="err">显示这个文件的所有修改记录，及其版本号的变化</span>
+</pre></div>
+
+
+<h3 id="_9">查看文件详细信息</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">info</span> <span class="n">path</span>
+<span class="n">svn</span> <span class="n">info</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span>
+</pre></div>
+
+
+<h3 id="_10">比较差异</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">diff</span> <span class="n">path</span><span class="p">(</span><span class="err">将修改的文件与基础版本比较</span><span class="p">)</span>
+<span class="n">svn</span> <span class="n">diff</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span>
+<span class="n">svn</span> <span class="n">diff</span> <span class="o">-</span><span class="n">r</span> <span class="n">m</span><span class="o">:</span><span class="n">n</span> <span class="n">path</span><span class="p">(</span><span class="err">对版本</span><span class="n">m</span><span class="err">和版本</span><span class="n">n</span><span class="err">比较差异</span><span class="p">)</span>
+<span class="n">svn</span> <span class="n">diff</span> <span class="o">-</span><span class="n">r</span> <span class="mi">200</span><span class="o">:</span><span class="mi">201</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span>
+<span class="n">svn</span> <span class="n">di</span>
+</pre></div>
+
+
+<h3 id="_11">将两个版本之间的差异合并到当前文件</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">merge</span> <span class="o">-</span><span class="n">r</span> <span class="n">m</span><span class="o">:</span><span class="n">n</span> <span class="n">path</span>
+<span class="n">svn</span> <span class="n">merge</span> <span class="o">-</span><span class="n">r</span> <span class="mi">200</span><span class="o">:</span><span class="mi">205</span> <span class="n">test</span><span class="p">.</span><span class="n">php</span><span class="err">（将版本</span><span class="mi">200</span><span class="err">与</span><span class="mi">205</span><span class="err">之间的差异合并到当前文件，但是一般都会产生冲突，需要处理一下）</span>
+</pre></div>
+
+
+<h3 id="svn">SVN 帮助</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">help</span>
+<span class="n">svn</span> <span class="n">help</span> <span class="n">ci</span>
+</pre></div>
+
+
+<h3 id="_12">版本库下的文件和目录列表</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">list</span> <span class="n">path</span> 
+<span class="n">svn</span> <span class="n">ls</span>
+</pre></div>
+
+
+<h3 id="_13">创建纳入版本控制下的新目录</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">mkdir</span><span class="o">:</span> <span class="err">创建纳入版本控制下的新目录。</span>
+<span class="n">mkdir</span> <span class="n">PATH</span><span class="err">…</span>
+<span class="n">mkdir</span> <span class="n">URL</span><span class="err">…</span>
+
+<span class="err">创建版本控制的目录。</span>
+
+<span class="mi">1</span><span class="err">、每一个以工作副本</span> <span class="n">PATH</span> <span class="err">指定的目录，都会创建在本地端，并且加入新增调度，以待下一次的提交。</span>
+<span class="mi">2</span><span class="err">、每个以</span><span class="n">URL</span><span class="err">指定的目录，都会透过立即提交于仓库中创建</span><span class="p">.</span><span class="err">在这两个情况下，所有的中间目录都必须事先存在。</span>
+</pre></div>
+
+
+<h3 id="_14">恢复本地修改</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">revert</span><span class="o">:</span> <span class="err">恢复原始未改变的工作副本文件</span> <span class="p">(</span><span class="err">恢复大部份的本地修改</span><span class="p">)</span><span class="err">。</span><span class="n">revert</span><span class="o">:</span>
+<span class="err">用法</span><span class="o">:</span> <span class="n">revert</span> <span class="n">PATH</span><span class="err">…</span>
+<span class="err">注意</span><span class="o">:</span> <span class="err">本子命令不会存取网络，并且会解除冲突的状况。但是它不会恢复被删除的目录</span>
+</pre></div>
+
+
+<h3 id="url">代码库URL变更</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="k">switch</span> <span class="p">(</span><span class="n">sw</span><span class="p">)</span><span class="o">:</span> <span class="err">更新工作副本至不同的</span><span class="n">URL</span><span class="err">。</span>
+
+<span class="mi">1</span><span class="err">、</span><span class="k">switch</span> <span class="n">URL</span> <span class="p">[</span><span class="n">PATH</span><span class="p">]</span>
+<span class="mi">2</span><span class="err">、</span><span class="k">switch</span> <span class="err">–</span><span class="n">relocate</span> <span class="n">FROM</span> <span class="n">TO</span> <span class="p">[</span><span class="n">PATH</span><span class="p">...]</span>
+<span class="mi">1</span><span class="err">、更新你的工作副本，映射到一个新的</span><span class="n">URL</span><span class="err">，其行为跟“</span><span class="n">svn</span> <span class="n">update</span><span class="err">”很像，也会将服务器上文件与本地文件合并。这是将工作副本对应到同一仓库中某个分支或者标记的方法。</span>
+
+<span class="mi">2</span><span class="err">、改写工作副本的</span><span class="n">URL</span><span class="err">元数据，以反映单纯的</span><span class="n">URL</span><span class="err">上的改变。当仓库的根</span><span class="n">URL</span><span class="err">变动</span><span class="p">(</span><span class="err">比如方案名或是主机名称变动</span><span class="p">)</span><span class="err">，但是工作副本仍旧对映到同一仓库的同一目录时使用这个命令更新工作副本与仓库的对应关系。</span>
+</pre></div>
+
+
+<h3 id="_15">解决冲突</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">resolved</span><span class="o">:</span> <span class="err">移除工作副本的目录或文件的“冲突”状态。</span> <span class="n">java</span><span class="err">设计模式之——策略模式</span>
+<span class="err">用法</span><span class="o">:</span> <span class="n">resolved</span> <span class="n">PATH</span><span class="err">…</span>
+<span class="err">注意</span><span class="o">:</span> <span class="err">本子命令不会依语法来解决冲突或是移除冲突标记；它只是移除冲突的相关文件，然后让</span> <span class="n">PATH</span> <span class="err">可以再次提交。</span>
+</pre></div>
+
+
+<h3 id="url_1">输出指定文件或URL的内容。</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">cat</span> <span class="err">目标</span><span class="p">[</span><span class="err">@版本</span><span class="p">]</span><span class="err">…如果指定了版本，将从指定的版本开始查找。</span>
+<span class="n">svn</span> <span class="n">cat</span> <span class="o">-</span><span class="n">r</span> <span class="n">PREV</span> <span class="n">filename</span> <span class="o">&gt;</span> <span class="n">filename</span> <span class="p">(</span><span class="n">PREV</span> <span class="err">是上一版本</span><span class="p">,</span><span class="err">也可以写具体版本号</span><span class="p">,</span><span class="err">这样输出结果是可以提交的</span><span class="p">)</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

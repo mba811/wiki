@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>深入浅出Mesos - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;深入浅出Mesos
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 04:40
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">深入浅出Mesos</div>
+
+  <h1 id="_1">（一）：为软件定义数据中心而生的操作系统</h1>
+<p>【编者按】Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。InfoQ接下来将会策划系列文章来为读者剖析Mesos。本文是整个系列的第一篇，简单介绍了Mesos的背景、历史以及架构。</p>
+<p>注：本文翻译自<a href="http://cloudarchitectmusings.com/2015/03/23/apache-mesos-the-true-os-for-the-software-defined-data-center/">Cloud Architect Musings</a>，InfoQ中文站在获得作者授权的基础上对文章进行了翻译。</p>
+<hr />
+<p>我讨厌“软件定义数据中心（SDDC）”这个词，并不是因为我质疑这个概念，而是我发现很多公司都对这个词有误用，他们甚至直接把这个词拿来套用，并急于把自己定位为下一代数据中心的创新者。具体来说，我认为，在商用x86硬件上运行软件（应用）并不是什么SDDC解决方案，它也不具备虚拟化硬件到资源池的能力。真正的SDDC底层基础架构应该可以从运行于其上的应用程序中抽象出来，并根据应用程序不断变化的需求，动态且自动地分配、重新分配应用程序，然后运行于数据中心的不同组件之中。</p>
+<p>相关厂商内容</p>
+<h3 id="_2"><a href="http://www.infoq.com/infoq/url.action?i=7152&amp;t=f">大数据驱动的金融业务创新</a></h3>
+<h3 id="_3"><a href="http://www.infoq.com/infoq/url.action?i=7153&amp;t=f">华为团队构建与体系变革的创新模式</a></h3>
+<h3 id="_4"><a href="http://www.infoq.com/infoq/url.action?i=7154&amp;t=f">腾讯代码管理平台架构和开源实践</a></h3>
+<h3 id="ibmdocker"><a href="http://www.infoq.com/cn/vendorcontent/show.action?vcr=3261&amp;utm_source=infoq&amp;utm_medium=VCR&amp;utm_campaign=vcr_articles_click">IBM借助Docker容器技术解决应用云迁移挑战</a></h3>
+<h3 id="openstackdockerpworld"><a href="http://www.infoq.com/cn/vendorcontent/show.action?vcr=3232&amp;utm_source=infoq&amp;utm_medium=VCR&amp;utm_campaign=vcr_articles_click">微服务架构、OpenStack、大数据平台、Docker等热门话题邀您参与PWorld！</a></h3>
+<p>相关赞助商</p>
+<p><a href="http://www.infoq.com/infoq/url.action?i=7081&amp;t=f"><img alt="" src="http://cdn.infoqstatic.com/statics_s2_20150522-0054u2/resource/sponsorship/featuredcategory/7730/VCR%20Box.jpg" /></a></p>
+<p>全球架构师峰会，7月17日-18日，深圳大梅沙京基海湾大酒店。<a href="http://www.infoq.com/infoq/url.action?i=7208&amp;t=f">马上报名</a>。</p>
+<p>这就是为什么我一直兴奋地要在后面介绍Mesos，一个Apache开源项目。为什么我对Mesos如此兴奋？回想x86虚拟化之初对数据中心曾经的承诺：通过增加服务器利用率使其更高效，通过从物理基础架构抽象应用使其更敏捷。虽然收获颇丰，但是以虚拟机为单位，粒度仍不够精细，如果应用程序都过于庞大，那就难以充分实现这一承诺。如今，飞速发展的容器技术、分布式应用程序和微服务技术正悄然改变着我们对数据中心的运行和管理方式。</p>
+<p>试想，可否整合数据中心中的所有资源，并将它们放在一个大的虚拟池里，代替单独的物理服务器；然后开放诸如CPU、内存和I/O这些基本资源而不是虚拟机？同样，可否把应用程序拆分成小的、隔离的任务单位，从而根据数据中心应用的需求，从虚拟数据中心池中动态分配任务资源？就像操作系统将PC的处理器和RAM放入资源池，使其可以为不同的进程协调分配和释放资源。进一步讲，我们可以把Mesos作为操作系统内核，然后将数据中心看为PC。这也是正是我想说的：Mesos正在改变数据中心，它让真正的SDDC成为现实。</p>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s2_20150522-0054u2/resource/articles/analyse-mesos-part-01/zh/resources/0413010.png" /></p>
+<p>接下来我先介绍下Mesos的历史。Mesos的起源于Google的数据中心资源管理系统Borg。你可以从WIRED杂志的<a href="http://www.wired.com/2013/03/google-borg-twitter-mesos/">这篇文章</a>中了解更多关于Borg起源的信息及它对Mesos影响。Twitter从Google的Borg系统中得到启发，然后就开发一个类似的资源管理系统来帮助他们摆脱可怕的“失败之鲸”（译者注：见上图）。后来他们注意到加州大学伯克利分校AMPLab正在开发的名为Mesos的项目，这个项目的负责人是Ben Hindman，Ben是加州大学伯克利分校的博士研究生。后来Ben Hindman加入了Twitter，负责开发和部署Mesos。现在Mesos管理着Twitter超过30,0000台服务器上的应用部署，“失败之鲸”已成往事。其他公司纷至沓来，也部署了Mesos，比如Airbnb（空中食宿网）、eBay（电子港湾）和Netflix。</p>
+<p>Mesos是如何让Twitter和Airbnb这样的公司，通过数据中心资源更高效的管理系统，扩展应用的呢？我们从一个相当简单但很优雅的两级调度架构开始说起。</p>
+<p><a href="http://cdn.infoqstatic.com/statics_s2_20150522-0054u2/resource/articles/analyse-mesos-part-01/zh/resources/0413011.jpg"><img alt="" src="http://cdn.infoqstatic.com/statics_s2_20150522-0054u2/resource/articles/analyse-mesos-part-01/zh/resources/0413011.jpg" /></a></p>
+<p>上图修改自Apache Mesos网站上的图片，如图所示，Mesos实现了两级调度架构，它可以管理多种类型的应用程序。第一级调度是Master的守护进程，管理Mesos集群中所有节点上运行的Slave守护进程。集群由物理服务器或虚拟服务器组成，用于运行应用程序的任务，比如Hadoop和MPI作业。第二级调度由被称作Framework的“组件”组成。Framework包括调度器（Scheduler）和执行器（Executor）进程，其中每个节点上都会运行执行器。Mesos能和不同类型的Framework通信，每种Framework由相应的应用集群管理。上图中只展示了Hadoop和MPI两种类型，其它类型的应用程序也有相应的Framework。</p>
+<p>Mesos Master协调全部的Slave，并确定每个节点的可用资源，<br />
+聚合计算跨节点的所有可用资源的报告，然后向注册到Master的Framework（作为Master的客户端）发出资源邀约。Framework可以根据应用程序的需求，选择接受或拒绝来自master的资源邀约。一旦接受邀约，Master即协调Framework和Slave，调度参与节点上任务，并在容器中执行，以使多种类型的任务，比如Hadoop和Cassandra，可以在同一个节点上同时运行。</p>
+<p>我将在接下来的文章中，详细介绍Mesos的体系结构和工作流。我认为，Mesos使用的两级调度架构以及算法、隔离技术让在同一个节点上运行多种不同类型的应用成为了现实，这才是数据中心的未来。正如我之前所述，这是到目前为止我所见过的，履行SDDC承诺最好的现成技术。</p>
+<p>我希望这篇介绍让你受用并吊起你了解Mesos的胃口。接下来，我将带你深入技术细节，教你一些上手方法，还会告诉你如何加入社区。</p>
+<p><strong>查看英文原文：</strong> <a href="http://cloudarchitectmusings.com/2015/03/23/apache-mesos-the-true-os-for-the-software-defined-data-center/">APACHE MESOS: THE TRUE OS FOR THE SOFTWARE DEFINED DATA CENTER?</a></p>
+<hr />
+<h1 id="mesos">（二）：Mesos的体系结构和工作流</h1>
+<p>【编者按】Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。InfoQ接下来将会策划系列文章来为读者剖析Mesos。本文是整个系列的第一篇，简单介绍了Mesos的背景、历史以及架构。</p>
+<p>注：本文翻译自<a href="http://cloudarchitectmusings.com/2015/03/23/apache-mesos-the-true-os-for-the-software-defined-data-center/">Cloud Architect Musings</a>，InfoQ中文站在获得作者授权的基础上对文章进行了翻译。</p>
+<hr />
+<p>在本系列的<a href="http://www.infoq.com/cn/articles/analyse-mesos-part-01">第一篇文章</a>中，我简单介绍了Apache Mesos的背景、架构，以及它在数据中心资源管理中的价值。本篇文章将深入剖析Mesos的技术细节和组件间的流程，以便大家更好地理解为什么Mesos是数据中心操作系统内核的重要候选者。文中所述的大部分技术细节都来自<a href="https://twitter.com/benh">Ben Hindman</a>团队2010年在加州大学伯克利分校时发表的<a href="http://mesos.berkeley.edu/mesos_tech_report.pdf">白皮书</a>。 顺便说一句，Hindman已经离开Twitter去了<a href="http://mesosphere.com/">Mesosphere</a>，着手建设并商业化以Mesos为核心的<a href="http://mesosphere.com/product/">数据中心操作系统</a>。在此，我将重点放在提炼白皮书的主要观点上，然后给出一些我对相关技术所产生的价值的思考。</p>
+<h3 id="mesos_1">Mesos流程</h3>
+<p>接着上一篇文章说。并结合前述的加州大学伯克利分校的白皮书以及<a href="http://mesos.apache.org/documentation/latest/mesos-architecture/">Apache Mesos网站</a>，开始我们的讲述：</p>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-02/zh/resources/mesos-framework-example.jpg" /></p>
+<p>我们来研究下上图的事件流程。上一篇谈到，Slave是运行在物理或虚拟服务器上的Mesos守护进程，是Mesos集群的一部分。Framework由调度器（Scheduler）应用程序和任务执行器（Executor）组成，被注册到Mesos以使用Mesos集群中的资源。</p>
+<ul>
+<li>Slave 1向Master汇报其空闲资源：4个CPU、4GB内存。然后，Master触发分配策略模块，得到的反馈是Framework 1要请求全部可用资源。</li>
+<li>Master向Framework 1发送资源邀约，描述了Slave 1上的可用资源。</li>
+<li>Framework的调度器（Scheduler）响应Master，需要在Slave上运行两个任务，第一个任务分配&lt;2 CPUs, 1 GB RAM&gt;资源，第二个任务分配&lt;1 CPUs, 2 GB RAM&gt;资源。</li>
+<li>最后，Master向Slave下发任务，分配适当的资源给Framework的任务执行器（Executor）,接下来由执行器启动这两个任务（如图中虚线框所示）。 此时，还有1个CPU和1GB的RAM尚未分配，因此分配模块可以将这些资源供给Framework 2。</li>
+</ul>
+<h3 id="_5">资源分配</h3>
+<p>为了实现在同一组Slave节点集合上运行多任务这一目标，Mesos使用了隔离模块， 该模块使用了一些应用和进程隔离机制来运行这些任务。 不足为奇的是，虽然可以使用虚拟机隔离实现隔离模块，但是Mesos当前模块支持的是容器隔离。 Mesos早在2009年就用上了Linux的容器技术，如cgroups和Solaris Zone，时至今日这些仍然是默认的。 然而，Mesos社区增加了Docker作为运行任务的隔离机制。 不管使用哪种隔离模块，为运行特定应用程序的任务，都需要将执行器全部打包，并在已经为该任务分配资源的Slave服务器上启动。 当任务执行完毕后，容器会被“销毁”，资源会被释放，以便可以执行其他任务。</p>
+<p>我们来更深入地研究一下资源邀约和分配策略，因为这对Mesos管理跨多个Framework和应用的资源，是不可或缺的。 我们前面提到资源邀约的概念，即由Master向注册其上的Framework发送资源邀约。 每次资源邀约包含一份Slave节点上可用的CPU、RAM等资源的列表。 Master提供这些资源给它的Framework，是基于分配策略的。分配策略对所有的Framework普遍适用，同时适用于特定的Framework。 Framework可以拒绝资源邀约，如果它不满足要求，若此，资源邀约随即可以发给其他Framework。 由Mesos管理的应用程序通常运行短周期的任务，因此这样可以快速释放资源，缓解Framework的资源饥饿； Slave定期向Master报告其可用资源，以便Master能够不断产生新的资源邀约。 另外，还可以使用诸如此类的技术， 每个Fraamework过滤不满足要求的资源邀约、Master主动废除给定周期内一直没有被接受的邀约。</p>
+<p>分配策略有助于Mesos Master判断是否应该把当前可用资源提供给特定的Framework，以及应该提供多少资源。 关于Mesos中使用资源分配以及可插拔的分配模块，实现非常细粒度的资源共享，会单独写一篇文章。 言归正传，Mesos实现了公平共享和严格优先级（这两个概念我会在资源分配那篇讲）分配模块， 确保大部分用例的最佳资源共享。已经实现的新分配模块可以处理大部分之外的用例。</p>
+<h3 id="_6">集大成者</h3>
+<p>现在来回答谈及Mesos时，“那又怎样”的问题。 对于我来说，令人兴奋的是Mesos集四大好处于一身（概述如下），正如我在前一篇文章中所述，我目测Mesos将为下一代数据中心的操作系统内核。</p>
+<ul>
+<li>效率 - 这是最显而易见的好处，也是Mesos社区和Mesosphere经常津津乐道的。</li>
+</ul>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-02/zh/resources/mesos-elastic-cea4da90b3c819bd96b3158da1a6f86b.jpg" /></p>
+<p>上图来自Mesosphere网站，描绘出Mesos为效率带来的好处。如今，在大多数数据中心中，服务器的静态分区是常态，即使使用最新的应用程序，如Hadoop。这时常令人担忧的是，当不同的应用程序使用相同的节点时，调度相互冲突，可用资源互相争抢。静态分区本质上是低效的，因为经常会面临，其中一个分区已经资源耗尽，而另一个分区的资源却没有得到充分利用，而且没有什么简单的方法能跨分区集群重新分配资源。使用Mesos资源管理器仲裁不同的调度器，我们将进入动态分区/弹性共享的模式，所有应用程序都可以使用节点的公共池，安全地、最大化地利用资源。 一个经常被引用的例子是Slave节点通常运行Hadoop作业，在Slave空闲阶段，动态分配给他们运行批处理作业，反之亦然。 值得一提的是，这其中的某些环节可以通过虚拟化技术，如VMware vSphere的<a href="http://wordpress.redirectingat.com/?id=725X1342&amp;site=varchitectthoughts.wordpress.com&amp;xs=1&amp;isjs=1&amp;url=http%3A%2F%2Fwww.vmware.com%2Fproducts%2Fvsphere%2Ffeatures%2Fdrs-dpm&amp;xguid=1d9204bd07663e5f9ea0dd30373503c1&amp;xuuid=2fd1c0d399d172da1ffd0c4fecbff774&amp;xsessid=e67353eeda490b34a26e2fb37a2d7517&amp;xcreo=0&amp;xed=0&amp;sref=http%3A%2F%2Fcloudarchitectmusings.com%2F2015%2F03%2F26%2Fdigging-deeper-into-apache-mesos%2F&amp;xtz=-480">分布式资源调度（DRS）</a>来完成。 然而，Mesos具有更精细的粒度，因为Mesos在应用层而不是机器层分配资源，通过容器而不是整个虚拟机（VM）分配任务。 前者能够为每个应用程序的特殊需求做考量，应用程序的调度器知道最有效地利用资源; 后者能够更好地“装箱”，运行一个任务，没有必要实例化一整个虚拟机，其所需的进程和二进制文件足矣。</p>
+<ul>
+<li>
+<p>敏捷 - 与效率和利用率密切相关，这实际上是我认为最重要的好处。 往往，效率解决的是“如何花最少的钱最大化数据中心的资源”，而敏捷解决的是“如何快速用上手头的资源。” 正如我和我的同事<a href="https://twitter.com/vmtyler">Tyler Britten</a>经常指出，IT的存在是帮助企业赚钱和省钱的；那么如何通过技术帮助我们迅速创收，是我们要达到的重要指标。 这意味着要确保关键应用程序不能耗尽所需资源，因为我们无法为应用提供足够的基础设施，特别是在数据中心的其他地方都的资源是收费情况下。</p>
+</li>
+<li>
+<p>可扩展性 - 为可扩展而设计，这是我真心欣赏Mesos架构的地方。 这一重要属性使数据可以指数级增长、分布式应用可以水平扩展。 我们的发展已经远远超出了使用巨大的整体调度器或者限定群集节点数量为64的时代，足矣承载新形式的应用扩张。</p>
+</li>
+</ul>
+<p>Mesos可扩展设计的关键之处是采用两级调度架构。 使用Framework代理任务的实际调度，Master可以用非常轻量级的代码实现，更易于扩展集群发展的规模。 因为Master不必知道所支持的每种类型的应用程序背后复杂的调度逻辑。 此外，由于Master不必为每个任务做调度，因此不会成为容量的性能瓶颈，而这在为每个任务或者虚拟机做调度的整体调度器中经常发生。</p>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-02/zh/resources/mesos-arch1.jpg" /></p>
+<ul>
+<li>模块化 - 对我来说，预测任何开源技术的健康发展，很大程度上取决于围绕该项目的生态系统。 我认为Mesos项目前景很好，因为其设计具有包容性，可以将功能插件化，比如分配策略、隔离机制和Framework。将容器技术，比如Docker和Rocket插件化的好处是显而易见。但是我想在此强调的是围绕Framework建设的生态系统。将任务调度委托给Framework应用程序，以及采用插件架构，通过Mesos这样的设计，社区创造了能够让Mesos问鼎数据中心资源管理的生态系统。因为每接入一种新的Framework，Master无需为此编码，Slave模块可以复用，使得在Mesos所支持的宽泛领域中，业务迅速增长。相反，开发者可以专注于他们的应用和Framework的选择。 当前而且还在不断地增长着的Mesos Framework列表参见<a href="http://mesos.apache.org/documentation/latest/mesos-frameworks/">此处</a>以及下图：</li>
+</ul>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-02/zh/resources/mesos_frameworks.png" /></p>
+<h2 id="_7">总结</h2>
+<p>在接下来的文章中，我将更深入到资源分配模块，并解释如何在Mesos栈的各级上实现容错。 同时，我很期待读者的反馈，特别是关于如果我打标的地方，如果你发现哪里不对，请反馈给我。 我也会在<a href="https://twitter.com/hui_kenneth">Twitter</a>响应你的反馈，请关注 @hui_kenneth。</p>
+<p>下一篇是关于Mesos的持久性存储和容错的。</p>
+<p><strong>查看英文原文：</strong> <a href="http://cloudarchitectmusings.com/2015/03/26/digging-deeper-into-apache-mesos/">DIGGING DEEPER INTO APACHE MESOS</a></p>
+<h1 id="_8">（三）：持久化存储和容错</h1>
+<p>【编者按】Mesos是Apache下的开源分布式资源管理框架，它被称为是分布式系统的内核。Mesos最初是由加州大学伯克利分校的AMPLab开发的，后在Twitter得到广泛使用。InfoQ接下来将会策划系列文章来为读者剖析Mesos。本文是整个系列的第一篇，简单介绍了Mesos的背景、历史以及架构。</p>
+<p>注：本文翻译自<a href="http://cloudarchitectmusings.com/2015/03/23/apache-mesos-the-true-os-for-the-software-defined-data-center/">Cloud Architect Musings</a>，InfoQ中文站在获得作者授权的基础上对文章进行了翻译。</p>
+<hr />
+<p>在深入浅出Mesos系列的<a href="http://www.infoq.com/cn/articles/analyse-mesos-part-01">第一篇文章</a>中，我对相关的技术做了简要概述，在<a href="http://www.infoq.com/cn/articles/analyse-mesos-part-02">第二篇</a>文章中，我深入介绍了Mesos的架构。完成第二篇文章之后，我本想开始着手写一篇Mesos如何处理资源分配的文章。不过，我收到一些读者的反馈，于是决定在谈资源分配之前，先完成这篇关于Mesos持久化存储和容错的文章。</p>
+<h2 id="_9">持久化存储的问题</h2>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-03/zh/resources/screen-shot-2015-03-30-at-10-22-52-am.png" /></p>
+<p>正如我在前文中讨论过的，使用Mesos的主要好处是可以在同一组计算节点集合上运行多种类型的应用程序（调度以及通过Framework初始化任务）。这些任务使用隔离模块（目前是某些类型的容器技术）从实际节点中抽象出来，以便它们可以根据需要在不同的节点上移动和重新启动。</p>
+<p>由此我们会思考一个问题，Mesos是如何处理持久化存储的呢？如果我在运行一个数据库作业，Mesos如何确保当任务被调度时，分配的节点可以访问其所需的数据？如图所示，在Hindman的示例中，使用Hadoop文件系统（HDFS）作为Mesos的持久层，这是HDFS常见的使用方式，也是Mesos的执行器传递分配指定任务的配置数据给Slave经常使用的方式。实际上，Mesos的持久化存储可以使用多种类型的文件系统，HDFS只是其中之一，但也是Mesos最经常使用的，它使得Mesos具备了与高性能计算的亲缘关系。其实Mesos可以有多种选择来处理持久化存储的问题：</p>
+<ul>
+<li>
+<p><strong>分布式文件系统</strong>。如上所述，Mesos可以使用DFS（比如HDFS或者Lustre）来保证数据可以被Mesos集群中的每个节点访问。这种方式的缺点是会有网络延迟，对于某些应用程序来说，这样的网络文件系统或许并不适合。</p>
+</li>
+<li>
+<p><strong>使用数据存储复制的本地文件系统</strong>。另一种方法是利用应用程序级别的复制来确保数据可被多个节点访问。提供数据存储复制的应用程序可以是NoSQL数据库，比如Cassandra和MongoDB。这种方式的优点是不再需要考虑网络延迟问题。缺点是必须配置Mesos，使特定的任务只运行在持有复制数据的节点上，因为你不会希望数据中心的所有节点都复制相同的数据。为此，可以使用一个Framework，静态地为其预留特定的节点作为复制数据的存储。</p>
+</li>
+</ul>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-03/zh/resources/multi-data-center-title-image.png" /></p>
+<ul>
+<li><strong>不使用复制的本地文件系统</strong>。也可以将持久化数据存储在指定节点的文件系统上，并且将该节点预留给指定的应用程序。和前面的选择一样，可以静态地为指定应用程序预留节点，但此时只能预留给单个节点而不是节点集合。后面两种显然不是理想的选择，因为实质上都需要创建静态分区。然而，在不允许延时或者应用程序不能复制它的数据存储等特殊情况下，我们需要这样的选择。</li>
+</ul>
+<p>Mesos项目还在发展中，它会定期增加新功能。现在我已经发现了两个可以帮助解决持久化存储问题的新特性：</p>
+<ul>
+<li>
+<p><strong>动态预留</strong>。Framework可以使用这个功能框架保留指定的资源，比如持久化存储，以便在需要启动另一个任务时，资源邀约只会发送给那个Framework。这可以在单节点和节点集合中结合使用Framework配置，访问永久化数据存储。关于这个建议的功能的更多信息可以从<a href="https://issues.apache.org/jira/browse/MESOS-2018">此处</a>获得。</p>
+</li>
+<li>
+<p><strong>持久化卷</strong>。该功能可以创建一个卷，作为Slave节点上任务的一部分被启动，即使在任务完成后其持久化依然存在。Mesos为需要访问相同的数据后续任务，提供在可以访问该持久化卷的节点集合上相同的Framework来初始化。关于这个建议的功能的更多信息可以从<a href="https://issues.apache.org/jira/browse/MESOS-1554">此处</a>获得。</p>
+</li>
+</ul>
+<h2 id="_10">容错</h2>
+<p>接下来，我们来谈谈Mesos在其协议栈上是如何提供容错能力的。恕我直言，Mesos的优势之一便是将容错设计到架构之中，并以可扩展的分布式系统的方式来实现。</p>
+<ul>
+<li><strong>Master</strong>。故障处理机制和特定的架构设计实现了Master的容错。</li>
+</ul>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-03/zh/resources/screen-shot-2015-03-30-at-6-35-27-pm.png" /></p>
+<p>首先，Mesos决定使用热备份（hot-standby）设计来实现Master节点集合。正如Tomas Barton对上图的说明，一个Master节点与多个备用（standby）节点运行在同一集群中，并由开源软件Zookeeper来监控。Zookeeper会监控Master集群中所有的节点，并在Master节点发生故障时管理新Master的选举。建议的节点总数是5个，实际上，生产环境至少需要3个Master节点。 Mesos决定将Master设计为持有软件状态，这意味着当Master节点发生故障时，其状态可以很快地在新选举的Master节点上重建。 Mesos的状态信息实际上驻留在Framework调度器和Slave节点集合之中。当一个新的Master当选后，Zookeeper会通知Framework和选举后的Slave节点集合，以便使其在新的Master上注册。彼时，新的 Master可以根据Framework和Slave节点集合发送过来的信息，重建内部状态。</p>
+<ul>
+<li>
+<p><strong>Framework调度器</strong>。Framework调度器的容错是通过Framework将调度器注册2份或者更多份到Master来实现。当一个调度器发生故障时，Master会通知另一个调度来接管。需要注意的是Framework自身负责实现调度器之间共享状态的机制。</p>
+</li>
+<li>
+<p><strong>Slave</strong>。Mesos实现了Slave的恢复功能，当Slave节点上的进程失败时，可以让执行器/任务继续运行，并为那个Slave进程重新连接那台Slave节点上运行的执行器/任务。当任务执行时，Slave会将任务的监测点元数据存入本地磁盘。如果Slave进程失败，任务会继续运行，当Master重新启动Slave进程后，因为此时没有可以响应的消息，所以重新启动的Slave进程会使用检查点数据来恢复状态，并重新与执行器/任务连接。</p>
+</li>
+</ul>
+<p>如下情况则截然不同，计算节点上Slave正常运行而任务执行失败。在此，Master负责监控所有Slave节点的状态。</p>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-03/zh/resources/normal-ping-7b77b6172066677ecdb3c7ff21f7f4cf.png" /></p>
+<p>当计算节点/Slave节点无法响应多个连续的消息后，Master会从可用资源的列表中删除该节点，并会尝试关闭该节点。</p>
+<p><img alt="" src="http://cdn.infoqstatic.com/statics_s1_20150522-0054u2/resource/articles/analyse-mesos-part-03/zh/resources/failed-ping-528067fd05644e0469a245dca95fecd9.png" /></p>
+<p>然后，Master会向分配任务的Framework调度器汇报执行器/任务失败，并允许调度器根据其配置策略做任务失败处理。通常情况下，Framework会重新启动任务到新的Slave节点，假设它接收并接受来自Master的相应的资源邀约。</p>
+<ul>
+<li><strong>执行器/任务</strong>。与计算节点/Slave节点故障类似，Master会向分配任务的Framework调度器汇报执行器/任务失败，并允许调度器根据其配置策略在任务失败时做出相应的处理。通常情况下，Framework在接收并接受来自Master的相应的资源邀约后，会在新的Slave节点上重新启动任务。</li>
+</ul>
+<h2 id="_11">结论</h2>
+<p>在接下来的文章中，我将更深入到资源分配模块。同时，我非常期待读者的反馈，特别是关于如果我打标的地方，如果你发现哪里不对，请反馈给我。我非全知，虚心求教，所以期待读者的校正和启示。我也会在<a href="https://twitter.com/hui_kenneth">twitter</a>响应你的反馈，请关注 @hui_kenneth。</p>
+<p><strong>查看英文原文：</strong> <a href="http://cloudarchitectmusings.com/2015/03/31/dealing-with-persistent-storage-and-fault-tolerance-in-apache-mesos/">DEALING WITH PERSISTENT STORAGE AND FAULT TOLERANCE IN APACHE MESOS</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

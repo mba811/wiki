@@ -1,0 +1,215 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Node.js 清洗万恶的种子 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;Node.js 清洗万恶的种子
+    <span class="updated">Page Updated&nbsp;
+      2015-05-24 23:48
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Node.js 清洗万恶的种子</div>
+
+  <h2 id="_1">万恶的种子</h2>
+<p>torrent文件，又被称为种子，原来只是用于记录 bt下载当中所需信息的一种文件。但是随着互联网的极大发展，一些人士将一些邪恶的信息注入到了小小的 torrent文件当中，种子从此变成了邪恶的代名词。</p>
+<p>2012 年，一部名为 ABS-130 的日本影片引起了网络的震动，网络上纷纷出现了 “当初求种像条狗，如今*完嫌人丑”的现象，成为了 2012 年互联网的一件大事件。</p>
+<p>2014年，净网行动如火如荼地进行，各大互联网公司都作出了表率，一时之间XX云、X雷都把万恶的种子拒之门外。净网行动万岁！！（还我苍老师！！）</p>
+<p>各大网盘、下载应用都从种子当中提取关键信息，将种子拒之门外。这些关键信息究竟藏在哪里？让我们一探究竟。</p>
+<h2 id="_2">种子文件结构</h2>
+<p>以下内容来自维基百科</p>
+<blockquote>
+<p>.torrent种子文件本质上是文本文件，包含Tracker信息和文件信息两部分。Tracker信息主要是BT下载中需要用到的Tracker服务器的地址和针对Tracker服务器的设置，文件信息是根据对目标文件的计算生成的，计算结果根据BitTorrent协议内的Bencode规则进行编码。它的主要原理是需要把提供下载的文件虚拟分成大小相等的块，块大小必须为2k的整数次方（由于是虚拟分块，硬盘上并不产生各个块文件），并把每个块的索引信息和Hash验证码写入种子文件中；<strong>所以，种子文件就是被下载文件的“索引”</strong>。</p>
+</blockquote>
+<p><img alt="种子结构" src="http://acwongblog.qiniudn.com/2015-03_torrent-structure.PNG" /></p>
+<p>上图是一个典型种子的结构，那些被识别出来的<strong>邪恶关键字</strong>就藏在 name 和 file 当中。name 包含了该种子的名字，如：<em>abcd-123 性感XXXX</em>。而 file 当中的 path 则包含了要下载的所有文件的信息，如：_草X社区最新地址.txt_等等。</p>
+<h2 id="nodejs-parse-torrent">Node.js 和 parse-torrent 库</h2>
+<p>为了寻找出种子当中的邪恶信息我们请出了 Node.js 和 parse-torrent库 作为助手。</p>
+<p>实验准备：</p>
+<ul>
+<li>种子一枚</li>
+<li>安装 Node.js 电脑一台</li>
+</ul>
+<p>首先我们利用 npm 安装 parse-torrent 库，它帮助我们快速找到种子内的信息。</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">npm</span> <span class="n">install</span> <span class="n">parse</span><span class="o">-</span><span class="n">torrent</span>
+
+<span class="mi">1</span>
+
+<span class="mi">2</span>
+
+<span class="mi">3</span>
+
+<span class="mi">4</span>
+
+<span class="mi">5</span>
+
+<span class="n">var</span> <span class="n">fs</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s">&quot;fs&quot;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">parseTorrent</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="err">&#39;</span><span class="n">parse</span><span class="o">-</span><span class="n">torrent</span><span class="err">&#39;</span><span class="p">);</span>
+
+<span class="n">var</span> <span class="n">info</span> <span class="o">=</span> <span class="n">parseTorrent</span><span class="p">(</span><span class="n">fs</span><span class="p">.</span><span class="n">readFileSync</span><span class="p">(</span><span class="err">&#39;</span><span class="n">my</span><span class="p">.</span><span class="n">torrent</span><span class="err">&#39;</span><span class="p">));</span>
+
+<span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">info</span><span class="p">);</span>
+</pre></div>
+
+
+<p>这个库会将种子的信息解析出来，以对象的形式返回给我们。</p>
+<p>查看结果：</p>
+<p>name:</p>
+<p><img alt="种子信息文件名" src="http://acwongblog.qiniudn.com/2015-03_torrent-info-name.PNG" /></p>
+<p>files:</p>
+<p><img alt="种子信息文件名" src="http://acwongblog.qiniudn.com/2015-03_torrent-info-files.PNG" /></p>
+<p>可以看到用 parse-torrent 库解析出来的 name 和 files 的信息都是以 Buffer 形式存储。</p>
+<h2 id="_3">清洗种子</h2>
+<p>如何将种子里的邪恶信息清洗掉，把万恶的种子扼杀在摇篮之中，最重要的就算要清除调 name 和 files 里面 path 的信息。</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="mi">2</span>
+
+<span class="mi">3</span>
+
+<span class="mi">4</span>
+
+<span class="mi">5</span>
+
+<span class="mi">6</span>
+
+<span class="mi">7</span>
+
+<span class="mi">8</span>
+
+<span class="mi">9</span>
+
+<span class="mi">10</span>
+
+<span class="mi">11</span>
+
+<span class="mi">12</span>
+
+<span class="mi">13</span>
+
+<span class="mi">14</span>
+
+<span class="mi">15</span>
+
+<span class="mi">16</span>
+
+<span class="mi">17</span>
+
+<span class="mi">18</span>
+
+<span class="mi">19</span>
+
+<span class="mi">20</span>
+
+<span class="kd">function</span> <span class="nx">cleanInfo</span> <span class="p">(</span><span class="nx">info</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="c1">// 将种子名用 md5 加密</span>
+
+    <span class="nx">info</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">md5</span><span class="p">(</span><span class="nx">info</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+
+    <span class="nx">info</span><span class="cp">[</span><span class="s1">&#39;name.utf-8&#39;</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">md5</span><span class="p">(</span><span class="nx">info</span><span class="cp">[</span><span class="s1">&#39;name.utf-8&#39;</span><span class="cp">]</span><span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">files</span> <span class="o">=</span> <span class="nx">info</span><span class="p">.</span><span class="nx">files</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">files</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kd">var</span> <span class="nx">file</span> <span class="o">=</span> <span class="nx">files</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">;</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">key</span> <span class="k">in</span> <span class="nx">file</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nx">key</span> <span class="o">==</span> <span class="s2">&quot;path&quot;</span> <span class="o">||</span> <span class="nx">key</span> <span class="o">==</span> <span class="s2">&quot;path.utf-8&quot;</span><span class="p">)</span> <span class="p">{</span>
+
+                <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">file</span><span class="cp">[</span><span class="nb">key</span><span class="cp">]</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+
+                    <span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="nx">file</span><span class="cp">[</span><span class="nb">key</span><span class="cp">][</span><span class="nx">j</span><span class="cp">]</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+
+                    <span class="kd">var</span> <span class="nx">dotIndex</span> <span class="o">=</span> <span class="nx">text</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">);</span>
+
+                    <span class="c1">// 将种子名用 md5 加密</span>
+
+                    <span class="nx">file</span><span class="cp">[</span><span class="nb">key</span><span class="cp">][</span><span class="nx">j</span><span class="cp">]</span> <span class="o">=</span> <span class="nx">md5</span><span class="p">(</span><span class="nx">text</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nx">dotIndex</span><span class="p">))</span> <span class="o">+</span> <span class="nx">text</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="nx">dotIndex</span><span class="p">,</span><span class="nx">text</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+
+                <span class="p">}</span>
+
+            <span class="p">}</span>
+
+        <span class="p">}</span>
+
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">info</span><span class="p">;</span>
+
+<span class="p">}</span>
+
+<span class="mi">1</span>
+
+<span class="mi">2</span>
+
+<span class="mi">3</span>
+
+<span class="mi">4</span>
+
+<span class="mi">5</span>
+
+<span class="c1">// 将清洗干净后的 info 对象重新生成一个 torrent 文件</span>
+
+<span class="kd">var</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">parseTorrent</span><span class="p">.</span><span class="nx">toTorrentFile</span><span class="p">({</span>
+
+    <span class="nx">info</span><span class="o">:</span> <span class="nx">cleanInfos</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span>
+
+<span class="p">});</span>
+
+<span class="nx">fs</span><span class="p">.</span><span class="nx">writeFile</span><span class="p">(</span><span class="nx">dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nx">cleanInfos</span><span class="cp">[</span><span class="nx">i</span><span class="cp">]</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;.torrent&quot;</span><span class="p">,</span> <span class="nx">buf</span><span class="p">);</span>
+</pre></div>
+
+
+<p>经过这样之后，我们的邪恶种子文件就变成这样了：</p>
+<p><img alt="清洗后种子信息" src="http://acwongblog.qiniudn.com/2015-03_clean-torren-info.PNG" /></p>
+<h2 id="_4">实战阶段</h2>
+<p>首先准备一个种子，进行XX云的离线下载。</p>
+<p><img alt="种子" src="http://acwongblog.qiniudn.com/2015-03_torrent.PNG" /></p>
+<p>一开始它是被拒绝的。</p>
+<p><img alt="拒绝" src="http://acwongblog.qiniudn.com/2015-03_36000.PNG" /></p>
+<p>然后运行脚本进行清洗。</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">node</span> <span class="n">cleanTorrent</span> <span class="n">IPTD</span><span class="o">-</span><span class="n">XXX</span><span class="p">.</span><span class="n">torrent</span>
+</pre></div>
+
+
+<p>下载成功了！</p>
+<p><img alt="下载成功" src="http://acwongblog.qiniudn.com/2015-03_download-success.PNG" /></p>
+<p>脚本源码放在<a href="https://github.com/acwong00/Clean-Torrents">这里</a>了，要去看一下我的下载内容了！！！</p>
+<p><img alt="温馨提示" src="http://acwongblog.qiniudn.com/2015-03_tips.PNG" /></p>
+<p><img alt="oh no" src="http://acwongblog.qiniudn.com/2015-03_baoman.jpg" /></p>
+<p>（**都脱了你给我看这个！！！）</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

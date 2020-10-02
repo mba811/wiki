@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>tau analyzer使用教程 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;tau analyzer使用教程
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:16
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">tau analyzer使用教程</div>
+
+  <p>对于经常从网上下载无损音频的朋友来说，所得到的无损音频是真是假往往是很难判断的，这就催生了auCDtect、Tau Analyzer这样的音频工具的流行。Tau Analyzer和auCDtect是同一公司的作品，都是目前使用得很广泛的鉴别无损音频真假的工具，两个工具的检测准确性没有什么差别，不过Tau Analyzer由于是windows界面，操作起来更方便。如果你对自己得到的音频文件感到怀疑，可以先<a href="http://wiki.11ten.net/Music/%E7%94%A8%E9%A2%91%E8%B0%B1%E3%80%90%E5%88%9D%E6%AD%A5%E3%80%91%E9%89%B4%E5%88%AB%E6%97%A0%E6%8D%9F%E7%9C%9F%E5%81%87.html">用频谱【初步】鉴别无损真假</a>，然后再参照下面的步骤检测一下无损真假。</p>
+<p>Tau Analyze其实在设计之初是用来鉴别CD的真假的，所以要想使用Tau Analyze鉴别网络上的无损音频，就需要先把无损音频文件刻录，或者虚拟成一张CD。把无损音频刻盘，再鉴别无损真假，feicun觉得不应该再介绍，想必不会有人为了鉴别个无损还去浪费一张刻录盘，所以下面就直接介绍虚拟成CD，然后鉴别的方法。</p>
+<p>具体步骤如下：</p>
+<p>第一大步，把无损音频文件解压为WAV波形文件：</p>
+<p>1、用foobar2000打开你要鉴别的无损音频所附带的CUE文件，然后选中全部曲目，点击右键，从弹出菜单里选择 转换–&gt;转化为…</p>
+<p><img alt="" src="http://farm4.static.flickr.com/3248/3044936879_db0d5b1c99_o.jpg" /></p>
+<p>2、在弹出的“转换器设置”窗口里选择WAV编码，点击确定，选择一个存放文件夹。</p>
+<p>第二大步，为WAV文件制造一个正确的CUE文件：</p>
+<p>1、确保你的foobar2000安装了foo_cuesheet_creator.dll插件（这在《<a href="[无损音乐cue文件简单说明](http://wiki.11ten.net/Music/%E6%97%A0%E6%8D%9F%E9%9F%B3%E4%B9%90cue%E6%96%87%E4%BB%B6%E7%AE%80%E5%8D%95%E8%AF%B4%E6%98%8E.html)">无损音乐 CUE 文件简单说明</a>》里提到过），然后用foobar2000打开解压得到的WAV文件，全选所有曲目，点右键，在菜单里选择Utils–&gt;Save as cuesheet，保存这个新生成的CUE文件到WAV文件的文件夹里。</p>
+<p>2、记事本打开刚生成的CUE文件，在文件内容最上面的位置添加两行</p>
+<p>PERFORMER “××××××”（××××××为该专辑的歌手名称）<br />
+TITLE “××××××”（××××××为该专辑名称）</p>
+<p>为了方便，你可以从无损音频自带的CUE里复制这两行到新生成的CUE文件里。</p>
+<p>然后保存CUE文件。</p>
+<p>第三大步：虚拟WAV文件为一张CD：</p>
+<p>用Daemon Tool等虚拟光驱工具载入CUE文件，把WAV文件虚拟成一张CD，具体过程不再赘述。</p>
+<p>第四大步：使用Tau Analyzer判断无损音频的真假：</p>
+<p>1、在Tau Analyzer主界面的左上角选择你的虚拟光驱盘符，然后点击Analyze CD按钮，如下图红线处。</p>
+<p><img alt="" src="http://farm4.static.flickr.com/3208/3044936883_3817211080_o.jpg" /></p>
+<p>2、Tau Analyzer会开始分析音频文件，稍后得到结果。</p>
+<p>第五大步：查看Tau Analyzer的结果：</p>
+<p>如果在Status一栏里显示的是CDDA，说明无损音频是由CD压制的，即为真无损；如果显示的是MPEG，就可能是mp3转的假无损。还有一种情况是显示UNKN，那就是Tau Analyzer无法确定无损的真假，需要你结合频谱自己判断了。下面的这张图是feicun所买的一张真品CD，但是由于压制技术很粗糙，结果有些曲目被判定为MPEG和UNKN。所以Tau Analyzer的测试也不是百分百准确，有时候它的测试结果也要看情况而定。</p>
+<p><img alt="" src="http://farm4.static.flickr.com/3015/3044936881_f48b18141c_o.jpg" /></p>
+<p>总体来说Tau Analyzer是一种比较准确的无损鉴别工具，但是也要求使用者有一定的鉴别能力。为了更准确地鉴别无损音频的真假，建议结合《<a href="http://wiki.11ten.net/Music/%E7%94%A8%E9%A2%91%E8%B0%B1%E3%80%90%E5%88%9D%E6%AD%A5%E3%80%91%E9%89%B4%E5%88%AB%E6%97%A0%E6%8D%9F%E7%9C%9F%E5%81%87.html">用频谱【初步】鉴别无损真假</a>》和《<a href="http://wiki.11ten.net/Music/%E4%B8%BA%E4%BB%80%E4%B9%88%E9%A2%91%E8%B0%B1%E9%89%B4%E5%88%AB%E6%97%A0%E6%8D%9F%E5%B9%B6%E9%9D%9E%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E9%9D%A0.html">为什么频谱鉴别无损并非百分百可靠</a>》两篇文章使用。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

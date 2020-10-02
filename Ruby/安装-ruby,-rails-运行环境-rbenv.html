@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>安装 Ruby, Rails 运行环境-RBENV - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;安装 Ruby, Rails 运行环境-RBENV
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 11:47
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">安装 Ruby, Rails 运行环境-RBENV</div>
+
+  <p>这篇简单介绍 rbenv 的安装和使用. 如果可以请直接看作者的文档: <a href="https://github.com/sstephenson/rbenv">https://github.com/sstephenson/rbenv</a></p>
+<p>rbenv 用来管理多个版本的 ruby 在用户目录的安装和使用, 和 rvm 二选一使用. 具体区别 rbenv 的文档里有说明, 社区里也有讨论.</p>
+<h2 id="_1">系统需求</h2>
+<p>OSX: 请找一个网好的地方, 从 app store 里下载 xcode.app, 安装完成后运行, 在设置中的 Downloads 里安装 <code>Command Line Tools</code>.</p>
+<p>Linux: 请安装开发环境 (编译链接工具和 ruby 的依赖), 如果只要 jruby 有 jre 就可以了.</p>
+<h1 id="rbenv">安装 rbenv</h1>
+<p>在 osx 上可以直接用 homebrew 安装, 下面是手动安装过程. (不用 zsh 的童鞋注意替换成自己的 shell 配置文件)</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/sstephenson/rbenv.git ~/.rbenv</span>
+<span class="cp"># 用来编译安装 ruby</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build</span>
+<span class="cp"># 用来管理 gemset, 可选, 因为有 bundler 也没什么必要</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/jamis/rbenv-gemset.git  ~/.rbenv/plugins/rbenv-gemset</span>
+<span class="cp"># 通过 gem 命令安装完 gem 后无需手动输入 rbenv rehash 命令, 推荐</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash</span>
+<span class="cp"># 通过 rbenv update 命令来更新 rbenv 以及所有插件, 推荐</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/rkh/rbenv-update.git ~/.rbenv/plugins/rbenv-update</span>
+</pre></div>
+
+
+<p>然后把下面的代码放到 <code>~/.bash_profile</code> 里</p>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s">&quot;$HOME/.rbenv/bin:$PATH&quot;</span>
+<span class="n">eval</span> <span class="s">&quot;$(rbenv init -)&quot;</span>
+</pre></div>
+
+
+<p><strong>注意</strong> Unubtu请放到 <code>~/.bashrc</code> 里, zsh用户是 <code>~/.zshrc</code></p>
+<p>然后重开一个终端就可以执行 rbenv 了.</p>
+<h1 id="_2">使用</h1>
+<h2 id="ruby">安装 ruby</h2>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">install</span> <span class="o">--</span><span class="n">list</span>  <span class="err">#</span> <span class="err">列出所有</span> <span class="n">ruby</span> <span class="err">版本</span>
+<span class="n">rbenv</span> <span class="n">install</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span>     <span class="err">#</span> <span class="err">安装</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span>
+<span class="n">rbenv</span> <span class="n">install</span> <span class="n">jruby</span><span class="o">-</span><span class="mf">1.7.3</span>    <span class="err">#</span> <span class="err">安装</span> <span class="n">jruby</span><span class="o">-</span><span class="mf">1.7.3</span>
+</pre></div>
+
+
+<h2 id="_3">列出版本</h2>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">versions</span>               <span class="err">#</span> <span class="err">列出安装的版本</span>
+<span class="n">rbenv</span> <span class="n">version</span>                <span class="err">#</span> <span class="err">列出正在使用的版本</span>
+</pre></div>
+
+
+<h2 id="_4">设置版本</h2>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">global</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span>      <span class="err">#</span> <span class="err">默认使用</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span>
+<span class="n">rbenv</span> <span class="n">shell</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span>       <span class="err">#</span> <span class="err">当前的</span> <span class="n">shell</span> <span class="err">使用</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span><span class="p">,</span> <span class="err">会设置一个</span> <span class="err">`</span><span class="n">RBENV_VERSION</span><span class="err">`</span> <span class="err">环境变量</span>
+<span class="n">rbenv</span> <span class="n">local</span> <span class="n">jruby</span><span class="o">-</span><span class="mf">1.7.3</span>      <span class="err">#</span> <span class="err">当前目录使用</span> <span class="n">jruby</span><span class="o">-</span><span class="mf">1.7.3</span><span class="p">,</span> <span class="err">会生成一个</span> <span class="err">`</span><span class="p">.</span><span class="n">rbenv</span><span class="o">-</span><span class="n">version</span><span class="err">`</span> <span class="err">文件</span>
+</pre></div>
+
+
+<h2 id="macosx-ruby-irb">解决 MacOSX 下编译 Ruby 无法在 irb 中输入中文的方法</h2>
+<p>安装 homebrew 的 readline，再进入源码目录，重新编译安装 readline.bundle</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">readline</span>
+<span class="n">brew</span> <span class="n">link</span> <span class="n">readline</span>
+<span class="n">cd</span> <span class="n">src</span><span class="o">/</span><span class="n">ruby</span><span class="o">-</span><span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span><span class="o">/</span><span class="n">ext</span><span class="o">/</span><span class="n">readline</span>
+<span class="n">ruby</span> <span class="n">extconf</span><span class="p">.</span><span class="n">rb</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">readline</span><span class="o">-</span><span class="n">dir</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">brew</span> <span class="o">--</span><span class="n">prefix</span> <span class="n">readline</span><span class="p">)</span>
+<span class="n">make</span> <span class="n">install</span>
+</pre></div>
+
+
+<h3 id="rbenv_1">rbenv 下的解决办法</h3>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">readline</span>
+<span class="n">CONFIGURE_OPTS</span><span class="o">=</span><span class="s">&quot;--disable-install-doc --with-readline-dir=$(brew --prefix readline)&quot;</span> <span class="n">rbenv</span> <span class="n">install</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span>
+</pre></div>
+
+
+<p>有关 ruby-2.0.0-p0 在 OS X 10.7+ 上的问题，参见：<a href="https://github.com/sstephenson/ruby-build/wiki">https://github.com/sstephenson/ruby-build/wiki</a></p>
+<h2 id="_5">其他</h2>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">rehash</span>                 <span class="err">#</span> <span class="err">每当切换</span> <span class="n">ruby</span> <span class="err">版本和执行</span> <span class="n">bundle</span> <span class="n">install</span> <span class="err">之后必须执行这个命令</span>
+<span class="n">rbenv</span> <span class="n">which</span> <span class="n">irb</span>              <span class="err">#</span> <span class="err">列出</span> <span class="n">irb</span> <span class="err">这个命令的完整路径</span>
+<span class="n">rbenv</span> <span class="n">whence</span> <span class="n">irb</span>             <span class="err">#</span> <span class="err">列出包含</span> <span class="n">irb</span> <span class="err">这个命令的版本</span>
+</pre></div>
+
+
+<h1 id="rbenv-gemset">rbenv 下使用 gemset</h1>
+<h2 id="_6">简介</h2>
+<p>rvm 中最方便的就是 gemset。实际上，rbenv 通过插件也可以使用 gemset</p>
+<h2 id="_7">安装</h2>
+<p>MacOS 下使用 brew 的话，一个命令就搞定</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">rbenv</span><span class="o">-</span><span class="n">gemset</span>
+</pre></div>
+
+
+<h2 id="_8">使用</h2>
+<h3 id="gemset">创建一个 gemset</h3>
+<div class="hlcode"><pre><span class="n">rbenv</span> <span class="n">gemset</span> <span class="n">create</span> <span class="mf">1.9.3</span><span class="o">-</span><span class="n">p392</span> <span class="n">ruby</span><span class="o">-</span><span class="n">china</span>
+                       <span class="err">参数</span> <span class="mi">1</span>       <span class="err">参数</span> <span class="mi">2</span>
+</pre></div>
+
+
+<ul>
+<li>以上命令中，参数 1 是已安装的 ruby 版本，参数 2 是 gemset 的名字</li>
+</ul>
+<h3 id="_9">具体使用方法</h3>
+<ol>
+<li>
+<p>在项目的根目录下，把想要使用的 gemset 名字放到 .rbenv-gemsets 文件中即可。有 .rbenv-gemsets 文件的情况下执行 bundle 命令就是对设置好的 gemset 进行操作</p>
+<p>echo ruby-china &gt; .rbenv-gemsets</p>
+</li>
+<li>
+<p>当前目录下没有 .rbenv-gemsets 文件的情况下，执行 bundle 命令（没有指定 --path 参数的情况）时，是对当前版本的 ruby 版本的 gemset 。也就相当于 rvm 中 global gemset 的作用了</p>
+</li>
+</ol>
+<h2 id="_10">参考</h2>
+<ul>
+<li>rbenv gemset help</li>
+<li><a href="https://github.com/jamis/rbenv-gemset">rbenv-gemset (github)</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

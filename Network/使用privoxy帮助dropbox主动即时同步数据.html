@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用Privoxy帮助Dropbox主动即时同步数据 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;使用Privoxy帮助Dropbox主动即时同步数据
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 18:44
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用Privoxy帮助Dropbox主动即时同步数据</div>
+
+  <p>今天介绍的内容是和Hazel系列第三集《<a href="http://www.waerfa.com/hazel-rules-series-sleep-mac-by-ios-drafts">使用Drafts远程休眠Mac</a>》一起写完的，其实在Mac OS下的workflow圈子里，Dropbox扮演了一个很重要的角色，不单单是数据存储的任务，还有一些数据/内容跳转的工作也需要依靠Dropbox，众所周知，找盒儿（他的中文昵称）并不受天朝大佬们的欢迎，他的关键词已经XXW被盯上了，虽然数据同步还能在墙内工作，但速度不能让人满意，最重要的是即时同步特色无法体现出来，非常令人遗憾。</p>
+<h4 id="dropbox">Dropbox 在天朝为何不能实现即时同步？</h4>
+<p>Dropbox 有一类服务器（没有采用https传输协议，使用了http协议）负责“服务器-客户端”或“客户端-客户端”之前的文件更新通知工作，所有客户端每过60秒会向这种服务器进行查询，查看是否有数据更新，当客户端接收到更新消息的时候再通过https协议同步数据，但就是这个服务器被XXW发现并“扣留”了，所有请求都会统统被reset，这样客户端的更新无法被其他客户端获知，我们要的即时同步数据也就无从谈起了。</p>
+<p><img alt="" src="http://7q5cfr.com1.z0.glb.clouddn.com/pdl1.png" /></p>
+<p>我在Google上搜索相关解决方案，看到绝大部分推荐的都是 Privoxy（<a href="http://sourceforge.net/projects/ijbswa/files/latest/download?source=files">下载地址</a>），这款代理工具兼容各个平台，适用于 HTTP/HTTPS协议下的网页过滤，管理cookies，拦截广告等工作，最关键的是，Privoxy可以分流HTTP和HTTPS两种协议下的数据同步任务，这样负责数据更新消息的HTTP协议服务器就能有“代理人”了，而且其他HTTPS传输工作还能不用代理照常进行，看来 Privoxy 绝对是开启即时同步功能的最佳选择。</p>
+<h4 id="_1">实施过程</h4>
+<ol>
+<li>准备一个代理工具，这里首当推荐<a href="http://www.waerfa.com/shadowsocks-for-mac">Shadowsocks</a>，我们启动他，并记下他的端口号</li>
+</ol>
+<p><img alt="" src="http://7q5cfr.com1.z0.glb.clouddn.com/pdl2.png" /></p>
+<ol>
+<li>安装 Privoxy， 前面我们提供的下载地址就是他的pkg安装包，直接安装，程序自动启动，在Finder里shift+cmd+g，粘入 /usr/local/etc/privoxy，进入软件的配置文件存放目录，编辑config文件，在最后插入以下：</li>
+</ol>
+<p>forward .dropbox.com 127.0.0.1:8090 forward .dropbox.com:443 .</p>
+<ol>
+<li>
+<p>将dropbox的代理设置为HTTP 127.0.0.1:8118（这是 Privoxy 的端口）.</p>
+</li>
+<li>
+<p>如果你的代理工具是SOCK类型的，可以在config文件里插入以下：</p>
+</li>
+</ol>
+<p>forward-socks5   .dropbox.com             127.0.0.1:XXXX .</p>
+<p>forward                  .dropbox.com:443         .</p>
+<p><img alt="" src="http://7q5cfr.com1.z0.glb.clouddn.com/pdl3.png" /></p>
+<p>好了，全部设置工作完成，你会看到Dropbox的即时同步功能了，大约不超过4-5秒，客户端就会开始响应，进行数据同步了。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

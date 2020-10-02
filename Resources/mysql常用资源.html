@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>MySQL常用资源 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Resources">Resources</a>&nbsp;&#187;&nbsp;MySQL常用资源
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 07:12
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">MySQL常用资源</div>
+
+  <h2 id="_1">常用命令</h2>
+<h3 id="_2">登录数据库</h3>
+<div class="hlcode"><pre><span class="n">mysql</span> <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+
+
+<h3 id="_3">导出数据库</h3>
+<div class="hlcode"><pre><span class="n">mysqldump</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">p</span> <span class="n">db</span> <span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">sql</span>
+</pre></div>
+
+
+<h3 id="_4">导入数据库</h3>
+<div class="hlcode"><pre><span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">p</span> <span class="n">db</span> <span class="o">&lt;</span> <span class="n">db</span><span class="p">.</span><span class="n">sql</span>
+<span class="c1">// or</span>
+<span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span> <span class="o">-</span><span class="n">p</span> <span class="n">db</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;source /path/to/db.sql&quot;</span>
+</pre></div>
+
+
+<h3 id="_5">开启远程登录</h3>
+<div class="hlcode"><pre><span class="n">grant</span> <span class="n">all</span> <span class="n">privileges</span> <span class="n">on</span> <span class="n">ss</span><span class="p">.</span><span class="o">*</span> <span class="n">to</span> <span class="err">&#39;</span><span class="n">root</span><span class="sc">&#39;@&#39;</span><span class="o">%</span><span class="err">&#39;</span> <span class="n">indentified</span> <span class="n">by</span> <span class="err">&#39;</span><span class="n">passoword</span><span class="err">&#39;</span> <span class="n">with</span> <span class="n">grant</span> <span class="n">option</span><span class="p">;</span>
+<span class="c1">// or </span>
+<span class="n">update</span> <span class="n">user</span> <span class="n">set</span> <span class="n">Host</span><span class="o">=</span><span class="s">&quot;%&quot;</span> <span class="n">and</span> <span class="n">User</span><span class="o">=</span><span class="s">&quot;root&quot;</span>
+<span class="c1">// 注意%是不包含localhost的</span>
+<span class="n">flush</span> <span class="n">privileges</span><span class="p">;</span>
+</pre></div>
+
+
+<h3 id="_6">创建用户</h3>
+<div class="hlcode"><pre><span class="n">CREATE</span> <span class="n">USER</span> <span class="err">&#39;</span><span class="n">test</span><span class="sc">&#39;@&#39;</span><span class="n">localhost</span><span class="err">&#39;</span> <span class="n">IDENTIFIED</span> <span class="n">BY</span> <span class="err">&#39;</span><span class="n">password</span><span class="err">&#39;</span><span class="p">;</span>
+</pre></div>
+
+
+<h3 id="_7">创建表</h3>
+<div class="hlcode"><pre><span class="n">CREATE</span> <span class="n">SCHEMA</span> <span class="n">testdb</span> <span class="n">DEFAULT</span> <span class="n">CHARACTER</span> <span class="n">SET</span> <span class="n">utf8</span> <span class="n">COLLATE</span> <span class="n">utf8_unicode_ci</span><span class="p">;</span>
+</pre></div>
+
+
+<h3 id="_8">赋予数据库权限</h3>
+<div class="hlcode"><pre><span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">ON</span> <span class="n">testdb</span><span class="p">.</span><span class="o">*</span> <span class="n">TO</span> <span class="err">&#39;</span><span class="n">test</span><span class="sc">&#39;@&#39;</span><span class="n">localhost</span><span class="err">&#39;</span><span class="p">;</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

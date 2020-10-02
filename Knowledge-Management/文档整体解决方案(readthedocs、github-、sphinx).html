@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>文档整体解决方案(readthedocs、github 、sphinx) - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Knowledge-Management">Knowledge-Management</a>&nbsp;&#187;&nbsp;文档整体解决方案(readthedocs、github 、sphinx)
+    <span class="updated">Page Updated&nbsp;
+      2015-02-10 13:13
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">文档整体解决方案(readthedocs、github 、sphinx)</div>
+
+  <p>这里是总结了一下，用的工具或者平台：<a href="https://readthedocs.org/">readthedocs</a>、<a href="http://www.github.com/">github</a> 、<a href="http://zh-sphinx-doc.readthedocs.org/en/latest/contents.html">sphinx</a>。 使用这三个工具即可轻松创建高效的文档管理库，可以用来翻译，水平再高一点可以写书。</p>
+<ul>
+<li><a href="https://readthedocs.org/">readthedocs</a>   </li>
+</ul>
+<blockquote>
+<p>文档托管的平台，能够和常用的GIT阵营的<a href="http://www.github.com/">github</a>，HG阵营的<a href="https://bitbucket.org/">Bitbucket</a>，关于这两个平台的讨论比较<a href="http://shawphy.com/2010/08/bitbucket-vs-github.html">文章</a>可以参考。</p>
+</blockquote>
+<ul>
+<li><a href="http://www.github.com/">github</a>  </li>
+</ul>
+<blockquote>
+<p>代码托管</p>
+</blockquote>
+<ul>
+<li><a href="http://zh-sphinx-doc.readthedocs.org/en/latest/contents.html">sphinx</a>  </li>
+</ul>
+<blockquote>
+<p>文档书写利器，使用的是reStructuredText格式，<a href="http://jwch.sdut.edu.cn/book/rst.html#rst-tutorial">reStructuredText简明教程</a>。</p>
+</blockquote>
+<h6 id="_1">下面说说书写方法及托管流程</h6>
+<ol>
+<li>
+<p>在这里<a href="https://readthedocs.org/accounts/register/">注册一个帐号</a>--&gt;登录。  </p>
+</li>
+<li>
+<p>git的帐号及使用大家应该很熟悉了，在这里不再赘述。创建一个repo以存放sphinx（我测试用的<a href="https://github.com/yinlianwei/a-test-sphinx-doc.git">a-test-sphinx-doc</a>）。  </p>
+</li>
+<li>
+<p>安装sphinx，快速入门</p>
+</li>
+</ol>
+<p>jwch的成员有人整理这个文档<a href="http://jwch.sdut.edu.cn/book/tool/UseSphinx.html">使用shpinx记笔记</a>，按照这个来就可以。</p>
+<ol>
+<li>
+<p>将sphinx生成的文档和配置 push 到git代码仓库[a-test-sphinx-doc]</p>
+<p>evenvi@evenvi-MS-7302:~/mydoc$ git init<br />
+evenvi@evenvi-MS-7302:~/mydoc$ git add .<br />
+evenvi@evenvi-MS-7302:~/mydoc$ git commit -m "test sphinx doc"<br />
+evenvi@evenvi-MS-7302:~/mydoc$ git remote add origin https://github.com/yinlianwei/a-test-sphinx-doc.git<br />
+evenvi@evenvi-MS-7302:~/mydoc$ git push origin master  </p>
+</li>
+</ol>
+<p>经过这些就把你的sphinx生成的文档及一些配置文件等，push到了github</p>
+<ol>
+<li>
+<p>把github中的文档的代码仓库导入到readthedocs</p>
+</li>
+<li>
+<p>首先在github-&gt;repo-&gt;Admin-ServiceHooks-&gt;ReadTheDocs,激活这个选项。  </p>
+</li>
+<li>
+<p>readthedocs-&gt;Import 按照上边的有关字段的提示填写清楚，必要的Name Author Version Repo……,这里注意 <code>conf.py</code> 路径要填写正确（source/conf.py），提交。  </p>
+</li>
+</ol>
+<p>这样就文档导入到了readthedocs中，则还是我的<a href="https://sphinx_doc.readthedocs.org/en/latest/index.html">测试文档</a>，readthedocs的文档主题简洁，比较不错。当然如果你自己有web服务器，就不用那么麻烦，这里最大好处不用自己维护服务器，可以充分利用github的功能。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

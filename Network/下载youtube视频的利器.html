@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>下载Youtube视频的利器 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;下载Youtube视频的利器
+    <span class="updated">Page Updated&nbsp;
+      2015-05-26 02:26
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">下载Youtube视频的利器</div>
+
+  <p>有很多下载youtube视频的插件，不过一句话更新不够快，功能不够强。这个时候python出马瞬间秒杀一切。这一工具可以下载不止是youtube视频，什么搜狐、优酷等等都可以简单搞定。不支持的站点自己解析一下，添加一个parser就能搞定。</p>
+<p>同时，程序支持下载youtube播放列表，真是无敌强悍啊！还可以提前音频，合并视频如此等等不胜枚举。</p>
+<p>还有还有，更新速度超快，一两天一个版本，很少有失效的时候:-D。当然有多种细致选项应有尽有，强烈推荐啦！</p>
+<p>神器大名youtube-dl，python写成，有编译好的exe。默认选项是下载最高清晰度的视频。常用的命令如下：</p>
+<div class="hlcode"><pre><span class="n">youtube</span><span class="o">-</span><span class="n">dl</span><span class="p">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">U</span>  <span class="err">更新程序</span>
+<span class="n">youtube</span><span class="o">-</span><span class="n">dl</span><span class="p">.</span><span class="n">exe</span> <span class="n">URL</span> <span class="err">下载</span><span class="n">URL</span> <span class="err">的视频</span>
+</pre></div>
+
+
+<p>下载列表时有时需要更改URL，比如以下URL：[http://www.youtube.com/watch?v=Ucrs7DUCkr8&amp;list=FLkhm72fuzkS9fYGlGpEmj7A]， 需要将v=Ucrs7DUCkr8&amp;从URL删除，这样才能按照列表下载。</p>
+<p>只需要下载部分列表内容时会使用到列表视频的编号</p>
+<div class="hlcode"><pre><span class="o">--</span><span class="n">playlist</span><span class="o">-</span><span class="n">start</span> <span class="n">NUMBER</span>
+<span class="o">--</span><span class="n">playlist</span><span class="o">-</span><span class="n">end</span> <span class="n">NUMBER</span>
+</pre></div>
+
+
+<p>可以用来设置列表中开始下载的编号和结束的编号。</p>
+<div class="hlcode"><pre><span class="n">youtube</span><span class="o">-</span><span class="n">dl</span><span class="p">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">F</span> <span class="n">URL</span> <span class="err">可以用来查看下载的</span><span class="n">URL</span><span class="err">的视频可用的格式</span>
+<span class="n">youtube</span><span class="o">-</span><span class="n">dl</span><span class="p">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">f</span> <span class="n">NUMBER</span> <span class="n">URL</span> <span class="err">可以用来下载制定格式的视频</span>
+<span class="n">youtube</span><span class="o">-</span><span class="n">dl</span><span class="p">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">x</span> <span class="n">URL</span> <span class="err">用来提取</span><span class="n">URL</span><span class="err">视频中的声音</span>
+<span class="n">youtube</span><span class="o">-</span><span class="n">dl</span><span class="p">.</span><span class="n">exe</span> <span class="o">-</span><span class="n">x</span> <span class="o">-</span><span class="n">k</span> <span class="n">URL</span> <span class="err">再提取</span><span class="n">URL</span><span class="err">声音之后保留视频本身</span>
+</pre></div>
+
+
+<p>其他参数不很常用，需要了解时可以使用youtube-dl.exe -h查询即可。最后，youtube-dl的下载地址是：<a href="http://rg3.github.io/youtube-dl/">http://rg3.github.io/youtube-dl/</a>。希望大家下载愉快！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Docker 介绍以及其相关术语、底层原理和技术 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Docker 介绍以及其相关术语、底层原理和技术
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 18:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Docker 介绍以及其相关术语、底层原理和技术</div>
+
+  <p>原文发表在 Pilehub <a href="http://pilehub.org/t/docker/23">http://pilehub.org/t/docker/23</a></p>
+<blockquote>
+<p>英文原文: <a href="https://docs.docker.com/introduction/understanding-docker/#the-underlying-technology">Understanding Docker</a></p>
+</blockquote>
+<h4 id="docker">Docker是啥</h4>
+<p>Docker是一个程序运行、测试、交付的开放平台，Docker被设计为能够使你快速地交付应用。在Docker中，你可以将你的程序分为不同的基础部分，对于每一个基础部分都可以当做一个应用程序来管理。Docker能够帮助你快速地测试、快速地编码、快速地交付，并且缩短你从编码到运行应用的周期。</p>
+<p>Docker使用轻量级的容器虚拟化平台，并且结合工作流和工具，来帮助你管理、部署你的应用程序。</p>
+<p>在其核心，Docker实现了让几乎任何程序都可以在一个安全、隔离的容器中运行。安全和隔离可以使你可以同时在机器上运行多个容器。</p>
+<p>容器轻量级的特性，意味着你可以得到更多的硬件性能。</p>
+<p>围绕着容器的虚拟化工具和平台，可以在以下几个方面为你提供帮助：</p>
+<ul>
+<li>帮助你把应用程序(包括其余的支持组件)放入到Docker容器中。</li>
+<li>分发和转移你的容器至你的团队其它成员来进行进一步的开发和测试。</li>
+<li>部署这些应用程序至你的生产环境，不论是本地的数据中心还是云平台。</li>
+</ul>
+<h4 id="docker_1">我可以用Docker做啥</h4>
+<h4 id="_1"><em>快速交付你的应用程序</em></h4>
+<p>Docker可以为你的开发过程提供完美的帮助。Docker允许开发者在本地包含了应用程序和服务的容器进行开发，之后可以集成到连续的一体化和部署工作流中。</p>
+<p>举个例子，开发者们在本地编写代码并且使用Docker和同事分享其开发栈。当开发者们准备好了之后，他们可以将代码和开发栈推送到测试环境中，在该环境进行一切所需要的测试。从测试环境中，你可以将Docker镜像推送到服务器上进行部署。</p>
+<h4 id="_2"><em>开发和拓展更加简单</em></h4>
+<p>Docker的以容器为基础的平台允许高度可移植的工作。Docker容器可以在开发者机器上运行，也可以在实体或者虚拟机上运行，也可以在云平台上运行。</p>
+<p>Docker的可移植、轻量特性同样让动态地管理负载更加简单。你可以用Docker快速地增加应用规模或者关闭应用程序和服务。Docker的快速意味着变动几乎是实时的。</p>
+<h4 id="_3"><em>达到高密度和更多负载</em></h4>
+<p>Docker轻巧快速，它提供了一个可行的、 符合成本效益的替代基于虚拟机管理程序的虚拟机。这在高密度的环境下尤其有用。例如，构建你自己的云平台或者PaaS，在中小的部署环境下同样可以获取到更多的资源性能。</p>
+<h4 id="docker_2">Docker的主要组成有哪些</h4>
+<p>Docker有两个主要的部件：</p>
+<ul>
+<li>Docker: 开源的容器虚拟化平台。</li>
+<li>Docker Hub: 用于分享、管理Docker容器的Docker SaaS平台。</li>
+</ul>
+<h4 id="docker_3">Docker的架构是怎样的</h4>
+<p>Docker使用客户端-服务器(client-server)架构模式。Docker客户端会与Docker守护进程进行通信。Docker守护进程会处理复杂繁重的任务，例如建立、运行、发布你的Docker容器。Docker客户端和守护进程可以运行在同一个系统上，当然你也可以使用Docker客户端去连接一个远程的Docker守护进程。Docker客户端和守护进程之间通过socket或者RESTful API进行通信。</p>
+<p>[</p>
+<p><img alt="arch" src="https://pilehub.org/uploads/default/9/bfa045df20c2541f.png" /></p>
+<p>](https://pilehub.org/uploads/default/9/bfa045df20c2541f.png)</p>
+<h4 id="docker_4">Docker守护进程</h4>
+<p>如上图所示，Docker守护进程运行在一台主机上。用户并不直接和守护进程进行交互，而是通过Docker客户端间接和其通信。</p>
+<h4 id="docker_5">Docker客户端</h4>
+<p>Docker客户端，实际上是<code>docker</code>的二进制程序，是主要的用户与Docker交互方式。它接收用户指令并且与背后的Docker守护进程通信，如此来回往复。</p>
+<h4 id="docker_6">Docker的内部</h4>
+<p>要理解Docker的内部构建，必须知道以下三种部件：</p>
+<ul>
+<li>Docker镜像 (Docker images)。</li>
+<li>Docker仓库 (Docker registeries)。</li>
+<li>Docker容器(Docker containers)。</li>
+</ul>
+<h4 id="docker_7">Docker镜像</h4>
+<p>Docker镜像是一个只读的模板。举个例子，一个镜像可以包含一个运行在Apache上的Web应用和其使用的Ubuntu操作系统。</p>
+<p>镜像是用来创建容器的。Docker提供了简单的放来来建立新的镜像或者升级现有的镜像，你也可以下载别人已经创建好的镜像。Docker镜像是Docker的 <strong>构造</strong> 部分。</p>
+<h4 id="docker_8">Docker仓库</h4>
+<p>Docker仓库用来保存镜像。可以理解为代码控制中的代码仓库。同样的，Docker仓库也有公有和私有的概念。公有的Docker仓库名字是<a href="http://hub.docker.com/">Docker Hub</a>。Docker Hub提供了庞大的镜像集合供使用。这些镜像可以是你自己创建的，或者你也可以在别人的镜像基础上创建。Docker仓库是Docker的 <strong>分发</strong> 部分。</p>
+<h4 id="docker_9">Docker容器</h4>
+<p>Docker容器和文件夹很类似。一个Docker容器包含了所有的某个应用运行所需要的环境。每一个Docker容器都是从Docker镜像创建的。Docker容器可以运行、开始、停止、移动和删除。每一个Docker容器都是独立和安全的应用平台。Docker容器是Docker的 <strong>运行</strong>部分。</p>
+<h4 id="docker_10">Docker的工作原理</h4>
+<p>到目前为止，我们学习到了：</p>
+<ol>
+<li>我们可以建立一个容纳应用程序的容器。</li>
+<li>我们可以从Docker镜像创建Docker容器来运行我们的应用程序。</li>
+<li>我们可以通过Docker Hub或者我们自己的Docker仓库分享Docker镜像。</li>
+</ol>
+<h4 id="docker_11">Docker镜像是如何工作的</h4>
+<p>我们已经看到了，Docker镜像是Docker容器运行时的只读模板。每一个镜像由一系列的层(layers)组成。Docker使用<a href="http://en.wikipedia.org/wiki/UnionFS">UnionFS</a>来将这些层联合到一二镜像中。Union文件系统允许独立文件系统中的文件和文件夹(称之为分支)被透明覆盖，形成一个单独连贯的文件系统。</p>
+<blockquote>
+<p>这一段的原文：We've already seen that Docker images are read-only templates from which Docker containers are launched. Each image consists of a series of layers. Docker makes use of union file systems to combine these layers into a single image. Union file systems allow files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system.</p>
+</blockquote>
+<p>正因为有了这些层的存在，Docker是如此的轻量。当你改变了一个Docker镜像，比如升级到某个程序到新的版本，一个新的层会被创建。因此，不用替换整个原先的镜像或者重新建立(在使用虚拟机的时候你可能会这么做)，只是一个新的层被添加或升级了。现在你不用重新发布整个镜像，只需要升级。层使得分发Docker镜像变得简单和快速。</p>
+<p>每个镜像都是从一个基础的镜像开始的，比如<code>ubuntu</code>，一个基础的Ubuntu镜像，或者是<code>fedora</code>，一个基础的Fedora镜像。你可以使用你自己的镜像作为新镜像的基础，例如你有一个基础的安装了Apache的镜像，你可以使用该镜像来建立你的Web应用程序镜像。</p>
+<blockquote>
+<p>注： Docker通常从Docker Hub获取基础镜像。</p>
+</blockquote>
+<p>Docker镜像从这些基础的镜像创建，通过一种简单、具有描述性的步骤，我们称之为 <em>指令(instructions)</em>。 每一个指令会在镜像中创建一个新的层，指令可以包含这些动作：</p>
+<ul>
+<li>运行一个命令。</li>
+<li>增加文件或者文件夹。</li>
+<li>创建一个环境变量。</li>
+<li>当运行容器的时候哪些程序会运行。</li>
+</ul>
+<p>这些指令存储在<code>Dockerfile</code>文件中。当你需要建立镜像的时候，Docker可以从<code>Dockerfile</code>中读取这些指令并且运行，然后返回一个最终的镜像。</p>
+<h4 id="docker_12">Docker仓库是如何工作的</h4>
+<p>Docker仓库是Docker镜像的存储仓库。你可以推送你的镜像到你的Docker仓库中。</p>
+<p>通过Docker客户端，你可以从Docker仓库中搜索镜像。</p>
+<h4 id="docker_13">Docker容器是如何工作的</h4>
+<p>一个Docker容器包含了一个操作系统、用户添加的文件和元数据(meta-data)。我们可以看到，每个容器都是从镜像建立的。镜像告诉Docker容器内包含了什么，当容器启动时运行什么程序，还有许多配置数据。Docker镜像是只读的。当Docker运行一个从镜像建立的容器，它会在镜像顶部添加一个可读写的层，应用程序可以在这里运行。</p>
+<h4 id="docker_14">当你运行docker容器时发生了什么</h4>
+<p>不论你使用<code>docker</code>命令或者是RESTful API，Docker客户端都会告诉Docker守护进程运行一个容器。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">t</span> <span class="n">ubuntu</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span>
+</pre></div>
+
+
+<p>让我们来分析这个命令。Docker客户端使用<code>docker</code>命令来运行，<code>run</code>参数表名客户端要运行一个新的容器。Docker客户端要运行一个容器需要告诉Docker守护进程的最小参数信息是：</p>
+<ul>
+<li>这个容器从哪个镜像创建，这里是<code>ubuntu</code>，基础的Ubuntu镜像。</li>
+<li>在容器中要运行的命令，这里是<code>/bin/bash</code>，在容器中运行Bash shell。</li>
+</ul>
+<p>那么运行这个命令之后在底层发生了什么？</p>
+<p>按照顺序，Docker做了这些事情：</p>
+<ul>
+<li><strong>拉取<code>ubuntu</code>镜像:</strong> Docker检查<code>ubuntu</code>镜像是否存在，如果在本地没有该镜像，Docker会从Docker Hub下载。如果镜像已经存在，Docker会使用它来创建新的容器。</li>
+<li><strong>创建新的容器:</strong> 当Docker有了这个镜像之后，Docker会用它来创建一个新的容器。</li>
+<li><strong>分配文件系统并且挂载一个可读写的层:</strong> 容器会在这个文件系统中创建，并且一个可读写的层被添加到镜像中。</li>
+<li><strong>分配网络/桥接接口:</strong> 创建一个允许容器与本地主机通信的网络接口。</li>
+<li><strong>设置一个IP地址:</strong> 从池中寻找一个可用的IP地址并且服加到容器上。</li>
+<li><strong>运行你指定的程序:</strong> 运行指定的程序。</li>
+<li><strong>捕获并且提供应用输出:</strong> 连接并且记录标准输出、输入和错误让你可以看到你的程序是如何运行的。</li>
+</ul>
+<p>你现在拥有了一个运行着的容器！从这里开始你可以管理你的容器，与应用交互，应用完成之后，可以停止或者删除你的容器。</p>
+<h4 id="_4">底层技术</h4>
+<p>Docker使用Go语言编写，并且使用了一系列Linux内核提供的性能来实现我们已经看到的这些功能。</p>
+<h4 id="namespaces">命名空间(Namespaces)</h4>
+<p>Docker充分利用了一项称为<code>namespaces</code>的技术来提供隔离的工作空间，我们称之为 <em>container(容器)</em>。当你运行一个容器的时候，Docker为该容器创建了一个命名空间集合。</p>
+<p>这样提供了一个隔离层，每一个应用在它们自己的命名空间中运行而且不会访问到命名空间之外。</p>
+<p>一些Docker使用到的命名空间有：</p>
+<ul>
+<li><strong><code>pid</code>命名空间:</strong> 使用在进程隔离(PID: Process ID)。</li>
+<li><strong><code>net</code>命名空间:</strong> 使用在管理网络接口(NET: Networking)。</li>
+<li><strong><code>ipc</code>命名空间:</strong> 使用在管理进程间通信资源 (IPC: InterProcess Communication)。</li>
+<li><strong><code>mnt</code>命名空间:</strong> 使用在管理挂载点 (MNT: Mount)。</li>
+<li><strong><code>uts</code>命名空间:</strong> 使用在隔离内核和版本标识 (UTS: Unix Timesharing System)。</li>
+</ul>
+<h4 id="_5">群组控制</h4>
+<p>Docker还使用到了<code>cgroups</code>技术来管理群组。使应用隔离运行的关键是让它们只使用你想要的资源。这样可以确保在机器上运行的容器都是良民(good multi-tenant citizens)。群组控制允许Docker分享或者限制容器使用硬件资源。例如，限制指定的容器的内容使用。</p>
+<h4 id="_6">联合文件系统</h4>
+<p>联合文件系统(UnionFS)是用来操作创建层的，使它们轻巧快速。Docker使用UnionFS提供容器的构造块。Docker可以使用很多种类的UnionFS包括AUFS, btrfs, vfs, and DeviceMapper。</p>
+<h4 id="_7">容器格式</h4>
+<p>Docker连接这些组建到一个包装中，称为一个 <em>container format(容器格式)</em>。默认的容器格式是<code>libcontainer</code>。Docker同样支持传统的Linux容器使用<a href="https://linuxcontainers.org/">LXC</a>。在未来，Docker也许会支持其它的容器格式，例如与BSD Jails 或 Solaris Zone集成。</p>
+<h4 id="_8">接下来。。。</h4>
+<p>可以实践一些<code>Docker</code>命令使用：<br />
+<a href="http://pilehub.org/t/docker/20">Docker入门使用教程</a><br />
+<a href="http://pilehub.org/t/docker-hello-world/28">Docker化应用: 一个Hello World</a><br />
+<a href="http://pilehub.org/t/docker/40">与容器同行</a></p>
+<p><a href="https://ruby-china.org/topics/22004#"></a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

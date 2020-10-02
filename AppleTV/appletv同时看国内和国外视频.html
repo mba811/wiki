@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>AppleTV同时看国内和国外视频 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#AppleTV">AppleTV</a>&nbsp;&#187;&nbsp;AppleTV同时看国内和国外视频
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 20:48
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">AppleTV同时看国内和国外视频</div>
+
+  <p>先说一下，我已经有好试过好几种方法用来在电视上看视频，最开始是装了一个<a href="http://www.brucebot.com/2012/03/ubuntuxbmctime-machine/">HTPC</a>,接着入了android Mini PC，然后用了一个pi安装xbmc，再最后LETV出来了C1，就买了一个，不过，这些方法都有一些不足。<a href="http://www.brucebot.com/2012/03/ubuntuxbmctime-machine/">HTPC</a>的耗电厉害，而且开机时间很长，因为跑的是windows 7；android Mini PC的界面很差，操作非常不友好；pi下面的xbmc相对好一点，但是如果需要看国内的视频，界面非常不友好，不利于操作。</p>
+<p>于是，我买了一个Apple TV.Air Play自不用说，于Macbook,iphone等都配合的非常好，甚至还可以镜像过去，或者成为Mac的延伸桌面。但是作为一个看电视的设备，看国内与国外视频，还是最为关键的，于是有了两个办法。</p>
+<h2 id="_1">国内视频</h2>
+<p>直接更改Apple TV的DNS，最为有名就是<a href="http://www.ttdianshi.com/">盒子大师</a>,具体方法是劫持Apple TV里面的<code>预告片</code>，达到Apple TV观看国内网络的视频，目前搜狐、优酷、乐视等，据说还可以架设自已的视频源，不过这部分我还没有尝试，我更想自己搭建一个自己的DNS，放在我的Pi上，这样的速度会更好，目前找到的参考方法是使用Plex，参考文章：<a href="https://langui.sh/2013/08/27/appletv-ssl-plexconnect/">https://langui.sh/2013/08/27/appletv-ssl-plexconnect/</a></p>
+<p>注意：新的Apple TV系统升级后，<code>设置</code>——<code>通用</code>——<code>描述文件</code>里添加描述文件，输入<code>http://t.cn/zRLJ6Js</code>（务必注意大小写).</p>
+<h2 id="_2">国外视频</h2>
+<p>这个有两种方法，一种是使用PAC代理，还有一种是使用<a href="http://refyunti.com/?r=76a25396a9ca0496">VPN</a>，使用这两种方法，都需要有一个软件<a href="http://itunes.apple.com/us/app/apple-configurator/id434433123?mt=12">Apple Configurator</a>,目前这个软件只支持MAC版本.Windows下有一个<a href="http://support.apple.com/kb/DL1466?viewlocale=zh_CN&amp;locale=zh_CN">iPhone 配置实用工具</a>，不过我没有用过。</p>
+<ol>
+<li>
+<p>如果只想看Youtube，而又想比较有速度的看国内视频，则使用PAC。我最推荐PAC代理，这样的话，不用让所有的流量都走<a href="http://refyunti.com/?r=76a25396a9ca0496">VPN</a>，至于怎么样得到PAC代理，你购买APN或者自己搭建一个APN。</p>
+</li>
+<li>
+<p>如果想看US ONly的视频，比如HBO GO，Netfilx等，则使用<a href="http://refyunti.com/?r=76a25396a9ca0496">VPN</a>,全局流量全部走US的VPN的，就能破解US Location Limit的服务了。</p>
+</li>
+</ol>
+<p>完成Apple TV初始设置后，打开apple TV插入mini USB，注意开机后插入，指示灯不闪烁。打开Apple Configurator,安装描述文件，在wifi设置里面填上家里的无线SSID名称，密码，代理设置里面填上PAC地址；VPN的话，填上VPN相关的信息就可以，支持的VPN种类很多，L2tp/PPTP,anyconnect等都支持。</p>
+<p><img alt="Apple TV Wifi PAC设置" src="http://brucebot.com/images/2014/AppleTVwifi.png" /></p>
+<p>注意：安装好后，查看国内视频的功能可能会失效，需要重新设置一下国内视频里面的描述文件。</p>
+<p>OK.Enjoy!!</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

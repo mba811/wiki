@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>RSYNC的简单配置 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Linux">Linux</a>&nbsp;&#187;&nbsp;RSYNC的简单配置
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 08:06
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">RSYNC的简单配置</div>
+
+  <h2 id="ubuntu">出自Ubuntu中文</h2>
+<p><a href="http://wiki.ubuntu.org.cn/index.php?title=File:Geographylogo.png&amp;variant=zh-cn" title="Geographylogo.png"><img alt="" src="http://wiki.ubuntu.org.cn/images/thumb/5/59/Geographylogo.png/25px-Geographylogo.png" /></a><br />
+<strong>文章出处:</strong>  </p>
+<p><a href="https://help.ubuntu.com/community/rsync" title="https://help.ubuntu.com/community/rsync">https://help.ubuntu.com/community/rsync</a></p>
+<p><a href="http://wiki.ubuntu.org.cn/index.php?title=File:Geographylogo.png&amp;variant=zh-cn" title="Geographylogo.png"><img alt="" src="http://wiki.ubuntu.org.cn/images/thumb/5/59/Geographylogo.png/25px-Geographylogo.png" /></a><br />
+<strong>翻译人员:</strong>  </p>
+<p>木饭 </p>
+<p><a href="http://wiki.ubuntu.org.cn/index.php?title=File:Geographylogo.png&amp;variant=zh-cn" title="Geographylogo.png"><img alt="" src="http://wiki.ubuntu.org.cn/images/thumb/5/59/Geographylogo.png/25px-Geographylogo.png" /></a><br />
+<strong><em>*点击翻译</em>*:</strong>  </p>
+<p><a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync&amp;variant=zh-cn" title="UbuntuHelp:Rsync">English</a>  • <strong>中文</strong></p>
+<h2 id="_1">目录</h2>
+<ul>
+<li>1 简介</li>
+<li>2 导言</li>
+<li>3 安装</li>
+<li>4 配置</li>
+<li>5 测试</li>
+</ul>
+<h2 id="_2">[<a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;action=edit&amp;section=1" title="编辑段落：简介">编辑</a>] 简介</h2>
+<p>RSYNC的简单配置 </p>
+<h2 id="_3">[<a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;action=edit&amp;section=2" title="编辑段落：导言">编辑</a>] 导言</h2>
+<p>rsync是类unix系统下的数据镜像备份工具，从软件的命名上就可以看出来了——remote sync。它的特性如下：<br />
+可以镜像保存整个目录树和文件系统。<br />
+可以很容易做到保持原来文件的权限、时间、软硬链接等等。<br />
+无须特殊权限即可安装。<br />
+优化的流程，文件传输效率高。<br />
+可以使用rcp、ssh等方式来传输文件，当然也可以通过直接的socket连接。<br />
+支持匿名传输，以方便进行网站镜象。<br />
+软件下载<br />
+rysnc的主页地址为：<br />
+<a href="http://rsync.samba.org/" title="http://rsync.samba.org/">http://rsync.samba.org/</a></p>
+<h2 id="_4">[<a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;action=edit&amp;section=3" title="编辑段落：安装">编辑</a>] 安装</h2>
+<p>在UBUNTU下安装RSYNC通过以下步骤可以实现: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">rsync</span> <span class="n">xinetd</span>
+</pre></div>
+
+
+<h2 id="_5">[<a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;action=edit&amp;section=4" title="编辑段落：配置">编辑</a>] 配置</h2>
+<ol>
+<li>
+<p>编辑/etc/default/rsync 启动rsync作为使用xinetd的守护进程 </p>
+<p>$ sudo vim /etc/default/rsync<br />
+  RSYNC_ENABLE=inetd</p>
+</li>
+<li>
+<p>创建 /etc/xinetd.d/rsync 通过xinetd使rsync开始工作  </p>
+<p>$ sudo vim /etc/xinetd.d/rsync<br />
+  service rsync<br />
+    {<br />
+        disable         = no<br />
+        socket_type     = stream<br />
+        wait            = no<br />
+        user            = root<br />
+        server          = /usr/bin/rsync<br />
+        server_args     = --daemon<br />
+        log_on_failure  += USERID<br />
+    }</p>
+</li>
+<li>
+<p>创建 <em>/etc/rsyncd.conf</em>  配置rsync使其在. </p>
+<p>$ sudo vim /etc/rsyncd.conf<br />
+  max connections = 2<br />
+  log file = /var/log/rsync.log<br />
+  timeout = 300</p>
+<p>[share]<br />
+  comment = Public Share<br />
+  path = /home/share<br />
+  read only = no<br />
+  list = yes<br />
+  uid = nobody<br />
+  gid = nogroup<br />
+  auth users = user<br />
+  secrets file = /etc/rsyncd.secrets</p>
+</li>
+<li>
+<p>创建 <em>/etc/rsyncd.secrets</em>  配置用户名和密码. </p>
+<p>$ sudo vim /etc/rsyncd.secrets <br />
+  user:password</p>
+</li>
+</ol>
+<p>4.a </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">chmod</span> <span class="mi">600</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">rsyncd</span><span class="p">.</span><span class="n">secrets</span>
+</pre></div>
+
+
+<ol>
+<li>
+<p>启动/重启 xinetd </p>
+<p>$ sudo /etc/init.d/xinetd restart</p>
+</li>
+</ol>
+<h2 id="_6">[<a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;action=edit&amp;section=5" title="编辑段落：测试">编辑</a>] 测试</h2>
+<p>运行下面的命令检查，确认rsync配置成功。 </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">rsync</span> <span class="n">user</span><span class="err">@</span><span class="mf">192.168.0.1</span><span class="o">::</span><span class="n">share</span>
+  <span class="nl">Password:</span> 
+  <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>        <span class="mi">4096</span> <span class="mi">2006</span><span class="o">/</span><span class="mi">12</span><span class="o">/</span><span class="mi">13</span> <span class="mi">09</span><span class="o">:</span><span class="mi">41</span><span class="o">:</span><span class="mi">59</span> <span class="p">.</span>
+  <span class="n">drwxr</span><span class="o">-</span><span class="n">xr</span><span class="o">-</span><span class="n">x</span>        <span class="mi">4096</span> <span class="mi">2006</span><span class="o">/</span><span class="mi">11</span><span class="o">/</span><span class="mi">23</span> <span class="mi">18</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mo">03</span> <span class="n">folders</span>
+</pre></div>
+
+
+<hr />
+<p>取自“<a href="http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;variant=zh-cn">http://wiki.ubuntu.org.cn/index.php?title=UbuntuHelp:Rsync/zh&amp;variant=zh-cn</a>” </p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

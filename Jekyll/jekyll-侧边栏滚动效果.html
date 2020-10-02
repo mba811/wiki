@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 侧边栏滚动效果 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 侧边栏滚动效果
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 21:45
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 侧边栏滚动效果</div>
+
+  <p>这里要实现的效果是滚动到某个位置后保持侧边栏小工具位置固定，实际效果请看本博客侧边栏。其实这跟 jekyll 没什么关系，但因为同属博客折腾心得，所以姑且放在一块儿。之所以想到这个，是因为之前玩 WordPress 时在我爱水煮鱼的博客中见到过，感觉效果还不错，就想加到自己的博客里。</p>
+<h2 id="_1">一、添加容器</h2>
+<p>定义一个 id 为 <code>fixed-container</code> 的 div，将小工具代码都放在里面，比如我放了 3 个小工具在里面。</p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;fixed-container&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;section&gt;</span>
+    {% include widgets/repos_list %}
+  <span class="nt">&lt;/section&gt;</span>
+  <span class="nt">&lt;section&gt;</span>
+    {% include widgets/contacts_list %}
+  <span class="nt">&lt;/section&gt;</span>
+  <span class="nt">&lt;section&gt;</span>
+    {% include widgets/links_list %}
+  <span class="nt">&lt;/section&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+
+<h2 id="js">二、编写js代码</h2>
+<p>添加以下 js 代码，响应窗口的滚动事件。滚动到 <code>fixed-container</code> 顶端时，将其的样式设为<code>position: fixed; top: 0;</code>，让它位置固定，否则设为 <code>position: static;</code> 让它恢复原样。</p>
+<div class="hlcode"><pre><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">position</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#fixed-container&#39;</span><span class="p">).</span><span class="nx">offset</span><span class="p">();</span>
+  <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">scroll</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">scrollTop</span><span class="p">()</span> <span class="o">&gt;</span> <span class="nx">position</span><span class="p">.</span><span class="nx">top</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#fixed-container&#39;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span><span class="s1">&#39;fixed&#39;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#fixed-container&#39;</span><span class="p">).</span><span class="nx">css</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span><span class="s1">&#39;static&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

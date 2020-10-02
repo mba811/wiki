@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>更新 Jekyll 的 sitemap.xml - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;更新 Jekyll 的 sitemap.xml
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 10:51
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">更新 Jekyll 的 sitemap.xml</div>
+
+  <p>Jekyll 默认的 sitemap.txt 功能有些羸弱，在我开启 _config.yml 中的 paginate 参数后，sitemap.txt 中多出了很多的 page2 page3 page4 page5，显然这些在sitemap中都是不必要的。</p>
+<p>既然目的明确，那么开始动手，新建个 sitemap.xml</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">rm</span> <span class="n">sitemap</span><span class="p">.</span><span class="n">txt</span><span class="p">;</span> <span class="n">touch</span> <span class="n">sitemap</span><span class="p">.</span><span class="n">xml</span>
+</pre></div>
+
+
+<p>填充以下内容</p>
+<div class="hlcode"><pre><span class="o">---</span>
+<span class="err">#</span> <span class="nx">Remember</span> <span class="k">to</span> <span class="nb">set</span> <span class="n">production_url</span> <span class="k">in</span> <span class="nx">your</span> <span class="nx">_config.yml</span> <span class="nb">file</span><span class="o">!</span>
+<span class="nb">title</span> <span class="p">:</span> <span class="nx">Sitemap</span>
+<span class="o">---</span>
+
+<span class="o">&lt;?</span><span class="kt">xml</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="cp">?&gt;</span>
+<span class="nt">&lt;urlset</span> <span class="na">xmlns=</span><span class="s">&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;</span><span class="nt">&gt;</span>
+
+    {% for post in site.posts %}
+    <span class="nt">&lt;url&gt;</span>
+      <span class="nt">&lt;loc&gt;</span>{{ site.production_url }}{{ post.url }}<span class="nt">&lt;/loc&gt;</span>
+      <span class="nt">&lt;changefreq&gt;</span>daily<span class="nt">&lt;/changefreq&gt;</span>
+      <span class="nt">&lt;lastmod&gt;</span>{{ post.date | date_to_xmlschema }}<span class="nt">&lt;/lastmod&gt;</span>
+      <span class="nt">&lt;priority&gt;</span>1.0<span class="nt">&lt;/priority&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    {% endfor %}
+
+    {% for page in site.pages %}
+    {% if page.layout != nil %}
+    {% if page.layout != &#39;feed&#39; %}
+    {% if page.group == &#39;navigation&#39; %}
+    <span class="nt">&lt;url&gt;</span>
+      <span class="nt">&lt;loc&gt;</span>{{ site.production_url }}{{ page.url | remove: &#39;index.html&#39; }}<span class="nt">&lt;/loc&gt;</span>
+      <span class="nt">&lt;changefreq&gt;</span>monthly<span class="nt">&lt;/changefreq&gt;</span>
+      <span class="nt">&lt;priority&gt;</span>0.80<span class="nt">&lt;/priority&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+
+    <span class="nt">&lt;url&gt;</span>
+      <span class="nt">&lt;loc&gt;</span>{{ site.production_url }}<span class="nt">&lt;/loc&gt;</span>
+      <span class="nt">&lt;changefreq&gt;</span>daily<span class="nt">&lt;/changefreq&gt;</span>
+      <span class="nt">&lt;priority&gt;</span>0.6<span class="nt">&lt;/priority&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+<span class="nt">&lt;/urlset&gt;</span>
+</pre></div>
+
+
+<p>OK，完美</p>
+<p>参考：</p>
+<ul>
+<li><a href="http://www.sitemaps.org/protocol.html">http://www.sitemaps.org/protocol.html</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>如何免 sudo 使用 docker - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;如何免 sudo 使用 docker
+    <span class="updated">Page Updated&nbsp;
+      2015-05-19 00:25
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">如何免 sudo 使用 docker</div>
+
+  <h3 id="_1">简介</h3>
+<p>默认安装完 docker 后，每次执行 docker 都需要运行 sudo 命令，非常浪费时间影响效率。如果不跟 sudo，直接执行 <code>docker images</code> 命令会有如下问题：</p>
+<blockquote>
+<p>FATA[0000] Get http:///var/run/docker.sock/v1.18/images/json: dial unix /var/run/docker.sock: permission denied. Are you trying to connect to a TLS-enabled daemon without TLS?</p>
+</blockquote>
+<p>于是考虑如何免 sudo 使用 docker，经过查找资料，发现只要把用户加入 docker 用户组即可，具体用法如下。</p>
+<h3 id="sudo-docker">免 sudo 使用 docker</h3>
+<ul>
+<li>
+<p>如果还没有 docker group 就添加一个：</p>
+<p>sudo groupadd docker</p>
+</li>
+<li>
+<p>将用户加入该 group 内。然后退出并重新登录就生效啦。</p>
+</li>
+</ul>
+<p>sudo gpasswd -a ${USER} docker<br />
+<br />
+  * 重启 docker 服务</p>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">service</span> <span class="n">docker</span> <span class="n">restart</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>切换当前会话到新 group 或者重启 X 会话</p>
+<p>newgrp - docker<br />
+OR<br />
+pkill X</p>
+</li>
+</ul>
+<p>注意，最后一步是必须的，否则因为 <code>groups</code> 命令获取到的是缓存的组信息，刚添加的组信息未能生效，所以 <code>docker images</code> 执行时同样有错。</p>
+<h3 id="_2">原因分析</h3>
+<ul>
+<li>
+<p>因为 <code>/var/run/docker.sock</code> 所属 docker 组具有 setuid 权限</p>
+<p>$ sudo ls -l /var/run/docker.sock</p>
+</li>
+</ul>
+<p>srw-rw---- 1 root docker 0 May  1 21:35 /var/run/docker.sock</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

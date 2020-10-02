@@ -1,0 +1,514 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>reStructuredText简明教程 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Python">Python</a>&nbsp;&#187;&nbsp;reStructuredText简明教程
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 21:52
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">reStructuredText简明教程</div>
+
+  <h2 id="rsthttprstninjsorg">首先介绍一个在线编辑rst的地方：http://rst.ninjs.org/</h2>
+<p>ok，开始~~</p>
+<h2 id="restructuredtext">reStructuredText简明教程<a href="http://lazynight.me/3138.html#restructuredtext">¶</a></h2>
+<p>REST 是松散的文本结构，使用预定义的模式描述文章的结构。首先学习最基本的结构：段落。</p>
+<p>段落是被空行分割的文字片段，左侧必须对齐（没有空格，或者有相同多的空格）。</p>
+<blockquote>
+<p>缩进的段落被视为引文。</p>
+<blockquote>
+<p>继续缩进……</p>
+</blockquote>
+<p>恢复</p>
+</blockquote>
+<p>恢复</p>
+<h2 id="_1">文字样式<a href="http://lazynight.me/3138.html#id2">¶</a></h2>
+<p>最简单的样式是 <em>斜体</em> 和 <strong>粗体</strong>.</p>
+<blockquote>
+<ul>
+<li><em>斜体</em>. 被*包围的文字是斜体</li>
+<li><strong>粗体</strong>. 被**包围的文字是粗体</li>
+</ul>
+</blockquote>
+<p>注意: * 两侧必须留有空格, 英文标点符号. 输入法设置为英文标点, 并使用正确的英文标点规范 (逗号, 句号后留一个空格, 引号, 括号两侧留一个空格).</p>
+<h2 id="_2">列表<a href="http://lazynight.me/3138.html#id3">¶</a></h2>
+<p>有三种列表:</p>
+<blockquote>
+<ol>
+<li>顺序,</li>
+<li>公告牌,</li>
+<li>定义.</li>
+</ol>
+</blockquote>
+<p>列表前后, 以及条目之间必须有空行隔开. 列表下面可以插入任意的内容, 段落, 图片都可以, 只要他们的左侧和列表的第一个文字左对齐.</p>
+<h3 id="_3">顺序列表<a href="http://lazynight.me/3138.html#id4">¶</a></h3>
+<div class="hlcode"><pre><span class="mf">1.</span> <span class="err">第</span> <span class="o">**</span><span class="err">一</span><span class="o">**</span> <span class="err">条</span>
+
+   <span class="err">段落</span>
+
+<span class="cp">#. 第二条</span>
+
+   <span class="mf">1.</span> <span class="err">小条</span>
+
+<span class="cp">#. 第三条</span>
+</pre></div>
+
+
+<p>顺序列表 生成:</p>
+<blockquote>
+<ol>
+<li>第 <strong>一</strong> 条</li>
+</ol>
+<p>段落</p>
+<ol>
+<li>
+<p>第二条</p>
+<ol>
+<li>小条</li>
+<li>第三条</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+<p>第二条开始后续的条目用 # 开头</p>
+<h3 id="_4">顺序列表 – 序号<a href="http://lazynight.me/3138.html#id5">¶</a></h3>
+<p>第一条的序号不必从 1 开始:</p>
+<div class="hlcode"><pre><span class="mf">3.</span> <span class="err">第三条</span>
+
+<span class="cp">#. 第四条</span>
+
+<span class="mf">7.</span> <span class="err">重新设定序号</span>
+
+<span class="cp">#. 继续</span>
+</pre></div>
+
+
+<p>顺序列表 – 序号 生成:</p>
+<blockquote>
+<ol>
+<li>第三条</li>
+<li>第四条</li>
+<li>重新设定序号</li>
+<li>继续</li>
+</ol>
+</blockquote>
+<h3 id="_5">顺序列表 – 符号样式<a href="http://lazynight.me/3138.html#id6">¶</a></h3>
+<p>符号:</p>
+<div class="hlcode"><pre><span class="mf">1.</span> <span class="err">数字</span>
+
+<span class="n">a</span><span class="p">.</span> <span class="err">小写字母</span>
+
+<span class="n">A</span><span class="p">.</span> <span class="err">大写字母</span>
+
+<span class="n">i</span><span class="p">)</span> <span class="err">小写罗马数字</span>
+
+<span class="p">(</span><span class="n">I</span><span class="p">)</span> <span class="err">大写罗马数字</span>
+</pre></div>
+
+
+<p>顺序列表 – 符号样式 效果</p>
+<p>符号:</p>
+<blockquote>
+<ol>
+<li>数字</li>
+<li>小写字母</li>
+<li>大写字母</li>
+<li>小写罗马数字</li>
+<li>大写罗马数字</li>
+</ol>
+</blockquote>
+<h3 id="_6">公告牌列表<a href="http://lazynight.me/3138.html#id7">¶</a></h3>
+<p>和顺序列表相似, 使用 "*" "+" "-" 代替数字:</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">列表第一级</span>
+
+  <span class="o">+</span> <span class="err">第二级</span>
+
+    <span class="o">-</span> <span class="err">第三级</span>
+
+  <span class="o">+</span> <span class="err">第二级的另一个项目</span>
+</pre></div>
+
+
+<p>公告牌列表 生成:</p>
+<blockquote>
+<ul>
+<li>列表第一级<ul>
+<li>第二级</li>
+<li>第三级</li>
+<li>第二级的另一个项目</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="_7">定义列表<a href="http://lazynight.me/3138.html#id8">¶</a></h2>
+<p>或者叫名词解释更确切:</p>
+<div class="hlcode"><pre><span class="o">*</span><span class="err">鸡</span><span class="o">*</span>
+  <span class="err">两条腿</span><span class="p">,</span> <span class="err">直立行走</span><span class="p">,</span> <span class="err">带翅膀</span><span class="p">,</span> <span class="err">有头冠的动物</span><span class="p">.</span>
+
+<span class="o">*</span><span class="err">鸭</span><span class="o">*</span>
+  <span class="err">鸡的崇拜者</span>
+</pre></div>
+
+
+<p>定义列表生成:</p>
+<p><em>鸡</em><br />
+    两条腿, 直立行走, 带翅膀, 有头冠的动物.<br />
+<em>鸭</em><br />
+    鸡的崇拜者</p>
+<h2 id="_8">嵌入程序代码<a href="http://lazynight.me/3138.html#id9">¶</a></h2>
+<p>如果需要嵌入大段的程序代码(SQL, 业务逻辑设置, 配置文件等), 在段落末尾添加两个':'. 代码的左侧必须缩进, 代码引用到没有缩进的行为止. 例如:</p>
+<div class="hlcode"><pre><span class="err">如果数据库有问题</span><span class="p">,</span> <span class="err">执行下面的</span> <span class="n">SQL</span><span class="o">::</span>
+
+ <span class="err">#</span> <span class="n">Dumping</span> <span class="n">data</span> <span class="k">for</span> <span class="n">table</span> <span class="err">`</span><span class="n">item_table</span><span class="err">`</span>
+
+ <span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">item_table</span> <span class="n">VALUES</span> <span class="p">(</span>
+   <span class="mo">0000000001</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">Manual</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="mf">0.18.0</span><span class="err">&#39;</span><span class="p">,</span>
+   <span class="err">&#39;</span><span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">manual</span> <span class="k">for</span> <span class="n">Mantis</span> <span class="n">version</span> <span class="mf">0.18.0</span><span class="p">.</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">nThe</span> <span class="n">Mantis</span> <span class="n">manual</span> <span class="n">is</span> <span class="n">modeled</span> <span class="n">after</span> <span class="n">the</span> <span class="p">[</span><span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.php.net/manual/en/]PHP Manual[/url]. It is authored via the \\&quot;manual\\&quot; module in Mantis CVS.  You can always view/download the latest version of this manual from [url=http://mantisbt.sourceforge.net/manual/]here[/url].&#39;,</span>
+   <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20030811192655</span><span class="p">);</span>
+</pre></div>
+
+
+<p>嵌入程序代码生成:</p>
+<p>如果数据库有问题, 执行下面的 SQL:</p>
+<div class="hlcode"><pre><span class="cp"># Dumping data for table `item_table`</span>
+<span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">item_table</span> <span class="nf">VALUES</span> <span class="p">(</span>
+  <span class="mo">0000000001</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">Manual</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="mf">0.18.0</span><span class="err">&#39;</span><span class="p">,</span>
+  <span class="err">&#39;</span><span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">manual</span> <span class="k">for</span> <span class="n">Mantis</span> <span class="n">version</span> <span class="mf">0.18.0</span><span class="p">.</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">nThe</span> <span class="n">Mantis</span> <span class="n">manual</span> <span class="n">is</span> <span class="n">modeled</span> <span class="n">after</span> <span class="n">the</span> <span class="p">[</span><span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.php.net/manual/en/]PHP Manual[/url]. It is authored via the \\&quot;manual\\&quot; module in Mantis CVS.  You can always view/download the latest version of this manual from [url=http://mantisbt.sourceforge.net/manual/]here[/url].&#39;,</span>
+  <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20030811192655</span><span class="p">);</span>
+</pre></div>
+
+
+<h3 id="_9">嵌入程序代码 续<a href="http://lazynight.me/3138.html#id10">¶</a></h3>
+<p>如果没有合适的段落添加 ::, 也可以在一个空行上添加, 这个双冒号行被忽略:</p>
+<div class="hlcode"><pre><span class="cp">#</span>
+<span class="cp"># Dumping data for table `item_table`</span>
+<span class="cp">#</span>
+
+<span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">item_table</span> <span class="nf">VALUES</span> <span class="p">(</span>
+  <span class="mo">0000000001</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">Manual</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="mf">0.18.0</span><span class="err">&#39;</span><span class="p">,</span>
+  <span class="err">&#39;</span><span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">manual</span> <span class="k">for</span> <span class="n">Mantis</span> <span class="n">version</span> <span class="mf">0.18.0</span><span class="p">.</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">nThe</span> <span class="n">Mantis</span> <span class="n">manual</span> <span class="n">is</span> <span class="n">modeled</span> <span class="n">after</span> <span class="n">the</span> <span class="p">[</span><span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.php.net/manual/en/]PHP Manual[/url]. It is authored via the \\&quot;manual\\&quot; module in Mantis CVS.  You can always view/download the latest version of this manual from [url=http://mantisbt.sourceforge.net/manual/]here[/url].&#39;,</span>
+  <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20030811192655</span><span class="p">);</span>
+</pre></div>
+
+
+<p>嵌入程序代码 续 生成:</p>
+<div class="hlcode"><pre><span class="cp">#</span>
+<span class="cp"># Dumping data for table `item_table`</span>
+<span class="cp">#</span>
+
+<span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">item_table</span> <span class="nf">VALUES</span> <span class="p">(</span>
+  <span class="mo">0000000001</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">Manual</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="mf">0.18.0</span><span class="err">&#39;</span><span class="p">,</span>
+  <span class="err">&#39;</span><span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">manual</span> <span class="k">for</span> <span class="n">Mantis</span> <span class="n">version</span> <span class="mf">0.18.0</span><span class="p">.</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">n</span><span class="err">\</span><span class="n">r</span><span class="err">\</span><span class="n">nThe</span> <span class="n">Mantis</span> <span class="n">manual</span> <span class="n">is</span> <span class="n">modeled</span> <span class="n">after</span> <span class="n">the</span> <span class="p">[</span><span class="n">url</span><span class="o">=</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.php.net/manual/en/]PHP Manual[/url]. It is authored via the \\&quot;manual\\&quot; module in Mantis CVS.  You can always view/download the latest version of this manual from [url=http://mantisbt.sourceforge.net/manual/]here[/url].&#39;,</span>
+  <span class="err">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20030811192655</span><span class="p">);</span>
+</pre></div>
+
+
+<h3 id="_10">程序引用体例<a href="http://lazynight.me/3138.html#id11">¶</a></h3>
+<p>可以 用 .. code-block:: 追加各种语法高亮声明:</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> python
+    <span class="nc">:linenos:</span>
+
+    def foo():
+        print &quot;Love Python, Love FreeDome&quot;
+        print &quot;E文标点,.0123456789,中文标点,. &quot;
+</pre></div>
+
+
+<p>效果:</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span>
+
+<span class="n">def</span> <span class="n">foo</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">print</span> <span class="s">&quot;Love Python, Love FreeDome&quot;</span>
+    <span class="n">print</span> <span class="s">&quot;E文标点,.0123456789,中文标点,. &quot;</span>
+</pre></div>
+
+
+<p>外部包含:</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">literalinclude</span><span class="p">::</span> example.py
+    <span class="nc">:language:</span> <span class="nf">python</span>
+</pre></div>
+
+
+<p>效果:</p>
+<div class="hlcode"><pre><span class="err">@</span><span class="n">route</span><span class="p">(</span><span class="err">&#39;</span><span class="o">%</span><span class="n">s</span><span class="o">/</span><span class="err">&#39;</span><span class="o">%</span><span class="n">ini</span><span class="p">.</span><span class="n">urlprefix</span><span class="p">)</span>
+<span class="n">def</span> <span class="n">index</span><span class="p">()</span><span class="o">:</span>
+    <span class="n">__urlog</span><span class="p">(</span><span class="s">&quot;INFO&quot;</span><span class="p">,</span><span class="s">&quot;idx++&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">template</span><span class="p">(</span><span class="err">&#39;</span><span class="n">index</span><span class="p">.</span><span class="n">tpl</span><span class="err">&#39;</span><span class="p">,</span><span class="n">urlprefix</span><span class="o">=</span><span class="n">ini</span><span class="p">.</span><span class="n">urlprefix</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="_11">章节<a href="http://lazynight.me/3138.html#id12">¶</a></h2>
+<p>章节是文章的主体结构, 分为 <strong>标题 章 节 小节</strong> 等. 定义章节的方式是在行的下面添加 '=======', 比如:</p>
+<div class="hlcode"><pre><span class="err">标题</span>
+<span class="o">====</span>
+
+<span class="err">章</span>
+<span class="o">--</span>
+
+<span class="err">节</span>
+<span class="o">~~</span>
+
+<span class="err">小节</span>
+<span class="cp">####</span>
+</pre></div>
+
+
+<p>说明 <a href="http://lazynight.me/3138.html#id14">[1]</a>:</p>
+<blockquote>
+<ol>
+<li>'====' 至少和文字行一样长, 更长也行</li>
+<li>相同级别必须使用统一的符号, 否则会被识别为更小的级别</li>
+<li>= – ~ ` : ' " ^ _ * _ # &lt; &gt; 这些符号都可以, 级别足够多了.</li>
+</ol>
+</blockquote>
+<p><a href="http://lazynight.me/3138.html#id13">[1]</a><br />
+由于幻灯片系统的限制, 效果无法在幻灯片内演示</p>
+<h2 id="_12">标题<a href="http://lazynight.me/3138.html#id15">¶</a></h2>
+<p>标题和章节在结构上的作用相同, 但是可能有不同的显示格式. 标题的区别是在章节的上方也加上 '====' 行:</p>
+<div class="hlcode"><pre><span class="o">====</span>
+<span class="err">标题</span>
+<span class="o">====</span>
+
+<span class="o">-----------</span>
+<span class="err">第一章</span> <span class="err">概述</span>
+<span class="o">-----------</span>
+</pre></div>
+
+
+<h2 id="_13">表格<a href="http://lazynight.me/3138.html#id16">¶</a></h2>
+<h3 id="_14">普通表格<a href="http://lazynight.me/3138.html#id17">¶</a></h3>
+<div class="hlcode"><pre><span class="o">+------------+------------+-----------+</span>
+<span class="o">|</span> <span class="n">Header</span> <span class="mi">1</span>   <span class="o">|</span> <span class="n">Header</span> <span class="mi">2</span>   <span class="o">|</span> <span class="n">Header</span> <span class="mi">3</span>  <span class="o">|</span>
+<span class="o">+============+============+===========+</span>
+<span class="o">|</span> <span class="n">body</span> <span class="n">row</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">column</span> <span class="mi">2</span>   <span class="o">|</span> <span class="n">column</span> <span class="mi">3</span>  <span class="o">|</span>
+<span class="o">+------------+------------+-----------+</span>
+<span class="o">|</span> <span class="n">body</span> <span class="n">row</span> <span class="mi">2</span> <span class="o">|</span> <span class="n">Cells</span> <span class="n">may</span> <span class="n">span</span> <span class="n">columns</span><span class="p">.</span><span class="o">|</span>
+<span class="o">+------------+------------+-----------+</span>
+<span class="o">|</span> <span class="n">body</span> <span class="n">row</span> <span class="mi">3</span> <span class="o">|</span> <span class="n">Cells</span> <span class="n">may</span>  <span class="o">|</span> <span class="o">-</span> <span class="n">Cells</span>   <span class="o">|</span>
+<span class="o">+------------+</span> <span class="n">span</span> <span class="n">rows</span><span class="p">.</span> <span class="o">|</span> <span class="o">-</span> <span class="n">contain</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">body</span> <span class="n">row</span> <span class="mi">4</span> <span class="o">|</span>            <span class="o">|</span> <span class="o">-</span> <span class="n">blocks</span><span class="p">.</span> <span class="o">|</span>
+<span class="o">+------------+------------+-----------+</span>
+</pre></div>
+
+
+<p>普通表格 生成:</p>
+<blockquote>
+<p>Header 1Header 2Header 3</p>
+<p>body row 1<br />
+column 2<br />
+column 3</p>
+<p>body row 2<br />
+Cells may span columns.</p>
+<p>body row 3<br />
+Cells may span rows.</p>
+<ul>
+<li>Cells</li>
+<li>contain</li>
+<li>blocks.</li>
+</ul>
+<p>body row 4</p>
+</blockquote>
+<h3 id="_15">简单表格<a href="http://lazynight.me/3138.html#id18">¶</a></h3>
+<p><em>注意:</em> 表格包含中文时,基本无法对齐,,,</p>
+<div class="hlcode"><pre><span class="o">=====</span>  <span class="o">=====</span>  <span class="o">======</span>
+   <span class="n">Inputs</span>     <span class="n">Output</span>
+<span class="o">------------</span>  <span class="o">------</span>
+  <span class="n">A</span>      <span class="n">B</span>    <span class="n">A</span> <span class="n">or</span> <span class="n">B</span>
+<span class="o">=====</span>  <span class="o">=====</span>  <span class="o">======</span>
+<span class="n">False</span>  <span class="n">False</span>  <span class="n">False</span>
+<span class="n">True</span>   <span class="n">False</span>  <span class="n">True</span>
+<span class="n">False</span>  <span class="n">True</span>   <span class="n">True</span>
+<span class="n">True</span>   <span class="n">True</span>   <span class="n">True</span>
+<span class="o">=====</span>  <span class="o">=====</span>  <span class="o">======</span>
+</pre></div>
+
+
+<p>简单表格 生成:</p>
+<blockquote>
+<p>InputsOutput</p>
+<p>ABA or B</p>
+<p>False<br />
+False<br />
+False</p>
+<p>True<br />
+False<br />
+True</p>
+<p>False<br />
+True<br />
+True</p>
+<p>True<br />
+True<br />
+True</p>
+</blockquote>
+<h3 id="csv">CSV 表格<a href="http://lazynight.me/3138.html#csv">¶</a></h3>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">csv-table</span><span class="p">::</span> Frozen Delights!
+ <span class="nc">:header:</span> <span class="nf">&quot;Treat&quot;, &quot;Quantity&quot;, &quot;Description&quot;</span>
+ <span class="nc">:widths:</span> <span class="nf">15, 10, 30</span>
+
+ &quot;Albatross&quot;, 2.99, &quot;On a stick!&quot;
+ &quot;Crunchy Frog&quot;, 1.49, &quot;If we took the bones out, it wouldn&#39;t be
+ crunchy, now would it?&quot;
+ &quot;Gannet Ripple&quot;, 1.99, &quot;On a stick!&quot;
+</pre></div>
+
+
+<p>CSV 表格生成:</p>
+<p>Frozen Delights!</p>
+<p>TreatQuantityDescription</p>
+<p>Albatross<br />
+2.99<br />
+On a stick!</p>
+<p>Crunchy Frog<br />
+1.49<br />
+If we took the bones out, it wouldn't be crunchy, now would it?</p>
+<p>Gannet Ripple<br />
+1.99<br />
+On a stick!</p>
+<h3 id="_16">列表表格<a href="http://lazynight.me/3138.html#id19">¶</a></h3>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">list-table</span><span class="p">::</span> Frozen Delights!
+  <span class="nc">:widths:</span> <span class="nf">15 10 30</span>
+  <span class="nc">:header-rows:</span> <span class="nf">1</span>
+
+  <span class="m">*</span> - Treat
+    <span class="m">-</span> Quantity
+    <span class="m">-</span> Description
+  <span class="m">*</span> - Albatross
+    <span class="m">-</span> 2.99
+    <span class="m">-</span> On a stick!
+  <span class="m">*</span> - Crunchy Frog
+    <span class="m">-</span> 1.49
+    <span class="m">-</span> If we took the bones out, it wouldn&#39;t be
+      crunchy, now would it?
+  <span class="m">*</span> - Gannet Ripple
+    <span class="m">-</span> 1.99
+    <span class="m">-</span> On a stick!
+</pre></div>
+
+
+<p>列表表格 生成:</p>
+<p>Frozen Delights!</p>
+<p>TreatQuantityDescription</p>
+<p>Albatross<br />
+2.99<br />
+On a stick!</p>
+<p>Crunchy Frog<br />
+1.49<br />
+If we took the bones out, it wouldn't be crunchy, now would it?</p>
+<p>Gannet Ripple<br />
+1.99<br />
+On a stick!</p>
+<h2 id="rst">rST排版技巧<a href="http://lazynight.me/3138.html#rst">¶</a></h2>
+<h3 id="_17">跨章节指引<a href="http://lazynight.me/3138.html#id20">¶</a></h3>
+<ul>
+<li>
+<p>行文中,经常要对其它章节进行指引,在 html 中对应的就是 锚点链接</p>
+</li>
+<li>
+<p>rST 中提供了非常优雅的解决:</p>
+<ul>
+<li>使用通用元素定义</li>
+<li>比如説:</li>
+</ul>
+<p>各个章节的首页一般是 index.rst<br />
+头一行,习惯性加个聲明:<br />
+.. _chapter6index:</p>
+<p>那么,在其它任意文本中,随时可以使用:<br />
+:ref:<code>构建 buzz &lt;chapter6index&gt;</code><br />
+来生成一个指向第二章 首页的链接!</p>
+</li>
+</ul>
+<h3 id="_18">插图/表格指代<a href="http://lazynight.me/3138.html#id21">¶</a></h3>
+<ul>
+<li>
+<p>行文中,经常对指定插图/表格 进行指代</p>
+</li>
+<li>
+<p>rST 中提供了非常优雅的解决:</p>
+<ul>
+<li>进行通用元素定义</li>
+<li>比如说</li>
+</ul>
+<p>.. _fig_0601:<br />
+.. figure:: _static/figs/magic-2.png</p>
+<p>插图 6-1 神奇的2</p>
+</li>
+</ul>
+<p>然后,就可以在任意地方使用 <a href="http://lazynight.me/3138.html#fig-0601"><em>插图 6-1 神奇的2</em></a> 来指代, 实际输出的就是 "插图 6-1 神奇的2"</p>
+<p><img alt="_images/magic-2.png" src="http://lazynight.me/_images/magic-2.png" /></p>
+<p>插图 6-1 神奇的2</p>
+<h3 id="_19">上下标号<a href="http://lazynight.me/3138.html#id22">¶</a></h3>
+<p>有时要进行数学/化学的表示,在 html 中就需要上/下标( , ) 的表达, rST 中当然也有:</p>
+<div class="hlcode"><pre><span class="n">H</span><span class="err">\</span> <span class="o">:</span><span class="n">sub</span><span class="o">:</span><span class="err">`</span><span class="mi">2</span><span class="err">`\</span> <span class="n">O</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">mc</span><span class="err">\</span> <span class="o">:</span><span class="n">sup</span><span class="o">:</span><span class="err">`</span><span class="mi">2</span><span class="err">`</span>
+</pre></div>
+
+
+<p>效果:</p>
+<p>H2O</p>
+<p>E = mc2</p>
+<p>Note</p>
+<p>注意:</p>
+<p>这里的 只是为了制造语法空间,输出时,是没有空格的了,,,</p>
+<h2 id="_20">段落层次约定<a href="http://lazynight.me/3138.html#id23">¶</a></h2>
+<p>使用 <a href="http://lazynight.me/3138.html#id24">reSTsections_</a></p>
+<div class="hlcode"><pre><span class="err">共分</span><span class="mi">4</span><span class="err">级</span>
+<span class="o">=======================</span>
+<span class="err">大标题</span>
+<span class="o">=======================</span>
+
+
+<span class="o">-----------------------</span>
+<span class="err">小标题</span>
+<span class="o">-----------------------</span>
+
+
+<span class="o">^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span class="err">二级标题</span>
+<span class="o">^^^^^^^^^^^^^^^^^^^^^^^</span>
+
+
+<span class="s">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="err">三级标题</span>
+<span class="s">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span>
+</pre></div>
+
+
+<p>再小，就使用列表!:</p>
+<blockquote>
+<ul>
+<li>列表项目1</li>
+<li>列表项目2</li>
+<li>…</li>
+</ul>
+</blockquote>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

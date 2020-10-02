@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>配置lighttpd反向代理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;配置lighttpd反向代理
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 09:35
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">配置lighttpd反向代理</div>
+
+  <p><img alt="" src="http://www.liaoxuefeng.com/files/attachments/001384783442354f6e73e3ae4824dd9ab7d75d3bc7cfffb000/l" /></p>
+<p><a href="http://www.liaoxuefeng.com/user/001383729881018b677b2776c24451e9b5f30a03ea5d73c000">廖雪峰</a> / <a href="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a> / 2011-5-8 16:34 / 阅读: 7</p>
+<p>lighttpd是和nginx类似的高性能轻量级开源Web服务器，不过其反向代理配置和nginx略有不同，如果反向代理的URL没有一定的规则（比如以.do结尾），基本配置方法就是过滤掉不需要代理的地址，比如favicon.ico和包含/static/的文件夹，剩下的地址通过本地8080端口做反向代理。</p>
+<p>以下是一个配置文件，包含两个host，其中一个域全部被重定向到主域下：</p>
+<div class="hlcode"><pre><span class="n">server</span><span class="p">.</span><span class="n">modules</span> <span class="o">+=</span> <span class="p">(</span> <span class="s">&quot;mod_accesslog&quot;</span><span class="p">,</span> <span class="s">&quot;mod_proxy&quot;</span> <span class="p">)</span>
+
+<span class="err">$</span><span class="n">HTTP</span><span class="p">[</span><span class="s">&quot;host&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;liaoxuefeng.com&quot;</span> <span class="p">{</span>
+    <span class="n">url</span><span class="p">.</span><span class="n">redirect</span> <span class="o">=</span> <span class="p">(</span> <span class="s">&quot;^/(.*)&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;http://www.liaoxuefeng.com/$1&quot;</span> <span class="p">)</span>
+<span class="p">}</span>
+
+<span class="err">$</span><span class="n">HTTP</span><span class="p">[</span><span class="s">&quot;host&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;www.liaoxuefeng.com&quot;</span> <span class="p">{</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;www.liaoxuefeng.com&quot;</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">document</span><span class="o">-</span><span class="n">root</span> <span class="o">=</span> <span class="s">&quot;/srv/liaoxuefeng.com/www/&quot;</span>
+
+    <span class="n">accesslog</span><span class="p">.</span><span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;/srv/liaoxuefeng.com/log/access.log&quot;</span>
+    <span class="n">server</span><span class="p">.</span><span class="n">errorlog</span> <span class="o">=</span> <span class="s">&quot;/srv/liaoxuefeng.com/log/error.log&quot;</span>
+
+    <span class="err">$</span><span class="n">HTTP</span><span class="p">[</span><span class="s">&quot;url&quot;</span><span class="p">]</span> <span class="o">!~</span> <span class="s">&quot;^(favicon.ico|.*/static/.*)$&quot;</span> <span class="p">{</span>
+        <span class="n">proxy</span><span class="p">.</span><span class="n">server</span> <span class="o">=</span> <span class="p">(</span> <span class="s">&quot;&quot;</span> <span class="o">=&gt;</span> <span class="p">((</span> <span class="s">&quot;host&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s">&quot;port&quot;</span> <span class="o">=&gt;</span> <span class="mi">8000</span> <span class="p">)))</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>以上配置在lighttpd 1.4.x中测试通过。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

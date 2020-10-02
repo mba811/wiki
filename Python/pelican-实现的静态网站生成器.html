@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Pelican 实现的静态网站生成器 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Python">Python</a>&nbsp;&#187;&nbsp;Pelican 实现的静态网站生成器
+    <span class="updated">Page Updated&nbsp;
+      2015-05-08 06:56
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Pelican 实现的静态网站生成器</div>
+
+  <p>Pelican 是一个用 <a href="http://www.python.org/">Python</a> 实现的静态网站生成器。</p>
+<ul>
+<li>用您选定的编辑器( 如： <a href="http://www.vim.org/">vim</a> )直接写出您的内容，支持 <a href="http://docutils.sourceforge.net/rst.html">reStructuredText</a> ， <a href="http://daringfireball.net/projects/markdown/">Markdown</a> ，和 <a href="http://www.methods.co.nz/asciidoc/index.html">AsciiDoc</a> 格式</li>
+<li>包含一个简单的命令行工具用以(重新)生成您的站点</li>
+<li>可方便地与分布式版本控制系统和网络钩子配合使用</li>
+<li>完全静态输出，可托管在任何地方</li>
+</ul>
+<h2 id="_1">特性</h2>
+<p>Pelican 当前支持：</p>
+<ul>
+<li>文章(如：博客帖子)和页面(如：“关于”，“项目”，“联系方式”)</li>
+<li>评论，通过一个外部服务( <a href="https://disqus.com/">Disqus</a> )实现。(请记住：Disqus 很有用，但它是一个外部服务，因此评论数据将会多少有点脱离您的控制，同时潜在地存在数据丢失的可能性。)</li>
+<li>主题支持(主题是用 <a href="http://jinja.pocoo.org/">Jinja2</a> 模板创建的)</li>
+<li>用多种语言发表文章</li>
+<li>Atom/RSS 供稿</li>
+<li>代码语法高亮</li>
+<li>文章/页面生成PDF (可选的)</li>
+<li>从WordPress，Dotclear，或者RSS源导入</li>
+<li>集成外部工具，如：Twitter，Google Analytics等 (可选的)</li>
+</ul>
+<h2 id="pelican">为什么取名“Pelican”？</h2>
+<p>“Pelican”是由 <em>calepin</em> 颠倒字母而来的， <em>calepin</em> 在法语里是“笔记本”的意思。</p>
+<h2 id="_2">源代码</h2>
+<p>您可以在这里访问到源代码： <a href="https://github.com/getpelican/pelican">https://github.com/getpelican/pelican</a></p>
+<h2 id="_3">反馈 / 联系我们</h2>
+<p>如果您想看到 Pelican 的新特性，那就别再犹豫，您可以提供建议，克隆代码库等。 <a href="contribute.html"><em>参与建设</em></a> 的方式有很多种。它是开源的，伙计！</p>
+<p>有任何意见或建议，请发送消息至 authors#getpelican.com ！您也可以加入 <a href="irc://irc.freenode.net/pelican">#pelican on Freenode</a> 讨论组，如果您手边没有一个IRC客户端，请使用 <a href="http://webchat.freenode.net/?channels=pelican&amp;uio=d4">webchat</a> 进行快速反馈。</p>
+<h2 id="_4">文档</h2>
+<p>一个法语版的文档可访问： <a href="https://pelican.readthedocs.org/en/latest/fr/index.html">Pelican</a> 。</p>
+<ul>
+<li><a href="getting_started.html">入门指南</a><ul>
+<li><a href="getting_started.html#pelican">安装Pelican</a></li>
+<li><a href="getting_started.html#id6">启动您的站点</a></li>
+<li><a href="getting_started.html#id7">使用Pelican书写内容</a></li>
+</ul>
+</li>
+<li><a href="settings.html">设置</a><ul>
+<li><a href="settings.html#id2">基本设置</a></li>
+<li><a href="settings.html#template-pages">模板页面</a></li>
+<li><a href="settings.html#path">Path元数据</a></li>
+<li><a href="settings.html#id9">供稿设置</a></li>
+<li><a href="settings.html#id13">分页</a></li>
+<li><a href="settings.html#id14">标签云</a></li>
+<li><a href="settings.html#id15">翻译</a></li>
+<li><a href="settings.html#id18">内容排序</a></li>
+<li><a href="settings.html#id19">主题</a></li>
+<li><a href="settings.html#id20">设置样例</a></li>
+</ul>
+</li>
+<li><a href="themes.html">怎样给Pelican创建主题</a><ul>
+<li><a href="themes.html#id1">结构</a></li>
+<li><a href="themes.html#id2">模板和变量</a></li>
+<li><a href="themes.html#id13">供稿</a></li>
+<li><a href="themes.html#id14">继承</a></li>
+</ul>
+</li>
+<li><a href="plugins.html">插件</a><ul>
+<li><a href="plugins.html#id2">怎样使用插件</a></li>
+<li><a href="plugins.html#id3">何处获得插件</a></li>
+<li><a href="plugins.html#id4">怎样创建插件</a></li>
+<li><a href="plugins.html#id5">信号列表</a></li>
+</ul>
+</li>
+<li><a href="internals.html">Pelican内部构件</a><ul>
+<li><a href="internals.html#id1">总体结构</a></li>
+<li><a href="internals.html#id2">怎样实现一个新的阅读器？</a></li>
+<li><a href="internals.html#id3">怎样实现一个新的生成器？</a></li>
+</ul>
+</li>
+<li><a href="pelican-themes.html">pelican-themes命令</a><ul>
+<li><a href="pelican-themes.html#id1">描述</a></li>
+<li><a href="pelican-themes.html#id2">例子</a></li>
+<li><a href="pelican-themes.html#id3">另请参阅</a></li>
+</ul>
+</li>
+<li><a href="importer.html">从其他博客软件导入</a><ul>
+<li><a href="importer.html#id2">描述</a></li>
+<li><a href="importer.html#id3">依赖</a></li>
+<li><a href="importer.html#id4">用法</a></li>
+<li><a href="importer.html#id7">样例</a></li>
+<li><a href="importer.html#id8">测试</a></li>
+</ul>
+</li>
+<li><a href="faq.html">常见问题</a><ul>
+<li><a href="faq.html#id2">交流一个难题、疑问或者建议的最佳途径是什么？</a></li>
+<li><a href="faq.html#id3">我能做些什么？</a></li>
+<li><a href="faq.html#id5">是否强制需要一个配置文件？</a></li>
+<li><a href="faq.html#pygments">我在创建我自己的主题，我怎样使用Pygments来实现语法高亮？</a></li>
+<li><a href="faq.html#id6">我怎样创建自己的主题？</a></li>
+<li><a href="faq.html#markdown">我想使用Markdown，但我收到一个错误</a></li>
+<li><a href="faq.html#id7">我能否在我的模板里使用任意的元数据？</a></li>
+<li><a href="faq.html#id8">我怎样给每一页分配一个定制的模板？</a></li>
+<li><a href="faq.html#url">我怎样覆盖一个特定的页面或文章生成的URL？</a></li>
+<li><a href="faq.html#id9">我怎样使用一个静态页面作为我的主页？</a></li>
+<li><a href="faq.html#feed">如果我让feed生成失效将会怎样？</a></li>
+<li><a href="faq.html#feedssiteurl">我收到一个警告：生成feeds时SITEURL未正确设置</a></li>
+<li><a href="faq.html#pelican-3-x">自从我升级到Pelican 3.x，供稿就被破坏了</a></li>
+</ul>
+</li>
+<li><a href="tips.html">小贴士</a><ul>
+<li><a href="tips.html#github">发布到GitHub</a></li>
+</ul>
+</li>
+<li><a href="contribute.html">如何贡献</a><ul>
+<li><a href="contribute.html#id2">贡献提交指南</a></li>
+<li><a href="contribute.html#id3">设置开发环境</a></li>
+<li><a href="contribute.html#id4">代码规范</a></li>
+<li><a href="contribute.html#id5">构建文档</a></li>
+<li><a href="contribute.html#id6">运行测试套件</a></li>
+<li><a href="contribute.html#python-3">Python 3 开发贴士</a></li>
+</ul>
+</li>
+<li><a href="report.html">关于Pelican的一些历史</a><ul>
+<li><a href="report.html#id1">使用案例</a></li>
+<li><a href="report.html#id2">设计过程</a></li>
+<li><a href="report.html#id3">更多细节</a></li>
+</ul>
+</li>
+<li><a href="changelog.html">发布记录</a><ul>
+<li><a href="changelog.html#xxxx-xx-xx">3.3 (XXXX-XX-XX)</a></li>
+<li><a href="changelog.html#and-3-2-2">3.2.1 and 3.2.2</a></li>
+<li><a href="changelog.html#id2">3.2 (2013-04-24)</a></li>
+<li><a href="changelog.html#id3">3.1 (2012-12-04)</a></li>
+<li><a href="changelog.html#id4">3.0 (2012-08-08)</a></li>
+<li><a href="changelog.html#id5">2.8 (2012-02-28)</a></li>
+<li><a href="changelog.html#id6">2.7 (2011-06-11)</a></li>
+<li><a href="changelog.html#id7">2.6 (2011-03-08)</a></li>
+<li><a href="changelog.html#id8">2.5 (2010-11-20)</a></li>
+<li><a href="changelog.html#id9">2.4 (2010-11-06)</a></li>
+<li><a href="changelog.html#id10">2.3 (2010-10-31)</a></li>
+<li><a href="changelog.html#id11">2.2 (2010-10-30)</a></li>
+<li><a href="changelog.html#id12">2.1 (2010-10-30)</a></li>
+<li><a href="changelog.html#id13">2.0 (2010-10-30)</a></li>
+<li><a href="changelog.html#id14">1.2 (2010-09-28)</a></li>
+<li><a href="changelog.html#id15">1.1 (2010-08-19)</a></li>
+</ul>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

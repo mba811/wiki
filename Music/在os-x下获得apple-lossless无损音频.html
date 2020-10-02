@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>在OS X下获得Apple Lossless无损音频 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;在OS X下获得Apple Lossless无损音频
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 10:11
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">在OS X下获得Apple Lossless无损音频</div>
+
+  <blockquote>
+<p>我们这里介绍的方法主要适用于希望把无损音频导入到具有苹果音频播放功能的便携设备（iPod，iPhone以及iPad等）中的音乐发烧友。如果仅仅只是在Mac电脑里播放，还有其他方便的方法，这在最后再向大家介绍。</p>
+</blockquote>
+<p>我们这里介绍的方法主要适用于希望把无损音频导入到具有苹果音频播放功能的便携设备（iPod，iPhone以及iPad等）中的音乐发烧友。如果仅仅只是在Mac电脑里播放，还有其他方便的方法，这在最后再向大家介绍。  </p>
+<p>最近从爱好音乐的朋友那里得到了他珍藏的一些后缀为APE，FLAC和WAV的无损音频，说来惭愧，接触无损音频有些晚了。对于像我这样对音质要求不高的人来说还真有些不知所措。作为多年的Mac用户都知道，要想将喜爱的歌曲导入到iPod，iPhone 以及iPad等设备中，使得能够随时随地的聆听自己喜爱的音乐，不可避免的要通过苹果自家的媒体管理软件iTunes。  </p>
+<p>对音质要求不高的人来说，一般的MP3音频（立体声位速率为160 kbps），或更高质量的MP3音频（立体声位速率为320 kbps，也有CBR恒定速率编码与VBR可变速率编码之分）以及苹果公司力推的以AAC编码器为基础的iTunes Plus 256 kbps 的立体声音频，这些音频文件通过iTunes导入到苹果设备都是非常方便的。并且iTunes本身也支持一些无损音频格式，但数量太有限，比如Apple Lossless音频格式以及后缀为WAV的音频文件，由于Mac用户属于小众人群，网络上常见的以及音乐发烧友们常用的无损音频格式基本以后缀为APE，FLAC的居多。  </p>
+<p>如果遇到诸如文件后缀为APE，FLAC等无损音频时，一般的音乐爱好者可能就有些犯难了（当然，iTunes是可以识别WAV格式的音频，但如果需要更进一步的获取其中的每一个音轨就不太可能了）。 既想聆听纯净的无损音频歌曲又希望能极方便的将无损音频导入到苹果设备中，这样的使用需求就越来越强烈。    </p>
+<p>纵观网络上以及威锋网中许多解决这个问题的文章，诸如早期的cjwdljq这位锋友的无损音效<a href="http://bbs.feng.com/read-htm-tid-274167.html">APE转Apple Lossless</a>的帖子，以及huge_0303这位锋友转载的<a href="http://bbs.feng.com/read-htm-tid-297563.html">APE到Apple Lossless巧转换</a>的帖子，这其中提到了Windows用户会使用到的著名音频软件foobar （现在最新的版本为<a href="http://www.foobar2000.org/download">foobar2000 v1.1.8 beta6</a>）。遗憾的是，这个软件只支持Windows平台，如果Mac用户也想尝试那就比较麻烦了（呵呵，你懂的啊，VM &amp; PD 虚拟了）。这必然给Mac 用户带来诸多不便，也就导致很多想通过iPod，iPhone 以及iPad听无损音频歌曲的用户，因为感到麻烦最终只有放弃了。还有就是威锋网影音组的shadowofdust仁兄的经典教程活用iTunes,<a href="http://bbs.feng.com/read-htm-tid-616230.html">手把手教你转化Apple Lossless, iTunes Plus AAC</a>，条理清晰的叙述使得这篇教程基本也就是大多数锋友实践的准则，但是我们不难发现，其中用到的重要工具WinMount （现在最新的版本为<a href="http://cn.winmount.com/">v3.4.1020</a>）同样也不是我们Mac用户的菜，仍然需要在Windows下面进行操作。 并且还有一点需要提出的是，方法不适用于分轨APE，FLAC音频文件，因为一个个导入APE，FLAC将仍非常麻烦。虽然shadowofdust兄提到了解决办法但是仍然用到了前面提到的foobar软件，Mac用户仍然望洋兴叹。当然最近期还有xiaodoudou205给出了教程 <a href="http://bbs.feng.com/read-htm-tid-2480376.html">ape/flac 无损音乐转换Apple Lossless格式通过iTunes导入，发挥ipad2最强音效</a>！，同样采用了shadowofdust的方法，其中增加了生成cue索引文件的方法。不可否认的是，shadowofdust的教程对我今天的这个文章的成形起了重要的作用。因为，我们的任务就是希望在Mac OS X平台下找到解决问题的有效方法，而不需要切换到Windows平台去实现。 减少不必要的麻烦，给Mac用户的音乐发烧友送去福音。  </p>
+<p>有句古话，工欲善其事必先利其器。这篇文章中教给大家的方法同样需要一个重要的工具，那就是Mac OS X下的一款无损音频解码器 <a href="http://tmkk.pv.land.to/xld/index_e.html">X Lossless Decoder</a>（目前最新的版本为 <a href="http://xld.googlecode.com/files/xld-gui-20110821.tar.bz2">xld-gui-20110821.tar.bz2</a>）。这款软件对于Mac的老用户应该不会陌生，因为可以一直追溯的2006.5.27。目前最新的版本有友好的用户界面，使用简单并且稳定，所以在这里推荐给所有Mac用户。在这篇文章中，我不会详细讲解XLD中每一种功能和设置，这一部分计划放到Mac 的版块里去完善，但是今天我会把针对后缀为APE，FLAC格式的无损音频转换为iTunes可以支持的Apple Lossless无损音频所需要的设置和操作方法一一教给大家。  </p>
+<p>在开始之前我们需要那些准备工作呢？  </p>
+<p><strong>需要准备的音源与工具：</strong>  </p>
+<p>a.    需要转换的音频源（音乐CD光盘，FLAC，APE，以及WAV的音频文件，这里就用从我朋友那里得到的歌后王菲的FLAC，APE的音频文件作为范例给大家讲解操作）。<br />
+b.    必不可少的iTunes媒体管理软件。<br />
+c.    X Lossless Decoder （XLD）重要的利器。<br />
+在这里需要再次提醒，以下的所有操作都只在Mac OS X 10.6.8 下做了严格测试，一切正常。Lion 下没有尝试，不过应该问题不大，可以放心使用。  </p>
+<p><strong>具体的操作步骤：</strong>  </p>
+<p><strong>1. XLD的相关设置</strong>  </p>
+<p>a. 将下载好的XLD的压缩文档xld-gui-20110821.tar.bz2解压缩并将相关文件夹放到 /Applications 下（如图1所示），双击XLD，首次打开将首先弹出图2所示的预置窗口（如果未弹出预置窗口，请单击屏幕最上方菜单栏中的‘XLD’，然后选择预置并单击，同样可以得到图2所示的预置窗口）。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl1.png" /></p>
+<p>图1 解压并安装XLD  </p>
+<p>在预置窗口中包括了6个页面选项卡，分别为通用，批处理，CDDB，元数据，抓取CD以及CD Burn。我们这篇文章主要涉及到“通用”以及“元数据”页面选项卡，其他的诸如批处理（增加批处理功能，在本文不做任何设置），CDDB（涉及一些数据库的访问，比如FreeDB，以及Amazon还有Da1L1的相关设置）抓取CD（我们使用的范例中没有用到音频CD）以及CD Burn（将无损音频文件刻录到CD中）在本文不需要，所以我们不做讲解。而这部份的内容如有必要会在Mac版块中完善。  </p>
+<p>b. 单击“通用”页面选项卡，首先选择一种导出格式如图3所示。我们在这里选择Apple Lossless格式，单击后面的‘选项’按钮得到如图4所示的样本速率窗口，如果我们需要具体设置样本速率比如48KH或98KHz等，若不做更改我们就选择和源文件相同的选项如图4所示。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl2.png" /></p>
+<p>图2  XLD的预置窗口</p>
+<p><a href="http://resource.feng.com/resource/h004/h36/img201110151728490.png"><img alt="" src="http://resource.feng.com/resource/h004/h36/img201110151728490.png" /></a></p>
+<p>图3 XLD中的导出格式选择</p>
+<p><a href="http://resource.feng.com/resource/h004/h36/img201110151729030.png"><img alt="" src="http://resource.feng.com/resource/h004/h36/img201110151729030.png" /></a></p>
+<p>图4  Apple Lossless 下的样本速率选择窗口  </p>
+<p>c. 选择导出路径，通过点击‘设置’，出现如图5所示的界面来选择你希望导出的路径。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl3.png" /></p>
+<p>图5 XLD中导出路径设置  </p>
+<p>d. 文件名格式，选择‘默认’。cuesheet的字符编码根据你需要导入的音频文件的决定，这里由于我们导入的是王菲的中文歌曲且歌曲列表都是中文，所以选择‘简体中文(Mac OS)’。最大进程数，由于一般1张CD包括15首左右的歌曲，我们这里选择20以保证在转换时可以同时对20首歌曲（基本是整张CD的歌曲）进行转换，以提高效率。  </p>
+<p>e. 在‘将转换后文件添加到iTunes’前打钩，如图6所示，这样可以将转换后的音频文件直接添加进iTunes，这真是十分方便的设计（注意：保证iTunes软件同时也处于打开状态）。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl4.png" /></p>
+<p>图6 选择与iTunes相关联  </p>
+<p>f. 单击“元数据”页面选项卡，至于相关的设置请确保与图7所示相同，其中压缩质量不是指音频文件的压缩质量，而是指需要导入的专辑封面的压缩质量，注意这里不要搞混淆了。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl5.png" /></p>
+<p>图7 XLD元数据页面选项卡  </p>
+<p>到这里，XLD的基本预设置就结束了。  </p>
+<p><strong>2. 音频文件的导出操作</strong><br />
+a. 单击最上方菜单栏中‘XLD’右边的‘文件’，将出现如图8所示的下拉菜单。</p>
+<p><a href="http://resource.feng.com/resource/h004/h36/img201110151730130.png"><img alt="" src="http://resource.feng.com/resource/h004/h36/img201110151730130.png" /></a></p>
+<p>图8 选择需要导入的音频文件  </p>
+<p>b. 单击‘打开’选择需要导入的音频文件，这里我们就选择后缀为cue的索引文件就可以了，文件大小一般都只有4KB，如图9所示。（这里需要注意的就是要保证后缀为APE和后缀为cue的文件在一个文件夹内，并且文件名称相同，以保证索引文件的正确索引。）之后点击打开后如图10所示。  </p>
+<p>c. 在图10中的左上方选择Include pre-gap for all tracks，当然根据需要你可以自行选择其他的选项。其中有个选项中提到HTOA， 表示隐藏轨道1音频(Hidden Track One Audio)，通俗的说就是隐藏在前段空白中的某种音频信息多以有声音频为主，具体的解释可以点进链接了解，一般你可以选择去掉HTOA。还有，其中有一选项为存储为单一文件(+cue)，这个选项设计的很人性化，就是在你抓取CD时可以在转换为FLAC单个文件的同时也生成后缀为cue的索引文件（注意XLD目前不支持转换为APE无损音频，即不能导出这个格式，但可以导入）如图11所示，此时所有音轨前面的复选框变为灰色不可用。  </p>
+<p>d. 在图10中的右上方包括“提取”，“获得元数据”，“编辑元数据”以及“刻录CD”等选项，我们在这里对“获得元数据”以及“刻录CD”就不做介绍了，主要先来看一下“编辑元数据”，我们可以先选择下方任意一音轨，然后点击“编辑元数据”，得到如图12所示的窗口，在其中添加更加详细的歌曲信息。如果考虑一首一首填写过于繁琐，那就需要用到“获得元数据”的功能，这个功能需要你能够访问前面提到的CDDB。  </p>
+<p>e. 在前面的所有工作都做完之后，我们就可以点击“提取”按钮，这样真正的音频转换就开始了，如图13所示，转换的速度还是很快的，平均一首歌曲在25秒左右（我的配置是i7 2.66GHz)。  </p>
+<p>f. 当所有音轨转换完毕后，我们就可以在iTunes里找到刚刚转换来的Apple Lossless的无损音频格式的曲目了，如图14所示。  </p>
+<p>g. 图15则为其中的一首曲目的信息。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl6.png" /></p>
+<p>图9 选择后缀为cue的文件</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl7.png" /></p>
+<p>图10 XLD已经导入需要转换的APE音频文件并索引正确</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl8.png" /></p>
+<p>图11 存储为单一文件</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl9.png" /></p>
+<p>图12 编辑单个音轨的信息</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl10.png" /></p>
+<p>图13 开始音频转换</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl11.png" /></p>
+<p>图14  在iTunes中查看已经转换得到的曲目</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl12.png" /></p>
+<p>图15 转换后得到的AppleLossless音轨的信息  </p>
+<p>接下来的事情就很简单了，连接上你的iPod，iPhone以及iPad等设备进行同步就大功告成了！  </p>
+<p>上面我们教给大家如何针对APE，FLAC等无损音频的转换方法，但是需要注意的是，上面的所有操作是针对同时包含cue索引文件的情况，如果没有索引文件，只有分轨的APE，FLAC怎么办？一个一个的导入岂不太麻烦了么？在shadowofdust的教程里介绍了使用foobar软件，但是我们这里不需要再使用其他的软件，XLD仍然能够搞定一切。  </p>
+<p>我们还是以王菲的专辑为例，图16给大家展示的是王菲的一张专辑，其中的歌曲都是分轨APE，没有包含cue索引文件。我们还是打开XLD，单击最上方菜单栏中‘XLD’右边的‘文件’，通过下拉菜单选择以光盘方式打开文件夹（Open Folder As a Disc）如图17所示。然后选择需要打开的上述文件夹，得到图18所示的内容，这样剩下的操作就和前面介绍的如出一辙。</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl13.png" /></p>
+<p>图16 ape分轨的音频文件</p>
+<p><a href="http://resource.feng.com/resource/h004/h36/img201110151732250.png"><img alt="" src="http://resource.feng.com/resource/h004/h36/img201110151732250.png" /></a></p>
+<p>图17 选择以光盘方式打开文件夹</p>
+<p><img alt="" src="http://7jpsv8.com1.z0.glb.clouddn.com/xl14.png" /></p>
+<p>图18 XLD在无cue的情况下正确导入音频文件  </p>
+<p>写在最后：  </p>
+<p>如果Mac用户聆听APE，FLAC等无损音频不需要同步的到iPod，iPhone以及iPad等设备，而只希望在Mac 上就能实现，那这里我向大家推荐一款软件，Vox （目前最新的版本为 <a href="http://mac.brothersoft.com/vox-download.html">Vox 2.8 beta2</a>）。论坛里x5115x兄弟提供了该软件的下载（<a href="http://bbs.feng.com/read-htm-tid-1706899.html">Mac播放APE的利器Vox，亲测</a>！），该软件体积小，但功能很强大，基本上主流的无损音频格式都能支持。  </p>
+<p>还有论坛中的盛盛123的<a href="http://bbs.feng.com/read-htm-tid-2772867.html">轻松几步，就可以让iPhone播放无损APE音频</a>，也是一个不错的办法，好处是免去一切转换格式之苦，当然需要使用Golden Ear这款软件实现，虽然安装上有些不便，但不失为一种折中的方法。  </p>
+<p>总结一下，上面提到的所有工具都是用在Mac OS X 平台下，通过上面的操作使你可以非常方便的对APE，FLAC等无损音频向Apple Lossless格式转换。与shadowofdust方法比较，我们这里仅使用一款XLD就能胜任各种情况的APE，FLAC等无损音频向Apple Lossless的转换且不需要切换到Windows平台，而且效率更高，操作更便捷。希望这里介绍的方法确确实实给你带来了方便，给Mac用户的音乐发烧友带去福音！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

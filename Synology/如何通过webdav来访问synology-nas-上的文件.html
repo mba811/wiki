@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>如何通过WebDAV来访问Synology NAS 上的文件 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Synology">Synology</a>&nbsp;&#187;&nbsp;如何通过WebDAV来访问Synology NAS 上的文件
+    <span class="updated">Page Updated&nbsp;
+      2015-02-12 14:57
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">如何通过WebDAV来访问Synology NAS 上的文件</div>
+
+  <p><a href="http://lszb811.qiniudn.com/qh1.png"><img alt="" src="http://lszb811.qiniudn.com/qh1.png" /></a></p>
+<h1 id="_1">概述</h1>
+<p>WebDAV 是一个 HTTP 的扩充服务，可让用户编辑和管理存储在远程服务器上的文件。通过 Synology DiskStation Manager 的 WebDAV 服务，支持 WebDAV 的客户端程序（如 Windows 资源管理器、Mac OS Finder、Linux 资源管理器）将能够远程访问 Synology DiskStation，如同访问本地网络硬盘。</p>
+<p>本教程将说明如何启用 Synology DiskStation 的 WebDAV 协议，并开始从任何地方访问文件。</p>
+<h1 id="_2">内容</h1>
+<h2 id="_3">开始进行之前的准备</h2>
+<p>本文假设您已完成以下的准备工作：</p>
+<ul>
+<li>
+<p>设置 Synology DiskStation。</p>
+</li>
+<li>
+<p>DiskStation 已完成 DiskStation Manager（DSM）的安装。</p>
+</li>
+<li>
+<p>创建至少一个卷（请参阅此<a href="http://www.synology.com/zh-cn/support/tutorials/558">教程</a>）。</p>
+</li>
+<li>
+<p>创建至少一个共享文件夹（请参阅此<a href="http://www.synology.com/zh-cn/support/tutorials/571">教程</a>）。</p>
+</li>
+<li>
+<p>完成 Internet 访问 DiskStation 的配置（请参阅此<a href="http://www.synology.com/zh-cn/support/tutorials/456">教程</a>）。</p>
+</li>
+</ul>
+<p>请参阅快速安装指南来了解更多基本硬件和软件安装的相关信息。您也可以参阅 Synology DiskStation 用户指南来取得与本文主题相关的额外信息。上述两个文件皆可在 Synology <a href="http://www.synology.com/zh-cn/support/download">下载中心</a>取得。</p>
+<h2 id="diskstation-webdav">启用 DiskStation 的 WebDAV</h2>
+<p>通过 WebDAV 访问文件之前，您必须先在 DiskStation 上启用 WebDAV。</p>
+<p>若要启用 WebDAV 服务：</p>
+<ul>
+<li>
+<p>使用属于 administrators 群组的帐户登录 DSM。</p>
+</li>
+<li>
+<p>进入主菜单 &gt; 控制面板 &gt; WebDAV。</p>
+</li>
+<li>
+<p>勾选启用 WebDAV 复选框。</p>
+</li>
+<li>
+<p>单击应用来保存设置。</p>
+</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh2.png"><img alt="" src="http://lszb811.qiniudn.com/qh2.png" /></a></p>
+<h2 id="webdav-diskstation">通过 WebDAV 访问 DiskStation 中的文件</h2>
+<p>启用 DiskStation 的 WebDAV 服务后，请按以下说明，使用 Windows、Mac 或 Linux 设备来访问文件。</p>
+<blockquote>
+<p>注：连接至 WebDAV 服务时，建议您使用支持 UTF-8 编码的 WebDAV 客户端，避免出现编码错误。</p>
+</blockquote>
+<h3 id="windows">对于 Windows</h3>
+<p>对于想要使用 WebDAV 协议访问 Synology NAS 设备上文件的 Windows 用户，建议您使用免费的映射驱动器应用程序“NetDrive”，此程序作为非商业目的使用时无需收费。</p>
+<blockquote>
+<p>注：如果您想使用 Windows 映射网络驱动器来通过 WebDAV 访问 DiskStation 上的文件，请取得有效的 SSL 证书，并通过 HTTPS 连接访问 DiskStation。</p>
+</blockquote>
+<p><strong>若要通过 Windows 7 和 NetDrive 访问 DiskStation 上的文件：</strong></p>
+<ul>
+<li>
+<p>请下载、安装并打开 NetDrive。</p>
+</li>
+<li>
+<p>单击 New Site 并在下列栏中输入信息：</p>
+<ul>
+<li>
+<p>Site name：提供连接的名称。</p>
+</li>
+<li>
+<p>Site IP or URL：输入 DiskStation 的 IP 地址或主机名。</p>
+</li>
+<li>
+<p>端口：5005（或其它您在 DiskStation 启用 WebDAV 服务时指定的端口号）。</p>
+</li>
+<li>
+<p>服务器类型：从下拉菜单中选择 WebDAV。</p>
+</li>
+<li>
+<p>帐户：您 DSM 的用户名。</p>
+</li>
+<li>
+<p>密码：您 DSM 的密码。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>单击保存来保存该设置。</p>
+</li>
+<li>
+<p>单击连接。</p>
+</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh3.png"><img alt="" src="http://lszb811.qiniudn.com/qh3.png" /></a></p>
+<ul>
+<li>现在您应该可以在 Windows 资源管理器看到 DiskStation 中的共享文件夹。这些文件夹还会以映射的网络硬盘出现在开始&gt; 计算机。</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh4.png"><img alt="" src="http://lszb811.qiniudn.com/qh4.png" /></a></p>
+<h3 id="mac">从 Mac 访问</h3>
+<p>对于 Mac 用户，您可以直接使用 Finder 通过 WebDAV 连接到 DiskStation。</p>
+<p>若要使用 Mac 设备通过 WebDAV 访问 DiskStation 上的文件：</p>
+<ul>
+<li>在 Finder，从菜单栏中选择前往 &gt; 连接服务器。</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh5.png"><img alt="" src="http://lszb811.qiniudn.com/qh5.png" /></a></p>
+<ul>
+<li>
+<p>在服务器地址栏中，输入 DiskStation 的 IP 地址或域名，开头为“<a href="http://xn--%2C-phnb5338btwown1c:5005%E2%80%9D%EF%BC%88%E6%88%96%E6%98%AF%E6%82%A8%E5%9C%A8%E5%90%AF%E5%8A%A8/">http://”，结尾为“:5005”（或是您在启动</a> WebDAV 服务时所指定的端口编号）。例如：<a href="http://pm.synology.com:5005/%E3%80%82">http://pm.synology.com:5005/。</a></p>
+</li>
+<li>
+<p>单击连接来继续。</p>
+</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh8.png"><img alt="alt text" src="http://lszb811.qiniudn.com/qh8.png" /></a>alt text</p>
+<ul>
+<li>在名称和密码栏中输入您 DSM 用户名称和密码。然后单击连接。</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh9.png"><img alt="" src="http://lszb811.qiniudn.com/qh9.png" /></a></p>
+<ul>
+<li>现在您应该可以在 Finder 看到 DiskStation 中的共享文件夹。</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh10.png"><img alt="" src="http://lszb811.qiniudn.com/qh10.png" /></a></p>
+<ul>
+<li>您也可以在 Finder 边栏的“共享的”下方找到 DiskStation 及其共享文件夹。</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qu11.png"><img alt="" src="http://lszb811.qiniudn.com/qu11.png" /></a></p>
+<h2 id="https-webdav">通过 HTTPS 使用 WebDAV 之前需了解什么</h2>
+<p>若要通过 HTTPS 使用 WebDAV 来访问 Synology NAS，必须先从 Synology NAS 导出有效的 SSL 证书。然后该证书必须导入您的客户端设备。请按照下列指示来操作：</p>
+<ul>
+<li>
+<p>使用属于 administrators 群组的帐户登录 DSM。</p>
+</li>
+<li>
+<p>请进入控制面板 &gt; WebDAV。勾选标记为启用 WebDAV HTTPS 连接的复选框。</p>
+</li>
+<li>
+<p>进入控制面板 &gt; DSM 设置 &gt; 证书来创建和导出证书。</p>
+</li>
+</ul>
+<p><a href="http://lszb811.qiniudn.com/qh6.png"><img alt="" src="http://lszb811.qiniudn.com/qh6.png" /></a></p>
+<ul>
+<li>在您的客户端设备上，导入您已导出的证书。要了解详细指示，请参见“帮助”和客户端设备的教程。</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

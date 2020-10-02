@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Google Maps JavaScript API 使用入门 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#API">API</a>&nbsp;&#187;&nbsp;Google Maps JavaScript API 使用入门
+    <span class="updated">Page Updated&nbsp;
+      2015-05-15 21:47
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Google Maps JavaScript API 使用入门</div>
+
+  <h2 id="_1">受众</h2>
+<p>本文适用于熟悉 <a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">JavaScript</a> 编程和面向对象编程概念的读者。您还应该从用户的角度熟悉 <a href="http://maps.google.com/">Google 地图</a>。您可以从网上找到很多 <a href="http://www.google.com/search?q=javascript+tutorials">JavaScript 教程</a>。</p>
+<p>本文属于概念性文档，旨在帮助您快速开始使用 Google Maps API 探索和开发应用。我们还发布了 <a href="https://developers.google.com/maps/documentation/javascript/reference?hl=zh-cn">Google Maps API 参考</a>。</p>
+<h2 id="api">获取 API 密钥</h2>
+<p>所有的 Maps API 应用*都应使用 API 密钥加载 Maps API。使用 API 密钥可让您监控应用的 Maps API 使用情况，并确保 Google 能够在需要时与您联系讨论您的应用。如果您应用的 Maps API 使用次数超出<a href="https://developers.google.com/maps/documentation/javascript/usage?hl=zh-cn#usage_limits">使用限制</a>，就必须使用 API 密钥加载 Maps API 来购买额外配额。</p>
+<p><strong><em>*</em></strong>Google Maps API for Business** 开发者不得在其请求中加入密钥。__有关 Business 专用说明，请参考<a href="https://developers.google.com/maps/documentation/business/clientside?hl=zh-cn#MapsJS">加载 Google Maps JavaScript API</a>。</p>
+<p>要创建 API 密钥，请执行以下操作：</p>
+<ol>
+<li>访问 API 控制台（网址为 <a href="https://code.google.com/apis/console">https://code.google.com/apis/console</a>）并使用您的 Google 帐户登录。</li>
+<li>点击左侧菜单中的<strong>服务</strong>链接。</li>
+<li>激活 <strong>Google Maps API v3</strong> 服务。</li>
+<li>点击左侧菜单中的 <strong>API 访问</strong>链接。您可以从 <strong>API 访问</strong>页上的<strong>简单 API 访问</strong>部分获取 API 密钥。Maps API 应用会使用<strong>适用于浏览器应用的密钥</strong>。</li>
+</ol>
+<p><img alt="" src="https://developers.google.com/maps/documentation/javascript/images/api_console_key.jpg" /></p>
+<p>默认情况下，密钥可在任何网站上使用。强烈建议您将自己的密钥限制为在您所管理的域中使用，以防止未授权的网站使用该密钥。针对您的密钥点击<strong>修改允许的引用者...</strong> 链接，即可指定要允许哪些域使用该 API 密钥。</p>
+<h2 id="hello-world">Hello, World</h2>
+<p>要开始了解 Google Maps API，最简单的方法就是查看简单的示例。以下网页显示了一张以澳大利亚新南威尔士的悉尼为中心的地图：</p>
+<div class="hlcode"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>  
+<span class="nt">&lt;html&gt;</span>  
+  <span class="nt">&lt;head&gt;</span>  
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content=</span><span class="s">&quot;initial-scale=1.0, user-scalable=no&quot;</span> <span class="nt">/&gt;</span>  
+    <span class="nt">&lt;style</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span><span class="nt">&gt;</span>  
+      html { height: 100% }  
+      body { height: 100%; margin: 0; padding: 0 }  
+      #map_canvas { height: 100% }  
+    <span class="nt">&lt;/style&gt;</span>  
+    <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span>  
+      <span class="na">src=</span><span class="s">&quot;http://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&amp;sensor=SET_TO_TRUE_OR_FALSE&quot;</span><span class="nt">&gt;</span>  
+    <span class="nt">&lt;/script&gt;</span>  
+    <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>  
+      function initialize() {  
+        var mapOptions = {  
+          center: new google.maps.LatLng(-34.397, 150.644),  
+          zoom: 8,  
+          mapTypeId: google.maps.MapTypeId.ROADMAP  
+        };  
+        var map = new google.maps.Map(document.getElementById(&quot;map_canvas&quot;),  
+            mapOptions);  
+      }  
+    <span class="nt">&lt;/script&gt;</span>  
+  <span class="nt">&lt;/head&gt;</span>  
+  <span class="nt">&lt;body</span> <span class="na">onload=</span><span class="s">&quot;initialize()&quot;</span><span class="nt">&gt;</span>  
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;map_canvas&quot;</span> <span class="na">style=</span><span class="s">&quot;width:100%; height:100%&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>  
+  <span class="nt">&lt;/body&gt;</span>  
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p><a href="https://developers.google.com/maps/documentation/javascript/examples/map-simple?hl=zh-cn">查看示例 (map-simple.html)</a></p>
+<p>尽管此示例较为简单，也请注意以下事项：</p>
+<ol>
+<li>在此示例中，使用 <code>&lt;!DOCTYPE html&gt;</code> 声明将应用声明为 HTML5。</li>
+<li>使用 <code>script</code> 标记加入 Maps API JavaScript。</li>
+<li>创建一个名为“map_canvas”的 <code>div</code> 元素以存储该地图。</li>
+<li>创建 Javascript 对象常量以存储若干地图属性。</li>
+<li>编写 JavaScript 函数以创建“map”对象。</li>
+<li>通过 <code>body</code> 标记的 <code>onload</code> 事件初始化该地图对象。</li>
+</ol>
+<p>下面对这些步骤进行了说明。</p>
+<h2 id="html5">将您的应用声明为 HTML5</h2>
+<p>建议您在自己的网络应用内声明一个真实的 <code>DOCTYPE</code>。在本文的示例中，我们使用简单的 HTML5 <code>DOCTYPE</code> 将应用声明为 HTML5，如下所示：</p>
+<div class="hlcode"><pre><span class="o">&lt;!</span><span class="n">DOCTYPE</span> <span class="n">html</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>当前的大多数浏览器会以“标准模式”呈现使用此 <code>DOCTYPE</code> 声明的内容，这意味着您的应用应具有更强的跨浏览器适应能力。<code>DOCTYPE</code> 还设计为可适度降级；无法理解该声明的浏览器会将其忽略，并使用“兼容模式”来显示其内容。</p>
+<p>请注意，某些在兼容模式下工作的 CSS 在标准模式中是无效的。具体地说，所有以百分比表示的大小必须继承自父块元素，而如果这些父元素中的某个父元素没有指定大小，则系统会将其大小假定为 0x0 像素。因此，我们加入了以下<code>&lt;style&gt;</code> 声明：</p>
+<div class="hlcode"><pre><span class="nt">&lt;style</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span><span class="nt">&gt;</span>  
+  html { height: 100% }  
+  body { height: 100%; margin: 0; padding: 0 }  
+  #map_canvas { height: 100% }  
+<span class="nt">&lt;/style&gt;</span>
+</pre></div>
+
+
+<p>该 CSS 声明用于表示地图容器 <code>&lt;div&gt;</code>（名为 <code>map_canvas</code>）应占据 HTML 主体的整个高度。请注意，我们还必须明确声明<code>&lt;body&gt;</code> 和 <code>&lt;html&gt;</code> 所占的百分比。</p>
+<h2 id="google-maps-api">加载 Google Maps API</h2>
+<div class="hlcode"><pre><span class="nt">&lt;html&gt;</span>  
+  <span class="nt">&lt;head&gt;</span>  
+    <span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span>  
+      <span class="na">src=</span><span class="s">&quot;http://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&amp;sensor=SET_TO_TRUE_OR_FALSE&quot;</span><span class="nt">&gt;</span>  
+    <span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+
+<p><code>script</code> 标记中包含指向 JavaScript 文件所处位置的网址，该 JavaScript 文件可加载使用 Google Maps API 所需的所有符号和定义。<code>script</code> 为必填标记。</p>
+<p><code>key</code> 参数包含您应用的 API 密钥。有关详情，请参阅<a href="https://developers.google.com/maps/documentation/javascript/tutorial?hl=zh-cn#api_key">获取 API 密钥</a>。请注意，此密钥不适用于 v2 API，且必须通过 API 控制台生成。</p>
+<p>网址的 <code>sensor</code> 参数（必须添加）用于表示应用是否会使用 GPS 定位器等传感器来确定用户的位置。在此示例中，我们将该参数设为变量“set_to_true_or_false”，用于强调您<strong>必须</strong>将该值明确设为 <code>true</code> 或 <code>false</code>。__</p>
+<p>有关如何在应用中加载 Maps API 的重要信息，<strong>Google Maps API for Business</strong> 用户应参考 Business 文档中的<a href="https://developers.google.com/maps/documentation/business/clientside?hl=zh-cn#MapsJS">加载 Google Maps JavaScript API</a>。</p>
+<h3 id="https">HTTPS</h3>
+<p>如果您的应用是 HTTPS 应用，那么您可改为通过 HTTPS 加载 Google Maps JavaScript API：</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&amp;sensor=SET_TO_TRUE_OR_FALSE&quot;</span>  
+  <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>在 SSL 应用中必须通过 HTTPS 加载 Maps API，以免在大多数浏览器中显示安全警告，并且建议您对请求中包含用户所处位置等敏感用户数据的应用也采用该做法。</p>
+<p><h3="libraries" style="color: rgb(34, 34, 34); font-family: Roboto, sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22.3999996185303px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">库</p>
+<p>在通过 <code>http://maps.googleapis.com/maps/api/js</code> 网址加载 JavaScript Maps API 时，您也可以选择使用<code>libraries</code> 参数加载其他库。__库是用于向主 JavaScript API 提供其他功能的代码模块，不过只有在您专门请求时才会加载。有关详情，请参阅 <a href="https://developers.google.com/maps/documentation/javascript/libraries?hl=zh-cn">V3 Maps API 中的库</a>。</p>
+<h3 id="api_1">异步加载 API</h3>
+<p>您可能希望在网页完全加载后或根据需要加载 Maps API JavaScript 代码。为此，您可以插入自己的 <code>&lt;script&gt;</code> 标记作为针对 <code>window.onload</code> 事件或函数调用的响应，不过您还需要指示 Maps JavaScript API 引导程序在 Maps JavaScript API 代码完全加载后再执行应用代码。要实现此目的，您可以使用 <code>callback</code> 参数，该参数为函数要在 API 完全加载后执行的变量。</p>
+<p>以下代码指示应用在网页完全加载后再加载 Maps API（使用 <code>window.onload</code>），并在该网页中将 Maps JavaScript API 写入 <code>&lt;script&gt;</code> 标记。此外，我们还向 Maps API 引导程序传递了 <code>callback=initialize</code>，从而指示该 API 仅在自身完全加载后执行 <code>initialize()</code> 函数：</p>
+<div class="hlcode"><pre><span class="kd">function</span> <span class="nx">initialize</span><span class="p">()</span> <span class="p">{</span>  
+  <span class="kd">var</span> <span class="nx">mapOptions</span> <span class="o">=</span> <span class="p">{</span>  
+    <span class="nx">zoom</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>  
+    <span class="nx">center</span><span class="o">:</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="o">-</span><span class="mf">34.397</span><span class="p">,</span> <span class="mf">150.644</span><span class="p">),</span>  
+    <span class="nx">mapTypeId</span><span class="o">:</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">MapTypeId</span><span class="p">.</span><span class="nx">ROADMAP</span>  
+  <span class="p">}</span>  
+  <span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;map_canvas&quot;</span><span class="p">),</span> <span class="nx">mapOptions</span><span class="p">);</span>  
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">loadScript</span><span class="p">()</span> <span class="p">{</span>  
+  <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">);</span>  
+  <span class="nx">script</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="s2">&quot;text/javascript&quot;</span><span class="p">;</span>  
+  <span class="nx">script</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="s2">&quot;http://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&amp;sensor=TRUE_OR_FALSE&amp;callback=initialize&quot;</span><span class="p">;</span>  
+  <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span>  
+<span class="p">}</span>
+
+<span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="nx">loadScript</span><span class="p">;</span>
+</pre></div>
+
+
+<p><a href="https://developers.google.com/maps/documentation/javascript/examples/map-simple-async?hl=zh-cn">查看示例 (map-simple-async.html)</a></p>
+<h2 id="dom">地图 DOM 元素</h2>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;map_canvas&quot;</span> <span class="na">style=</span><span class="s">&quot;width: 100%; height: 100%&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+
+
+<p>对于要在网页上显示的地图，我们需要为其留出一个位置。通常，我们会创建一个名为 <code>div</code> 的元素，然后在浏览器的文档对象模型 (DOM) 中获取对此元素的引用。</p>
+<p>在以上示例中，我们定义了一个名为“map_canvas”的 <code>&lt;div&gt;</code>，并使用样式属性为其设置大小。请注意，这一大小已设置为“100％”，这将会展开地图，使之符合移动设备的屏幕大小。您可能需要根据浏览器的屏幕大小和填充区域调整这些值。请注意，地图将始终根据其中所包含的元素的大小决定其本身大小，因此，您必须始终为 <code>&lt;div&gt;</code> 明确设置一个适用的大小。</p>
+<h2 id="_2">地图选项</h2>
+<div class="hlcode"><pre><span class="n">var</span> <span class="n">mapOptions</span> <span class="o">=</span> <span class="p">{</span>  
+  <span class="n">center</span><span class="o">:</span> <span class="n">new</span> <span class="n">google</span><span class="p">.</span><span class="n">maps</span><span class="p">.</span><span class="n">LatLng</span><span class="p">(</span><span class="o">-</span><span class="mf">34.397</span><span class="p">,</span> <span class="mf">150.644</span><span class="p">),</span>  
+  <span class="n">zoom</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span>  
+  <span class="n">mapTypeId</span><span class="o">:</span> <span class="n">google</span><span class="p">.</span><span class="n">maps</span><span class="p">.</span><span class="n">MapTypeId</span><span class="p">.</span><span class="n">ROADMAP</span>  
+<span class="p">};</span>
+</pre></div>
+
+
+<p>要初始化地图，我们需要先创建一个 <code>_Map options_</code> 对象来包含地图初始化变量。该对象不是构建出来的，而是以对象常量的形式创建得到的。</p>
+<div class="hlcode"><pre><span class="n">var</span> <span class="n">mapOptions</span> <span class="o">=</span> <span class="p">{};</span>
+</pre></div>
+
+
+<h3 id="_3">纬度和经度</h3>
+<p>由于我们要通过 <code>center</code> 将地图中心设为特定的点，因此会创建 <code>LatLng</code> 对象，同时按 {纬度,经度} 的顺序传递位置的坐标，以存储该位置：</p>
+<div class="hlcode"><pre><span class="n">center</span> <span class="o">=</span> <span class="n">new</span> <span class="n">google</span><span class="p">.</span><span class="n">maps</span><span class="p">.</span><span class="n">LatLng</span><span class="p">(</span><span class="o">-</span><span class="mf">34.397</span><span class="p">,</span> <span class="mf">150.644</span><span class="p">)</span>
+</pre></div>
+
+
+<p>____将地址转换为地理地点的过程称为“地理编码”。此版本的 Google Maps API 支持地理编码。有关详情，请参阅此指南的<strong>服务</strong>章节中的<a href="https://developers.google.com/maps/documentation/javascript/services?hl=zh-cn#Geocoding">地理编码</a>。</p>
+<h3 id="_4">缩放级别</h3>
+<p>地图显示时的初始分辨率可以通过 <code>zoom</code> 属性进行设置，其中缩放 <code>0</code> 相当于地球地图可缩小的最低级别，并且缩放级别越高，地图放大的分辨率就越高。</p>
+<div class="hlcode"><pre><span class="n">zoom</span><span class="o">:</span> <span class="mi">8</span>
+</pre></div>
+
+
+<p>如果要将包含完整地球的地图作为单张图片提供，要么需要极大的地图，要么需要分辨率较低的小型地图。因此，Google 地图和 Maps API 内的地图图片会被分割为地图“图块”和“缩放级别”两部分。在低缩放级别下，一小组地图图块就可以覆盖广阔的区域；而在高缩放级别下，图块的分辨率较高，覆盖的区域则较小。</p>
+<p>以下三张图片分别反映了东京的同一位置在缩放级别为 0、7、18 下的情景。</p>
+<p><img alt="" src="https://developers.google.com/maps/documentation/javascript/images/tokyo-zoom-0.png" /> <img alt="" src="https://developers.google.com/maps/documentation/javascript/images/tokyo-zoom-7.png" /> <img alt="" src="https://developers.google.com/maps/documentation/javascript/images/tokyo-zoom-18.png" /></p>
+<p>如需了解 Maps API 是如何根据当前缩放级别加载图块的，请参阅“地图类型”文档中的<a href="https://developers.google.com/maps/documentation/javascript/maptypes?hl=zh-cn#TileCoordinates">图块坐标</a>。</p>
+<h3 id="_5">地图类型</h3>
+<p>此时，您还必须明确设置一个初始地图类型。</p>
+<div class="hlcode"><pre><span class="n">mapTypeId</span><span class="o">:</span> <span class="n">google</span><span class="o">.</span><span class="na">maps</span><span class="o">.</span><span class="na">MapTypeId</span><span class="o">.</span><span class="na">ROADMAP</span>
+</pre></div>
+
+
+<p>系统支持以下地图类型：</p>
+<ul>
+<li><code>ROADMAP</code>，用于显示 Google 地图的默认、普通 2D 图块。</li>
+<li><code>SATELLITE</code>，用于显示拍摄的图块。</li>
+<li><code>HYBRID</code>，用于同时显示拍摄的图块和重要地图项（道路、城市名）的图块图层。</li>
+<li><code>TERRAIN</code>，用于显示自然地形图块，其中包含海拔和水体地图项（山脉、河流等）。</li>
+</ul>
+<p>有关地图类型的详情，请参阅<a href="https://developers.google.com/maps/documentation/javascript/maptypes?hl=zh-cn">地图类型</a>部分。不过大部分情况下，了解如何使用上述基本类型即可满足您的需求。</p>
+<h2 id="_6">地图对象</h2>
+<div class="hlcode"><pre><span class="n">var</span> <span class="n">map</span> <span class="o">=</span> <span class="n">new</span> <span class="n">google</span><span class="p">.</span><span class="n">maps</span><span class="p">.</span><span class="n">Map</span><span class="p">(</span><span class="n">document</span><span class="p">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s">&quot;map_canvas&quot;</span><span class="p">),</span>  
+    <span class="n">mapOptions</span><span class="p">);</span>
+</pre></div>
+
+
+<p>用于代表地图的 JavaScript 类属于 <code>Map</code> 类。此类的对象定义了网页上的单个地图。（您可以创建多个此类的实例，每个对象都将在网页上定义一个单独的地图。）我们使用 Javascript <code>new</code> 运算符创建了一个此类的新实例。</p>
+<p>创建新的地图实例时，您需要在网页中指定一个 <code>&lt;div&gt;</code> HTML 元素作为地图的容器。HTML 节点是 Javascript <code>document</code>对象的子对象，我们通过 <code>document.getElementById()</code> 方法获取了对该元素的引用。</p>
+<p>此代码用于定义一个变量（名为 <code>map</code>），然后将其分配至新的 <code>Map</code> 对象，同时传递到 <code>mapOptions</code> 对象常量所定义的选项中。这些选项将用于初始化地图的属性。<code>Map()</code> 函数称为“构造函数”，其定义如下：__</p>
+<p>构造函数说明</p>
+<p><code>Map(mapDiv:Node, opts?:[_MapOptions_](https://developers.google.com/maps/documentation/javascript/tutorial?hl=zh-cn#MapOptions))</code><br />
+使用传递的任何（可选）参数在给定的 HTML 容器（通常为 DIV 元素）中创建新的地图。</p>
+<h2 id="_7">加载地图</h2>
+<div class="hlcode"><pre>  <span class="o">&lt;</span><span class="n">body</span> <span class="n">onload</span><span class="o">=</span><span class="s">&quot;initialize()&quot;</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>呈现 HTML 网页时，系统会扩展文档对象模型 (DOM)，接收所有外部图片和脚本并将其合并到 <code>document</code> 对象中。为确保系统在网页完全加载后才将我们的地图放到网页上，我们只会在 HTML 网页的 <code>&lt;body&gt;</code> 元素收到 <code>onload</code> 事件后，才开始执行用于构建 <code>Map</code> 对象的函数。这样做可以避免出现意外行为，并让我们更好地控制地图的绘制方式和时间。</p>
+<p><code>body</code> 标记的 <code>onload</code> 属性为一个事件处理程序示例。Google Maps JavaScript API 还提供了一组事件，供您处理以确定状态变化。有关详情，请参阅<a href="https://developers.google.com/maps/documentation/javascript/events?hl=zh-cn">地图事件</a>。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

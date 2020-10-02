@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用jQueryFlexSlider - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;使用jQueryFlexSlider
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 22:58
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用jQueryFlexSlider</div>
+
+  <p>FlexSlider是一个轻量级的jQuery内容滚动插件，压缩后只有4KB大小。它能让你轻松的创建内容滚动的效果，具有非常高的可定制性。它是将UL列表转换成内容滚动的列表，可以自动播放，或者使用导航按钮和键盘来控制</p>
+<h2 id="_1">显示效果</h2>
+<ul>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0404.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0413.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0471.jpg" /></li>
+<li><img alt="" src="http://blog.ixtr.me/photos/%E6%B9%98%E5%8D%97%E6%B5%B7%E5%B2%B8/IMG_0404.jpg" /></li>
+</ul>
+<p>安装很简单最总要是jquery版本的问题，花的点时间LIGHTBOX使用的 版本是1.3而FLEXSLIDER却是1.9该列的版本兼容问题,还好上网找的一个就有一大堆的方法搞定,也顺便贴出我的模板文件，做下记录，编辑default.html模板文件</p>
+<div class="hlcode"><pre>   <span class="c">&lt;!-- Arquivos utilizados pelo jQuery lightBox plugin --&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;/js/jquery.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;/js/jquery.lightbox-0.5.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;/css/jquery.lightbox-0.5.css&quot;</span> <span class="na">media=</span><span class="s">&quot;screen&quot;</span> <span class="nt">/&gt;</span>    
+<span class="c">&lt;!-- Ativando o jQuery lightBox plugin --&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+$(function() {
+    $(&#39;#gallery a&#39;).lightBox();
+    $(&#39;a<span class="cp">[</span><span class="nb">rel</span><span class="o">*=</span><span class="nx">lightbox</span><span class="cp">]</span>&#39;).lightBox();
+});
+<span class="nt">&lt;/script&gt;</span>
+
+<span class="c">&lt;!-- flexslider.js --&gt;</span>
+<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href=</span><span class="s">&quot;/css/flexslider.css&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+    var jq = jQuery.noConflict();
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;/js/jquery.flexslider.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+    jq(window).load(function() {
+    jq(&#39;.flexslider&#39;).flexslider({
+            animation: &quot;slide&quot;
+        });
+    });
+<span class="nt">&lt;/script&gt;</span>
+
+<span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;/js/jquery.scrollUp.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span> <span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+    jq(function(){
+    jq.scrollUp();
+    });
+ <span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>然后把修改下css就可以看到效果了.</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

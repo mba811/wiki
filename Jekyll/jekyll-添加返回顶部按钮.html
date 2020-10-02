@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 添加返回顶部按钮 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 添加返回顶部按钮
+    <span class="updated">Page Updated&nbsp;
+      2015-01-31 21:48
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 添加返回顶部按钮</div>
+
+  <p>不知什么时候开始，“返回顶部”按钮几乎成了网站的标配，不同网站按钮样式千奇百怪。本文介绍一种添加返回顶部按钮的简单方法，效果可以在本博客右下角看到。</p>
+<h2 id="div">一、添加div</h2>
+<p>在适当的位置添加一个 id 为 <code>back-top</code> 的 div，比如可以添加到 default 模板中。</p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;back-top&quot;</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;#top&quot;</span> <span class="na">title=</span><span class="s">&quot;回到顶部&quot;</span><span class="nt">&gt;&lt;/a&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</pre></div>
+
+
+<h2 id="js">二、添加js代码</h2>
+<p>使用 js 响应窗口滚动事件和按钮的点击事件，其中 100 表示向下滚动 100 个像素时出现按钮，800 表示使用 800ms 的时间滚动到顶部。</p>
+<div class="hlcode"><pre><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#back-top&quot;</span><span class="p">).</span><span class="nx">hide</span><span class="p">();</span>
+<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">scroll</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">scrollTop</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#back-top&#39;</span><span class="p">).</span><span class="nx">fadeIn</span><span class="p">();</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#back-top&#39;</span><span class="p">).</span><span class="nx">fadeOut</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#back-top a&#39;</span><span class="p">).</span><span class="nx">click</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;body,html&#39;</span><span class="p">).</span><span class="nx">animate</span><span class="p">({</span>
+      <span class="nx">scrollTop</span><span class="o">:</span> <span class="mi">0</span>
+    <span class="p">},</span> <span class="mi">800</span><span class="p">);</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<h2 id="_1">三、添加样式</h2>
+<p>此处使用一个背景透明的向上箭头图片，通过 <code>backgroud-color</code> 指定正常时和鼠标放上时的背景颜色，<code>border-radius</code> 指定圆角的半径。</p>
+<div class="hlcode"><pre><span class="cp">#back-top {</span>
+  <span class="nl">position:</span> <span class="n">fixed</span><span class="p">;</span>
+  <span class="nl">bottom:</span> <span class="mi">30</span><span class="n">px</span><span class="p">;</span>
+  <span class="n">margin</span><span class="o">-</span><span class="n">left</span><span class="o">:</span> <span class="mi">1040</span><span class="n">px</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">#back-top a {</span>
+  <span class="nl">width:</span> <span class="mi">54</span><span class="n">px</span><span class="p">;</span>
+  <span class="nl">height:</span> <span class="mi">54</span><span class="n">px</span><span class="p">;</span>
+  <span class="nl">display:</span> <span class="n">block</span><span class="p">;</span>
+  <span class="nl">background:</span> <span class="err">#</span><span class="n">ddd</span> <span class="n">url</span><span class="p">(..</span><span class="o">/</span><span class="n">img</span><span class="o">/</span><span class="n">bgs</span><span class="o">/</span><span class="n">bg_up_arrow</span><span class="p">.</span><span class="n">png</span><span class="p">)</span> <span class="n">no</span><span class="o">-</span><span class="n">repeat</span> <span class="n">center</span> <span class="n">center</span><span class="p">;</span>
+  <span class="n">background</span><span class="o">-</span><span class="n">color</span><span class="o">:</span> <span class="err">#</span><span class="n">aaa</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="mi">7</span><span class="n">px</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="mi">7</span><span class="n">px</span><span class="p">;</span>
+  <span class="n">border</span><span class="o">-</span><span class="n">radius</span><span class="o">:</span> <span class="mi">7</span><span class="n">px</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">webkit</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="mi">1</span><span class="n">s</span><span class="p">;</span>
+  <span class="o">-</span><span class="n">moz</span><span class="o">-</span><span class="n">transition</span><span class="o">:</span> <span class="mi">1</span><span class="n">s</span><span class="p">;</span>
+  <span class="nl">transition:</span> <span class="mi">1</span><span class="n">s</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="cp">#back-top a:hover {</span>
+  <span class="n">background</span><span class="o">-</span><span class="n">color</span><span class="o">:</span> <span class="err">#</span><span class="mi">777</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

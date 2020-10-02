@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用privoxy建立代理中心,共享任意代理资源 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;使用privoxy建立代理中心,共享任意代理资源
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 11:29
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用privoxy建立代理中心,共享任意代理资源</div>
+
+  <p>你有一个代理服务器（或者VPN），却有同时只能登录一个账号的限制？或者是不同设备之间不兼容，电脑能用手机不能用？以下方案只要有一台可以长期开机的电脑，就可以打造出全家共享的代理连接。</p>
+<p><strong>使用场景：</strong></p>
+<p>日常在复杂网络环境中使用特定网络资源，免不了要使用各类代理。如在公司需要越过公司防火墙玩游戏，需要特定地址注册某些服务等。而目前大家手头的设备很多，微软电脑、苹果电脑，以及各类手机，而代理软件种类繁杂，平台、协议、服务器、用户账户、分流策略各异，管理起来困难很大。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/3.png"><img alt="3" src="https://velaciela.ms/wp-content/uploads/2014/11/3.png" /></a></p>
+<p>多种代理策略场景</p>
+<p>特别是很多代理服务还要求维持联结状态（如VPN、Ssh）在移动环境下手机锁屏会导致掉线，而保持联结又会增加耗电。更不要说全局代理的分流策略在移动设备上实现，异地登陆，短信报警，不仅麻烦，<strong>还增加了风险</strong>。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/%E6%9C%AA%E5%91%BD%E5%90%8D1.png"><img alt="未命名" src="https://velaciela.ms/wp-content/uploads/2014/11/%E6%9C%AA%E5%91%BD%E5%90%8D1.png" /></a></p>
+<p><strong>使用HTTP转化任意代理，统一分发：</strong></p>
+<p>如果能采取一种方式，将任意类型的代理连接转化为标准化的HTTP代理，从而适配各类设备，同时对各设备而言，HTTP代理又无需维持状态，应该是一种理想的选择。下文描述了一种使用Privoxy系统在Windows环境下建立家庭（内网）代理中心的方式。</p>
+<p><strong>技术基础：</strong></p>
+<p>您需要掌握Windows的基本操作和局域网的基本操作，理解TCP/Ip协议基础知识，无需编程技术和Linux操作知识。（Linux下更省能耗，由于Linux用户很容易就能实现，我这里不写了）</p>
+<p><strong>开发环境和软硬件需求：</strong></p>
+<p>可长期开机的计算机一台，Window7 及以上操作系统。</p>
+<p>通过家庭或企业局域网上网，拥有路由管理权限，会正确配置路由器的某些功能*。</p>
+<p>Privoxy软件（<a href="http://www.privoxy.org/">官方下载，英文</a>）</p>
+<p>一种可用的代理方式，必须支持<strong>断线重连</strong>和全局/本地端口代理方式。VPN、ShadowSocks、Goa、<strong>门均可，</strong>不建议使用Ssh（但可以用Ssh做测试）**</p>
+<p><strong>代理过程需要服务器长期开机，代理程序能自动掉线重连。</strong></p>
+<p>我准备了两个测试环境，分别是VPN和SS：</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/Untitled.png"><img alt="Untitled" src="https://velaciela.ms/wp-content/uploads/2014/11/Untitled.png" /></a></p>
+<p>设置说明</p>
+<p><strong>安装Privoxy</strong></p>
+<p>先安装好Privoxy软件，这通常是一个配合Tor的软件，但它还是一个功能强大的代理服务器。目前我们用它的高级功能：代理通道的转发和分流。</p>
+<p>安装后，<strong>Windows会询问防火墙，务必允许其通过防火墙</strong></p>
+<p><strong>配置Windows防火墙</strong></p>
+<p>设置好这一步后，仍然不能让其他机器连接到服务器，需要在Windows防火墙中开放端口。打开控制面板-安全设置中的防火墙，</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/F.png"><img alt="F" src="https://velaciela.ms/wp-content/uploads/2014/11/F.png" /></a></p>
+<p>防火墙配置</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/FW-port.png"><img alt="FW-port" src="https://velaciela.ms/wp-content/uploads/2014/11/FW-port.png" /></a></p>
+<p>操作-新建规则-端口</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/9864.png"><img alt="9864" src="https://velaciela.ms/wp-content/uploads/2014/11/9864.png" /></a></p>
+<p>指定端口号（之后用于其他设备连接服务器），协议为TCP。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/accept.png"><img alt="accept" src="https://velaciela.ms/wp-content/uploads/2014/11/accept.png" /></a></p>
+<p>设为允许联结</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/dm.png"><img alt="dm" src="https://velaciela.ms/wp-content/uploads/2014/11/dm.png" /></a></p>
+<p>设置应用场景（注意如果你不打算把服务器拿出家门可以只允许专用）</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/dis.png"><img alt="dis" src="https://velaciela.ms/wp-content/uploads/2014/11/dis.png" /></a></p>
+<p>设置描述</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/list.png"><img alt="list" src="https://velaciela.ms/wp-content/uploads/2014/11/list.png" /></a></p>
+<p>设置成功后你会看到这个规则已经生效了。</p>
+<p><del><strong>当然，如果你嫌麻烦，可以直接关掉防火墙……反正是在内网……</strong></del></p>
+<p>设置完防火墙后，开始让Privoxy连接代理软件工作。</p>
+<p><strong>固定服务器Ip地址：</strong></p>
+<p>还有个问题，为了防止服务器关机后Ip地址变化，有必要在网关中设置固定地址。方法请参阅您家用路由器设备指南。</p>
+<p>通常通过管理员进入路由器后，选择DHCP服务，选择静态地址分配，将服务器的Mac地址输入，并配置一个固定的地址，如192.168.1.100。</p>
+<p>服务器断网后重连，将自动获得该地址，以后无论重启多少次，都会获得该地址。该地址即可作为配置写入其他客户端。</p>
+<p>还可以在服务器的网卡强制指定固定Ip地址。</p>
+<p><strong>测试环境一：Shadowsocks（或各类其他代理软件，提供到127.0.0.1：8080的通道）</strong></p>
+<p>打开Shadowsocks代理软件，按提供商要求填写好资料，测试连接成功后，记住软件提供的本地端口Socks5  127.0.0.1：Xxxx，并设置自动连接。</p>
+<p>按照提供商的说明，一般是要用浏览器插件联结这个本地端口，我们这里<strong>不要安装此类浏览器插件和其他代理软件。</strong></p>
+<p>假设本地端口为Socks5 方式，在本地地址的 127.0.0.1:8080  （最新版的SS为HTTP代理，最后介绍）</p>
+<p>打开Privoxy（在右下角的图标），打开后是一片空白，此时点击菜单Options的“Edit Main Configuration” （或者直接打开Privoxy安装目录下的config.txt，或者直接在文章末尾下载我的改)</p>
+<p>搜索“forward-socks4a” 或“5.2”，跳转至1300行左右，找到以下参数：</p>
+<div class="hlcode"><pre><span class="c"># Examples:</span>
+<span class="c">#</span>
+<span class="c"># From the company example.com, direct connections are made to</span>
+<span class="c"># all “internal” domains, but everything outbound goes through</span>
+<span class="c"># their ISP’s proxy by way of example.com’s corporate SOCKS 4A</span>
+<span class="c"># gateway to the Internet.</span>
+<span class="c">#</span>
+<span class="c"># forward-socks4a / socks-gw.example.com:1080 www-cache.isp.example.net:8080</span>
+<span class="c"># forward .example.com .</span>
+<span class="c">#forward / .</span>
+<span class="c"># A rule that uses a SOCKS 4 gateway for all destinations but no</span>
+<span class="c"># HTTP parent looks like this:</span>
+<span class="c">#</span>
+<span class="c"># forward-socks4 / socks-gw.example.com:1080 .</span>
+<span class="c">#</span>
+<span class="c"># To chain Privoxy and Tor, both running on the same system, you</span>
+<span class="c"># would use something like:</span>
+<span class="c">#</span>
+<span class="c"># forward-socks5 / 127.0.0.1:8080 .</span>
+</pre></div>
+
+
+<p>把“# forward-socks5 / 127.0.0.1:8080 .”前面的注释# 擦掉，后面地址中127.0.0.1:8080 改为你Shadowsocks（或其他代理软件）提供的实际Socks5代理端口。</p>
+<div class="hlcode"><pre><span class="cp"># forward-socks4 / socks-gw.example.com:1080 .</span>
+<span class="cp">#</span>
+<span class="cp"># To chain Privoxy and Tor, both running on the same system, you</span>
+<span class="cp"># would use something like:</span>
+<span class="cp">#</span>
+<span class="n">forward</span><span class="o">-</span><span class="n">socks5</span> <span class="o">/</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">8080</span> <span class="p">.</span>  <span class="err">#你代理软件提供的实际端口，必须是</span><span class="n">Socks5</span>
+
+<span class="cp">#前面的注释符号去掉</span>
+</pre></div>
+
+
+<p>搜索“listen-address”或在750行附近找到以下内容：</p>
+<div class="hlcode"><pre><span class="c"># listen-address 192.168.0.1:8118</span>
+<span class="c">#</span>
+<span class="c"># Suppose you are running Privoxy on an IPv6-capable machine and</span>
+<span class="c"># you want it to listen on the IPv6 address of the loopback</span>
+<span class="c"># device:</span>
+<span class="c">#</span>
+<span class="c"># listen-address [::1]:8118</span>
+<span class="c">#</span>
+<span class="c">#</span>
+</pre></div>
+
+
+<p>加一行（如果有已经设置的监听127.0.0.1：port的请删除）：</p>
+<div class="hlcode"><pre><span class="cp"># listen-address 192.168.0.1:8118</span>
+<span class="cp">#</span>
+<span class="cp"># Suppose you are running Privoxy on an IPv6-capable machine and</span>
+<span class="cp"># you want it to listen on the IPv6 address of the loopback</span>
+<span class="cp"># device:</span>
+<span class="cp">#</span>
+<span class="cp"># listen-address [::1]:8118</span>
+<span class="cp">#</span>
+<span class="n">listen</span><span class="o">-</span><span class="n">address</span> <span class="mf">0.0.0.0</span><span class="o">:</span><span class="mi">8964</span>        <span class="err">#地址必须为</span><span class="mf">0.0.0.0</span><span class="err">，端口号为刚才防火墙里设置的端口</span>
+
+<span class="err">```</span> 
+
+<span class="err">保存退出。</span>
+
+
+<span class="err">此时，你已经可以通过同一内网的其他终端，经由这台服务器的</span><span class="mi">8964</span><span class="err">号端口传入</span><span class="n">HTTP</span><span class="err">代理，并由这台服务器转发到</span><span class="mf">127.0.0.1</span><span class="err">：</span><span class="mi">8080</span><span class="err">上的</span><span class="n">ShadowSocks</span><span class="err">代理，实现代理上网。</span>
+
+<span class="err">其网络路径为：</span>
+
+<span class="err">手机—–</span><span class="n">HTTP</span><span class="err">—</span><span class="o">-</span><span class="p">[</span><span class="err">服务器（</span><span class="mf">192.168.1.100</span><span class="err">：</span><span class="mi">8964</span><span class="err">）</span><span class="o">----</span><span class="n">Privoxy</span><span class="o">---</span><span class="n">Socks5</span><span class="o">------</span><span class="err">服务器内部</span><span class="mf">127.0.0.1</span><span class="err">：</span><span class="mi">8080</span><span class="p">]</span><span class="err">——加密数据—–</span><span class="p">[</span><span class="err">某防火墙</span><span class="p">]</span><span class="err">—–加密数据—</span><span class="o">-</span><span class="n">Shadowsocks</span><span class="err">服务器—–目标网站</span>
+
+<span class="err">测试方法是用同一内网的终端，设置</span><span class="n">HTTP</span><span class="err">代理到服务器的该端口，上网访问</span><span class="n">Ip</span><span class="err">查询为</span><span class="n">Shadowsocks</span><span class="err">服务器地址即可。每种设备设置方法不同，电脑的设置方法是在网络选项</span><span class="o">-</span><span class="err">局域网设置中，苹果手机在无线网设置的最下面，</span><span class="n">Ip</span><span class="err">地址填写服务器地址，端口填写刚才的端口。安卓手机的设置在无线网高级里。</span>
+
+<span class="o">*</span><span class="err">如何分流下面说。</span>
+ 
+<span class="o">**</span><span class="err">测试环境二：</span><span class="n">VPN</span><span class="err">全局代理</span><span class="o">**</span>
+
+<span class="err">准备好</span><span class="n">VPN</span><span class="err">账号（任何类型均可），在电脑上设置好，连上</span><span class="n">VPN</span><span class="err">测试通过后断开</span><span class="n">VPN</span><span class="err">。</span>
+
+<span class="err">如上面所示，打开</span><span class="n">Privoxy</span><span class="err">的</span><span class="n">config</span><span class="p">.</span><span class="n">txt</span><span class="err">设置文件。</span>
+
+<span class="o">**</span><span class="err">确保关闭了</span><span class="n">socks5</span><span class="err">代理！</span><span class="o">**</span><span class="err">两种代理不能同时存在。如果你设置了</span><span class="n">Socks5</span><span class="err">代理，请找到它并用#注释掉！</span>
+
+<span class="err">还是搜索到</span><span class="mf">5.2</span><span class="err">节，在一堆示例（</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="err">）下添加一行：”</span><span class="o">**</span><span class="n">forward</span>               <span class="o">/</span>               <span class="p">.</span><span class="err">”</span><span class="o">**</span>
+</pre></div>
+
+
+<h1 id="examples">Examples:</h1>
+<h1 id="_1"></h1>
+<h1 id="from-the-company-examplecom-direct-connections-are-made-to">From the company example.com, direct connections are made to</h1>
+<h1 id="all-internal-domains-but-everything-outbound-goes-through">all “internal” domains, but everything outbound goes through</h1>
+<h1 id="their-isps-proxy-by-way-of-examplecoms-corporate-socks-4a">their ISP’s proxy by way of example.com’s corporate SOCKS 4A</h1>
+<h1 id="gateway-to-the-internet">gateway to the Internet.</h1>
+<h1 id="_2"></h1>
+<h1 id="forward-socks4a-socks-gwexamplecom1080-www-cacheispexamplenet8080">forward-socks4a / socks-gw.example.com:1080 www-cache.isp.example.net:8080</h1>
+<h1 id="forward-examplecom">forward .example.com .</h1>
+<h1 id="_3"></h1>
+<p>forward               /               .</p>
+<h1 id="a-rule-that-uses-a-socks-4-gateway-for-all-destinations-but-no">A rule that uses a SOCKS 4 gateway for all destinations but no</h1>
+<h1 id="http-parent-looks-like-this">HTTP parent looks like this:</h1>
+<h1 id="_4"></h1>
+<h1 id="forward-socks4-socks-gwexamplecom1080">forward-socks4 / socks-gw.example.com:1080 .</h1>
+<h1 id="_5"></h1>
+<h1 id="to-chain-privoxy-and-tor-both-running-on-the-same-system-you">To chain Privoxy and Tor, both running on the same system, you</h1>
+<h1 id="would-use-something-like">would use something like:</h1>
+<h1 id="_6"></h1>
+<h1 id="forward-socks5-1270018080">forward-socks5 / 127.0.0.1:8080 .</h1>
+<div class="hlcode"><pre><span class="nx">意思是转发所有通信</span><span class="err">（</span><span class="o">/</span><span class="err">）</span><span class="nx">到所有目标</span><span class="err">（</span><span class="nx">.</span><span class="p">)</span>  <span class="nx">注意这个点不能少</span><span class="err">，</span><span class="nx">不然就失败了</span><span class="err">。</span>
+
+<span class="nx">保存退出</span><span class="err">（</span><span class="nb">listen</span><span class="na">-address</span> <span class="mf">0.0.0.0</span><span class="p">:</span><span class="mi">8964</span> <span class="nx">一样不能少</span><span class="err">，</span><span class="nx">如果没设置要设置好</span><span class="err">）</span>
+
+<span class="nx">测试</span><span class="err">：</span>
+
+<span class="nx">此时一样用其他设备连接HTTP代理到服务器</span><span class="err">，</span><span class="nx">看是否能上网</span><span class="err">。（</span><span class="nx">上的是服务器正常的网</span><span class="err">，</span><span class="nx">因为没有启动VPN</span><span class="err">）</span>
+
+<span class="nx">流程为</span><span class="err">：</span>
+
+<span class="nx">手机</span><span class="err">—–</span><span class="nx">HTTP</span><span class="err">—</span><span class="o">-</span><span class="err">[</span><span class="nx">服务器</span><span class="err">（</span><span class="mf">192.168.1.100</span><span class="err">：</span><span class="mi">8964</span><span class="err">）</span><span class="o">----</span><span class="nx">Privoxy</span><span class="o">--</span> <span class="nx">直接发出</span><span class="cp">]</span>——目标网站
+
+如果手机能通过HTTP代理正常上网，此时打开VPN（注意发送所有流量，即默认配置），手机再上网查Ip，为VPN的Ip即说明手机成功通过HTTP代理分享了服务器的VPN。
+
+流程为：
+
+手机—–HTTP—-<span class="cp">[</span><span class="nx">服务器</span><span class="err">（</span><span class="mf">192.168.1.100</span><span class="err">：</span><span class="mi">8964</span><span class="err">）</span><span class="o">----</span><span class="err">〈</span><span class="nx">VPN</span>   <span class="nx">Privoxy</span><span class="o">--</span> <span class="nx">直接发出</span><span class="o">-----</span><span class="cp">]</span> —ESP—-<span class="cp">[</span><span class="nx">防火墙</span><span class="cp">]</span>———VPN〉——目标网站
+
+三、**Shadowsock2.0的HTTP代理端口？**
+
+如果你使用Ss2.0的HTTP代理，可以直接把Ss2.0的HTTP端口绑定在0.0.0.0：8964，无需使用Privoxy即可通过内网共享服务器上Ss2.0的连接。
+
+但这样你将不能使用服务器的分流能力，必须在终端自己设置分流，否则全部流量将通过代理转发。
+
+
+**分流：**
+
+设置好了共享代理，同一内网中的其他终端将可以通过指定主机的代理软件上网，但无法实现流量的分离。由于众所周知的原因，<span class="nt">&lt;del&gt;</span>某些公司的防火墙<span class="nt">&lt;/del&gt;</span>使用代理后，访问<span class="nt">&lt;del&gt;</span>公司内部的网站<span class="nt">&lt;/del&gt;</span>会变得很慢……
+
+分流的思路通常有两种，一种是在客户端设置分流表，这是通常的做法。一般来说，电脑比较适合使用这种方式，因为电脑可以在本地保存Pac文件，而且电脑的流量通常很大，所有通信都经过服务器的话，服务器有压力。
+
+如何配置一个Pac？我们可以在网上下载到已有的Pac，保存在电脑上，在Pac中设置代理方式为HTTP，代理地址为内网服务器地址：端口。
+
+配置Pac的方法可以查询网络，或是我在下一章介绍。
+
+第二种思路就是将所有的流量都通过内网服务器，服务器上的Privoxy负责分流，将指定地址分流至代理，其他直接放到公网上。这样可以免除客户端的任何配置，也支持那些不能使用Pac的设备（如安卓）。
+
+缺点是服务器负载较大，且在VPN模式下不能使用。
+
+<span class="cp">[</span><span class="o">!</span><span class="err">[</span><span class="mi">4</span><span class="cp">]</span>(https://velaciela.ms/wp-content/uploads/2014/11/4.png)](https://velaciela.ms/wp-content/uploads/2014/11/4.png)混合使用两种策略：客户端分流+服务器分流
+
+在实际中，两种分流策略可以混合使用，对于负载重的设备（电脑）优先在客户端先分流，负载轻或不支持的设备，在内网服务器上分流。
+
+**同时使用两个分流表，必须完全相同，不然将无法代理。
+
+**配置服务器分流策略：**
+
+打开Provixy，选择Options的edit user actions 或者直接编辑 user.action文件。
+
+首先定义动作代码：
+
+找到以下内容：
+</pre></div>
+
+
+<h1 id="aliases-must-be-defined-before-they-are-used">Aliases must be defined before they are used.</h1>
+<h1 id="_7"></h1>
+<h1 id="these-aliases-just-save-typing-later">These aliases just save typing later:</h1>
+<h1 id="_8"></h1>
+<p>+crunch-all-cookies = +crunch-incoming-cookies +crunch-outgoing-cookies<br />
+-crunch-all-cookies = -crunch-incoming-cookies -crunch-outgoing-cookies<br />
+allow-all-cookies = -crunch-all-cookies -session-cookies-only -filter{content-cookies}<br />
+allow-popups = -filter{all-popups} -filter{unsolicited-popups}<br />
++block-as-image = +block{Blocked image request.} +handle-as-image<br />
+-block-as-image = -block</p>
+<h1 id="ssh8080socks5">这里是科学上网设置，定义SSH=往本地8080转发SOCKS5</h1>
+<p>direct = +forward-override{forward .}<br />
+ssh = +forward-override{forward-socks5 127.0.0.1:8080 .}<br />
+gae = +forward-override{forward 127.0.0.1:8000} <br />
+default = direct</p>
+<h1 id="these-aliases-define-combinations-of-actions">These aliases define combinations of actions</h1>
+<h1 id="that-are-useful-for-certain-types-of-sites">that are useful for certain types of sites:</h1>
+<h1 id="_9"></h1>
+<div class="hlcode"><pre><span class="err">在这个位置添加上述蓝色代码，其中</span><span class="n">ssh</span><span class="p">,</span><span class="n">gae</span><span class="err">指代一种或多种代理策略，可以任意命名。我这里就不改动了。（</span><span class="n">VPN</span><span class="err">不能使用，只能在客户端分流！）</span>
+
+<span class="err">在这里我定义</span><span class="n">Ssh</span><span class="err">是代理到</span><span class="mf">127.0.0.1</span><span class="err">：</span><span class="mi">8080</span><span class="err">的</span><span class="n">Socks5</span><span class="err">，即凡是定义为“</span><span class="n">Ssh</span><span class="err">”的网站，都通过</span><span class="n">Shadowsocks</span><span class="err">转发……（名字好像错了，算了……）</span>
+
+<span class="err">在文件末尾添加以下代码：</span>
+</pre></div>
+
+
+<h1 id="_10">==========默认代理（不走代理）==========</h1>
+<p>{default}<br />
+/</p>
+<h1 id="_11">==========直接连接(无论如何都直接连接的）==========</h1>
+<p>{direct} <br />
+.edu.cn<br />
+202.117.255.<br />
+222.24.211.</p>
+<h1 id="ssh">==========SSH代理==========</h1>
+<p>{ssh}<br />
+.launchpad.net<br />
+.example.com<br />
+.nidongde.com<br />
+.1024.com<br />
+.xxxxx.com</p>
+<h1 id="gae">==========GAE代理==========</h1>
+<p>{gae}</p>
+<div class="hlcode"><pre>
+</pre></div>
+
+
+<p>蓝色部分为需要分流到127.0.0.1：8080上的网站，需遵循.domain.com的规范，不要www和其他的东西。找到一份这样的列表，并用查找和替换处理成这个格式应该不难。<del>可以加几千个哦</del></p>
+<p>保存退出后，手机再通过192.168.1.100：8964的HTTP代理上网时，只有在这个列表的网站才会通过127.0.0.1：8080的通道上网，其他流量将通过服务器的默认网关上网。</p>
+<p>本文参考了：</p>
+<div class="hlcode"><pre><span class="p">[</span><span class="n">privoxy</span><span class="err">——广告过滤和自动代理切换</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.lainme.com/doku.php/blog/2011/04/privoxy_%E5%B9%BF%E5%91%8A%E8%BF%87%E6%BB%A4%E5%92%8C%E8%87%AA%E5%8A%A8%E4%BB%A3%E7%90%86%E5%88%87%E6%8D%A2)</span>
+
+<span class="p">[</span> <span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.lainme.com/doku.php/blog/2011/04/privoxy_%E5%B9%BF%E5%91%8A%E8%BF%87%E6%BB%A4%E5%92%8C%E8%87%AA%E5%8A%A8%E4%BB%A3%E7%90%86%E5%88%87%E6%8D%A2)</span>
+
+<span class="o">**</span><span class="err">如何配置分流列表，将在下一章介绍。</span>
+
+<span class="o">***</span><span class="err">如何在外网使用这个工具，将在下一章介绍。</span>
+
+<span class="err">示范配置和分流表：</span>
+</pre></div>
+
+
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/11/readme.rar">readme</a></p>
+<p>这样就可以使用任意的代理分享给局域网中的其他用户使用了。<br />
+```</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

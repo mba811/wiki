@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>在Github上搭建Jekyll博客和创建主题 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;在Github上搭建Jekyll博客和创建主题
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 07:00
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">在Github上搭建Jekyll博客和创建主题</div>
+
+  <blockquote>
+<p>之前本来想展开写的，后来发现Jekyll官网的教程已经非常完善了就没有多写，所以只有<a href="http://blog.grantliu.cn/2013/04/23/deploy-jeklly-blog.html">这篇</a>。<br />
+但是过了这么久，发现很多人还是不清楚怎么搭建，所以这里打算详细写一下，并且把自己对图片的解决方案以及主题的创建步骤也一并写下。</p>
+<p>本篇主要谈如何搭建，不再讲为什么用它们。</p>
+</blockquote>
+<p><strong>说明：本篇用到的代码中，为了防止解析冲突，一律多了<code>\</code>这个来防止被误解析</strong></p>
+<h2 id="_1">创建一个库</h2>
+<p>在Github上新开一个库，名字叫做<code>username.github.io</code>，然后当别人在地址栏输入相应url的时候就可以访问进来了。</p>
+<p>在这个库中完全可以只上传一个<code>index.html</code>，来讲自己要写的东西写进去，但是这样会丧失很多灵活性，所以需要Jekyll的帮助来创建自己的博客。</p>
+<h2 id="_2">设定目录结构</h2>
+<p>把自己的库clone到本地来，建立如下目录结构：</p>
+<div class="hlcode"><pre><span class="err">├──</span> <span class="n">CNAME</span>
+<span class="err">├──</span> <span class="n">README</span><span class="p">.</span><span class="n">md</span>
+<span class="err">├──</span> <span class="n">_config</span><span class="p">.</span><span class="n">yml</span>
+<span class="err">├──</span> <span class="n">_includes</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">disqus</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">footer</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">googleanalytics</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">header</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">navside</span><span class="p">.</span><span class="n">html</span>
+<span class="err">├──</span> <span class="n">_layouts</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">base</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">book</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">page</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">post</span><span class="p">.</span><span class="n">html</span>
+<span class="err">├──</span> <span class="n">_posts</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">Book</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">Life</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">Resource</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">Technology</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">Tool</span>
+<span class="err">├──</span> <span class="n">index</span><span class="p">.</span><span class="n">html</span>
+<span class="err">├──</span> <span class="n">pages</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">about</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">archive</span><span class="p">.</span><span class="n">html</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">atom</span><span class="p">.</span><span class="n">xml</span>
+<span class="err">├──</span> <span class="n">public</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">css</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">fonts</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">img</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">js</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">upload</span>
+<span class="err">└──</span> <span class="n">sitemap</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+
+
+<p>这个目录结构是我自己设定的，也可以有不同的目录结构，看<a href="http://jekyllrb.com/docs/structure/">官网</a>。</p>
+<p>接下来我主要解释这里面每一个目录的功能。</p>
+<h3 id="_3">配置文件</h3>
+<p><code>_config.yml</code>里写有整个站点的主要配置项，我的如下：</p>
+<div class="hlcode"><pre><span class="nl">permalink:</span> <span class="o">/:</span><span class="n">year</span><span class="o">/:</span><span class="n">month</span><span class="o">/:</span><span class="n">day</span><span class="o">/:</span><span class="n">title</span><span class="p">.</span><span class="n">html</span>   <span class="err">#博文的固定链接</span>
+<span class="nl">paginate:</span> <span class="mi">10</span>                                <span class="err">#分页时每页博文数量</span>
+<span class="nl">author:</span>                                     <span class="err">#自定义常亮</span>
+  <span class="nl">name:</span> <span class="err">闫肃</span>
+  <span class="nl">email:</span> <span class="n">yansu0711</span><span class="err">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span>
+  <span class="nl">link:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//yansu.org</span>
+<span class="nl">title:</span> <span class="err">闫肃的博客</span>                             <span class="err">#自定义常量</span>
+<span class="nl">locals:</span>                                     <span class="err">#自定义常量</span>
+  <span class="nl">tags:</span> <span class="err">标签</span>
+  <span class="nl">about:</span> <span class="err">关于</span>
+<span class="nl">active:</span> <span class="err">技术</span>                                 <span class="err">#自定义常量</span>
+<span class="nl">subscribe_rss:</span> <span class="o">/</span><span class="n">pages</span><span class="o">/</span><span class="n">atom</span><span class="p">.</span><span class="n">xml</span>              <span class="err">#订阅地址</span>
+<span class="nl">markdown:</span> <span class="n">redcarpet</span>                         <span class="err">#</span><span class="n">markdown</span><span class="err">解释器</span>
+</pre></div>
+
+
+<p>这里的自定义常量可以在模板中使用，以后有修改的时候就不需要跑去改代码了。尤其是对一些私人的选项，可以在这里定义。现在我的博客中出了disqus和googleanalytics外都直接在这里设定就好了。</p>
+<h3 id="_4">域名配置</h3>
+<p><code>CNAME</code>这个文件写明了这个站点的域名，如果不喜欢<code>username.github.io</code>的话，可以像我一样改掉</p>
+<div class="hlcode"><pre><span class="n">yansu</span><span class="p">.</span><span class="n">org</span>
+</pre></div>
+
+
+<p>改法只要在这个文件中写入域名就可以了。不过你需要去域名服务商那里设定域名解析规则。</p>
+<p>只要把<code>主机记录</code>为<code>@</code>,<code>www</code>的记录值写成<code>username.github.io</code>就好了。</p>
+<h3 id="_5">博客存放</h3>
+<p><code>_posts</code>下的所有目录中的所有博客，都会被Jekyll处理成为静态的html文件，然后放在<code>_site</code>下。我这里没有<code>_site</code>目录，是因为我在<code>.gitignore</code>文件中把这个目录屏蔽掉了，它不会上传到Github上。</p>
+<div class="hlcode"><pre><span class="n">_site</span><span class="o">/</span>
+<span class="n">_drafts</span><span class="o">/</span>
+<span class="p">.</span><span class="n">DS_Store</span>
+</pre></div>
+
+
+<p>以上是我的<code>.gitignore</code>文件内容。</p>
+<p>在<code>_posts</code>下的符合<code>YYYY-MM-DD-xxxxxx.md</code>的文件，都会被Jekyll认定为博客内容。我在<code>_posts</code>下又新建了一些文件夹，主要是方便自己本地管理博客。</p>
+<p>在上述这些文件中，必须先定义一些配置项，例如这篇博客的md文件中，开头是这样的：</p>
+<div class="hlcode"><pre><span class="n">layout</span><span class="o">:</span> <span class="n">post</span>                                   <span class="err">#这个博客的布局文件</span>
+<span class="n">title</span><span class="o">:</span> <span class="err">在</span><span class="n">Github</span><span class="err">上搭建自己的</span><span class="n">Jekyll</span><span class="err">博客</span>             <span class="err">#博客标题</span>
+<span class="n">category</span><span class="o">:</span> <span class="err">工具</span>                                  <span class="err">#博客分类</span>
+<span class="n">tags</span><span class="o">:</span> <span class="n">Jekyll</span>                                   <span class="err">#博客标签</span>
+<span class="n">keywords</span><span class="o">:</span> <span class="n">Jekyll</span><span class="o">,</span><span class="n">Github</span>                        <span class="err">#自定义常量</span>
+<span class="n">description</span><span class="o">:</span>                                   <span class="err">#自定义常量</span>
+</pre></div>
+
+
+<p>除了自定义常量外的必须包含进去，自定义变量在这个布局中可以访问。</p>
+<h3 id="_6">模版文件</h3>
+<p>剩余的目录，基本都属于模板文件了，我解释一下各自的作用：</p>
+<ul>
+<li><code>_includes</code> 可以在模板中随时包含的文件</li>
+<li><code>_layouts</code> 布局文件，在博客头配置中可以选择</li>
+<li><code>pages</code> 站内固定的页面</li>
+<li><code>public</code> 公共资源，包括<code>js</code>,<code>css</code>,<code>img</code>等，还有我博客中调用的图片，我都放这里</li>
+<li><code>index.html</code> 站点的首页，整个站的入口文件</li>
+<li><code>sitemap.txt</code> 给搜索引擎看的，如何爬取这个站</li>
+</ul>
+<h2 id="_7">创建自己的主题</h2>
+<p>上面讲了如何布局好站内文件结构，接下来主要就是如何创建一个自己的主题了。</p>
+<p>布局文件是整个主题最重要的文件，这些文件告诉Jekyll如何去形成一个html页面。</p>
+<p>首先我说一下我最基础的<code>page.html</code>文件，因为它决定了入口文件<code>index.html</code>的布局。</p>
+<div class="hlcode"><pre><span class="nx">layout</span><span class="p">:</span> <span class="nx">base</span>
+
+<span class="o">&lt;</span><span class="nb">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;row&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nb">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;col-md-12 aside3-title&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">br</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">h2</span> <span class="n">id</span><span class="o">=</span><span class="s2">&quot;#identifier&quot;</span><span class="o">&gt;</span><span class="p">{</span><span class="o">\</span><span class="p">{</span> <span class="nx">page.title</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="nx">h2</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nb">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;col-md-12 aside3-content&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">div</span> <span class="n">id</span><span class="o">=</span><span class="s2">&quot;page-content&quot;</span><span class="o">&gt;</span>
+      <span class="p">{</span><span class="o">\</span><span class="p">{</span> <span class="nb">content</span> <span class="p">}}</span>
+    <span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">hr</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">\%</span> <span class="nb">include</span> <span class="nx">disqus.html</span> <span class="o">%</span><span class="p">}</span>
+  <span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nb">div</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>从这里可以看到这个文件写起来一点都不复杂，但是为什么开头还有个<code>layout</code>呢？因为它也不是最基本的布局文件，最基本的是<code>base.html</code>，我们看一下它的内容。</p>
+<div class="hlcode"><pre><span class="cp">&lt;!doctype html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+  {\% include header.html %}
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+      {\% include navside.html %}
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-md-8 col-lg-8 col-sm-12 col-xs-12 aside3&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;pjax&quot;</span><span class="nt">&gt;</span>
+            {\{ content }}
+          <span class="nt">&lt;/div&gt;</span>
+        <span class="nt">&lt;/div&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  {\% include footer.html %}
+  {\% include googleanalytics.html %}
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+
+<p>这个文件就更像一个HTML文件了，用PHP或者Python写过web应用的人看到<code>{\% %}</code>这样的标签应该不陌生，这不就是模板标签嘛。其实Jekyll也是借用了一下模板系统的，官网说明在<a href="http://jekyllrb.com/docs/templates/">这里</a>，看到开头第一句讲的它用了<a href="http://docs.shopify.com/themes/liquid-basics">Liquid</a>了吧。如果Jekyll的文档不能满足你的话，可以去Liquid那里查查。</p>
+<p>我解释一下<code>base.html</code>中几个标签的功能。</p>
+<ul>
+<li><code>{\% include header.html %}</code> 从<code>_includes</code>中把<code>header.html</code>包含进来放在这里</li>
+<li><code>{\% include navside.html %}</code> 同上</li>
+<li><code>{\{ content }}</code> 这句的作用是将继承这个Layout的文件中的代码，放在这里</li>
+</ul>
+<p>所以再看<code>page.html</code>文件就很容易了，它就是把配置项下面的内容，填补到<code>base.html</code>中的<code>{\{ content }}</code>处形成了一个文件。那么<code>page.html</code>中的<code>{\{ content }}</code>做什么用呢？因为别人也可以以<code>page.html</code>来作为自己的布局文件。</p>
+<p>入口文件<code>index.html</code>就是这么干的：</p>
+<div class="hlcode"><pre><span class="n">layout</span><span class="o">:</span> <span class="n">page</span>
+<span class="n">title</span><span class="o">:</span> <span class="err">首页</span>
+<span class="o">...</span>
+</pre></div>
+
+
+<p>这里看到选择了page作为布局文件，那么title干嘛用的呢？其实它是在被包含的<code>header.html</code>中被用到了。来看看<code>header.html</code>怎么写的：</p>
+<div class="hlcode"><pre><span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">&quot;utf-8&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;title&gt;</span>{\{ page.title }} | {\{ site.title }}<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;author&quot;</span> <span class="na">content=</span><span class="s">&quot;刘伟&quot;</span><span class="nt">&gt;</span>
+{\% if page.keywords %}
+  <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;keywords&quot;</span> <span class="na">content=</span><span class="s">&quot;Jekyll,Github&quot;</span><span class="nt">&gt;</span>
+{\% endif %}
+{\% if page.description  %}
+  <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">&quot;description &quot;</span> <span class="na">content=</span><span class="s">&quot;&quot;</span><span class="nt">&gt;</span>
+{\% endif %}
+
+...
+</pre></div>
+
+
+<p>这里又使用了一些新标签——<code>{\{ }\}</code>，这个标签就是用来书写变量的，通过在配置处配置变量，或者使用系统的自定义变量，可以轻松改变页面内的一些元素或者内容。</p>
+<p>系统变量查询可以去<a href="http://jekyllrb.com/docs/variables/">这里</a></p>
+<p>其实整个主题书写就是这么简单，如果有不清楚的可以再看看官网的文档。动一动手就非常明白了。</p>
+<h2 id="_8">插入图片</h2>
+<p>很多人感觉用Jekyll最不方便的就是插入图片了，其实我也是这么觉得的。所以只能自己去想些办法。</p>
+<h3 id="_9">图片统一存放</h3>
+<p>图片我都放在了<code>/public/upload</code>下，所以我在插入图片的时候只要用<code>![xxx](http://yansu-uploads.stor.sinaapp.com/imgs/xxx)</code>就可以了。</p>
+<h3 id="_10">方便的图片导入</h3>
+<p>导入图片的方式是我将<code>upload</code>文件夹做了个软连接，放到mac的dock上就行了，有图片要用的时候直接往里面一拖。</p>
+<h3 id="_11">方便的截图</h3>
+<p>很多时候图片都是现截取的，比如用QQ的截图工具，或者系统的截图工具，但是他们截取完都存放在了<code>user/Pictures</code>里面，来回移动太累了。我这里介绍一个Mac下的一个工具——Trickster，看图</p>
+<p><img alt="移动图片" src="http://yansu-uploads.stor.sinaapp.com/imgs/trickster-move-picture.png" /></p>
+<p>这个工具可以看到刚刚修改过的图片，而且还有一个收藏的文件夹，我每次截取完图以后，从左边往右边一拖，然后在markdown中就可以继续书写了。一点都不耗时。</p>
+<h2 id="_12">本地预览及提交</h2>
+<p>本地预览自己的修改很容易，只要进入<code>username.github.io</code>目录，执行</p>
+<div class="hlcode"><pre><span class="n">jekyll</span> <span class="n">serve</span>
+</pre></div>
+
+
+<p>然后访问<code>http://localhost:4000</code>就OK了，安装Jekyll的方式自行谷歌吧…</p>
+<p>自己预览过没有问题以后，就提交到服务端吧，Git三步走</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">add</span> <span class="n">xxx</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;xxx&quot;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+
+
+<h2 id="_13">其他</h2>
+<p>我觉得自己的这个主题设定的算是比较好修改和移植的了，如果大家有什么问题，可以尽管问。</p>
+<p>另外一些特别的功能，比如三栏、评论、谷歌分析，这些都不难，相信你稍微打开Github读一下这个主题的代码就很快明白了。</p>
+<p>代码地址戳<a href="https://github.com/suyan/suyan.github.io">这里</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

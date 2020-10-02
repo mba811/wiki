@@ -1,0 +1,366 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>用Sphinx编写技术文档 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Knowledge-Management">Knowledge-Management</a>&nbsp;&#187;&nbsp;用Sphinx编写技术文档
+    <span class="updated">Page Updated&nbsp;
+      2015-02-10 14:17
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">用Sphinx编写技术文档</div>
+
+  <p>大家会发现，如果一个项目主要是用Python写的，其文档都很类似，比如：Python在线的HTML官方手册。这些项目的文档都来源于一个很不错的项目：Sphinx。这个Sphinx特指Sphinx doc这个项目（另一个也叫Sphinx的search的项目，虽然都叫一个名字）。</p>
+<p>官网：<a href="http://sphinx-doc.org/">http://sphinx-doc.org/</a></p>
+<p>以下出现Sphinx的地方，都特指Sphinx doc这个项目</p>
+<h2 id="_1">使用场景</h2>
+<ul>
+<li>很多开源Python库项目的API手册都是用这个写的，可以看Sphinx官网给的链接：<a href="http://sphinx-doc.org/examples.html">http://sphinx-doc.org/examples.html</a></li>
+<li>如果是用Python写的商业软件，也可以用这个来写技术文档，纯文本管理研发文档，保证功能代码、测试代码、相关文档同时更新</li>
+<li>直接拿来写在线书。比如，这个《软件构建实践系列》就是：<a href="https://github.com/akun/pm">https://github.com/akun/pm</a></li>
+<li>直接用来做slide等演示幻灯片，从一定程度上替代PowerPoint。比如，<a href="http://example.zhengkun.info/slide.html">http://example.zhengkun.info/slide.html</a></li>
+</ul>
+<h2 id="_2">功能</h2>
+<p>这里就列举个人关心的几个特性：</p>
+<ul>
+<li>文本是rst格式语法</li>
+<li>生成HTML、PDF、Slide（需要插件）等格式的文档</li>
+<li>支持文档、代码等引用</li>
+<li>支持自定义样式</li>
+<li>支持插件扩展</li>
+<li>直接看官网手册了解更多：<a href="http://sphinx-doc.org/contents.html">http://sphinx-doc.org/contents.html</a></li>
+</ul>
+<h2 id="_3">语法简介</h2>
+<p>就是rst的语法，这里就列举几个常用的：</p>
+<h3 id="_4">标题等级</h3>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="err">一级标题</span>
+<span class="o">========</span>
+
+<span class="err">二级标题</span>
+<span class="o">--------</span>
+
+<span class="err">三级标题</span>
+<span class="o">^^^^^^^^</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<p>习惯上，可以用以下字符：“= - ` : ‘ ” ~ ^ _ * + # &lt; &gt;”。最好能约定个依次标题等级。</p>
+<h3 id="_5">列表</h3>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="err">列表</span><span class="mi">1</span>
+<span class="o">*</span> <span class="err">列表</span><span class="mi">2</span>
+<span class="o">*</span> <span class="err">列表</span><span class="mi">3</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<ul>
+<li>列表1</li>
+<li>列表2</li>
+<li>列表3</li>
+</ul>
+<p>列表写法除了用“*”，还可以用：“-”，“+”，最后效果一样。</p>
+<p>上面说的是无序列表，如果想用有序列表，可以用“#.”。</p>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="c">#. 列表1</span>
+<span class="c">#. 列表2</span>
+<span class="c">#. 列表3</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<ol>
+<li>列表1</li>
+<li>列表2</li>
+<li>列表3</li>
+</ol>
+<h3 id="_6">表格</h3>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="o">=====</span>  <span class="o">=====</span>  <span class="o">=====</span>
+<span class="err">第</span><span class="mi">1</span><span class="err">列</span>  <span class="err">第</span><span class="mi">2</span><span class="err">列</span>  <span class="err">第</span><span class="mi">3</span><span class="err">列</span>
+<span class="o">=====</span>  <span class="o">=====</span>  <span class="o">=====</span>
+<span class="mi">8</span>      <span class="mi">1</span>      <span class="mi">6</span>
+<span class="mi">3</span>      <span class="mi">5</span>      <span class="mi">7</span>
+<span class="mi">4</span>      <span class="mi">9</span>      <span class="mi">2</span>
+<span class="o">=====</span>  <span class="o">=====</span>  <span class="o">=====</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<p>第1列第2列第3列</p>
+<p>8<br />
+1<br />
+6</p>
+<p>3<br />
+5<br />
+7</p>
+<p>4<br />
+9<br />
+2</p>
+<h3 id="_7">插入图片</h3>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">image</span><span class="p">::</span> images/ball1.gif
+</pre></div>
+
+
+<p>效果如下：</p>
+<p><img alt="http://pm.readthedocs.org/_images/ball1.gif" src="http://pm.readthedocs.org/_images/ball1.gif" /></p>
+<h3 id="_8">插入代码</h3>
+<p>展示代码示例，经常会用到：</p>
+<h4 id="_9">默认</h4>
+<p>rst如下：</p>
+<div class="hlcode"><pre>   <span class="n">print</span> <span class="err">&#39;</span><span class="n">Hello</span> <span class="n">World</span><span class="o">!</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<div class="hlcode"><pre><span class="n">print</span> <span class="err">&#39;</span><span class="n">Hello</span> <span class="n">World</span><span class="o">!</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h4 id="_10">自定义</h4>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">code-block</span><span class="p">::</span> python
+   <span class="nc">:linenos:</span>
+
+   print &#39;Hello World!&#39;
+</pre></div>
+
+
+<p>效果如下：</p>
+<div class="hlcode"><pre><span class="mi">1</span>
+
+<span class="n">print</span> <span class="err">&#39;</span><span class="n">Hello</span> <span class="n">World</span><span class="o">!</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h4 id="_11">引用代码文件</h4>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">literalinclude</span><span class="p">::</span> code/example.js
+   <span class="nc">:language:</span> <span class="nf">javascript</span>
+   <span class="nc">:linenos:</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<h3 id="_12">提供下载文件链接</h3>
+<p>直接下载该RST本身。</p>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="o">:</span><span class="n">download</span><span class="o">:</span><span class="err">`</span><span class="n">sphinx</span><span class="p">.</span><span class="n">rst</span> <span class="o">&lt;</span><span class="n">sphinx</span><span class="p">.</span><span class="n">rst</span><span class="o">&gt;</span><span class="err">`</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<blockquote>
+<p><a href="http://pm.readthedocs.org/_downloads/sphinx.rst">sphinx.rst</a></p>
+</blockquote>
+<h3 id="_13">目录索引</h3>
+<p>example1对应sphinx.rst所在目录下的example1.rst文件，example2类似。</p>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="ow">toctree</span><span class="p">::</span>
+   <span class="nc">:maxdepth:</span> <span class="nf">2</span>
+
+   example1
+   example2
+</pre></div>
+
+
+<p>效果如下：</p>
+<blockquote>
+<ul>
+<li>二级标题1</li>
+<li>二级标题2</li>
+</ul>
+</blockquote>
+<h3 id="_14">引用</h3>
+<p>可以用于跨rst文档间的内容互相引用。这里以本文档内为例。</p>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="p">..</span> <span class="nt">_my-reference-label:</span>
+
+<span class="gh">用Sphinx编写技术文档</span>
+<span class="gh">====================</span>
+
+很长的文字内容
+
+点击回到顶部， <span class="na">:ref:</span><span class="nv">`my-reference-label`</span>.
+</pre></div>
+
+
+<p>效果如下：</p>
+<p>点击回到顶部，  <a href="http://pm.readthedocs.org/doc/sphinx.html#my-reference-label">用Sphinx编写技术文档</a> .</p>
+<h3 id="_15">文字效果</h3>
+<h4 id="_16">斜体</h4>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="o">*</span><span class="err">斜体</span><span class="o">*</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<p><em>斜体</em></p>
+<h4 id="_17">粗体</h4>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="o">**</span><span class="err">粗体</span><span class="o">**</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<p><strong>粗体</strong></p>
+<h4 id="_18">下标</h4>
+<p>斜杠是为了空格转义，最后显示无空格。</p>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="n">H</span><span class="err">\</span> <span class="o">:</span><span class="n">sub</span><span class="o">:</span><span class="err">`</span><span class="mi">2</span><span class="err">`\</span> <span class="n">O</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<p>H2O</p>
+<h4 id="_19">上标</h4>
+<p>rst如下：</p>
+<div class="hlcode"><pre><span class="n">E</span> <span class="o">=</span> <span class="n">mc</span><span class="err">\</span> <span class="o">:</span><span class="n">sup</span><span class="o">:</span><span class="err">`</span><span class="mi">2</span><span class="err">`</span>
+</pre></div>
+
+
+<p>效果如下：</p>
+<p>E = mc2</p>
+<p>参见</p>
+<ul>
+<li>更多说明，详见rst文档：<a href="http://docutils.sourceforge.net/rst.html">http://docutils.sourceforge.net/rst.html</a></li>
+<li>另外，这本书本身就是个示例：<a href="https://github.com/akun/pm">https://github.com/akun/pm</a></li>
+</ul>
+<h2 id="hello-world">Hello World</h2>
+<p>根据上面的介绍，其实常用的语法不多，现在直接用下，自己感受下吧！</p>
+<h3 id="_20">安装 &amp; 初始化</h3>
+<p>常用Python安装方式，创建个文件夹，执行命令，按提示自己选择即可。</p>
+<div class="hlcode"><pre><span class="n">pip</span> <span class="n">install</span> <span class="n">Sphinx</span>
+<span class="n">mkdir</span> <span class="n">docs</span>
+<span class="n">cd</span> <span class="n">docs</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">quickstart</span>
+</pre></div>
+
+
+<p>根据提示输入相应参数即可，可以一路默认。</p>
+<h3 id="_21">尝试编辑</h3>
+<p>编辑index.rst，只写入以下内容</p>
+<div class="hlcode"><pre><span class="err">用</span><span class="n">Sphinx</span><span class="err">编写技术文档</span>
+<span class="o">====================</span>
+
+<span class="err">使用场景</span>
+<span class="o">--------</span>
+</pre></div>
+
+
+<h3 id="html">生成HTML</h3>
+<p>很简单，默认支持就很好。</p>
+<div class="hlcode"><pre><span class="n">make</span> <span class="n">html</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">SimpleHTTPServer</span> <span class="mi">9527</span>
+</pre></div>
+
+
+<p>直接浏览器访问9527端口，就可以看到类似Python官方文档的效果。</p>
+<h3 id="pdf">生成PDF</h3>
+<p>麻烦些，需要依赖库，且需要简单修改下配置。</p>
+<ol>
+<li>
+<p>安装依赖库</p>
+<p>pip install rst2pdf</p>
+</li>
+<li>
+<p>编辑conf.py，增加或修改如下配置：</p>
+</li>
+<li>编辑Makefile，增加如下代码：</li>
+</ol>
+<p>Linux下的Makefie：</p>
+<p>Windows下的批处理：</p>
+<ol>
+<li>
+<p>执行生成PDF</p>
+<p>make pdf<br />
+python -m SimpleHTTPServer 9527</p>
+</li>
+</ol>
+<p>参见</p>
+<p>有关PDF的更多配置，可以阅读这个文档：<a href="http://ralsina.me/static/manual.pdf">http://ralsina.me/static/manual.pdf</a></p>
+<h3 id="slide">生成Slide</h3>
+<p>Slide就是我们常说的演示文档，如：Windows下的PowerPoint（PPT）；Mac下Keynote等等。这里用Sphinx生成在线的HTML5形式的Slide，操作也相对简单，也是需要依赖库和简单修改下配置。</p>
+<ol>
+<li>
+<p>安装依赖库</p>
+<p>pip install hieroglyph</p>
+</li>
+<li>
+<p>编辑conf.py，修改如下配置：</p>
+</li>
+<li>编辑Makefile，增加如下代码：</li>
+</ol>
+<p>Linux下的Makefie：</p>
+<ol>
+<li>
+<p>执行生成Slides</p>
+<p>make slides<br />
+python -m SimpleHTTPServer 9527</p>
+</li>
+</ol>
+<p>参见</p>
+<p>有关Slide的更多信息，可以直接查看这个项目：<a href="https://github.com/nyergler/hieroglyph">https://github.com/nyergler/hieroglyph</a></p>
+<h3 id="_22">自定义样式</h3>
+<p>直接拿来主义，直接用别人写的Trac的样式</p>
+<ol>
+<li>
+<p>复制样式文件到静态资源目录，比如，这里是：</p>
+<p>cp tracsphinx.css _static/</p>
+</li>
+<li>
+<p>编辑conf.py，增加或修改如下配置：</p>
+</li>
+<li>
+<p>执行生成HTML</p>
+<p>make html<br />
+python -m SimpleHTTPServer 9527</p>
+</li>
+</ol>
+<p>直接浏览器访问9527端口，就可以看到类似Trac的官方样式效果。</p>
+<h3 id="_23">汇总到一块</h3>
+<p>可以直接看Python项目模板：<a href="https://github.com/akun/aproject/">https://github.com/akun/aproject/</a>只看docs目录即可。</p>
+<p>这里提到的几个核心文件示例如下：</p>
+<ul>
+<li>index.rst</li>
+<li>conf.py</li>
+<li>Makefile</li>
+<li>css</li>
+</ul>
+<p>另外推荐一个服务：<a href="https://readthedocs.org/">https://readthedocs.org/</a></p>
+<p>如果你的项目研发文档用Sphinx写的，可以用来做文档的持续集成，相当方便。</p>
+<p>这个<a href="http://pm.readthedocs.org/">《软件构建实践系列》</a>就是用的这个服务。</p>
+<h2 id="_24">最后</h2>
+<p>这是一篇很简单的项目推广文章，在自己的Python项目中把Sphinx用起来吧！</p>
+<p>当然Sphinx不仅支持Python源码的Domain，而且支持C、C++、JavaScript等Domain，即使没有你所用的语言的Domain，它本身还支持写插件扩展，所以其它类型语言的项目也不妨用一下。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

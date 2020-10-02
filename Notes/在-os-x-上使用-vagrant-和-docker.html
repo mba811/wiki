@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>在 OS X 上使用 Vagrant 和 Docker - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;在 OS X 上使用 Vagrant 和 Docker
+    <span class="updated">Page Updated&nbsp;
+      2015-05-13 19:54
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">在 OS X 上使用 Vagrant 和 Docker</div>
+
+  <p>当听到很多人在说Docker是多么多么的棒，很多新潮的孩子都在使用它时，我决定在我的开发环境上也来尝试下。在下面的这篇文章中，我将讲解在Mac OS X怎样建立Postgres，Elasticsearch和Redis。</p>
+<h2 id="docker"><strong>什么是Docker</strong></h2>
+<p>Docker用轻量容器把一个APP从它运行的OS中隔离开。它把APP放入到一个孤立的盒子中，对外只呈现需要使用的文件夹和端口。</p>
+<p>这样，基于建立和使用APP的容器是可重用，共享的。目前，在Docker集中已经存在了15,000种以上的容器。Docker就像一个商店的存储库，当你需要建立一个你想要的APP时，你首先去挑出它，然后把它下载下来打开即可。</p>
+<h2 id="os-xdocker"><strong>在OS X上安装Docker</strong></h2>
+<p>Docker不是天生就能运行在OS X上的，它需要一个包含LINUX容器的Linux内核。因此，当你想像我一样要安装OS X时，你将需要一套虚拟器。</p>
+<h2 id="boot2docker"><strong>不要使用boot2docker</strong></h2>
+<p>当试图让docker工作时，我发现“非常容易”安装。这将使用一个称之为boot2docker的工具，该工具是一个像virtualBox的虚拟机上的瘦包装。</p>
+<p>我马上发现，这个工具有一些严重的问题，例如：在一个稳定状态下将会终止任何获取Docker的进程。我不想在这方面浪费太多的体力和脑细胞，所以我继续寻找了一个可替代的解决方案。</p>
+<h2 id="vargrant"><strong>使用Vargrant</strong></h2>
+<p>自从Vagrant的1.6版本之后，已经集成了支持Docker的配套组件。Vargrant是一种类似于VirtualBox的虚拟软件，它采用一种声明Ruby DSL的方法来描述你的环境。</p>
+<p>我非常喜欢这种定义虚拟环境的方式，因为当你的环境发生故障时，你可以记录下来当时的信息，再次开始使用，而不用遗漏下大量的类似环境变量的信息。</p>
+<h2 id="stuff"><strong>安装Stuff</strong></h2>
+<p>首先，让我们浏览下我们需要安装的各种事宜。</p>
+<p>Homebrew安装：</p>
+<div class="hlcode"><pre><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)&quot;</span>
+</pre></div>
+
+
+<p>Cask安装：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">tap</span> <span class="n">caskroom</span><span class="o">/</span><span class="n">homebrew</span><span class="o">-</span><span class="n">cask</span>
+
+<span class="n">brew</span> <span class="n">install</span> <span class="n">brew</span><span class="o">-</span><span class="n">cask</span>
+</pre></div>
+
+
+<p>Vagrant 和 VirtualBox安装：</p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">virtualbox</span>
+
+<span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">vagrant</span>
+</pre></div>
+
+
+<h2 id="vagrant"><strong>Vagrant文件</strong></h2>
+<p>一个vagrant文件来描述一个使用Ruby DSL虚拟机环境的需求。当描述Docker容器时，Vagrant使每一个容器都好像在使用自己独有的虚拟机一样。事实上这是一个假象，因为每一个Docker容器实际上是允许在各种的代理虚拟机上的。</p>
+<p>因此，两个vagrant文件是非常必须的，一个文件是用来定义代理虚拟机（Provisioner），另外一个文件是用来定义Docker容器的（Providers）。</p>
+<h2 id="vagrant_1"><strong>代理虚拟Vagrant文件</strong></h2>
+<p>代理虚拟Vagrant文件被叫做：Vagrantfile.proxy</p>
+<div class="hlcode"><pre><span class="n">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s">&quot;2&quot;</span><span class="n">Vagrant</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="n">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">box</span> <span class="o">=</span> <span class="s">&quot;hashicorp/precise64&quot;</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provision</span> <span class="s">&quot;docker&quot;</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provision</span> <span class="s">&quot;shell&quot;</span><span class="p">,</span> <span class="kr">inline</span><span class="o">:</span>
+
+<span class="s">&quot;ps aux | grep &#39;sshd:&#39; | awk &#39;{print $2}&#39; | xargs kill&quot;</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">network</span> <span class="o">:</span><span class="n">forwarded_port</span><span class="p">,</span> <span class="n">guest</span><span class="o">:</span> <span class="mi">6379</span><span class="p">,</span> <span class="n">host</span><span class="o">:</span> <span class="mi">6379</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">network</span> <span class="o">:</span><span class="n">forwarded_port</span><span class="p">,</span> <span class="n">guest</span><span class="o">:</span> <span class="mi">5432</span><span class="p">,</span> <span class="n">host</span><span class="o">:</span> <span class="mi">5432</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">network</span> <span class="o">:</span><span class="n">forwarded_port</span><span class="p">,</span> <span class="n">guest</span><span class="o">:</span> <span class="mi">9200</span><span class="p">,</span> <span class="n">host</span><span class="o">:</span> <span class="mi">9200</span><span class="n">end</span>
+</pre></div>
+
+
+<p>这使用hashicorp/precise64 Ubuntu 12.04的64位来处理代理虚拟机。它也提供Docker和一些神奇的shell命令来让Docker工作。</p>
+<p>最后的事情就是设置转发端口了。它使用config.vm.network来为Redis, Elasticsearch 和Postgres来进行配置，用代理虚拟机映射到OS X。</p>
+<h2 id="dockervagrant"><strong>Docker容器的Vagrant文件</strong></h2>
+<p>这是Vagrantfile的主要内容：</p>
+<div class="hlcode"><pre><span class="n">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s">&quot;2&quot;</span> <span class="n">Vagrant</span><span class="p">.</span><span class="n">configure</span><span class="p">(</span><span class="n">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">define</span> <span class="s">&quot;redis&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+
+<span class="n">v</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provider</span> <span class="s">&quot;docker&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">d</span><span class="o">|</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="s">&quot;dockerfile/redis&quot;</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;/var/docker/redis:/data&quot;</span><span class="p">]</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;6379:6379&quot;</span><span class="p">]</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">vagrant_vagrantfile</span> <span class="o">=</span> <span class="s">&quot;./Vagrantfile.proxy&quot;</span>
+
+<span class="n">end</span>
+
+<span class="n">end</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">define</span> <span class="s">&quot;elasticsearch&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+
+<span class="n">v</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provider</span> <span class="s">&quot;docker&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">d</span><span class="o">|</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="s">&quot;dockerfile/elasticsearch&quot;</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;9200:9200&quot;</span><span class="p">]</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">vagrant_vagrantfile</span> <span class="o">=</span> <span class="s">&quot;./Vagrantfile.proxy&quot;</span>
+
+<span class="n">end</span>
+
+<span class="n">end</span>
+
+<span class="n">config</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">define</span> <span class="s">&quot;postgres&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">v</span><span class="o">|</span>
+
+<span class="n">v</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provider</span> <span class="s">&quot;docker&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">d</span><span class="o">|</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="s">&quot;paintedfox/postgresql&quot;</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;/var/docker/postgresql:/data&quot;</span><span class="p">]</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;5432:5432&quot;</span><span class="p">]</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">env</span> <span class="o">=</span> <span class="p">{</span> <span class="n">USER</span><span class="o">:</span> <span class="s">&quot;root&quot;</span><span class="p">,</span> <span class="n">PASS</span><span class="o">:</span> <span class="s">&quot;abcdEF123456&quot;</span><span class="p">,</span> <span class="n">DB</span><span class="o">:</span> <span class="s">&quot;root&quot;</span>
+
+ <span class="p">}</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">vagrant_vagrantfile</span> <span class="o">=</span> <span class="s">&quot;./Vagrantfile.proxy&quot;</span>
+
+<span class="n">end</span>
+
+<span class="n">endend</span>
+</pre></div>
+
+
+<p>这个文件定义了三个容器： Redis , Elasticsearch, 和 Postgres 带有图片dockerfile/redis, dockerfile/elasticsearch 和 paintedfox/postgresql。</p>
+<p>每个文件定义 vagrant_vagrantfile 作为 proxy VM 文件，这使得它们在同一个 proxy 虚拟机上运行。</p>
+<p>Redis 和 Postgres 的 volumes 定义是为了它们的信息可以存储在 proxy VM 上，而不是在容器中。这也是容器可以更删除或升级而数据不会丢失的原因。下一步是映射这些文件从proxy VM 到 OS X ，但是没必要让其运转着。</p>
+<p>每个容器上的 ports 定义哪个端口转到 proxy VM 。这些需要匹配 proxy VM 到 OS X 的端口。</p>
+<p>Postgres 容器也定义了需要设置它的服务器的环境变量。这些可以用来在OS X 里设置缺省的Postgres 服务器，通过设置环境变量 PGHOST=localhost PGUSER=rootPGPASSWORD=abcdEF123456 来实现。</p>
+<h2 id="vagrant_2"><strong>使用Vagrant工作</strong></h2>
+<p>在你的Vagrant文件相同的目录内，你可以运行：</p>
+<div class="hlcode"><pre><span class="n">vagrant</span> <span class="n">up</span> <span class="o">--</span><span class="n">provider</span><span class="o">=</span><span class="n">docker</span>
+</pre></div>
+
+
+<p>第一次运行这个时，Vagrant将下载然后启动proxy VM，然后下载并启动Docker容器。在这些初始化下载之后每次运行Vagrant都将重复使用现有的图片。</p>
+<p>可以查看Docker容器的状态：</p>
+<div class="hlcode"><pre><span class="n">vagrant</span> <span class="n">status</span>
+</pre></div>
+
+
+<p>应该输出一些东西类似：</p>
+<div class="hlcode"><pre><span class="n">Current</span> <span class="n">machine</span> <span class="n">states</span><span class="o">:</span>
+
+<span class="n">redis</span> <span class="n">running</span> <span class="p">(</span><span class="n">docker</span><span class="p">)</span>
+
+<span class="n">elasticsearch</span> <span class="n">running</span> <span class="p">(</span><span class="n">docker</span><span class="p">)</span>
+
+<span class="n">db</span> <span class="n">running</span> <span class="p">(</span><span class="n">docker</span><span class="p">)</span>
+</pre></div>
+
+
+<p>要测试Docker容器是否正确运行，可以使用 Redis 和 Postgres 客户端, 和 curl for Elasticsearch。只需要检查redis-cli和psql到服务器的连接，和curl http://localhost:9200响应。</p>
+<p>如果需要连接到proxy VM（非常有助于调试），运行vagrant global-status，这将列出所有VM，包括proxy。然后调用vagrant ssh <ID>，ID为proxy的ID。建议不要手动改变这个proxy VM，使用一个Chef（或类似的）脚本，这样改变可以更容易的测试和分布。</p>
+<h2 id="_1"><strong>性能</strong></h2>
+<p>使用虚拟化时，第一个问题总是会问“性能的影响有多少？”。要找出性能影响是多么的糟糕，我的同事和我都做了一个Postgres，在相同的硬件上做了Elasticsearch 和 Redis 加强测试。唯一的区别是一个测试有本机安装的软件而另一个有Docker自定义容器。带有本机软件的运行了2分钟，而带有容器的运行了3分钟。</p>
+<p>这个性能影响并不像我想象的那样小，甚至可能会更糟。即使这样，我将继续使用Docker做开发，但并不推荐大家将它作为所有开发环境问题的灵丹妙药。</p>
+<p>注意：一些其他使用Vagrant 和 Docker的限制在 这里列出</p>
+<h2 id="_2"><strong>总结</strong></h2>
+<p>我还看不到"Vagrant with Docker"的路在哪里。不过，在看过可能的情况后，我不禁思考它可以用于什么其他地方。另外，它是我遇到过的最好玩的虚拟化，乐趣就在于编程。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>用 Docker + GitBook 写书 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;用 Docker + GitBook 写书
+    <span class="updated">Page Updated&nbsp;
+      2015-05-19 00:10
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">用 Docker + GitBook 写书</div>
+
+  <h1 id="gitbook">准备 GitBook 环境</h1>
+<h2 id="docker">安装 Docker</h2>
+<ul>
+<li>以Ubuntu为例</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">echo</span> <span class="n">deb</span> <span class="n">http</span><span class="o">:</span><span class="c1">//get.docker.io/ubuntu docker main \</span>
+<span class="c1">    | sudo tee /etc/apt/sources.list.d/docker.list</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">key</span> <span class="n">adv</span> <span class="o">--</span><span class="n">keyserver</span> <span class="n">keyserver</span><span class="p">.</span><span class="n">ubuntu</span><span class="p">.</span><span class="n">com</span> \
+    <span class="o">--</span><span class="n">recv</span><span class="o">-</span><span class="n">keys</span> <span class="mi">36</span><span class="n">A1D7869245C8950F966E92D8576A8BA88D21E9</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">lxc</span><span class="o">-</span><span class="n">docker</span>
+</pre></div>
+
+
+<h2 id="gitbook_1">安装 GitBook 环境</h2>
+<ul>
+<li>搜索镜像</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">search</span> <span class="n">gitbook</span>
+<span class="n">NAME</span>  <span class="n">DESCRIPTION</span>   <span class="n">STARS</span>     <span class="n">OFFICIAL</span>   <span class="n">AUTOMATED</span>
+<span class="n">tobegit3hub</span><span class="o">/</span><span class="n">gitbook</span><span class="o">-</span><span class="n">server</span> <span class="mi">2</span>             <span class="p">[</span><span class="n">OK</span><span class="p">]</span>
+</pre></div>
+
+
+<ul>
+<li>安装镜像<ul>
+<li>ubuntu</li>
+<li>npm + nodejs</li>
+<li>gitbook + calibre(ebook-convert)</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">pull</span> <span class="n">tobegit3hub</span><span class="o">/</span><span class="n">gitbook</span><span class="o">-</span><span class="n">server</span>
+</pre></div>
+
+
+<h2 id="gitbook_2">完善 GitBook 环境</h2>
+<ul>
+<li>启动 GitBook 环境</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">images</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">gitbook</span>
+<span class="n">tobegit3hub</span><span class="o">/</span><span class="n">gitbook</span><span class="o">-</span><span class="n">server</span>   <span class="n">latest</span> <span class="n">d171079650c8</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">t</span> \
+<span class="n">tobegit3hub</span><span class="o">/</span><span class="n">gitbook</span><span class="o">-</span><span class="n">server</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span>
+</pre></div>
+
+
+<ul>
+<li>安装 字体 和 Git</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">git</span>
+<span class="err">$</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">fonts</span><span class="o">-</span><span class="n">arphic</span><span class="o">-</span><span class="n">gbsn00lp</span>
+</pre></div>
+
+
+<h1 id="gitbook_3">用 GitBook 写书</h1>
+<h2 id="_1">基础准备</h2>
+<ul>
+<li>
+<p>Markdown</p>
+<ul>
+<li>当前最流行的内容创作标记语言</li>
+<li>Google自然设计：突出内容，抛弃繁杂的格式！</li>
+<li><a href="http://wowubuntu.com/markdown/">Markdown 基本语法</a></li>
+<li>Markdown 编辑器：retext</li>
+<li>
+<p>Pandoc</p>
+</li>
+<li>
+<p>各种格式自由转换</p>
+</li>
+<li><a href="http://johnmacfarlane.net/pandoc/demo/example9/pandocs-markdown.html">Pandoc Markdown 语法</a></li>
+<li>
+<p>GitBook</p>
+</li>
+<li>
+<p><a href="http://colobu.com/2014/10/09/gitbook-quickstart/">GitBook 快速上手</a></p>
+</li>
+<li><a href="http://www.chengweiyang.cn/gitbook/">GitBook 简明教程</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="gitbook_4">GitBook 核心文件</h2>
+<ul>
+<li>
+<p>GitBook 本身是一个 Git 仓库</p>
+<ul>
+<li>.gitignore: 需要忽略的临时内容</li>
+<li>
+<p>重要组件</p>
+</li>
+<li>
+<p>README.md: 书籍简介</p>
+</li>
+<li>SUMMARY.md: 图书结构，文章索引</li>
+<li>LANGS.md: 多国语言，每种一个目录</li>
+<li>GLOSSARY.md: 词汇表</li>
+<li>cover.jpg: 图书封面</li>
+<li>cover_small.jpg: 小尺寸图书封面</li>
+</ul>
+</li>
+</ul>
+<h2 id="gitbook_5">GitBook 输出格式</h2>
+<ul>
+<li>
+<p>静态 HTML 页面</p>
+<ul>
+<li><code>gitbook build ./ --output=./_book/</code></li>
+<li>
+<p>PDF</p>
+</li>
+<li>
+<p><code>gitbook pdf</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="gitbook_6">GitBook 在线预览</h2>
+<ul>
+<li>启动服务<ul>
+<li><code>gitbook serve ./</code></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Starting server …</p>
+<p>Serving book on http://localhost:4000</p>
+</blockquote>
+<ul>
+<li>在线预览<ul>
+<li>用浏览器打开: <code>http://localhost:4000</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="_2">杂项</h2>
+<ul>
+<li>Json 语法错误<ul>
+<li>book.json：不支持注释等。</li>
+<li><a href="http://www.bejson.com/">JSON 在线验证</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>SyntaxError:…/book.json:Unexpected token o</p>
+</blockquote>
+<ul>
+<li>
+<p>GitBook 调试</p>
+<ul>
+<li><code>export DEBUG=true</code></li>
+<li>
+<p>GitBook 插件</p>
+</li>
+<li>
+<p>Google Analytics</p>
+</li>
+<li>Disqus: Comments</li>
+<li>Exercises</li>
+</ul>
+</li>
+</ul>
+<h1 id="gitbook_7">GitBook 图书实例</h1>
+<h2 id="_3">下载和编译图书</h2>
+<ul>
+<li>下载</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">git</span> <span class="n">clone</span> \
+<span class="nl">https:</span><span class="c1">//github.com/tobegit3hub/understand_linux_process.git</span>
+</pre></div>
+
+
+<ul>
+<li>编译</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cd</span> <span class="n">understand_linux_process</span>
+<span class="err">$</span> <span class="n">gitbook</span> <span class="n">build</span>
+<span class="err">$</span> <span class="n">gitbook</span> <span class="n">pdf</span>
+</pre></div>
+
+
+<h2 id="_4">在线预览图书</h2>
+<ul>
+<li>
+<p>Docker 侧</p>
+<ul>
+<li>启动图书服务器</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">ifconfig</span> <span class="n">eth0</span> <span class="o">|</span> <span class="n">grep</span> <span class="s">&quot;inet addr&quot;</span>
+<span class="n">inet</span> <span class="n">addr</span><span class="o">:</span><span class="mf">172.17.0.31</span> <span class="p">...</span>
+<span class="err">$</span> <span class="n">gitbook</span> <span class="n">serve</span> <span class="p">.</span><span class="o">/</span>
+<span class="n">Starting</span> <span class="n">server</span> <span class="p">...</span>
+<span class="n">Serving</span> <span class="n">book</span> <span class="n">on</span> <span class="n">http</span><span class="o">:</span><span class="c1">//localhost:4000</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>主机侧</p>
+<ul>
+<li>在浏览器访问：http://172.17.0.31:4000</li>
+</ul>
+</li>
+</ul>
+<h2 id="docker-pdf">从 Docker 拷贝出 pdf</h2>
+<ul>
+<li>Docker 侧：确认 pdf 路径</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">readlink</span> <span class="o">-</span><span class="n">f</span> <span class="n">book</span><span class="p">.</span><span class="n">pdf</span>
+<span class="o">/</span><span class="n">gitbook</span><span class="o">/</span><span class="n">understand_linux_process</span><span class="o">/</span><span class="n">book</span><span class="p">.</span><span class="n">pdf</span>
+</pre></div>
+
+
+<ul>
+<li>主机侧：<code>docker cp CONTAINER_ID:PATH HOSTPATH</code></li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
+<span class="n">CONTAINER</span> <span class="n">ID</span>   <span class="n">IMAGE</span>              <span class="n">COMMAND</span>
+<span class="n">cf5925e</span> <span class="n">tobegit3hub</span><span class="o">/</span><span class="n">gitbook</span><span class="o">-</span><span class="n">server</span> <span class="s">&quot;/bin/bash&quot;</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">cp</span> \
+<span class="nl">cf5925e:</span><span class="o">/</span><span class="n">gitbook</span><span class="o">/</span><span class="n">understand_linux_process</span><span class="o">/</span><span class="n">book</span><span class="p">.</span><span class="n">pdf</span> 
+</pre></div>
+
+
+<h2 id="docker_1">从 主机 拷入 Docker</h2>
+<ul>
+<li>
+<p>两个步骤</p>
+<ul>
+<li>获取容器挂载路径</li>
+<li>通过本地 cp 命令直接拷贝进去</li>
+</ul>
+</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">fullid</span><span class="o">=</span><span class="err">`</span><span class="n">sudo</span> <span class="n">docker</span> <span class="n">inspect</span> <span class="o">-</span><span class="n">f</span> <span class="err">&#39;</span><span class="p">{{.</span><span class="n">Id</span><span class="p">}}</span><span class="err">&#39;</span> <span class="n">cf5925e</span><span class="err">`</span>
+<span class="err">$</span> <span class="n">gitbook</span><span class="o">=/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">docker</span><span class="o">/</span><span class="n">aufs</span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="err">$</span><span class="n">fullid</span><span class="o">/</span><span class="n">gitbook</span><span class="o">/</span>
+<span class="err">$</span> <span class="n">ls</span> <span class="err">$</span><span class="n">gitbook</span>
+<span class="n">understand_linux_process</span>
+<span class="err">$</span> <span class="n">cp</span> <span class="n">book</span><span class="p">.</span><span class="n">pdf</span> <span class="err">$</span><span class="n">gitbook</span><span class="o">/</span><span class="n">book</span><span class="o">-</span><span class="n">from</span><span class="o">-</span><span class="n">host</span><span class="p">.</span><span class="n">pdf</span>
+</pre></div>
+
+
+<h2 id="_5">直接挂载卷共享</h2>
+<ul>
+<li>挂载主机 GitBook 目录到 Docker</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">fullid</span><span class="o">=</span><span class="err">`</span><span class="n">sudo</span> <span class="n">docker</span> <span class="n">inspect</span> <span class="o">-</span><span class="n">f</span> <span class="err">&#39;</span><span class="p">{{.</span><span class="n">Id</span><span class="p">}}</span><span class="err">&#39;</span> <span class="n">cf5925e</span><span class="err">`</span>
+<span class="err">$</span> <span class="n">gitbook</span><span class="o">=/</span><span class="n">var</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">docker</span><span class="o">/</span><span class="n">aufs</span><span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="err">$</span><span class="n">fullid</span><span class="o">/</span><span class="n">gitbook</span><span class="o">/</span>
+<span class="err">$</span> <span class="n">ls</span> <span class="err">$</span><span class="n">gitbook</span>
+<span class="n">understand_linux_process</span>
+<span class="err">$</span> <span class="n">cp</span> <span class="n">book</span><span class="p">.</span><span class="n">pdf</span> <span class="err">$</span><span class="n">gitbook</span><span class="o">/</span><span class="n">book</span><span class="o">-</span><span class="n">from</span><span class="o">-</span><span class="n">host</span><span class="p">.</span><span class="n">pdf</span>
+</pre></div>
+
+
+<h1 id="gitbook_8">新建 GitBook 环境</h1>
+<h2 id="_6">备份/导出/导入容器</h2>
+<ul>
+<li>保存容器为新镜像: commit</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">commit</span> <span class="n">cf5925e</span> <span class="n">tinylab</span><span class="o">/</span><span class="n">gitbook</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">images</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">tinylab</span><span class="o">/</span><span class="n">gitbook</span>
+<span class="n">tinylab</span><span class="o">/</span><span class="n">gitbook</span> <span class="n">latest</span> <span class="mi">2106</span><span class="n">b9f7f675</span>
+</pre></div>
+
+
+<ul>
+<li>导出镜像文件: save/export</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">save</span> <span class="n">tinylab</span><span class="o">/</span><span class="n">gitbook</span> <span class="o">&gt;</span> <span class="n">gitbook</span><span class="p">.</span><span class="n">tar</span>
+</pre></div>
+
+
+<ul>
+<li>导入镜像文件到其他主机上: load/import</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">load</span> <span class="o">&lt;</span> <span class="n">gitbook</span><span class="p">.</span><span class="n">tar</span>
+</pre></div>
+
+
+<h2 id="_7">其他操作</h2>
+<ul>
+<li>
+<p>删除/杀掉容器</p>
+<ul>
+<li><code>docker rm [-f] contaier_id</code></li>
+<li><code>docker kill contaier_id</code></li>
+<li>
+<p>停止容器</p>
+</li>
+<li>
+<p><code>docker stop container_id</code></p>
+</li>
+<li>
+<p>启动容器</p>
+</li>
+<li>
+<p><code>docker start container_id</code></p>
+</li>
+<li>
+<p>删除镜像</p>
+</li>
+<li>
+<p><code>docker rmi image_id</code></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="gitbook-dockerfile">新建 GitBook Dockerfile</h2>
+<div class="hlcode"><pre><span class="cp"># Dockerfile</span>
+<span class="n">FROM</span> <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span>
+<span class="n">MAINTAINER</span> <span class="n">Falcon</span> <span class="n">wuzhangjin</span><span class="err">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span>
+<span class="n">RUN</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;s/archive.ubuntu.com/mirrors.163.com/g&quot;</span> \
+    <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="p">.</span><span class="n">list</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">y</span> <span class="n">update</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">nodejs</span> <span class="n">npm</span> <span class="n">git</span> <span class="o">&amp;&amp;</span> \
+    <span class="n">npm</span> <span class="n">install</span> <span class="n">gitbook</span> <span class="o">-</span><span class="n">g</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">calibre</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">fonts</span><span class="o">-</span><span class="n">arphic</span><span class="o">-</span><span class="n">gbsn00lp</span>
+<span class="n">RUN</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">gitbook</span>
+<span class="n">WORKDIR</span> <span class="o">/</span><span class="n">gitbook</span>
+<span class="n">EXPOSE</span> <span class="mi">4000</span>
+<span class="n">CMD</span> <span class="p">[</span><span class="s">&quot;gitbook&quot;</span><span class="p">,</span> <span class="s">&quot;serve&quot;</span><span class="p">,</span> <span class="s">&quot;/gitbook&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<h2 id="gitbook-dockerfile_1">新建 GitBook Dockerfile（续）</h2>
+<h1 id="dockerfile">Dockerfile</h1>
+<div class="hlcode"><pre><span class="cp"># Dockerfile</span>
+<span class="n">FROM</span> <span class="n">ubuntu</span><span class="o">:</span><span class="mf">14.04</span>
+<span class="n">MAINTAINER</span> <span class="n">Falcon</span> <span class="n">wuzhangjin</span><span class="err">@</span><span class="n">gmail</span><span class="p">.</span><span class="n">com</span>
+<span class="n">RUN</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;s/archive.ubuntu.com/mirrors.163.com/g&quot;</span> \
+    <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apt</span><span class="o">/</span><span class="n">sources</span><span class="p">.</span><span class="n">list</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">y</span> <span class="n">update</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">curl</span> <span class="n">git</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="o">/</span> <span class="o">&amp;&amp;</span> \
+    <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/creationix/nvm.git nvm &amp;&amp; \</span>
+<span class="c1">    echo &quot;. /nvm/nvm.sh&quot; &gt; ~/.bashrc &amp;&amp; . ~/.bashrc &amp;&amp; \</span>
+<span class="c1">    nvm install 0.12.2 &amp;&amp; nvm use 0.12.2 &amp;&amp; \</span>
+<span class="c1">    npm install gitbook -g</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">calibre</span>
+<span class="n">RUN</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">fonts</span><span class="o">-</span><span class="n">arphic</span><span class="o">-</span><span class="n">gbsn00lp</span>
+<span class="n">RUN</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">gitbook</span>
+<span class="n">WORKDIR</span> <span class="o">/</span><span class="n">gitbook</span>
+<span class="n">EXPOSE</span> <span class="mi">4000</span>
+<span class="n">CMD</span> <span class="p">[</span><span class="s">&quot;gitbook&quot;</span><span class="p">,</span> <span class="s">&quot;serve&quot;</span><span class="p">,</span> <span class="s">&quot;/gitbook&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<h2 id="dockerfile_1">基于 Dockerfile 构建映像</h2>
+<ul>
+<li>快速构建</li>
+</ul>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">docker</span> <span class="n">build</span> <span class="o">-</span><span class="n">t</span> <span class="n">tinylab</span><span class="o">/</span><span class="n">gitbook</span> <span class="p">.</span><span class="o">/</span>
+</pre></div>
+
+
+<ul>
+<li>更多参数: Cgroup</li>
+</ul>
+<blockquote>
+<p>-c, –cpu-shares=0 CPU shares (relative weight)</p>
+<p>–cpuset-cpus= CPUs in which to allow execution (0-3, 0,1)</p>
+<p>-m, –memory= Memory limit</p>
+</blockquote>
+<h1 id="sudo-docker">免 sudo 使用 docker</h1>
+<h2 id="docker_2">把普通用户加入 docker 用户组</h2>
+<ul>
+<li>如果还没有 docker group 就添加一个：</li>
+</ul>
+<p>sudo groupadd docker</p>
+<ul>
+<li>将用户加入该 group 内。然后退出并重新登录就生效啦。</li>
+</ul>
+<p>sudo gpasswd -a ${USER} docker</p>
+<ul>
+<li>重启 docker 服务</li>
+</ul>
+<p>sudo service docker restart</p>
+<h2 id="_8">原因</h2>
+<ul>
+<li>因为 <code>/var/run/docker.sock</code> 所属 docker 组具有 setuid 权限</li>
+</ul>
+<p>$ sudo ls -l /var/run/docker.sock srw-rw—- 1 root docker 0 May 1 21:35 /var/run/docker.sock</p>
+<h1 id="_9">参考资料</h1>
+<hr />
+<ul>
+<li><a href="http://colobu.com/2014/10/09/gitbook-quickstart/">Gitbook 快速上手</a></li>
+<li><a href="http://www.chengweiyang.cn/gitbook/">GitBook 简明教程</a></li>
+<li><a href="http://samwhelp.github.io/blog/read/platform/nodejs/install/">Ubuntu環境下，如何安裝nvm以及nodejs</a></li>
+<li><a href="http://samwhelp.github.io/blog/read/platform/gitbook/start/">Ubuntu環境下，快速開始使用gitbook</a></li>
+<li><a href="http://www.linuxeye.com/Linux/2019.html">Docker详细的基本用法</a></li>
+<li><a href="http://www.oschina.net/question/615647_195686">支持中文搜索的gitbook</a></li>
+<li><a href="http://docs.docker.com/articles/basics/">Docker官方文档</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

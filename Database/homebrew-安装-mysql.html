@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Homebrew 安装 MySQL - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Database">Database</a>&nbsp;&#187;&nbsp;Homebrew 安装 MySQL
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 19:52
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Homebrew 安装 MySQL</div>
+
+  <p>在 Mac 下用 Homebrew 安装 MySQL, 网上的教程倒是很多，不过大多数都很默契地雷同。如果稍有点定制要求，就无从下手了。</p>
+<p>我先也不免俗，从基本的开始：</p>
+<h2 id="homebrew">一、首先安装 Homebrew</h2>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)&quot;</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">git</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">update</span>
+</pre></div>
+
+
+<h2 id="mysql">二、安装 MySQL</h2>
+<p>用下面的命令就可以自动安装了：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<p>如果想让 MySQL 开机自动启动，可以如下操作：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+<span class="err">$</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mysql</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+<span class="err">$</span> <span class="n">find</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span> <span class="o">-</span><span class="n">name</span> <span class="s">&quot;homebrew.mxcl.mysql.plist&quot;</span> <span class="o">-</span><span class="n">exec</span> <span class="n">cp</span> <span class="p">{}</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span> <span class="err">\</span><span class="p">;</span>
+<span class="err">$</span> <span class="n">launchctl</span> <span class="n">load</span> <span class="o">-</span><span class="n">w</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">mysql</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<p>设置 MySQL 用户以及数据存放地址</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">unset</span> <span class="n">TMPDIR</span>
+<span class="err">$</span> <span class="n">mysql_install_db</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">user</span><span class="o">=</span><span class="err">`</span><span class="n">whoami</span><span class="err">`</span> <span class="o">--</span><span class="n">basedir</span><span class="o">=</span><span class="s">&quot;$(brew --prefix mysql)&quot;</span> <span class="o">--</span><span class="n">datadir</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span> <span class="o">--</span><span class="n">tmpdir</span><span class="o">=/</span><span class="n">tmp</span>
+</pre></div>
+
+
+<p>好了，可以启动了</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysql</span><span class="p">.</span><span class="n">server</span> <span class="n">start</span>
+</pre></div>
+
+
+<p>另外的参数还有 <code>{start|stop|restart|reload|force-reload|status}</code></p>
+<p>大部分的介绍就在此结束了。</p>
+<h2 id="_1">三、更详细的设置</h2>
+<h3 id="mycnf">配置文件 my.cnf</h3>
+<p>作为用惯了 Linux 的人， 一定会去 <code>/etc</code> 下找 <code>my.cnf</code>, 让你失望了，这个文件要自己建立。如果看一下帮助</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysqld</span> <span class="o">--</span><span class="n">help</span> <span class="o">--</span><span class="n">verbose</span>
+</pre></div>
+
+
+<p>就会发现系统会按这个顺序去找 my.cnf</p>
+<ol>
+<li>/etc/my.cnf</li>
+<li>/etc/mysql/my.cnf</li>
+<li>/usr/local/etc/my.cnf</li>
+<li>~/.my.cnf</li>
+</ol>
+<p>一般网上大虾都会这么教小白建立 my.cnf, 其实这个默认的文件里面几乎没什么内容。</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">cp</span> <span class="err">$</span><span class="p">(</span><span class="n">brew</span> <span class="o">--</span><span class="n">prefix</span> <span class="n">mysql</span><span class="p">)</span><span class="o">/</span><span class="n">support</span><span class="o">-</span><span class="n">files</span><span class="o">/</span><span class="n">my</span><span class="o">-</span><span class="k">default</span><span class="p">.</span><span class="n">cnf</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">my</span><span class="p">.</span><span class="n">cnf</span>
+</pre></div>
+
+
+<p>所以，还是自己老老实实参考 linux 下的配置文件吧。</p>
+<p>my.cnf (my.cnf.txt)<a href="http://blog.neten.de/attachment/code/mysql/my.cnf.txt">download</a></p>
+<div class="hlcode"><pre><span class="cp">#</span>
+<span class="cp"># The MySQL database server configuration file.</span>
+<span class="cp">#</span>
+<span class="cp"># You can copy this to one of:</span>
+<span class="cp"># - &quot;/etc/mysql/my.cnf&quot; to set global options,</span>
+<span class="cp"># - &quot;~/.my.cnf&quot; to set user-specific options.</span>
+<span class="cp">#</span>
+<span class="cp"># One can use all long options that the program supports.</span>
+<span class="cp"># Run program with --help to get a list of available options and with</span>
+<span class="cp"># --print-defaults to see which it would actually understand and use.</span>
+<span class="cp">#</span>
+<span class="cp"># For explanations see</span>
+<span class="cp"># http:</span><span class="c1">//dev.mysql.com/doc/mysql/en/server-system-variables.html</span>
+
+<span class="cp"># This will be passed to all mysql clients</span>
+<span class="cp"># It has been reported that passwords should be enclosed with </span>
+<span class="cp"># ticks/quotes escpecially if they contain &quot;#&quot; chars...</span>
+<span class="cp"># Remember to edit /etc/mysql/debian.cnf when changing </span>
+<span class="cp"># the socket location.</span>
+<span class="p">[</span><span class="n">client</span><span class="p">]</span>
+<span class="n">port</span>        <span class="o">=</span> <span class="mi">3306</span>
+<span class="cp">#socket     = /var/run/mysqld/mysqld.sock</span>
+
+<span class="cp"># Here is entries for some specific programs</span>
+<span class="cp"># The following values assume you have at least 32M ram</span>
+
+<span class="cp"># This was formally known as [safe_mysqld]. Both versions </span>
+<span class="cp"># are currently parsed.</span>
+<span class="p">[</span><span class="n">mysqld_safe</span><span class="p">]</span>
+<span class="cp">#socket     = /var/run/mysqld/mysqld.sock</span>
+<span class="cp">#nice       = 0</span>
+
+<span class="p">[</span><span class="n">mysqld</span><span class="p">]</span>
+<span class="cp">#</span>
+<span class="cp"># * Basic Settings</span>
+<span class="cp">#</span>
+
+<span class="cp">#</span>
+<span class="cp"># * IMPORTANT</span>
+<span class="cp">#   If you make changes to these settings and your system uses </span>
+<span class="cp">#   apparmor, you may also need to also adjust </span>
+<span class="cp">#   /etc/apparmor.d/usr.sbin.mysqld.</span>
+<span class="cp">#</span>
+
+<span class="cp">#user       = mysql</span>
+<span class="cp">#socket     = /var/run/mysqld/mysqld.sock</span>
+<span class="n">port</span>        <span class="o">=</span> <span class="mi">3306</span>
+<span class="cp">#basedir    = /usr</span>
+<span class="n">datadir</span>    <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span>
+<span class="cp">#tmpdir     = /tmp</span>
+<span class="n">skip</span><span class="o">-</span><span class="n">external</span><span class="o">-</span><span class="n">locking</span>
+<span class="cp">#</span>
+<span class="cp"># Instead of skip-networking the default is now to listen only on</span>
+<span class="cp"># localhost which is more compatible and is not less secure.</span>
+<span class="n">bind</span><span class="o">-</span><span class="n">address</span>        <span class="o">=</span> <span class="mf">127.0.0.1</span>
+<span class="cp">#</span>
+<span class="cp"># * Fine Tuning</span>
+<span class="cp">#</span>
+<span class="n">key_buffer</span>          <span class="o">=</span> <span class="mi">16</span><span class="n">M</span>
+<span class="n">max_allowed_packet</span>  <span class="o">=</span> <span class="mi">16</span><span class="n">M</span>
+<span class="n">thread_stack</span>        <span class="o">=</span> <span class="mi">192</span><span class="n">K</span>
+<span class="n">thread_cache_size</span>   <span class="o">=</span> <span class="mi">8</span>
+<span class="cp"># This replaces the startup script and checks MyISAM tables if needed</span>
+<span class="cp"># the first time they are touched</span>
+<span class="n">myisam</span><span class="o">-</span><span class="n">recover</span>         <span class="o">=</span> <span class="n">BACKUP</span>
+<span class="cp">#max_connections       = 100</span>
+<span class="cp">#table_cache           = 64</span>
+<span class="cp">#thread_concurrency    = 10</span>
+<span class="cp">#</span>
+<span class="cp"># * Query Cache Configuration</span>
+<span class="cp">#</span>
+<span class="n">query_cache_limit</span>   <span class="o">=</span> <span class="mi">1</span><span class="n">M</span>
+<span class="n">query_cache_size</span>    <span class="o">=</span> <span class="mi">16</span><span class="n">M</span>
+<span class="cp">#</span>
+<span class="cp"># * Logging and Replication</span>
+<span class="cp">#</span>
+<span class="cp"># Both location gets rotated by the cronjob.</span>
+<span class="cp"># Be aware that this log type is a performance killer.</span>
+<span class="cp"># As of 5.1 you can enable the log at runtime!</span>
+<span class="cp">#general_log_file        = /var/log/mysql/mysql.log</span>
+<span class="cp">#general_log             = 1</span>
+
+<span class="n">log_error</span>                <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">MacBook15</span><span class="p">.</span><span class="n">local</span><span class="p">.</span><span class="n">err</span>
+
+<span class="cp"># Here you can see queries with especially long duration</span>
+<span class="cp">#log_slow_queries   = /var/log/mysql/mysql-slow.log</span>
+<span class="cp">#long_query_time = 2</span>
+<span class="cp">#log-queries-not-using-indexes</span>
+<span class="cp">#</span>
+<span class="cp"># The following can be used as easy to replay backup logs or </span>
+<span class="cp"># for replication.</span>
+<span class="cp"># note: if you are setting up a replication slave, see </span>
+<span class="cp">#       README.Debian about other settings you may need </span>
+<span class="cp">#       to change.</span>
+<span class="cp">#server-id          = 1</span>
+<span class="cp">#log_bin            = /var/log/mysql/mysql-bin.log</span>
+<span class="n">expire_logs_days</span>    <span class="o">=</span> <span class="mi">10</span>
+<span class="n">max_binlog_size</span>     <span class="o">=</span> <span class="mi">100</span><span class="n">M</span>
+<span class="cp">#binlog_do_db       = include_database_name</span>
+<span class="cp">#binlog_ignore_db   = include_database_name</span>
+<span class="cp">#</span>
+<span class="cp"># * InnoDB</span>
+<span class="cp">#</span>
+<span class="cp"># InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.</span>
+<span class="cp"># Read the manual for more InnoDB related options. There are many!</span>
+<span class="cp">#</span>
+<span class="cp"># * Security Features</span>
+<span class="cp">#</span>
+<span class="cp"># Read the manual, too, if you want chroot!</span>
+<span class="cp"># chroot = /var/lib/mysql/</span>
+<span class="cp">#</span>
+<span class="cp"># For generating SSL certificates I recommend the OpenSSL GUI &quot;tinyca&quot;.</span>
+<span class="cp">#</span>
+<span class="cp"># ssl-ca=/etc/mysql/cacert.pem</span>
+<span class="cp"># ssl-cert=/etc/mysql/server-cert.pem</span>
+<span class="cp"># ssl-key=/etc/mysql/server-key.pem</span>
+
+<span class="cp"># Query Caching</span>
+<span class="n">query</span><span class="o">-</span><span class="n">cache</span><span class="o">-</span><span class="n">type</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="cp"># Default to InnoDB</span>
+<span class="k">default</span><span class="o">-</span><span class="n">storage</span><span class="o">-</span><span class="n">engine</span><span class="o">=</span><span class="n">innodb</span>
+
+<span class="p">[</span><span class="n">mysqldump</span><span class="p">]</span>
+<span class="n">quick</span>
+<span class="n">quote</span><span class="o">-</span><span class="n">names</span>
+<span class="n">max_allowed_packet</span>  <span class="o">=</span> <span class="mi">16</span><span class="n">M</span>
+
+<span class="p">[</span><span class="n">mysql</span><span class="p">]</span>
+<span class="cp">#no-auto-rehash # faster start of mysql but no tab completition</span>
+
+<span class="p">[</span><span class="n">isamchk</span><span class="p">]</span>
+<span class="n">key_buffer</span>      <span class="o">=</span> <span class="mi">16</span><span class="n">M</span>
+</pre></div>
+
+
+<h3 id="_2">错误日志</h3>
+<p>错误日志默认会存在数据目录下，也就是上面所定义的 <code>/usr/local/var/mysql/</code>，如果 Mac 电脑名字是 MacBook，那日志的全路径就是 <code>/usr/local/var/mysql/MacBook.local.err</code></p>
+<h3 id="_3">让别的电脑访问数据库</h3>
+<p>取消下面两个文件中关于绑定 127.0.0.1 的语句<br />
+/etc/my.cnf</p>
+<div class="hlcode"><pre><span class="n">bind</span><span class="o">-</span><span class="n">address</span> <span class="o">=</span> <span class="mf">127.0.0.1</span>
+</pre></div>
+
+
+<p>~/Library/LaunchAgents/homebrew.mxcl.mysql.plist</p>
+<div class="hlcode"><pre><span class="nt">&lt;string&gt;</span>--bind-address=127.0.0.1<span class="nt">&lt;/string&gt;</span>
+</pre></div>
+
+
+<p>就我个人而言，不需要 MySQL 自启动，所以只要在 <code>/etc/my.cnf</code> 改一下就好了。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

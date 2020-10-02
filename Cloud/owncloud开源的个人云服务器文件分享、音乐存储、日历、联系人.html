@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>OwnCloud开源的个人云服务器文件分享、音乐存储、日历、联系人 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Cloud">Cloud</a>&nbsp;&#187;&nbsp;OwnCloud开源的个人云服务器文件分享、音乐存储、日历、联系人
+    <span class="updated">Page Updated&nbsp;
+      2015-02-27 15:09
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">OwnCloud开源的个人云服务器文件分享、音乐存储、日历、联系人</div>
+
+  <p>平常我们用的免费个人网盘，如<a href="http://www.freehao123.com/cdn-dropbox/">Dropbox</a>、<a href="http://www.freehao123.com/skydrive-mp3/">SkyDrive</a>、<a href="http://www.freehao123.com/dbank-zhanghao/">Dbank</a>等，都是将我们的文件、音乐等所有资料存放在这些公司的服务器中，国内的网盘动不动删除你的文件，举报你上传不合法的东西（这里只是说个别，没指全部，原因大家都懂得）。</p>
+<p>国外的大公司背景的<a href="http://www.freehao123.com/category/freecunchu/">免费网盘</a>稍微还是有些人性化的管理，只可惜网盘访问速度慢得不说，还经常出现各种各样的限制，隔三差五给你来个小广告，催促你尽快升级到付费会员。弄来弄去，国外网盘也照样不能正常地使用。</p>
+<p>既然别人的网盘不能让人放心使用，那么何不自己搭建可以上传音乐、文件，同步更新各种文档，管理自己的日历和联系的<a href="http://www.freehao123.com/tag/freeupan/">免费网络硬盘</a>？今天要介绍的OwnCloud，是一个开源的个人云服务器搭建程序。</p>
+<p>简单来说就是一个基于Php的自建网盘。基本上是私人使用，没有用户注册功能，但是有用户添加功能，你可以无限制地添加用户，OwnCloud还提供了不少的免费应用，这些应用可以让你更好观看视频、倾听音乐等。</p>
+<p>为什么要打造一个属于自己的网盘呢？因为使用以赢利为目的的公司网盘，你除具备折腾的精神外，还得准备好失败的心理。</p>
+<ul>
+<li>1、<a href="http://www.freehao123.com/cdn-dropbox/">用免费CDN打造dropbox稳定音乐mp3图片外链免费网盘</a>（用域名+CDN的方法解决Dropbox外链的问题）</li>
+<li>2、<a href="http://www.freehao123.com/skydrive-mp3/">获取SkyDrive免费网盘的音乐mp3和图片等文件外链地址</a>（获取微软网盘的外链图片和文件地址）</li>
+<li>3、<a href="http://www.freehao123.com/xun6/">网盘倒闭悲剧上演-四年的讯6网盘倒闭-用户又该何去何从？</a>（可怜我花了一年的时间上传文件到这个网盘中）</li>
+</ul>
+<p><strong>OwnCloud开源的个人云服务器文件分享、音乐存储、日历、联系人</strong></p>
+<p><strong>一、上传OwnCloud到服务器上</strong></p>
+<p>1、这里是最新OwnCloud安装包，官方网站：http://owncloud.org/</p>
+<p>2、OwnCloud对PHP的要求是：php5 (&gt;= 5.3), php5-json，php-xml，php-mbstring，php5-zip，php5-gd。如果无法安装，请查看一下你的PHP是否满足要求。</p>
+<p>3、这里以<a href="http://www.freehao123.com/tag/godaddy/">Godaddy</a>空间作为演示，你也可以将OwnCloud安装在<a href="http://www.freehao123.com/tag/mianfeiphpkongjian/">免费PHP空间</a>上。</p>
+<p>4、先用FTP上传OwnCloud压缩包到空间上，然后直接在线解压，这样做是为了节省时间，大家都懂得，国外空间使用FTP上传，如果文件过大，没有半天是上传不完的。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_01.gif"><img alt="OwnCloud上传压缩包" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_01.gif" /></a></p>
+<p>5、然后将www下的所有文件和文件夹设置为可读写。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_02.gif"><img alt="OwnCloud设置文件属性" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_02.gif" /></a></p>
+<p><strong>二、在服务器上安装OwnCloud</strong></p>
+<p>1、用浏览器打开安装路径。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_03.gif"><img alt="OwnCloud进入安装路径" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_03.gif" /></a></p>
+<p>2、记得为你的OwnCloud创建好Mysql数据库。<a href="http://www.freehao123.com/tag/godaddy/">Godaddy</a>空间的MysqL是在空间管理的最下方。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_04.gif"><img alt="OwnCloud创建好数据库" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_04.gif" /></a></p>
+<p>3、点击安装页面下方的高级，输入MysqL数据库信息，如下图：（一般空间数据库都是Localhost，Godaddy有些特殊）</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_05.gif"><img alt="OwnCloud填写MysqL信息" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_05.gif" /></a></p>
+<p>4、点击提交后，OwnCloud就安装完成了，中间如果有报错很有可能是你的文件属性没有设置好。</p>
+<p><strong>三、在OwnCloud中上传文件</strong></p>
+<p>1、OwnCloud上传的文件类型没有什么限制，上传时可以看到上传进度。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_06.gif"><img alt="OwnCloud上传文件" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_06.gif" /></a></p>
+<p><strong>四、利用OwnCloud远程上传文件</strong></p>
+<p>1、有些文件如果在网络已经有了，就没有必要先下载到本地然后再重新上传，我们可以直接从网络上传。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_07.gif"><img alt="OwnCloud使用网络上传" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_07.gif" /></a></p>
+<p>2、点击OwnCloud新建的“来自地址”可以远程上传文件。以百度mp3为例，先复制百度mp3文件的网络地址。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_08.gif"><img alt="OwnCloud复制文件的网络地址" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_08.gif" /></a></p>
+<p>3、点击“来自地址”输入刚才的网络地址，回车，就可以看到下载好的文件了。不过这个文件名需要自己重命名一下。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_09.gif"><img alt="OwnCloud重命名文件" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_09.gif" /></a></p>
+<p><strong>五、在OwnCloud中创建管理日历</strong></p>
+<p>1、日历这个东西貌似还比较流行，像<a href="http://www.freehao123.com/tag/qq-mail/">QQ邮箱</a>、<a href="http://www.freehao123.com/tag/gmail/">Gmail邮箱</a>等都有，不过在网盘中还是比较少见的。</p>
+<p>2、OwnCloud就有日历功能，点击日历后，Chrome会提示OwnCloud要跟地理位置信息。允许后它就会显示正确的所在地的时区了。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_10.gif"><img alt="OwnCloud创建日历" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_10.gif" /></a></p>
+<p>3、在日历中创建事件也很详细。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_11.gif"><img alt="OwnCloud新建事件" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_11.gif" /></a></p>
+<p><strong>六、管理OwnCloud的个人信息</strong></p>
+<p>1、OwnCloud左下角的“设置”中“个人”选项卡中可以导出用户设置信息，</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12.gif"><img alt="OwnCloud查看个人信息" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12.gif" /></a></p>
+<p>2、这些信息又可以下次重新被导入。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_13.gif"><img alt="OwnCloud导出信息" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_13.gif" /></a></p>
+<p><strong>七、OwnCloud同步备份文件</strong></p>
+<p>1、首先下载ownCloud Sync Client，这里是<a href="http://www.freehao123.com/dl-owncloud-sync-client/">ownCloud Sync Client下载地址</a>（该软件有windows、Linux、Mac等各种版本，这里是Windows版）。</p>
+<p>2、运行软件后，需要右击选择设置。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_1.jpg"><img alt="OwnCloud软件设置" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_1.jpg" /></a></p>
+<p>3、输入OwnCloud地址。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_2.gif"><img alt="OwnCloud输入地址" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_2.gif" /></a></p>
+<p>4、填写用户名和密码。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_3.gif"><img alt="OwnCloud用户名密码" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_3.gif" /></a></p>
+<p>5、最后就是添加本地文件夹，以后在文件夹中添加或者删除文件都会同步到OwnCloud中，功能和大多数的同步文件夹一样。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_4.gif"><img alt="OwnCloud同步文件" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_12_4.gif" /></a></p>
+<p><strong>八、OwnCloud添加多用户协同工作</strong></p>
+<p>1、OwnCloud不只是一个人的网盘，你还可以添加多个用户，让大家一起来使用OwnCloud同步备份。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_14.gif"><img alt="OwnCloud添加多个用户" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_14.gif" /></a></p>
+<p><strong>九、强大的eOwnCloud应用功能</strong></p>
+<p>1、OwnCloud提供了非常多的应用，你可以根据自己的喜好来添加。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_15.gif"><img alt="OwnCloud添加应用" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_15.gif" /></a></p>
+<p>2、除了内置的幻灯片、音乐播放、PDF查看等，还可以加入视频流、书签等功能。</p>
+<p>3、添加了视频流这个应用后，你可以在线插件你上传的视频，另外还支持外链引用。</p>
+<p><a href="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_16.gif"><img alt="OwnCloud视频播放" src="http://img.freehao123.com/wp-content/uploads/2012/08/OwnCloud_16.gif" /></a></p>
+<p><strong>十、OwnCloud个人云服务器演示</strong></p>
+<p>1、OwnCloud云网盘：http://www.zhujis.com/yunpan/</p>
+<p>2、外链图片演示：</p>
+<p><strong>十一、OwnCloud网盘小结</strong></p>
+<p>1、ownCloud支持多种设备访问，用户可以很方便地使个人设备与服务器上存储的文件、日程安排、通讯录、书签等重要数据保持同步。</p>
+<p>2、暂时还没有看到过OwnCloud关于手机应用的同步，或许以后的开发进程应该会出现类似的应用功能。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

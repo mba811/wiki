@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>安装配置MacVim全记录 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;安装配置MacVim全记录
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 10:52
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">安装配置MacVim全记录</div>
+
+  <blockquote>
+<p>因为在学习Python过程中感觉缺了一个可以用的编辑器，所以准备为我的Mac配置好一个MacVim用来写Python的东西.</p>
+<p>这篇文章会记录整个过程，为以后备忘。</p>
+<p>参考文章:<a href="http://thinkdifferent.iteye.com/blog/1512258">基于MacVim打造Python IDE</a></p>
+</blockquote>
+<h3 id="0">0. 全文目录</h3>
+<ol>
+<li>安装<strong>MacVim</strong></li>
+<li>初步配置：创建<strong>.Vimrc文件</strong>，完成普通设置</li>
+<li>进阶配置：下载，安装<strong>插件</strong></li>
+</ol>
+<h3 id="1-macvim">1. 安装MACVIM</h3>
+<ol>
+<li>在这个<a href="https://github.com/b4winckler/macvim/releases">地址</a>下载压缩包</li>
+<li>将下载压缩包解压，将MacVim.app拷贝到Applications目录，同时使用如下命令<br />
+//source_dir为压缩包解压出来的目录，在运行需要输入root密码<br />
+sudo cp source_dir/mvim /usr/local/bin<br />
+即拷贝mvim的shell程序到/usr/local/bin目录下</li>
+<li>此刻在终端中运行<code>mvim</code>命令,应该能打开MacVim了</li>
+</ol>
+<h3 id="2-vimrc">2. 初步配置：创建.VIMRC文件，完成普通设置</h3>
+<blockquote>
+<p>直接附上我的初步的.vimrc文件</p>
+</blockquote>
+<div class="hlcode"><pre><span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; </span>
+<span class="s2">&quot;</span> <span class="nx">文件说明</span>
+<span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="s2">&quot;</span> <span class="nx">自定义的Vim设置</span>
+<span class="s2">&quot; 最后修改时间：2014/09/20i</span>
+<span class="s2">&quot;</span> <span class="nx">作者</span><span class="err">：</span><span class="nx">Hat_Cloud</span>
+<span class="s2">&quot; 邮箱: jijianfeng529@gmail.com</span>
+<span class="s2">&quot;</span> <span class="nx">博客</span><span class="p">:</span> <span class="nx">www.chendeai.com</span>
+
+
+
+<span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; </span>
+<span class="s2">&quot;</span> <span class="nx">一般设定</span> 
+<span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; </span>
+<span class="s2">&quot;</span> <span class="nx">设定默认解码</span> 
+<span class="nb">set</span> <span class="n">fenc</span><span class="o">=</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span> 
+<span class="nb">set</span> <span class="n">fencs</span><span class="o">=</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="nx">usc</span><span class="na">-bom</span><span class="p">,</span><span class="nx">euc</span><span class="na">-jp</span><span class="p">,</span><span class="nx">gb18030</span><span class="p">,</span><span class="nx">gbk</span><span class="p">,</span><span class="nx">gb2312</span><span class="p">,</span><span class="nx">cp936</span>
+
+<span class="s2">&quot;去掉讨厌的有关vi一致性模式，避免以前版本的一些bug和局限 </span>
+<span class="s2">set nocompatible</span>
+
+<span class="s2">&quot;</span> <span class="nx">显示中文帮助</span>
+<span class="k">if</span> <span class="nb">version</span> <span class="o">&gt;=</span> <span class="mi">603</span>
+    <span class="nb">set</span> <span class="n">helplang</span><span class="o">=</span><span class="nb">cn</span>
+    <span class="nb">set</span> <span class="n">encoding</span><span class="o">=</span><span class="nx">utf</span><span class="o">-</span><span class="mi">8</span>
+<span class="nx">endif</span>
+
+<span class="s2">&quot; 语法高亮 </span>
+<span class="s2">syntax on</span>
+
+<span class="s2">&quot;</span> <span class="nx">设置配色</span>
+<span class="nx">colorscheme</span> <span class="nx">Distinguished</span>
+
+<span class="s2">&quot; 设置字体</span>
+<span class="s2">set guifont=Monaco:h12</span>
+
+<span class="s2">&quot;</span> <span class="nx">设置gvim启动窗口的位置</span><span class="err">，</span><span class="nx">以及大小</span>   
+<span class="nx">winpos</span> <span class="mi">300</span> <span class="mi">105</span>
+<span class="nb">set</span> <span class="n">lines</span><span class="o">=</span><span class="mi">30</span> <span class="n">columns</span><span class="o">=</span><span class="mi">100</span>
+
+<span class="s2">&quot; 开启行号显示</span>
+<span class="s2">set number</span>
+
+<span class="s2">&quot;</span><span class="nx">下面两行在进行编写代码时</span><span class="err">，</span><span class="nx">在格式对起上很有用</span><span class="err">；</span>
+<span class="s2">&quot;第一行，vim使用自动对起，也就是把当前行的对起格式应用到下一行；</span>
+<span class="s2">&quot;</span><span class="nx">第二行</span><span class="err">，</span><span class="nx">依据上面的对起格式</span><span class="err">，</span><span class="nx">智能的选择对起方式</span><span class="err">，</span><span class="nx">对于类似C语言编</span>
+<span class="s2">&quot;写上很有用</span>
+<span class="s2">set autoindent</span>
+<span class="s2">set smartindent</span>
+
+<span class="s2">&quot;</span><span class="nx">查询时非常方便</span><span class="err">，</span><span class="nx">如要查找book单词</span><span class="err">，</span><span class="nx">当输入到</span><span class="p">/</span><span class="nx">b时</span><span class="err">，</span><span class="nx">会自动找到第一</span>
+<span class="s2">&quot;个b开头的单词，当输入到/bo时，会自动找到第一个bo开头的单词，依</span>
+<span class="s2">&quot;</span><span class="nx">次类推</span><span class="err">，</span><span class="nx">进行查找时</span><span class="err">，</span><span class="nx">使用此设置会快速找到答案</span><span class="err">，</span><span class="nx">当你找要匹配的单词</span>
+<span class="s2">&quot;时，别忘记回车</span>
+<span class="s2">set incsearch</span>
+
+<span class="s2">&quot;</span> <span class="nx">高亮当前行</span>
+<span class="nb">set</span> <span class="nx">cursorline</span>
+
+<span class="s2">&quot; 启动的时候不显示那个援助索马里儿童的提示 </span>
+<span class="s2">set shortmess=atI</span>
+
+<span class="s2">&quot;</span> <span class="nx">我的状态行显示的内容</span><span class="err">（</span><span class="nx">包括文件类型和解码</span><span class="err">）</span> 
+<span class="nb">set</span> <span class="n">statusline</span><span class="o">=%</span><span class="nb">F</span><span class="o">%</span><span class="nx">m</span><span class="o">%</span><span class="nb">r</span><span class="o">%</span><span class="nx">h</span><span class="o">%</span><span class="nx">w</span><span class="o">\</span><span class="err">[</span><span class="n">POS</span><span class="o">=%</span><span class="nx">l</span><span class="p">,</span><span class="o">%</span><span class="nx">v</span><span class="cp">][</span><span class="o">%</span><span class="nx">p</span><span class="o">%%</span><span class="cp">]</span>\%{strftime(\&quot;%d/%m/%y\ -\ %H:%M\&quot;)}
+
+&quot; 总是显示状态行 
+set laststatus=2
+
+&quot; 制表符为4 
+set tabstop=4
+
+&quot; 统一缩进为4 
+set softtabstop=4 
+set shiftwidth=4
+
+&quot; 在c,c++,python文件中用空格代替制表符
+autocmd FileType c,cpp,python set shiftwidth=4 | set expandtab
+
+&quot; 侦测文件类型 
+filetype on
+
+&quot; 载入文件类型插件 
+filetype plugin on
+
+&quot; 为特定文件类型载入相关缩进文件 
+filetype indent on
+
+&quot; 括号自动补全
+inoremap ( ()<span class="nt">&lt;ESC&gt;</span>i
+inoremap <span class="cp">[</span> <span class="err">[</span><span class="cp">]</span><span class="nt">&lt;ESC&gt;</span>i
+inoremap { {}<span class="nt">&lt;ESC&gt;</span>i
+inoremap <span class="err">&lt;</span> <span class="err">&lt;</span>&gt;<span class="nt">&lt;ESC&gt;</span>i
+
+&quot; 高亮显示匹配的括号
+set showmatch
+&quot; 匹配括号高亮的时间（单位是十分之一秒）
+set matchtime=1
+
+&quot; 搜索忽略大小写
+set ignorecase
+
+&quot; 自动保存
+set autowrite
+
+&quot; 设置当文件被改动时自动载入
+set autoread
+
+&quot; 在处理未保存或只读文件的时候，弹出确认
+set confirm
+
+
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; 
+&quot; C,C++,Java,Python按F5编译运行
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+map <span class="nt">&lt;F5&gt;</span> :call CompileRunGcc()<span class="nt">&lt;CR&gt;</span>
+func! CompileRunGcc()
+    exec &quot;w&quot;
+    if <span class="err">&amp;</span>filetype == &#39;c&#39;
+        exec &quot;!gcc % -o %<span class="err">&lt;</span>&quot;
+        exec &quot;! ./%<span class="err">&lt;</span>&quot;
+    elseif <span class="err">&amp;</span>filetype == &#39;cpp&#39;
+        exec &quot;!g++ % -o %<span class="err">&lt;</span>&quot;
+        exec &quot;! ./%<span class="err">&lt;</span>&quot;
+    elseif <span class="err">&amp;</span>filetype == &#39;java&#39; 
+        exec &quot;!javac %&quot; 
+        exec &quot;!java %<span class="err">&lt;</span>&quot;
+    elseif <span class="err">&amp;</span>filetype == &#39;sh&#39;
+        :!./%
+    elseif <span class="err">&amp;</span>filetype == &#39;python&#39;
+        exec &quot;!python %&quot;
+    endif
+endfunc
+
+
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; 
+&quot; 新文件标题
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; 
+&quot; 新建.c,.h,.sh,.java文件，自动插入文件头 
+autocmd BufNewFile *.py,*.cpp,*.<span class="cp">[</span><span class="nx">ch</span><span class="cp">]</span>,*.sh,*.java exec &quot;:call SetTitle()&quot; 
+&quot; 定义函数SetTitle，自动插入文件头 
+func SetTitle()
+
+    &quot; 如果文件类型为.sh文件
+    if <span class="err">&amp;</span>filetype == &#39;sh&#39; 
+        call setline(1,
+        &quot;\#########################################################################&quot;) 
+        call append(line(&quot;.&quot;), &quot;\# File Name: &quot;.expand(&quot;%&quot;)) 
+        call append(line(&quot;.&quot;)+1, &quot;\# Author: Hat_Cloud&quot;) 
+        call append(line(&quot;.&quot;)+2, &quot;\# mail: jijianfeng529@gmail.com&quot;) 
+        call append(line(&quot;.&quot;)+3, &quot;\# Created Time: &quot;.strftime(&quot;%F %R&quot;)) 
+        call append(line(&quot;.&quot;)+4, &quot;\#########################################################################&quot;) 
+        call append(line(&quot;.&quot;)+5, &quot;\#!/bin/bash&quot;) 
+        call append(line(&quot;.&quot;)+6, &quot;&quot;)
+
+    else 
+        call setline(1, &quot;/*************************************************************************&quot;) 
+        call append(line(&quot;.&quot;), &quot;    &gt; File Name: &quot;.expand(&quot;%&quot;)) 
+        call append(line(&quot;.&quot;)+1, &quot;    &gt; Author: Hat_Cloud&quot;) 
+        call append(line(&quot;.&quot;)+2, &quot;    &gt; Mail: jijianfeng529@gmail.com &quot;) 
+        call append(line(&quot;.&quot;)+3, &quot;    &gt; Created Time: &quot;.strftime(&quot;%F %R&quot;)) 
+        call append(line(&quot;.&quot;)+4, &quot; ************************************************************************/&quot;) 
+        call append(line(&quot;.&quot;)+5, &quot;&quot;)
+    endif
+    if <span class="err">&amp;</span>filetype == &#39;python&#39;
+        call append(line(&quot;.&quot;)+5, &quot;\#!/usr/bin/env python&quot;) 
+        call append(line(&quot;.&quot;)+6, &quot;\#coding: utf-8&quot;) 
+        call append(line(&quot;.&quot;)+7, &quot;&quot;)
+    endif
+    if <span class="err">&amp;</span>filetype == &#39;cpp&#39;
+        call append(line(&quot;.&quot;)+6, &quot;#include<span class="nt">&lt;iostream&gt;</span>&quot;)
+        call append(line(&quot;.&quot;)+7, &quot;using namespace std;&quot;)
+        call append(line(&quot;.&quot;)+8, &quot;&quot;)
+    endif
+    if <span class="err">&amp;</span>filetype == &#39;c&#39;
+        call append(line(&quot;.&quot;)+6, &quot;#include<span class="nt">&lt;stdio</span><span class="err">.</span><span class="na">h</span><span class="nt">&gt;</span>&quot;)
+        call append(line(&quot;.&quot;)+7, &quot;&quot;)
+    endif
+    &quot; 新建文件后，自动定位到文件末尾
+    autocmd BufNewFile * normal G
+endfunc
+
+
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot; 
+&quot; 插件相关 
+&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;
+
+&quot; pathogen开启插件动态加载
+call pathogen#runtime_append_all_bundles()
+
+&quot; 设置NerdTree（侧边栏）
+map <span class="nt">&lt;F3&gt;</span> :NERDTreeMirror<span class="nt">&lt;CR&gt;</span>
+map <span class="nt">&lt;F3&gt;</span> :NERDTreeToggle<span class="nt">&lt;CR&gt;</span>
+&quot; 关闭文件时同时关闭文件浏览器
+let NERDTreeQuitOnOpen = 1
+&quot;当打开vim且没有文件时自动打开NERDTree
+&quot;autocmd vimenter * if !argc() | NERDTree | endif
+&quot; 只剩 NERDTree时自动关闭
+&quot;autocmd bufenter * if (winnr(&quot;$&quot;) == 1 <span class="err">&amp;&amp;</span> exists(&quot;b:NERDTreeType&quot;) <span class="err">&amp;&amp;</span> b:NERDTreeType == &quot;primary&quot;) | q | endif
+
+
+&quot; 设置Pydiction（Python自动补全插件）
+let g:pydiction_location = &#39;/Users/Jeff/.vim/bundle/pydiction/complete-dict&#39;
+let g:pydiction_menu_height = 10
+
+&quot; CTags <span class="err">&amp;</span> Tagslist的设定  
+let Tlist_Sort_Type = &quot;name&quot;    &quot; 按照名称排序  
+let Tlist_Use_Right_Window = 1  &quot; 在右侧显示窗口  
+let Tlist_Compart_Format = 1    &quot; 压缩方式  
+let Tlist_Exist_OnlyWindow = 1  &quot; 如果只有一个buffer，kill窗口也kill掉buffer  
+map <span class="nt">&lt;F2&gt;</span> :TlistToggle<span class="nt">&lt;CR&gt;</span>
+&quot;let Tlist_Auto_Open=0 &quot;默认打开Taglist 
+&quot;&quot;let Tlist_File_Fold_Auto_Close = 0  &quot; 不要关闭其他文件的tags  
+&quot;&quot;let Tlist_Enable_Fold_Column = 0    &quot; 不要显示折叠树  
+&quot;let Tlist_Show_One_File=1            &quot;不同时显示多个文件的tag，只显示当前文件的
+&quot;设置tags  
+&quot;set tags=tags  
+&quot;set autochdir
+</pre></div>
+
+
+<h3 id="3">3. 进阶配置：下载，安装插件</h3>
+<ol>
+<li>安装<a href="https://github.com/tpope/vim-pathogen"><strong>Pathogen</strong></a>，管理插件的插件  </li>
+</ol>
+<blockquote>
+<p>参考文章：<a href="http://www.douban.com/group/topic/12214737/">推荐pathogen.vim，管理插件的插件</a></p>
+</blockquote>
+<div class="hlcode"><pre><span class="mf">1.</span> <span class="err">将</span><span class="n">pathogen</span><span class="p">.</span><span class="n">vim</span><span class="err">安装在</span><span class="o">~/</span><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">autoload</span><span class="err">里</span>
+<span class="mf">2.</span> <span class="err">在</span><span class="n">vimrc</span><span class="err">里加一句`</span><span class="n">call</span> <span class="n">pathogen</span><span class="err">#</span><span class="n">runtime_append_all_bundles</span><span class="p">()</span><span class="err">`</span>
+</pre></div>
+
+
+<ol>
+<li>安装<a href="https://github.com/scrooloose/nerdtree"><strong>NerdTree</strong></a>，NerdTree具体用途详细其主页。  </li>
+</ol>
+<blockquote>
+<p>参考文章：<a href="http://www.cnblogs.com/feichexia/archive/2012/11/07/Vim_NerdTree.html">Vim试水之六：NerdTree插件安装</a></p>
+</blockquote>
+<div class="hlcode"><pre><span class="mf">1.</span> <span class="err">安装：安装方法详见它的</span><span class="n">GitHub</span><span class="err">上的</span><span class="n">ReadMe</span><span class="err">文件。</span>
+<span class="mf">2.</span> <span class="err">安装完以后在</span><span class="n">Vimrc</span><span class="err">中加入如下设置代码：</span>
+</pre></div>
+
+
+<p>” 设置NerdTree<br />
+map :NERDTreeMirror<br />
+map :NERDTreeToggle<br />
+按F3即可显示或隐藏NerdTree区域了，在Vim中输入<code>:NERDtree</code>也可打开NerdTree区域<br />
+  3. 安装<a href="http://rkulla.github.io/pydiction/">Pydiction</a>，让vim支持python代码的自动完成  </p>
+<blockquote>
+<p>具体过程请参看上面连接中的说明</p>
+</blockquote>
+<ol>
+<li>安装Taglist  </li>
+</ol>
+<blockquote>
+<p>参考文章<a href="http://lnmcc.net/2013/04/01/mac%E4%B8%8Bvim-taglist-ctags/">mac下vim + taglist + ctags</a></p>
+</blockquote>
+<div class="hlcode"><pre><span class="mf">1.</span> <span class="err">下载</span><span class="p">[</span><span class="n">Ctags</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//ctags.sourceforge.net/)的最新版本源代码</span>
+<span class="mf">2.</span> <span class="err">解压下载的好的文件</span>
+<span class="mf">3.</span> <span class="err">进入解压的文件夹，运行如下命令</span>
+</pre></div>
+
+
+<p>sudo ./configure &amp;&amp; make all &amp;&amp; sudo make install<br />
+    4. 修改PATH:在~/.bashrc中添加:<code>PATH="/usr/local/bin:$PATH"</code><br />
+如果想要立即生效，在终端下输入<code>export PATH="/usr/local/bin:$PATH"</code><br />
+    5. 下载<a href="http://www.vim.org/scripts/script.php?script_id=273">Taglist</a><br />
+    6. 将解压缩后整个文件夹拷入~/.vim/bundle<br />
+    7. 在.vimrc中配置taglist:<br />
+” Taglist的设置<br />
+let Tlist_Show_One_File=1<br />
+let Tlist_Exit_OnlyWindow=1<br />
+let Tlist_Use_Right_Window=1<br />
+map :TlistToggle<br />
+8.在vim中可以使用<code>:Tlist</code>,也可以使用上面映射的<code>F2</code>来打开taglist界面</p>
+<p>PS: 配置中的映射键位F2可以更改成其他键位</p>
+<ol>
+<li>安装<a href="https://github.com/Yggdroot/indentLine">indentLine</a>，垂直对齐线插件</li>
+</ol>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

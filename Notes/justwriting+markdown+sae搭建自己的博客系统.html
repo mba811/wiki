@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Justwriting+Markdown+SAE搭建自己的博客系统 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;Justwriting+Markdown+SAE搭建自己的博客系统
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 06:49
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Justwriting+Markdown+SAE搭建自己的博客系统</div>
+
+  <h1 id="justwritingmarkdownsae">Justwriting+Markdown+SAE搭建自己的博客系统</h1>
+<p>2014-08-14</p>
+<h3 id="justwriting">Justwriting</h3>
+<p><a href="https://github.com/hjue/JustWriting">Justwriting</a>是一个极简开源博客系统，不同于Wordpress等传统博客系统，Justwriting没有博客后台，你只需要在你的电脑上用Markdown书写，还有比这更简单的吗。同时你不用担心你的文章丢失，因为文章就在你的电脑里。</p>
+<p>Justwriting的创意来自<a href="https://www.farbox.com/">Farbox</a>,我自己原本也是Farbox的用户，只是最近Farbox文章同步太慢(也许是用户量太大了)，并且访问速度也很慢，自己才写了这个博客系统。</p>
+<p>Justwriting同样是用Dropbox来同步文章。如果自己有VPS或者虚拟主机，建议你使用Dropbox+Justwriting，在设置博客系统以后，你只需要用Markdown书写，完全不需要关注其他。</p>
+<p>如果你不用Dropbox，目前只能通过FTP、SVN、Git等其他途径发布文章了，这样不能发挥Justwriting最大的功效。</p>
+<p>其他网盘的支持我正在推进中，微博微盘(Vdisk)无法支持了。因为Vdisk App沙箱中的文件居然不出现在用户的微盘中的，My God！<a href="http://vdisk.weibo.com/developers/index.php?module=api&amp;action=rights#space">这是Vdisk的文档</a></p>
+<p>下一个计划支持的网盘是百度网盘。</p>
+<h3 id="markdown">Markdown</h3>
+<p>Markdown是一种标记语言，他的目标是成为一种适用于网络的书写语言。 如果你还不了解Markdown，<a href="http://wowubuntu.com/markdown/">点这里学习Markdown语法</a>，分分钟就学可以会并且会爱上他。</p>
+<h3 id="sae">SAE</h3>
+<p><a href="http://sae.sina.com.cn/">SAE</a>是Sina App Engine的简称，是新浪研发中心推出的国内首个公有云计算平台，支持PHP,MySQL,Memcached,Mail,TaskQueue,RDC（关系型数据库集群）等服务。SAE通过实名认证及开发者认证，每个月送大量云豆，对于一般的博客站点云豆完全够用，也就是说用SAE搭建博客完全免费，不需要支付费用。同时SAE还支持绑定自己的域名，只是对于没有备案的域名请求走海外中转，流量计费翻倍。</p>
+<blockquote>
+<p>注：BAE(百度应用引擎)已经开始收费了。</p>
+</blockquote>
+<h3 id="justwriting_1">安装JustWriting</h3>
+<ol>
+<li>下载<a href="https://github.com/hjue/JustWriting/zipball/master">Justwriting</a></li>
+<li>修改settings.php，配置你的博客参数</li>
+<li>把你的博客文章(文件的扩展名是.md)，放到posts目录中</li>
+<li>上传源代码到SAE</li>
+</ol>
+<p>另外还有一种快捷的安装方式：</p>
+<ol>
+<li>访问<a href="http://sae.sina.com.cn/?m=apps&amp;a=detail&amp;aid=165">Justwriting应用仓库</a>的页面,点击安装框架</li>
+<li>在SAE后台在线代码编辑器里修改博客参数</li>
+</ol>
+<h3 id="sae_1">下载SAE代码到本地目录</h3>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">co</span> <span class="n">https</span><span class="o">:</span><span class="c1">//svn.sinaapp.com/helloworld</span>
+</pre></div>
+
+
+<blockquote>
+<p>helloworld需要换成你自己的sae二级域名。</p>
+</blockquote>
+<p>Windows用户可使用TortoiseSVN完成代码同步，使用方法见[SAE官方文档](http://sae.sina.com.cn/doc/tutorial/code-deploy.html#tortoisesvn</p>
+<h3 id="_1">写文章</h3>
+<p>文章头部放置头信息，Justwriting采用的Farbox头部信息的格式，同时也支持Jekyll的头信息格式。</p>
+<div class="hlcode"><pre>    <span class="nl">Date:</span> <span class="mi">2014</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">09</span>
+    <span class="nl">Title:</span> <span class="n">Justwriting</span><span class="o">+</span><span class="n">Markdown</span><span class="o">+</span><span class="n">SAE</span><span class="err">搭建自己的博客系统</span>
+    <span class="nl">Tags:</span> <span class="n">Justwriting</span> <span class="n">Markdown</span>
+    <span class="nl">Status:</span> <span class="n">public</span>
+
+    <span class="err">这里写正文</span>
+</pre></div>
+
+
+<p>文章完成之前status可以设置为draft，这样这篇文章不会出现在你的博客列表中。</p>
+<p>在posts目录中用Markdown书写，保存为.md文件。</p>
+<h3 id="_2">发布文章</h3>
+<p>由于SAE服务器不能访问dropbox，所以我们只能用svn来发布文章了。</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="n">myhello</span>
+<span class="n">svn</span> <span class="n">add</span> <span class="o">*</span> <span class="o">--</span><span class="n">force</span>
+<span class="n">svn</span> <span class="n">ci</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;submit code&quot;</span>
+</pre></div>
+
+
+<h3 id="_3">参考资料</h3>
+<ul>
+<li>
+<p><a href="http://sae.sina.com.cn/doc/tutorial/code-deploy.html#tortoisesvn">TortoiseSVN客户端使用方法</a></p>
+</li>
+<li>
+<p><a href="http://sae.sina.com.cn/doc/tutorial/code-deploy.html#notepad-svn">Notepad++集成SVN插件</a></p>
+</li>
+<li>
+<p><a href="http://sae.sina.com.cn/doc/tutorial/code-deploy.html#ultraedit-studio">使用UltraEdit Studio部署SAE 代码</a></p>
+</li>
+<li>
+<p><a href="http://sae.sina.com.cn/doc/tutorial/code-deploy.html#editplus">使用EditPlus部署SAE 代码</a></p>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

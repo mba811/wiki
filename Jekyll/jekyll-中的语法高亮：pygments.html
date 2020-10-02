@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Jekyll 中的语法高亮：Pygments - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Jekyll">Jekyll</a>&nbsp;&#187;&nbsp;Jekyll 中的语法高亮：Pygments
+    <span class="updated">Page Updated&nbsp;
+      2015-05-06 10:50
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Jekyll 中的语法高亮：Pygments</div>
+
+  <p>Jekyll 原生支持语法高亮工具 <a href="http://pygments.org/">Pygments</a> ，Pygments 支持<a href="http://pygments.org/docs/lexers/">多种语言高亮</a>。</p>
+<h4 id="_1">一. 安装</h4>
+<p>假设你已经能正常运行 Jekyll (<a href="http://havee.me/internet/2013-07/jekyll-install.html">安装方法</a>)。</p>
+<h5 id="1-pygments">1. 安装 pygments</h5>
+<p>archlinux:</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">pacman</span> <span class="o">-</span><span class="n">S</span> <span class="n">python2</span><span class="o">-</span><span class="n">pygments</span>
+</pre></div>
+
+
+<p>或直接通过 pip 来安装</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pygments</span> <span class="o">--</span><span class="n">user</span>
+</pre></div>
+
+
+<h5 id="2-pygmentsrb">2. 安装 pygments.rb</h5>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">pygments</span><span class="p">.</span><span class="n">rb</span>
+</pre></div>
+
+
+<h4 id="_2">二. 配置</h4>
+<p>在 Jekyll 的配置文件 <strong>_config.yml</strong> 中设置打开 Pygments</p>
+<div class="hlcode"><pre><span class="n">pygments</span><span class="o">:</span> <span class="kc">true</span>
+<span class="n">mardown</span><span class="o">:</span> <span class="n">redcarpet</span>
+</pre></div>
+
+
+<blockquote>
+<p>注意：新版本 Jekyll 中，<code>pygments: true</code> 替换为 <code>highlighter: pygments</code>。</p>
+</blockquote>
+<p>进到我们的网站目录，运行下面代码生成 <a href="http://havee.me/internet/2013-08/support-pygments-in-jekyll.html#pygments">Pygments 样式</a></p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">pygmentize</span> <span class="o">-</span><span class="n">S</span> <span class="k">default</span> <span class="o">-</span><span class="n">f</span> <span class="n">html</span> <span class="o">&gt;</span> <span class="n">your</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">pygments</span><span class="p">.</span><span class="n">css</span>
+</pre></div>
+
+
+<p>生成的样式文件加到我们的网页中</p>
+<div class="hlcode"><pre><span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;/your/path/pygments.css&quot;</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<h4 id="_3">三. 使用</h4>
+<p>语法高亮的代码片段要放在标签对 <code>{% highlight language %}</code> 和 <code>{% endhighlight %}</code> 之间，其中的 language 为<a href="http://pygments.org/docs/lexers/">多种语言高亮</a>页面中的 <strong>Short names</strong>。</p>
+<div class="hlcode"><pre><span class="p">{</span><span class="o">%</span> <span class="n">highlight</span> <span class="n">c</span> <span class="o">%</span><span class="p">}</span>
+<span class="cm">/* hello world demo */</span>
+<span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endhighlight</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>也可以采用这样的写法</p>
+<div class="hlcode"><pre><span class="err">```</span><span class="n">c</span>
+<span class="cm">/* hello world demo */</span>
+<span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="err">```</span>
+</pre></div>
+
+
+<p>生成的 html 高亮结果</p>
+<div class="hlcode"><pre><span class="cm">/* hello world demo */</span>
+<span class="p">#</span><span class="k">include</span> <span class="o">&lt;</span><span class="n">stdio</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;</span>
+<span class="k">int</span> <span class="n">main</span><span class="p">(</span><span class="k">int</span> <span class="n">argc</span><span class="p">,</span> <span class="n">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, World!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mh">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="pygments">四. Pygments 样式</h4>
+<p>Pygments 样式 默认提供了 monokai、manni、rrt、perldoc、borland、colorful、default 等等，多种的样式。</p>
+<p>可以通过以下命令列出当前 Pygments 支持的样式：</p>
+<div class="hlcode"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">from</span> <span class="n">pygments</span><span class="p">.</span><span class="n">styles</span> <span class="n">import</span> <span class="n">STYLE_MAP</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">STYLE_MAP</span><span class="p">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="p">[</span><span class="err">&#39;</span><span class="n">monokai</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">manni</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">rrt</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">perldoc</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">borland</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">colorful</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="k">default</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">murphy</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">vs</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">trac</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">tango</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">fruity</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">autumn</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">bw</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">emacs</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">vim</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">pastie</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">friendly</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">native</span><span class="err">&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<p>通过 <code>-S</code> 来选择，譬如要生成 monokai 的样式：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">pygmentize</span> <span class="o">-</span><span class="n">S</span> <span class="n">monokai</span> <span class="o">-</span><span class="n">f</span> <span class="n">html</span> <span class="o">&gt;</span> <span class="n">your</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">pygments</span><span class="p">.</span><span class="n">css</span>
+</pre></div>
+
+
+<p>下面是 pygments 个各样式 show：</p>
+<ul>
+<li>monokai</li>
+</ul>
+<p><img alt="monokai" src="http://cdn.09hd.com/images/2013/08/pygments-monokai.png" /></p>
+<ul>
+<li>manni</li>
+</ul>
+<p><img alt="manni" src="http://cdn.09hd.com/images/2013/08/pygments-manni.png" /></p>
+<ul>
+<li>rrt</li>
+</ul>
+<p><img alt="rrt" src="http://cdn.09hd.com/images/2013/08/pygments-rrt.png" /></p>
+<ul>
+<li>perldoc</li>
+</ul>
+<p><img alt="perldoc" src="http://cdn.09hd.com/images/2013/08/pygments-perldoc.png" /></p>
+<ul>
+<li>borland</li>
+</ul>
+<p><img alt="borland" src="http://cdn.09hd.com/images/2013/08/pygments-borland.png" /></p>
+<ul>
+<li>colorful</li>
+</ul>
+<p><img alt="colorful" src="http://cdn.09hd.com/images/2013/08/pygments-colorful.png" /></p>
+<ul>
+<li>default</li>
+</ul>
+<p><img alt="default" src="http://cdn.09hd.com/images/2013/08/pygments-default.png" /></p>
+<ul>
+<li>murphy</li>
+</ul>
+<p><img alt="murphy" src="http://cdn.09hd.com/images/2013/08/pygments-murphy.png" /></p>
+<ul>
+<li>vs</li>
+</ul>
+<p><img alt="vs" src="http://cdn.09hd.com/images/2013/08/pygments-vs.png" /></p>
+<ul>
+<li>trac</li>
+</ul>
+<p><img alt="trac" src="http://cdn.09hd.com/images/2013/08/pygments-trac.png" /></p>
+<ul>
+<li>tango</li>
+</ul>
+<p><img alt="tango" src="http://cdn.09hd.com/images/2013/08/pygments-tango.png" /></p>
+<ul>
+<li>fruity</li>
+</ul>
+<p><img alt="fruity" src="http://cdn.09hd.com/images/2013/08/pygments-fruity.png" /></p>
+<ul>
+<li>autumn</li>
+</ul>
+<p><img alt="autumn" src="http://cdn.09hd.com/images/2013/08/pygments-autumn.png" /></p>
+<ul>
+<li>bw</li>
+</ul>
+<p><img alt="bw" src="http://cdn.09hd.com/images/2013/08/pygments-bw.png" /></p>
+<ul>
+<li>emacs</li>
+</ul>
+<p><img alt="emacs" src="http://cdn.09hd.com/images/2013/08/pygments-emacs.png" /></p>
+<ul>
+<li>vim</li>
+</ul>
+<p><img alt="vim" src="http://cdn.09hd.com/images/2013/08/pygments-vim.png" /></p>
+<ul>
+<li>pastie</li>
+</ul>
+<p><img alt="pastie" src="http://cdn.09hd.com/images/2013/08/pygments-pastie.png" /></p>
+<ul>
+<li>friendly</li>
+</ul>
+<p><img alt="friendly" src="http://cdn.09hd.com/images/2013/08/pygments-friendly.png" /></p>
+<ul>
+<li>native</li>
+</ul>
+<p><img alt="native" src="http://cdn.09hd.com/images/2013/08/pygments-native.png" /></p>
+<p>参考：</p>
+<ul>
+<li><a href="http://pygments.org/docs/cmdline/">http://pygments.org/docs/cmdline/</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

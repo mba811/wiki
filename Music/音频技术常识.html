@@ -1,0 +1,122 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>音频技术常识 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;音频技术常识
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 11:27
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">音频技术常识</div>
+
+  <h2 id="_1">一些很简单的问题总结，都是些非常简单的知识。</h2>
+<ul>
+<li>
+<h3 id="cdwav">用什么软件将CD抓轨成WAV？</h3>
+</li>
+</ul>
+<p>EAC，这是全球通用的流行抓轨工具，虽然EAC有时会与光驱产生兼容问题，但EAC在技术的上透明性使它的使用者日渐增多。</p>
+<ul>
+<li>
+<h4 id="wavmp3">用什么编码器将wav转为mp3？</h4>
+</li>
+</ul>
+<p>LAME，虽然lame的开发很混乱，参数之多令人咋舌，但Dibrom自行编译的3.90.2版总结的alt preset参数使人们终于开始将目光着眼于务实而不再在参数版本的细节上纠缠不清。</p>
+<ul>
+<li>
+<h4 id="lame">使用哪个lame版本?</h4>
+</li>
+</ul>
+<p>一般推荐lame 3.90.2，lame没有什么官方的EXE发行版，这个3.90.2是Dibrom自行编译的，对alt-preset参数的支持最好。 事实上，压制mp3不要有太高的要求，毕竟它是有损的。</p>
+<ul>
+<li>
+<h4 id="lame_1">lame下使用什么参数?</h4>
+</li>
+</ul>
+<p>过去常用的是–alt-preset standard，比特率在192kbps左右，但是feicun个人认为VBR V2的压缩参数也很好，我更倾向于后者。</p>
+<ul>
+<li>
+<h4 id="_2">哪个有损压缩音频格式音质和速度最佳？</h4>
+</li>
+</ul>
+<p>Musepack(.mpc)，Musepack原称MPEG plus，但它并不是MPEG标准，所以改名。它在算法上与MP3有本质的不同，因此能在很低的比特率下提供接近CD的音质。</p>
+<ul>
+<li>
+<h4 id="musepack">使用哪个Musepack版本？</h4>
+</li>
+</ul>
+<p>mppenc 1.14b，实际上其它的老版本也不错，新版修正了高比特率下的一些问题。</p>
+<ul>
+<li>
+<h4 id="mpc">mpc应该使用什么参数？</h4>
+</li>
+</ul>
+<p>–quality 5，比特率在170kbps左右，foobar内置了这个参数。PS.一直以来的观点是比特率可以决定一切,但对有损压缩算法来说这是错误的。</p>
+<ul>
+<li>
+<h4 id="_3">最流行的无损压缩格式？</h4>
+</li>
+</ul>
+<p>ape不用多说了，不过国外更流行FLAC（欧美音乐的无损一般是这种格式）。</p>
+<ul>
+<li>
+<h4 id="mpc-vs-mp3">mpc VS. mp3?</h4>
+</li>
+</ul>
+<p>品质上mpc更胜一筹，在170kbps左右的音质强于lame的320cbr(摘自Dibrom在HA forum上的帖子) 。但是mpc兼容性太差，导致它现在完全处于mp3下风。</p>
+<ul>
+<li>
+<h4 id="mp3mpc">MP3和MPC最常用的外壳程序?</h4>
+</li>
+</ul>
+<p>MP3：RazorLame、EasyLame、EAC 、foobar2000<br />
+MPC：MuseDrop,、EAC、foobar2000<br />
+推荐foobar2000，因为内置解码器多，内置参数也多。</p>
+<ul>
+<li>
+<h4 id="mpcmp3">除了mpc还有什么格式比mp3优秀?</h4>
+</li>
+</ul>
+<p>aac、ogg</p>
+<ul>
+<li>
+<h4 id="aac">AAC？</h4>
+</li>
+</ul>
+<p>目前最佳的AAC编码器PsyTel AACEncoder2.15<br />
+参数：–normal以上，AAC编码器已经集成到nero中作为一个插件，音质与编码速度有很大提高。</p>
+<ul>
+<li>
+<h4 id="ogg">ogg？</h4>
+</li>
+</ul>
+<p>ogg的优势在中、低频，转换参数可以使用foobar2000内置的q6.0。OGG是一个完全开放的格式，已被大多数的软硬件支持。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

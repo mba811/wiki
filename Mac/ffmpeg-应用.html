@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>FFmpeg 应用 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;FFmpeg 应用
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 13:33
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">FFmpeg 应用</div>
+
+  <h1 id="os-xffmpeg">获取在OS X的最新的FFmpeg有自制的帮助</h1>
+<p>平时我的工作与稳定版本<a href="http://www.ffmpeg.org/">的FFmpeg</a>，因为我感觉更舒服使用它在稳定的状态每天。当然，对于一些错误修正我在等待我切换到每晚构建，直到下一个稳定版本出来。总之，使用的FFmpeg对OS X版本通过自制安装，你必须坚持使用最新实施的稳定版本上家酿。就在最近的FFmpeg 2.0发布了一些伟大的新功能，我想尽快尝试没有编译一切从头开始。对于这一点，就来到了我的心，我可以用我自制的FFmpeg版本的所有库，只是一个新的核心编译。它并不难，因为它听起来。</p>
+<p>如果你还没有安装FFmpeg的使用还自制，看看<a href="http://www.renevolution.com/how-to-install-ffmpeg-on-mac-os-x/">这篇文章</a>，其中我描述如何做到这一点。</p>
+<h2 id="_1">获取编译器标志</h2>
+<p>感谢FFmpeg.Developers它是很容易获得的配置标记的当前版本编译的。只需执行 <code>$ ffmpeg</code>的   在你的命令行，你会看到这样的事情：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="n">version</span> <span class="mf">1.2</span> <span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2000</span><span class="o">-</span><span class="mi">2013</span> <span class="n">the</span> <span class="n">FFmpeg</span> <span class="n">developers</span>
+  <span class="n">built</span> <span class="n">on</span> <span class="n">Mar</span> <span class="mi">22</span> <span class="mi">2013</span> <span class="mi">08</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">36</span> <span class="n">with</span> <span class="n">Apple</span> <span class="n">LLVM</span> <span class="n">version</span> <span class="mf">4.2</span> <span class="p">(</span><span class="n">clang</span><span class="o">-</span><span class="mf">425.0.24</span><span class="p">)</span> <span class="p">(</span><span class="n">based</span> <span class="n">on</span> <span class="n">LLVM</span> <span class="mf">3.2</span><span class="n">svn</span><span class="p">)</span>
+  <span class="nl">configuration:</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">ffmpeg</span><span class="o">/</span><span class="mf">1.2</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">pthreads</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">gpl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">version3</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">nonfree</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">hardcoded</span><span class="o">-</span><span class="n">tables</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">avresample</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">vda</span> <span class="o">--</span><span class="n">cc</span><span class="o">=</span><span class="n">cc</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">ldflags</span><span class="o">=</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libx264</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfaac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libmp3lame</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libxvid</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfreetype</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libtheora</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">librtmp</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrnb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrwb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvo</span><span class="o">-</span><span class="n">aacenc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">ffplay</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libspeex</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libschroedinger</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopenjpeg</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">/</span><span class="mf">1.5.1</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">-</span><span class="mf">1.5</span> <span class="err">&#39;</span>
+  <span class="n">libavutil</span>      <span class="mf">52.</span> <span class="mf">18.100</span> <span class="o">/</span> <span class="mf">52.</span> <span class="mf">18.100</span>
+  <span class="n">libavcodec</span>     <span class="mf">54.</span> <span class="mf">92.100</span> <span class="o">/</span> <span class="mf">54.</span> <span class="mf">92.100</span>
+  <span class="n">libavformat</span>    <span class="mf">54.</span> <span class="mf">63.104</span> <span class="o">/</span> <span class="mf">54.</span> <span class="mf">63.104</span>
+  <span class="n">libavdevice</span>    <span class="mf">54.</span>  <span class="mf">3.103</span> <span class="o">/</span> <span class="mf">54.</span>  <span class="mf">3.103</span>
+  <span class="n">libavfilter</span>     <span class="mf">3.</span> <span class="mf">42.103</span> <span class="o">/</span>  <span class="mf">3.</span> <span class="mf">42.103</span>
+  <span class="n">libswscale</span>      <span class="mf">2.</span>  <span class="mf">2.100</span> <span class="o">/</span>  <span class="mf">2.</span>  <span class="mf">2.100</span>
+  <span class="n">libswresample</span>   <span class="mf">0.</span> <span class="mf">17.102</span> <span class="o">/</span>  <span class="mf">0.</span> <span class="mf">17.102</span>
+  <span class="n">libpostproc</span>    <span class="mf">52.</span>  <span class="mf">2.100</span> <span class="o">/</span> <span class="mf">52.</span>  <span class="mf">2.100</span>
+<span class="n">Hyper</span> <span class="n">fast</span> <span class="n">Audio</span> <span class="n">and</span> <span class="n">Video</span> <span class="n">encoder</span>
+<span class="nl">usage:</span> <span class="n">ffmpeg</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="p">[[</span><span class="n">infile</span> <span class="n">options</span><span class="p">]</span> <span class="o">-</span><span class="n">i</span> <span class="n">infile</span><span class="p">]...</span> <span class="p">{[</span><span class="n">outfile</span> <span class="n">options</span><span class="p">]</span> <span class="n">outfile</span><span class="p">}...</span>
+
+<span class="n">Use</span> <span class="o">-</span><span class="n">h</span> <span class="n">to</span> <span class="n">get</span> <span class="n">full</span> <span class="n">help</span> <span class="n">or</span><span class="p">,</span> <span class="n">even</span> <span class="n">better</span><span class="p">,</span> <span class="n">run</span> <span class="err">&#39;</span><span class="n">man</span> <span class="n">ffmpeg</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>对我们来说，最重要的是，现在这个部分：</p>
+<div class="hlcode"><pre><span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">pthreads</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">gpl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">version3</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">nonfree</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">hardcoded</span><span class="o">-</span><span class="n">tables</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">avresample</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">vda</span> <span class="o">--</span><span class="n">cc</span><span class="o">=</span><span class="n">cc</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">ldflags</span><span class="o">=</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libx264</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfaac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libmp3lame</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libxvid</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfreetype</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libtheora</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">librtmp</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrnb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrwb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvo</span><span class="o">-</span><span class="n">aacenc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">ffplay</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libspeex</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libschroedinger</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopenjpeg</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">/</span><span class="mf">1.5.1</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">-</span><span class="mf">1.5</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>这些都是我们的，我们将在以后使用的配置标志。</p>
+<h2 id="_2">准备环境</h2>
+<p>接下来，我们需要创造一个FFmpeg的我们的“特殊”-version将生活在一个文件夹中。后来，我们就可以有多个版本的FFmpeg的，是不是很大？所以，我决定创建一个文件夹，名为<strong><em>ffmpeg-latest</em></strong>的_<strong> /usr/local/ /</strong> _带  <code>$ mkdir /usr/local/ffmpeg-latest</code>  。</p>
+<h2 id="ffmpeg">获取FFmpeg的</h2>
+<p>现在我们将去，并从Git的最新FFmpeg的，并将其下载到/ tmp的文件夹，我们不会不再编译后需要它。</p>
+<p>所以，首先更改目录到/ tmp以  <code>$ cd /tmp</code>目录   ，并使用获得的FFmpeg  <code>$ git clone git://source.ffmpeg.org/ffmpeg.git ffmpeg</code>。如果你没有安装git的，你可以使用自制软件与安装它  <code>$ brew install git</code>。完整的源代码现在应该在现有_ /tmp/ffmpeg._。</p>
+<h2 id="configure">建立你的configure命令</h2>
+<p>至少我们要完成configure命令使FFmpeg的能找到的所有库。我们只需要修改前缀标志并增加两个额外的标志告诉FFmpeg的到哪里寻找库和包括。正如我们首先选择<strong>/usr/local/ffmpeg-latest</strong>为我们的安装目录，这也将是为前缀的标志值。</p>
+<p>在默认安装自制软件将安装包括<strong> /usr/local/Cellar/include</strong>在所有图书馆<strong>/usr/local/Cellar/libs</strong>。如果您已经在用不同的方式安装自制软件或任何已更改。同时，你需要检查您的库/包含文件夹的。有FFmpeg的寻找到这些文件夹，我们必须添加<strong> –extra-cflags=’-I/usr/local/Cellar/include’ </strong>和<strong>–extra-ldflags=’-L/usr/local/Cellar/lib’</strong>我们的configure命令。</p>
+<p>将其组合在一起：</p>
+<div class="hlcode"><pre><span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">ffmpeg</span><span class="o">-</span><span class="n">latest</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">include</span><span class="err">&#39;</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">ldflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">L</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">lib</span><span class="err">&#39;</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">pthreads</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">gpl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">version3</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">nonfree</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">hardcoded</span><span class="o">-</span><span class="n">tables</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">avresample</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">vda</span> <span class="o">--</span><span class="n">cc</span><span class="o">=</span><span class="n">cc</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">ldflags</span><span class="o">=</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libx264</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfaac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libmp3lame</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libxvid</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfreetype</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libtheora</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">librtmp</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrnb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrwb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvo</span><span class="o">-</span><span class="n">aacenc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">ffplay</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libspeex</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libschroedinger</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopenjpeg</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">/</span><span class="mf">1.5.1</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">-</span><span class="mf">1.5</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h2 id="_3">编译</h2>
+<p>现在，我们可以编译。首先更改目录<strong>/tmp/ffmpeg</strong> 有  <code>$ cd /tmp/ffmpeg</code>  。之后，你就可以开火configure命令如下：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">configure</span> <span class="o">--</span><span class="n">prefix</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">ffmpeg</span><span class="o">-</span><span class="n">latest</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">include</span><span class="err">&#39;</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">ldflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">L</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">lib</span><span class="err">&#39;</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">shared</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">pthreads</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">gpl</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">version3</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">nonfree</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">hardcoded</span><span class="o">-</span><span class="n">tables</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">avresample</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">vda</span> <span class="o">--</span><span class="n">cc</span><span class="o">=</span><span class="n">cc</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span> <span class="o">--</span><span class="n">host</span><span class="o">-</span><span class="n">ldflags</span><span class="o">=</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libx264</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfaac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libmp3lame</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libxvid</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfreetype</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libtheora</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvorbis</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvpx</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">librtmp</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrnb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopencore</span><span class="o">-</span><span class="n">amrwb</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libvo</span><span class="o">-</span><span class="n">aacenc</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libass</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">ffplay</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libspeex</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libschroedinger</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libfdk</span><span class="o">-</span><span class="n">aac</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopus</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">libopenjpeg</span> <span class="o">--</span><span class="n">extra</span><span class="o">-</span><span class="n">cflags</span><span class="o">=</span><span class="err">&#39;</span><span class="o">-</span><span class="n">I</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">/</span><span class="mf">1.5.1</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">openjpeg</span><span class="o">-</span><span class="mf">1.5</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>我认为这将工作没有任何问题，你可以去进一步利用来构建新的ffmpeg版本  <code>$ make</code>  。这将需要几分钟，以便休息一下，喝杯咖啡;）。</p>
+<p>如果这还没有完成任何错误（警告都很正常这里），你可以使用安装  <code>$ sudo make install</code>  。这个命令的completition后您终于完成。</p>
+<p>现在，您可以执行使用新版本的FFmpeg  <code>$ /usr/local/ffmpeg-latest/bin/ffmpeg</code>  。</p>
+<h2 id="_4">附加：创建符号链接</h2>
+<p>正如我通常喜欢我的系统路径环境的工具，我会展示如何创建一个符号链接为新FFmpeg的版本，以便二进制仍然<strong>/usr/local/ffmpeg-latest/bin</strong>，但你并不需要添加路径到系统路径，也将来到一个错误，你有另一个FFmpeb二进制在你的路径。无论如何，我希望创建在/ usr /本地一个符号，这里是它是如何做到了：</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">ffmpeg</span><span class="o">-</span><span class="n">latest</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">ffmpeg</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">ffmpeg</span><span class="o">-</span><span class="n">latest</span>
+</pre></div>
+
+
+<p>从这个时候，你可以简单地执行  <code>$ ffmpeg-latest</code>   使用最新版本。</p>
+<h1 id="ffmpeg-">FFmpeg的-第一部分：通用的用法</h1>
+<p><a href="http://www.renevolution.com/wp-content/uploads/2013/03/FFmpeg-Logo.svg_.png"><img alt="FFmpeg的标志" src="http://www.renevolution.com/wp-content/uploads/2013/03/FFmpeg-Logo.svg_.png" /></a></p>
+<p>当时人们开始用音频/视频转换<a href="http://www.ffmpeg.org/">的FFmpeg</a>，大多数人有谷歌很多，找出如何使用它以适当的方式。大多数时候用户搜索特定用例是确定的，如果你只需要使用它的一个使用案例。该博客还将指向你如约水印，编码成不同的文件格式和编解码器的具体使用情况等。然而，这篇博客文章将告诉你FFmpeg的工作在一般情况下，更抽象的方式，这将帮助你在不同情况下使用它。因为这会变得有点复杂，我注重可读性，我将开始很简单，底座上，在进一步的解释。</p>
+<h2 id="_5"><strong>非常简单的用法</strong></h2>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="p">[</span><span class="n">INPUTFILE</span><span class="p">]</span> <span class="p">[</span><span class="n">OUTPUTFILE</span><span class="p">]</span>
+</pre></div>
+
+
+<p>如  <code>ffmpeg -i MyMovie.mp4 MyMovie.avi</code>  将你的MP4的视频转换为AVI。当然这不是因为你没有指定任何东西，你的输出分辨率一样，编解码器，比特率等非常有用的，但我会用这个命令为起点进行进一步的解释。</p>
+<h2 id="specifiying"><strong>Specifiying编解码器</strong></h2>
+<p>音频和视频编解码器定义的压缩算法对音频或视频与编码。FFmpeg的可以处理大量的编解码器，你可以检查的可用性与  ffmpeg的 - 编解码器  。它会告诉你所有已安装的编解码器，并确定它们是否可用的话解码，编码或两者兼而有之。这里是哪里来定义你的命令行的编解码器：</p>
+<div class="hlcode"><pre><span class="p">...</span> <span class="p">[</span><span class="n">INPUTFILE</span><span class="p">]</span> <span class="o">-</span><span class="n">c</span><span class="o">:</span><span class="n">v</span> <span class="p">[</span><span class="n">VIDEOCODEC</span><span class="p">]</span> <span class="p">[</span><span class="n">CODEC</span><span class="o">-</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="o">-</span><span class="n">c</span><span class="o">:</span><span class="n">a</span> <span class="p">[</span><span class="n">AUDIOCODEC</span><span class="p">]</span> <span class="p">[</span><span class="n">CODEC</span><span class="o">-</span><span class="n">OPTIONS</span><span class="p">]</span> <span class="p">[</span><span class="n">OUTPUTFILE</span><span class="p">]</span>
+</pre></div>
+
+
+<p>因此，例如创建一个H.264视频与AAC音频完整的命令行应该是这样的：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">MyFile</span><span class="p">.</span><span class="n">avi</span> <span class="o">-</span><span class="n">c</span><span class="o">:</span><span class="n">v</span> <span class="n">libx264</span> <span class="o">-</span><span class="n">preset</span> <span class="n">slow</span> <span class="o">-</span><span class="n">c</span><span class="o">:</span><span class="n">a</span> <span class="n">libfdk_aac</span> <span class="n">MyFile</span><span class="p">.</span><span class="n">mp4</span>
+</pre></div>
+
+
+<p>让我们通过在我们的命令行新的论据：</p>
+<p><strong>-c：（ⅴ|一） </strong>是一个选择器，用于不同类型的编解码器。<strong>v</strong>是选择器的视频和<strong>一个</strong>音频</p>
+<p><strong> [VIDEOCODEC]：</strong>   是视频编解码器的使用。在我的例子libx264将编码为H.264视频。</p>
+<p><strong>[的AudioCodec]： </strong>分别定义了音频编解码器进行编码。在这个例子中，我用libfdk_aac编码为AAC音频。</p>
+<p><strong>[CODEC-OPTIONS]： </strong>每一个编解码器自带了一堆选项。你曾经定义旁边的具体的编解码器。对于视频我只是使用了X264的开发提供了预设和音频我没有选择的话，将让FFmpeg的使用默认选项。</p>
+<p>这只是一个简单的介绍，我们只是触及了什么FFmpeg是能够表面。其实我也不知道有多少份这种即将推出的系列都会有。我想围绕五个，然后我会去到一些具体的和/或有趣的事情可以做的FFmpeg。下一个主题将告诉您如何裁剪，缩放和信纸/邮筒你的电影。</p>
+<p>看你有...</p>
+<h1 id="ffmpeg-_1">FFmpeg的 - 第二部分：视频缩放</h1>
+<p><a href="http://www.renevolution.com/wp-content/uploads/2013/03/FFmpeg-Logo.svg_.png"><img alt="FFmpeg的-Logo.svg本" src="http://www.renevolution.com/wp-content/uploads/2013/03/FFmpeg-Logo.svg_.png" /></a></p>
+<p>你们中的大多数正在视频编码的时间<a href="http://www.ffmpeg.org/">FFmpeg的</a>，你会想扩展您的视频，以适应特定的球员 ​​配置，或者只是因为你可以:-)您的需求。严重的是，当你创造了如自适应流媒体内容，您会希望在创建用于片剂或手机更低的比特率，以降低视频分辨率。</p>
+<p>为了让下面的例子缩放可比我决定用30秒将图像从  <a href="http://www.renevolution.com/introducing-tears-of-steel/">钢之泪</a>  视频。这是通过参数的做法 - SS30   在命令行中。我也转换成帧使用PNG文件 - vframes 1   选项，定义只使用输出文件的扩展名PNG PNG编码。</p>
+<h2 id="_6">缩放滤波器</h2>
+<p>要使用你需要使用的缩放滤波器 - VF   （videofilter）选项，在命令行。这标志着<a href="http://www.ffmpeg.org/">FFmpeg的</a>准备被过滤的视频帧。过滤器在FFmpeg的是可链接的，但是这是我们更深入地研究在即将到来的一篇文章的主题。</p>
+<p>一般用法的缩放过滤器：</p>
+<p>“规模= W =所需的输出宽度：H =所需的输出高”</p>
+<p>这相当于</p>
+<p>“规模=所需的输出宽度：所需的输出高”</p>
+<p>简单的比例</p>
+<p>作为第一个例子，我将告诉你如何去衡量一个给定的视频使用命令行640x267px固定定义的分辨率：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">ss</span> <span class="mi">30</span> <span class="o">-</span><span class="n">i</span> <span class="n">tears_of_steel_1080p</span><span class="p">.</span><span class="n">mov</span> <span class="o">-</span><span class="n">vf</span> <span class="s">&quot;scale=640:267&quot;</span> <span class="o">-</span><span class="n">vframes</span> <span class="mi">1</span> <span class="n">tos_640x267_scale</span><span class="p">.</span><span class="n">png</span>
+</pre></div>
+
+
+<p>这将导致下面的图片：</p>
+<p><img alt="tos_640x267_scale" src="http://www.renevolution.com/wp-content/uploads/2013/05/tos_640x267_scale.png" />](http://www.renevolution.com/wp-content/uploads/2013/05/tos_640x267_scale.png)</p>
+<p>这可能是怀疑你，我选择了640x267px作为该决议，但，这是导致决议保持视频图像的宽高比。让我们来看看，如果我们缩放视频640x360px的固定的分辨率会发生什么：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">ss</span> <span class="mi">30</span> <span class="o">-</span><span class="n">i</span> <span class="n">tears_of_steel_1080p</span><span class="p">.</span><span class="n">mov</span> <span class="o">-</span><span class="n">vf</span> <span class="s">&quot;scale=640:360&quot;</span> <span class="o">-</span><span class="n">vframes</span> <span class="mi">1</span> <span class="n">tos_640x360_scale</span><span class="p">.</span><span class="n">png</span>
+</pre></div>
+
+
+<p><a href="http://www.renevolution.com/wp-content/uploads/2013/05/tos_640x360_scale.png"><img alt="tos_640x360_scale" src="http://www.renevolution.com/wp-content/uploads/2013/05/tos_640x360_scale.png" /></a></p>
+<p>好吧，这看起来真的不好，即使演员可能喜欢看到他们，苗条，它实际上看起来更像是“翻拍<a href="http://www.imdb.com/title/tt0106598/">Coneheads</a> “ -电影在1993年:-)。</p>
+<p>回到主题，会有情况下，您不知道正确的分辨率为您的视频输出，你可能只是想定义最大宽度或高度。对于这些情况的ffmpeg引入了一个自动的方法来保持由跟限定的宽度或高度的纵横比，并设置相对为-1。</p>
+<div class="hlcode"><pre><span class="s-Atom">ffmpeg</span> <span class="o">-</span><span class="s-Atom">ss</span> <span class="m">30</span> <span class="o">-</span><span class="s-Atom">i</span> <span class="s-Atom">tears_of_steel_1080p</span><span class="p">.</span><span class="s-Atom">mov</span> <span class="o">-</span><span class="s-Atom">vf</span> <span class="s2">&quot;scale=640:-1&quot;</span> <span class="o">-</span><span class="s-Atom">vframes</span> <span class="m">1</span> <span class="s-Atom">tos_640x</span><span class="o">-</span><span class="m">1</span><span class="k">_</span><span class="s-Atom">scale</span><span class="p">.</span><span class="s-Atom">png</span>
+</pre></div>
+
+
+<p>和</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">ss</span> <span class="mi">30</span> <span class="o">-</span><span class="n">i</span> <span class="n">tears_of_steel_1080p</span><span class="p">.</span><span class="n">mov</span> <span class="o">-</span><span class="n">vf</span> <span class="s">&quot;scale=-1:267&quot;</span> <span class="o">-</span><span class="n">vframes</span> <span class="mi">1</span> <span class="n">tos_</span><span class="o">-</span><span class="mi">1</span><span class="n">x267_scale</span><span class="p">.</span><span class="n">png</span>
+</pre></div>
+
+
+<p>将导致与作为第一张图像的分辨率相同（+/- 1像素）。</p>
+<h2 id="_7">高级缩放</h2>
+<h3 id="_8">停止倍增</h3>
+<p>如果你想批量处理的一套视频，你可能会考虑使用正则表达式。这些都是非常强大，我只能建议你使用它们，如果你不知道什么样的输入分辨率期待。</p>
+<p>下面的例子将阻止你升频您的视频到一个更高的宽度输入视频提供和640px最大宽度：</p>
+<div class="hlcode"><pre><span class="s-Atom">ffmpeg</span> <span class="o">-</span><span class="s-Atom">ss</span> <span class="m">30</span> <span class="o">-</span><span class="s-Atom">i</span> <span class="s-Atom">tears_of_steel_1080p</span><span class="p">.</span><span class="s-Atom">mov</span> <span class="o">-</span><span class="s-Atom">vf</span> <span class="s2">&quot;scale=&#39;min(iw,640)&#39;:-1&quot;</span> <span class="o">-</span><span class="s-Atom">vframes</span> <span class="m">1</span> <span class="s-Atom">tos_no_upscaling</span><span class="p">.</span><span class="s-Atom">png</span>
+</pre></div>
+
+
+<p>在这个例子中我使用_iw的_保持该视频分析出的输入宽度和可变_分钟（）_函数，它比较输入宽度640，并应用下一个过滤器。因此，对于1280x720px输入分辨率输出分辨率将是640x360px和320x180px的输入分辨率输出分辨率将保持320x180px。</p>
+<h3 id="_9">半角</h3>
+<p>正则表达式，你还可以扩展您的图像，例如用下面的命令行半大小的视频：</p>
+<div class="hlcode"><pre><span class="s-Atom">ffmpeg</span> <span class="o">-</span><span class="s-Atom">ss</span> <span class="m">30</span> <span class="o">-</span><span class="s-Atom">i</span> <span class="s-Atom">tears_of_steel_1080p</span><span class="p">.</span><span class="s-Atom">mov</span> <span class="o">-</span><span class="s-Atom">vf</span> <span class="s2">&quot;scale=&#39;iw/2&#39;:-1&quot;</span> <span class="o">-</span><span class="s-Atom">vframes</span> <span class="m">1</span> <span class="s-Atom">tos_half_size</span><span class="p">.</span><span class="s-Atom">png</span>
+</pre></div>
+
+
+<p>您可以轻松地修改这个例子，例如创建季度大小的视频，当然你也可以应用这些正则表达式的高度。只是尝试一下。</p>
+<h1 id="ffmpeg-_2">FFmpeg的-第三部分：裁剪</h1>
+<p><a href="http://www.renevolution.com/wp-content/uploads/2013/03/FFmpeg-Logo.svg_.png"><img alt="FFmpeg的-Logo.svg本" src="http://www.renevolution.com/wp-content/uploads/2013/03/FFmpeg-Logo.svg_.png" /></a></p>
+<p>如果你曾经在一个情况下录制的视频有一个空白间隔，或者你只是想获得你的视频的特定部分，你肯定会想裁剪视频。在本文中，我将向你展示如何使用做到这一点<a href="http://www.ffmpeg.org/">的FFmpeg</a>。</p>
+<h2 id="_10">例如视频</h2>
+<p><a href="http://www.renevolution.com/wp-content/uploads/2013/05/crop_example.png"><img alt="crop_example" src="http://www.renevolution.com/wp-content/uploads/2013/05/crop_example-600x337.png" /></a></p>
+<p>好吧，你离开键盘和停止阅读之前......你不会需要一个标尺来解决这个问题。让我们看看我们如何能做到用最简单的方式<a href="http://www.ffmpeg.org/">FFmpeg的</a>。</p>
+<p>获取裁剪值</p>
+<p>首先，我们需要找出裁剪滤波器所需的值。这可以通过FFplay使用cropdetect滤波器来完成。这可以通过使用命令行来完成  <code>ffplay -i YourMovie.mp4 -vf "cropdetect=24:16:0"</code> ，或使用FFmpeg的使用下面的命令行  <code>ffmpeg -i YourMovie.mp4 -vf "cropdetect=24:16:0" dummy.avi</code>。</p>
+<p>该过滤器cropdetect配置与参数_cropdetect =限制：轮：重置_ 具有以下含义：</p>
+<p><em><strong>极限</strong> </em>=黑条的强度阈值。你可以玩弄的是，它的工作主要是对我很好的默认值24</p>
+<p><em><strong>圆</strong> </em>=确保输出的分辨率是整除指定的值。16是最适合大多数的视频编解码器。</p>
+<p><strong><em>复位</em> </strong>后多少帧cropdetect将重置先前检测到的最大视频区域，并重新开始检测当前的最优作物面积=确定。当电视徽标中断视频这是特别有用。</p>
+<p>要在你的shell的输出看起来就像这样：</p>
+<div class="hlcode"><pre><span class="p">[</span><span class="n">Parsed_cropdetect_0</span> <span class="err">@</span> <span class="mh">0x7fe4f14127c0</span><span class="p">]</span> <span class="n">x1</span><span class="o">:</span><span class="mi">0</span> <span class="n">x2</span><span class="o">:</span><span class="mi">639</span> <span class="n">y1</span><span class="o">:</span><span class="mi">29</span> <span class="n">y2</span><span class="o">:</span><span class="mi">295</span> <span class="n">w</span><span class="o">:</span><span class="mi">640</span> <span class="n">h</span><span class="o">:</span><span class="mi">256</span> <span class="n">x</span><span class="o">:</span><span class="mi">0</span> <span class="n">y</span><span class="o">:</span><span class="mi">36</span> <span class="n">pos</span><span class="o">:</span><span class="mi">1426828</span> <span class="n">pts</span><span class="o">:</span><span class="mi">636</span> <span class="n">t</span><span class="o">:</span><span class="mf">26.500000</span> <span class="n">crop</span><span class="o">=</span><span class="mi">640</span><span class="o">:</span><span class="mi">256</span><span class="o">:</span><span class="mi">0</span><span class="o">:</span><span class="mi">36</span>
+<span class="p">[</span><span class="n">Parsed_cropdetect_0</span> <span class="err">@</span> <span class="mh">0x7fe4f14127c0</span><span class="p">]</span> <span class="n">x1</span><span class="o">:</span><span class="mi">0</span> <span class="n">x2</span><span class="o">:</span><span class="mi">639</span> <span class="n">y1</span><span class="o">:</span><span class="mi">29</span> <span class="n">y2</span><span class="o">:</span><span class="mi">295</span> <span class="n">w</span><span class="o">:</span><span class="mi">640</span> <span class="n">h</span><span class="o">:</span><span class="mi">256</span> <span class="n">x</span><span class="o">:</span><span class="mi">0</span> <span class="n">y</span><span class="o">:</span><span class="mi">36</span> <span class="n">pos</span><span class="o">:</span><span class="mi">1428008</span> <span class="n">pts</span><span class="o">:</span><span class="mi">637</span> <span class="n">t</span><span class="o">:</span><span class="mf">26.541667</span> <span class="n">crop</span><span class="o">=</span><span class="mi">640</span><span class="o">:</span><span class="mi">256</span><span class="o">:</span><span class="mi">0</span><span class="o">:</span><span class="mi">36</span>
+</pre></div>
+
+
+<p>那是什么？右，与每一行的最后一部分“ <em><strong>作物= </strong></em>... “是我们的剪切值，除去我们周围所有的电影黑边。</p>
+<h2 id="_11">作物，喜欢它的热</h2>
+<p>现在是时候用删除围绕这部电影那些恼人的黑边</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">YourMovie</span><span class="p">.</span><span class="n">mp4</span> <span class="o">-</span><span class="n">vf</span> <span class="s">&quot;crop=640:256:0:36&quot;</span> <span class="n">YourCroppedMovie</span><span class="p">.</span><span class="n">mp4</span>
+</pre></div>
+
+
+<p>这将导致在这样的预期的输出：</p>
+<p><a href="http://www.renevolution.com/wp-content/uploads/2013/05/cropped.png"><img alt="裁剪" src="http://www.renevolution.com/wp-content/uploads/2013/05/cropped-600x240.png" /></a></p>
+<p>最终解释，在一个更​​一般的方式作物过滤器使用的参数，在这里我们去：</p>
+<p>作物过滤器有四个参数  <code>crop=out_width:out_height:x:y</code>  并且可以作为解释</p>
+<p><strong><em>out_width / output_height</em> </strong>代表视频的裁剪输出宽度。</p>
+<p><strong><em>的x / y</em></strong>是从左上角开始坐标。</p>
+<p>在我的例子中裁剪输出宽度为640px，输出高度在总256PX，从（0,36）开始坐标。</p>
+<h2 id="_12">与固定值裁剪</h2>
+<p>另一种方法是裁剪你的视频到一个固定的区域。这可以通过使用作物过滤器配置内的正则表达式来完成。</p>
+<p>对于如裁剪上顶部/底部使用左/右16px的这个配置你的视频32PX <code>crop=iw-64:ih-32:32:16</code>。参数  <strong><em>IW-64</em></strong>是由输入宽度计算的裁剪输出宽度- 64PX，因为我们想从每边裁剪32PX。同样是为输出高度与完成_<strong>IH-32</strong> <em>32PX - - ​​&gt; 16像素的每个顶部和底部，这导致计算的裁剪输出高度。起始坐标是</em><strong>x</strong>_ = 32和<strong><em>ÿ</em></strong> = 16。</p>
+<p>我希望我能告诉你如何有用和强大的裁剪是您喜欢阅读。试试吧，有乐趣...</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

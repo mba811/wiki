@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Hot to install nginx, PHP-fpm 5.5.6, mongo and MySql on mac with homebrew - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Hot to install nginx, PHP-fpm 5.5.6, mongo and MySql on mac with homebrew
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 08:51
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Hot to install nginx, PHP-fpm 5.5.6, mongo and MySql on mac with homebrew</div>
+
+  <p>ALERT!!! Latest version of follow procedure can be found here https://github.com/OzzyCzech/dotfiles/blob/master/readme.md</p>
+<h1 id="preparation">Preparation</h1>
+<p>Download <a href="http://www.sublimetext.com/">Sublime editor</a> and create link <code>subl</code>:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Applications</span><span class="o">/</span><span class="n">Sublime</span><span class="err">\</span> <span class="n">Text</span><span class="p">.</span><span class="n">app</span><span class="o">/</span><span class="n">Contents</span><span class="o">/</span><span class="n">SharedSupport</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">subl</span> <span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">subl</span>
+</pre></div>
+
+
+<p>Install <a href="http://brew.sh/">Homebrew</a></p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)&quot;</span>
+</pre></div>
+
+
+<h2 id="nginx">NGINX</h2>
+<h3 id="install">Install</h3>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">nginx</span>
+</pre></div>
+
+
+<h3 id="running">Running</h3>
+<p>Follow command will autostart nginx after login</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">nginx</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+</pre></div>
+
+
+<p>You can start nginx manually and check if running in browser</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">sudo</span> <span class="n">nginx</span>            <span class="err">#</span> <span class="n">start</span>
+  <span class="mf">2.</span> <span class="n">sudo</span> <span class="n">nginx</span> <span class="o">-</span><span class="n">s</span> <span class="n">stop</span>    <span class="err">#</span> <span class="n">stop</span>
+  <span class="mf">3.</span> <span class="n">sudo</span> <span class="n">nginx</span> <span class="o">-</span><span class="n">s</span> <span class="n">reload</span>  <span class="err">#</span> <span class="n">restart</span>
+</pre></div>
+
+
+<p>Check if running <code>open http://localhost:8080</code> or <code>open http://localhost:80</code></p>
+<h3 id="configuration">Configuration</h3>
+<p>nginx configuration files can be found here <code>subl /usr/local/etc/nginx/nginx</code></p>
+<p>Here is my basic <code>nginx.conf</code> file (do not forgot change root path):</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="err">#</span><span class="n">user</span>  <span class="n">nobody</span><span class="p">;</span>
+  <span class="mf">2.</span> <span class="n">worker_processes</span>  <span class="mi">1</span><span class="p">;</span>
+  <span class="mf">3.</span>   <span class="mf">4.</span>  <span class="p">[</span><span class="err">#</span><span class="n">error_log</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.nabito.net/tag/error_log)  logs/error.log;</span>
+  <span class="mf">5.</span>  <span class="p">[</span><span class="err">#</span><span class="n">error_log</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.nabito.net/tag/error_log)  logs/error.log  notice;</span>
+  <span class="mf">6.</span>  <span class="p">[</span><span class="err">#</span><span class="n">error_log</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.nabito.net/tag/error_log)  logs/error.log  info;</span>
+  <span class="mf">7.</span>   <span class="mf">8.</span> <span class="n">events</span> <span class="p">{</span>
+  <span class="mf">9.</span>     <span class="n">worker_connections</span>  <span class="mi">1024</span><span class="p">;</span>
+  <span class="mf">10.</span> <span class="p">}</span>
+  <span class="mf">11.</span>   <span class="mf">12.</span> <span class="n">http</span> <span class="p">{</span>
+  <span class="mf">13.</span>     <span class="n">include</span>       <span class="n">mime</span><span class="p">.</span><span class="n">types</span><span class="p">;</span>
+  <span class="mf">14.</span>     <span class="n">include</span>       <span class="n">sites</span><span class="o">-</span><span class="n">enabled</span><span class="o">/*</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span> <span class="err">#</span> <span class="n">load</span> <span class="n">virtuals</span> <span class="n">config</span>
+  <span class="mf">15.</span>     <span class="n">sendfile</span>        <span class="n">on</span><span class="p">;</span>
+  <span class="mf">16.</span>   <span class="mf">17.</span>     <span class="n">keepalive_timeout</span>  <span class="mi">65</span><span class="p">;</span>
+  <span class="mf">18.</span>   <span class="mf">19.</span>     <span class="err">#</span> <span class="n">gzip</span>  <span class="n">on</span><span class="p">;</span>
+  <span class="mf">20.</span>     <span class="err">#</span> <span class="n">gzip_disable</span> <span class="s">&quot;MSIE [1-6]\.(?!.*SV1)&quot;</span><span class="p">;</span>
+  <span class="mf">21.</span>   <span class="mf">22.</span>     <span class="n">server</span> <span class="p">{</span>
+  <span class="mf">23.</span>         <span class="n">listen</span>       <span class="mi">80</span><span class="p">;</span>
+  <span class="mf">24.</span>         <span class="n">server_name</span>  <span class="n">localhost</span><span class="p">;</span>
+  <span class="mf">25.</span>   <span class="mf">26.</span>         <span class="n">location</span> <span class="o">/</span> <span class="p">{</span>
+  <span class="mf">27.</span>             <span class="n">root</span>  <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">roman</span><span class="o">/</span><span class="n">Sites</span><span class="p">;</span>
+  <span class="mf">28.</span>             <span class="n">try_files</span>  <span class="err">$</span><span class="n">uri</span>  <span class="err">$</span><span class="n">uri</span><span class="o">/</span>  <span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">?</span><span class="err">$</span><span class="n">args</span> <span class="p">;</span>
+  <span class="mf">29.</span>             <span class="n">index</span>  <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+  <span class="mf">30.</span>         <span class="p">}</span>
+  <span class="mf">31.</span>   <span class="mf">32.</span>         <span class="err">#</span> <span class="n">configure</span> <span class="o">*</span><span class="p">.</span><span class="n">PHP</span> <span class="n">requests</span>
+  <span class="mf">33.</span>   <span class="mf">34.</span>         <span class="n">location</span> <span class="o">~</span> <span class="err">\</span><span class="p">.</span><span class="n">php</span><span class="err">$</span> <span class="p">{</span>
+  <span class="mf">35.</span>             <span class="n">root</span>  <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">roman</span><span class="o">/</span><span class="n">Sites</span><span class="p">;</span>
+  <span class="mf">36.</span>             <span class="n">try_files</span>  <span class="err">$</span><span class="n">uri</span>  <span class="err">$</span><span class="n">uri</span><span class="o">/</span>  <span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">?</span><span class="err">$</span><span class="n">args</span> <span class="p">;</span>
+  <span class="mf">37.</span>             <span class="n">index</span>  <span class="n">index</span><span class="p">.</span><span class="n">html</span> <span class="n">index</span><span class="p">.</span><span class="n">htm</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+  <span class="mf">38.</span>             <span class="n">fastcgi_param</span> <span class="n">PATH_INFO</span> <span class="err">$</span><span class="n">fastcgi_path_info</span><span class="p">;</span>
+  <span class="mf">39.</span>             <span class="n">fastcgi_param</span> <span class="n">PATH_TRANSLATED</span> <span class="err">$</span><span class="n">document_root</span><span class="err">$</span><span class="n">fastcgi_path_info</span><span class="p">;</span>
+  <span class="mf">40.</span>             <span class="n">fastcgi_param</span> <span class="n">SCRIPT_FILENAME</span> <span class="err">$</span><span class="n">document_root</span><span class="err">$</span><span class="n">fastcgi_script_name</span><span class="p">;</span>
+  <span class="mf">41.</span>   <span class="mf">42.</span>             <span class="n">fastcgi_pass</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">9000</span><span class="p">;</span>
+  <span class="mf">43.</span>             <span class="n">fastcgi_index</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+  <span class="mf">44.</span>             <span class="n">fastcgi_split_path_info</span> <span class="o">^</span><span class="p">(.</span><span class="o">+</span><span class="err">\</span><span class="p">.</span><span class="n">php</span><span class="p">)(</span><span class="o">/</span><span class="p">.</span><span class="o">+</span><span class="p">)</span><span class="err">$</span><span class="p">;</span>
+  <span class="mf">45.</span>             <span class="n">fastcgi_intercept_errors</span> <span class="n">on</span><span class="p">;</span>
+  <span class="mf">46.</span>             <span class="n">include</span> <span class="n">fastcgi_params</span><span class="p">;</span>
+  <span class="mf">47.</span>         <span class="p">}</span>
+  <span class="mf">48.</span>     <span class="p">}</span>
+  <span class="mf">49.</span> <span class="p">}</span>
+</pre></div>
+
+
+<h3 id="setup-virtuals">Setup virtuals</h3>
+<p>First prepare follow dirs</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">available</span>
+  <span class="mf">2.</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">enabled</span>
+</pre></div>
+
+
+<p>Create first dev configuration:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">subl</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">available</span><span class="o">/</span><span class="n">omdesign</span><span class="p">.</span><span class="n">dev</span>
+</pre></div>
+
+
+<p>Here is my example configuration:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">server</span> <span class="p">{</span>
+  <span class="mf">2.</span>   <span class="n">listen</span>                <span class="o">*:</span><span class="mi">80</span><span class="p">;</span>
+  <span class="mf">3.</span>   <span class="n">server_name</span>           <span class="n">omdesign</span><span class="p">.</span><span class="n">dev</span><span class="p">;</span>
+  <span class="mf">4.</span>   <span class="p">[</span><span class="err">#</span><span class="n">access_log</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.nabito.net/tag/access_log)           /Users/roman/Work/omdesign.cz/log/omdesign.dev.access.log;</span>
+  <span class="mf">5.</span>   <span class="p">[</span><span class="err">#</span><span class="n">error_log</span><span class="p">](</span><span class="n">http</span><span class="o">:</span><span class="c1">//www.nabito.net/tag/error_log)            /Users/roman/Work/omdesign.cz/log/omdesign.dev.error.log;</span>
+  <span class="mf">6.</span>   <span class="mf">7.</span>   <span class="n">location</span> <span class="o">/</span> <span class="p">{</span>
+  <span class="mf">8.</span>     <span class="n">root</span>  <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">roman</span><span class="o">/</span><span class="n">Work</span><span class="o">/</span><span class="n">omdesign</span><span class="p">.</span><span class="n">cz</span><span class="p">;</span>
+  <span class="mf">9.</span>     <span class="n">try_files</span>  <span class="err">$</span><span class="n">uri</span>  <span class="err">$</span><span class="n">uri</span><span class="o">/</span>  <span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">?</span><span class="err">$</span><span class="n">args</span><span class="p">;</span>
+  <span class="mf">10.</span>     <span class="n">index</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+  <span class="mf">11.</span>   <span class="p">}</span>
+  <span class="mf">12.</span>   <span class="mf">13.</span>   <span class="n">location</span> <span class="o">~</span> <span class="err">\</span><span class="p">.</span><span class="n">php</span><span class="err">$</span> <span class="p">{</span>
+  <span class="mf">14.</span>     <span class="n">root</span>  <span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">roman</span><span class="o">/</span><span class="n">Work</span><span class="o">/</span><span class="n">omdesign</span><span class="p">.</span><span class="n">cz</span><span class="p">;</span>
+  <span class="mf">15.</span>     <span class="n">try_files</span>  <span class="err">$</span><span class="n">uri</span>  <span class="err">$</span><span class="n">uri</span><span class="o">/</span>  <span class="o">/</span><span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">?</span><span class="err">$</span><span class="n">args</span><span class="p">;</span>
+  <span class="mf">16.</span>     <span class="n">index</span>  <span class="n">index</span><span class="p">.</span><span class="n">html</span> <span class="n">index</span><span class="p">.</span><span class="n">htm</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+  <span class="mf">17.</span>   <span class="mf">18.</span>     <span class="n">fastcgi_param</span> <span class="n">PATH_INFO</span> <span class="err">$</span><span class="n">fastcgi_path_info</span><span class="p">;</span>
+  <span class="mf">19.</span>     <span class="n">fastcgi_param</span> <span class="n">PATH_TRANSLATED</span> <span class="err">$</span><span class="n">document_root</span><span class="err">$</span><span class="n">fastcgi_path_info</span><span class="p">;</span>
+  <span class="mf">20.</span>     <span class="n">fastcgi_param</span> <span class="n">SCRIPT_FILENAME</span> <span class="err">$</span><span class="n">document_root</span><span class="err">$</span><span class="n">fastcgi_script_name</span><span class="p">;</span>
+  <span class="mf">21.</span>   <span class="mf">22.</span>     <span class="n">fastcgi_pass</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">9000</span><span class="p">;</span>
+  <span class="mf">23.</span>     <span class="n">fastcgi_index</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="p">;</span>
+  <span class="mf">24.</span>     <span class="n">fastcgi_split_path_info</span> <span class="o">^</span><span class="p">(.</span><span class="o">+</span><span class="err">\</span><span class="p">.</span><span class="n">php</span><span class="p">)(</span><span class="o">/</span><span class="p">.</span><span class="o">+</span><span class="p">)</span><span class="err">$</span><span class="p">;</span>
+  <span class="mf">25.</span>     <span class="n">fastcgi_intercept_errors</span> <span class="n">on</span><span class="p">;</span>
+  <span class="mf">26.</span>     <span class="n">include</span> <span class="n">fastcgi_params</span><span class="p">;</span>
+  <span class="mf">27.</span>   <span class="p">}</span>
+  <span class="mf">28.</span>   <span class="mf">29.</span> <span class="p">}</span>
+</pre></div>
+
+
+<p>Create symlink to sites-enabled:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">available</span><span class="o">/</span><span class="n">omdesign</span><span class="p">.</span><span class="n">dev</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">nabled</span><span class="o">/</span><span class="n">omdesign</span><span class="p">.</span><span class="n">dev</span>
+</pre></div>
+
+
+<p>Update your <code>subl /etc/hosts</code> file with follow line:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="mf">127.0.0.1</span>   <span class="n">omdesign</span><span class="p">.</span><span class="n">dev</span>
+</pre></div>
+
+
+<p>Restart nginx (<code>sudo nginx -s reload</code>) and check if working (<code>open http://omdesign.dev</code>)</p>
+<h2 id="php-fpm">PHP-fpm</h2>
+<h3 id="install_1">Install</h3>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">dupes</span>
+  <span class="mf">2.</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">josegonzalez</span><span class="o">/</span><span class="n">homebrew</span><span class="o">-</span><span class="n">php</span>
+  <span class="mf">3.</span> <span class="n">brew</span> <span class="n">install</span> <span class="o">--</span><span class="n">without</span><span class="o">-</span><span class="n">apache</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">fpm</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">mysql</span> <span class="n">php55</span>
+</pre></div>
+
+
+<p>Launch after login</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">php55</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+</pre></div>
+
+
+<h3 id="install-php-extensions">Install PHP extensions</h3>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span><span class="o">-</span><span class="n">mongo</span>
+  <span class="mf">2.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span><span class="o">-</span><span class="n">xdebug</span>
+  <span class="mf">3.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span><span class="o">-</span><span class="n">memcache</span>
+  <span class="mf">4.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span><span class="o">-</span><span class="n">memcached</span>
+</pre></div>
+
+
+<p>add launch agent for memcached</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">memcached</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+</pre></div>
+
+
+<p>or get others</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">search</span> <span class="n">php55</span>
+</pre></div>
+
+
+<p>What about APC? See <a href="http://stackoverflow.com/questions/9611676/is-apc-compatible-with-php-5-4-or-php-5-5">stackoverflow</a> – APC have some problems but you can install emulated APC</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">php55</span><span class="o">-</span><span class="n">apcu</span> <span class="err">#</span> <span class="n">APC</span>
+</pre></div>
+
+
+<h3 id="replace-os-x-php">Replace OS X PHP</h3>
+<p>change <code>~/.bash_profile</code> add follow line:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s">&quot;/usr/local/bin:/usr/local/sbin:$PATH&quot;</span>
+</pre></div>
+
+
+<p>Restart Terminal and check if working <code>php -v</code> or <code>php-fpm -v</code></p>
+<h3 id="configuration-and-phpini">Configuration and php.ini</h3>
+<p>You can found basic php-fpm config file here <code>subl /usr/local/etc/php/5.5/php-fpm.conf</code>. Check especially <code>listen = 127.0.0.1:9000</code> everything else can be leave as is.</p>
+<p>PHP config files can be found here <code>subl /usr/local/etc/php/5.5/conf.d/</code>. You can change <code>php.ini</code> but its more more easly keept change is spearate file:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">subl</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">php</span><span class="o">/</span><span class="mf">5.5</span><span class="o">/</span><span class="n">conf</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="mi">99999</span><span class="o">-</span><span class="n">roman</span><span class="p">.</span><span class="n">ini</span>
+</pre></div>
+
+
+<p>See my configuration:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">short_open_tag</span> <span class="o">=</span> <span class="n">On</span>
+  <span class="mf">2.</span> <span class="n">display_errors</span> <span class="o">=</span> <span class="n">On</span>
+  <span class="mf">3.</span> <span class="n">display_startup_errors</span> <span class="o">=</span> <span class="n">On</span>
+  <span class="mf">4.</span> <span class="n">upload_max_filesize</span> <span class="o">=</span> <span class="mi">256</span><span class="n">M</span>
+  <span class="mf">5.</span> <span class="n">date</span><span class="p">.</span><span class="n">timezone</span> <span class="o">=</span> <span class="s">&quot;Europe/Prague&quot;</span>
+  <span class="mf">6.</span> <span class="n">error_reporting</span> <span class="o">=</span> <span class="n">E_ALL</span>
+  <span class="mf">7.</span>   <span class="mf">8.</span> <span class="n">xdebug</span><span class="p">.</span><span class="n">idekey</span><span class="o">=</span><span class="n">PHPSTORM</span>
+</pre></div>
+
+
+<h2 id="mongo">mongo</h2>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">mongodb</span>
+  <span class="mf">2.</span> <span class="n">brew</span> <span class="n">link</span> <span class="n">mongod</span>
+</pre></div>
+
+
+<p>Setup to autostart after login</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mongodb</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+</pre></div>
+
+
+<h3 id="start-restart">Start &amp; restart</h3>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">launchctl</span> <span class="n">unload</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">mongodb</span><span class="p">.</span><span class="n">plist</span>
+  <span class="mf">2.</span> <span class="n">launchctl</span> <span class="n">load</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span><span class="o">/</span><span class="n">homebrew</span><span class="p">.</span><span class="n">mxcl</span><span class="p">.</span><span class="n">mongodb</span><span class="p">.</span><span class="n">plist</span>
+</pre></div>
+
+
+<h2 id="mysql">mysql</h2>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<p>Setup to autostart after login</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">ln</span> <span class="o">-</span><span class="n">sfv</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">mysql</span><span class="o">/*</span><span class="p">.</span><span class="n">plist</span> <span class="o">~/</span><span class="n">Library</span><span class="o">/</span><span class="n">LaunchAgents</span>
+</pre></div>
+
+
+<h3 id="confugure">Confugure</h3>
+<p>First setup new password for root</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">mysqladmin</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="n">password</span>
+</pre></div>
+
+
+<h2 id="bash-need-to-be-upgrade-for-new-git">bash (need to be upgrade for new Git)</h2>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">bash</span>
+</pre></div>
+
+
+<p>Open terminal cmd+, setup path to new bash <code>/usr/local/bin/bash</code></p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">sudo</span> <span class="n">subl</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">shells</span>
+</pre></div>
+
+
+<p>add this line at the end of the list:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span>
+</pre></div>
+
+
+<p>and</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">chsh</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span> <span class="n">YOUR_USER_NAME</span>
+</pre></div>
+
+
+<p>after that relaunch Terminal and check bash version</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">echo</span> <span class="err">$</span><span class="n">BASH_VERSION</span>
+</pre></div>
+
+
+<h2 id="git">git</h2>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">git</span>
+  <span class="mf">2.</span> <span class="n">brew</span> <span class="n">unlink</span> <span class="n">git</span> <span class="o">&amp;&amp;</span> <span class="n">brew</span> <span class="n">link</span> <span class="n">git</span>
+  <span class="mf">3.</span> <span class="n">brew</span> <span class="n">info</span> <span class="n">git</span>
+</pre></div>
+
+
+<p>And update your <code>~/.bash_profile</code> to add autocomplete and prompt</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="err">#############################################################################</span>
+  <span class="mf">2.</span> <span class="err">#</span> <span class="n">My</span> <span class="n">current</span> <span class="n">prompt</span>
+  <span class="mf">3.</span> <span class="err">#############################################################################</span>
+  <span class="mf">4.</span>   <span class="mf">5.</span> <span class="n">export</span> <span class="n">PS1</span><span class="o">=</span><span class="s">&quot;\w: &quot;</span> 
+  <span class="mf">6.</span>   <span class="mf">7.</span> <span class="err">#############################################################################</span>
+  <span class="mf">8.</span> <span class="err">#</span> <span class="n">git</span> <span class="n">autocomplet</span> <span class="n">and</span> <span class="n">bash</span> <span class="n">prompt</span>
+  <span class="mf">9.</span> <span class="err">#############################################################################</span>
+  <span class="mf">10.</span>   <span class="mf">11.</span> <span class="n">source</span> <span class="err">`</span><span class="n">brew</span> <span class="o">--</span><span class="n">prefix</span> <span class="n">git</span><span class="err">`</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">bash_completion</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">git</span><span class="o">-</span><span class="n">completion</span><span class="p">.</span><span class="n">bash</span>
+  <span class="mf">12.</span> <span class="n">source</span> <span class="err">`</span><span class="n">brew</span> <span class="o">--</span><span class="n">prefix</span> <span class="n">git</span><span class="err">`</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">bash_completion</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="n">git</span><span class="o">-</span><span class="n">prompt</span><span class="p">.</span><span class="n">sh</span>
+  <span class="mf">13.</span>   <span class="mf">14.</span> <span class="err">#</span> <span class="n">configure</span> <span class="n">yout</span> <span class="n">git</span> <span class="n">and</span> <span class="n">prompt</span>
+  <span class="mf">15.</span>   <span class="mf">16.</span> <span class="n">GIT_PS1_SHOWDIRTYSTATE</span><span class="o">=</span><span class="mi">1</span>
+  <span class="mf">17.</span> <span class="n">GIT_PS1_SHOWUNTRACKEDFILES</span><span class="o">=</span><span class="mi">1</span>
+  <span class="mf">18.</span> <span class="n">GIT_PS1_SHOWUPSTREAM</span><span class="o">=</span><span class="s">&quot;git verbose legacy&quot;</span>
+  <span class="mf">19.</span>   <span class="mf">20.</span> <span class="n">export</span> <span class="n">PSORIG</span><span class="o">=</span><span class="s">&quot;$PS1&quot;</span> <span class="err">#</span> <span class="n">or</span> <span class="n">remove</span> <span class="k">if</span> <span class="n">you</span> <span class="n">don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">My</span> <span class="n">custom</span> <span class="n">prompt</span>
+  <span class="mf">21.</span>   <span class="mf">22.</span> <span class="n">PS1</span><span class="o">=</span><span class="err">$</span><span class="n">PSORIG</span><span class="err">&#39;$</span><span class="p">(</span><span class="n">__git_ps1</span> <span class="s">&quot;\[</span><span class="se">\033</span><span class="s">[01;31m\]%s \[</span><span class="se">\033</span><span class="s">[00m\]&quot;</span><span class="p">)</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>Restart terminal (need to be quit and relaunch cmd+q)</p>
+<h2 id="others">Others</h2>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">npm</span>
+</pre></div>
+
+
+<p>Install GNU core utilities (those that come with OS X are outdated)</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">coreutils</span>
+</pre></div>
+
+
+<p>Don’t forget add <code>/usr/local/Cellar/coreutils/8.21/libexec/gnubin</code> to $PATH</p>
+<p>Find, Locate etc. for mac</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">findutils</span>
+</pre></div>
+
+
+<p>Rename command:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">rename</span>
+</pre></div>
+
+
+<p>Tree command for mac:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">tree</span>
+</pre></div>
+
+
+<p>Install wget:</p>
+<div class="hlcode"><pre>  <span class="mf">1.</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">wget</span> <span class="o">--</span><span class="n">enable</span><span class="o">-</span><span class="n">iri</span>
+</pre></div>
+
+
+<p>See <a href="https://github.com/addyosmani/dotfiles/blob/master/.brew">.brew</a> for more</p>
+<p>See my original gist here: https://gist.github.com/OzzyCzech/7658282</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

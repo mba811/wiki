@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Nodejs发邮件组件Nodemailer - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;Nodejs发邮件组件Nodemailer
+    <span class="updated">Page Updated&nbsp;
+      2015-05-25 10:05
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Nodejs发邮件组件Nodemailer</div>
+
+  <p><strong>前言</strong></p>
+<p>电子邮件，是互联网应用最广泛使用的服务之一，通过电子邮件系统，我们可以与世界上任何一个角落的网络用户进行联系。</p>
+<p>使用Nodejs收发电子邮件也非常简单，Nodemailer包就可以帮助快速实现发邮件的功能。</p>
+<p><strong>目录</strong></p>
+<ol>
+<li>Nodemailer包介绍</li>
+<li>使用Nodemailer发邮件</li>
+<li>发邮件的高级使用</li>
+</ol>
+<h2 id="1-nodemailer">1. Nodemailer包介绍</h2>
+<p>Nodemailer是一个简单易用的Node.js邮件发送组件，Github项目地址为<a href="https://github.com/andris9/Nodemailer">https://github.com/andris9/Nodemailer</a>。</p>
+<p>Nodemailer的主要特点包括：</p>
+<ul>
+<li>支持Unicode编码</li>
+<li>支持Window系统环境</li>
+<li>支持HTML内容和普通文本内容</li>
+<li>支持附件(传送大附件)</li>
+<li>支持HTML内容中嵌入图片</li>
+<li>支持SSL/STARTTLS安全的邮件发送</li>
+<li>支持内置的transport方法和其他插件实现的transport方法</li>
+<li>支持自定义插件处理消息</li>
+<li>支持XOAUTH2登录验证</li>
+</ul>
+<p>以上的功能特点，已经覆盖了大部分的发邮件的需求了，接下来就让我们动手开始写程序吧。</p>
+<h2 id="2-nodemailer">2. 使用Nodemailer发邮件</h2>
+<p>我的系统环境</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="n">Win7</span> <span class="mi">64</span><span class="n">bit</span>
+<span class="o">*</span> <span class="n">Node</span> <span class="mf">0.10.5</span>
+<span class="o">*</span> <span class="n">NPM</span> <span class="mf">1.2.19</span>
+</pre></div>
+
+
+<p>首先，创建项目目录。</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">D</span><span class="o">:</span><span class="err">\</span><span class="n">workspace</span><span class="err">\</span><span class="n">javascript</span><span class="o">&gt;</span><span class="n">mkdir</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">nodemailer</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">nodemailer</span>
+</pre></div>
+
+
+<p>新建Node项目配置文件：package.json</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="nt">vi</span> <span class="nt">package</span><span class="nc">.json</span>
+
+<span class="p">{</span>
+  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;nodejs-nodemailer&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;version&quot;</span><span class="o">:</span> <span class="s2">&quot;0.0.1&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;nodejs-nodemailer&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;keywords&quot;</span><span class="o">:</span> <span class="cp">[</span>
+    <span class="s2">&quot;email&quot;</span>
+  <span class="cp">]</span><span class="o">,</span>
+  <span class="s2">&quot;author&quot;</span><span class="o">:</span> <span class="s2">&quot;Conan Zhang &lt;bsspirit@gmail.com style=&quot;</span><span class="k">margin</span><span class="o">:</span> <span class="m">0pt</span><span class="p">;</span> <span class="k">padding</span><span class="o">:</span> <span class="m">0pt</span><span class="p">;</span><span class="s2">&quot;&gt;&quot;</span><span class="o">,</span>
+  <span class="s2">&quot;dependencies&quot;</span><span class="o">:</span> <span class="err">{</span>
+    <span class="s2">&quot;nodemailer&quot;</span><span class="o">:</span> <span class="s2">&quot;^1.2.1&quot;</span>
+  <span class="p">}</span>
+<span class="err">}</span>
+</pre></div>
+
+
+<p>安装nodemailer包</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">npm</span> <span class="n">install</span>
+
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">package</span><span class="p">.</span><span class="n">json</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">nodemailer</span><span class="err">@</span><span class="mf">0.0.1</span> <span class="n">No</span> <span class="n">repository</span> <span class="n">field</span><span class="p">.</span>
+<span class="n">npm</span> <span class="n">WARN</span> <span class="n">package</span><span class="p">.</span><span class="n">json</span> <span class="n">nodejs</span><span class="o">-</span><span class="n">nodemailer</span><span class="err">@</span><span class="mf">0.0.1</span> <span class="n">No</span> <span class="n">README</span> <span class="n">data</span>
+<span class="n">nodemailer</span><span class="err">@</span><span class="mf">1.2.1</span> <span class="n">node_modules</span><span class="err">\</span><span class="n">nodemailer</span>
+<span class="err">├──</span> <span class="n">hyperquest</span><span class="err">@</span><span class="mf">0.3.0</span> <span class="p">(</span><span class="n">duplexer</span><span class="err">@</span><span class="mf">0.1.1</span><span class="p">,</span> <span class="n">through</span><span class="err">@</span><span class="mf">2.2.7</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">nodemailer</span><span class="o">-</span><span class="n">smtp</span><span class="o">-</span><span class="n">transport</span><span class="err">@</span><span class="mf">0.1.12</span> <span class="p">(</span><span class="n">nodemailer</span><span class="o">-</span><span class="n">wellknown</span><span class="err">@</span><span class="mf">0.1.2</span><span class="p">,</span> <span class="n">smtp</span><span class="o">-</span><span class="n">connection</span><span class="err">@</span><span class="mf">0.1.7</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">buildmail</span><span class="err">@</span><span class="mf">1.1.1</span> <span class="p">(</span><span class="n">addressparser</span><span class="err">@</span><span class="mf">0.3.1</span><span class="p">,</span> <span class="n">libbase64</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">,</span> <span class="n">libqp</span><span class="err">@</span><span class="mf">0.1.1</span><span class="p">)</span>
+<span class="err">├──</span> <span class="n">nodemailer</span><span class="o">-</span><span class="n">direct</span><span class="o">-</span><span class="n">transport</span><span class="err">@</span><span class="mf">1.0.0</span> <span class="p">(</span><span class="n">smtp</span><span class="o">-</span><span class="n">connection</span><span class="err">@</span><span class="mf">0.1.7</span><span class="p">)</span>
+<span class="err">└──</span> <span class="n">libmime</span><span class="err">@</span><span class="mf">0.1.3</span> <span class="p">(</span><span class="n">libbase64</span><span class="err">@</span><span class="mf">0.1.0</span><span class="p">,</span> <span class="n">libqp</span><span class="err">@</span><span class="mf">0.1.1</span><span class="p">,</span> <span class="n">iconv</span><span class="o">-</span><span class="n">lite</span><span class="err">@</span><span class="mf">0.4.4</span><span class="p">)</span>
+</pre></div>
+
+
+<p>使用官方提供的例子，通过Gmail邮箱发送邮件。设置发件邮箱 bsspirit@gmail.com，发送到xxxxx@163.com的邮箱。代码如下，使用时把xxxxx的内容替换为自己的内容即可。</p>
+<p>新建一个文件 email.js</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="n">nodemailer</span> <span class="o">=</span> <span class="k">require</span><span class="err">(&#39;</span><span class="n">nodemailer</span><span class="s1">&#39;);</span>
+
+<span class="s1">var transporter = nodemailer.createTransport({</span>
+<span class="s1">    service: &#39;</span><span class="nx">Gmail</span><span class="s1">&#39;,</span>
+<span class="s1">    auth: {</span>
+<span class="s1">        user: &#39;</span><span class="nx">bsspirit</span><span class="p">@</span><span class="nx">gmail.com</span><span class="s1">&#39;,</span>
+<span class="s1">        pass: &#39;</span><span class="nx">xxxxx</span><span class="s1">&#39;</span>
+<span class="s1">    }</span>
+<span class="s1">});</span>
+
+<span class="s1">var mailOptions = {</span>
+<span class="s1">    from: &#39;</span><span class="nx">bsspirit</span> <span class="o">&lt;</span><span class="nx">bsspirit</span><span class="p">@</span><span class="nx">gmail.com</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;margin: 0pt; padding: 0pt;&quot;</span><span class="o">&gt;</span><span class="s1">&#39;, // sender address</span>
+<span class="s1">    to: &#39;</span><span class="nx">xxxxx</span><span class="p">@</span><span class="mi">163</span><span class="bp">.</span><span class="nx">com</span><span class="s1">&#39;, // list of receivers</span>
+<span class="s1">    subject: &#39;</span><span class="nx">Hello</span> <span class="err">✔</span><span class="s1">&#39;, // Subject line</span>
+<span class="s1">    text: &#39;</span><span class="nx">Hello</span> <span class="nx">world</span> <span class="err">✔</span><span class="s1">&#39;, // plaintext body</span>
+<span class="s1">    html: &#39;</span><span class="o">&lt;</span><span class="nx">b</span><span class="o">&gt;</span><span class="nx">Hello</span> <span class="nx">world</span> <span class="err">✔</span><span class="o">&lt;/</span><span class="nx">b</span><span class="o">&gt;</span><span class="s1">&#39; // html body</span>
+<span class="s1">};</span>
+
+<span class="s1">transporter.sendMail(mailOptions, function(error, info){</span>
+<span class="s1">    if(error){</span>
+<span class="s1">        console.log(error);</span>
+<span class="s1">    }else{</span>
+<span class="s1">        console.log(&#39;</span><span class="nx">Message</span> <span class="nx">sent</span><span class="p">:</span> <span class="s1">&#39; + info.response);</span>
+<span class="s1">    }</span>
+<span class="s1">});</span>
+</pre></div>
+
+
+<p>运行程序</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">node</span> <span class="n">email</span><span class="p">.</span><span class="n">js</span>
+<span class="n">Message</span> <span class="n">sent</span><span class="o">:</span> <span class="mi">250</span> <span class="mf">2.0.0</span> <span class="n">OK</span> <span class="mi">1409797959</span> <span class="n">f1sm216864pdf</span><span class="mf">.43</span> <span class="o">-</span> <span class="n">gsmtp</span>
+</pre></div>
+
+
+<p>打我的163的邮箱，收到刚发的邮件。邮件服务并不是时时的，有的时候会稍微慢一点，可能会有几分钟的延迟。</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2014/09/mail-163.png"><img alt="mail-163" src="http://blog.fens.me/wp-content/uploads/2014/09/mail-163.png" /></a></p>
+<p>同时，我们在Gmail的发件箱中，也可以找到刚刚发出的邮件。</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2014/09/mail-gmail.png"><img alt="mail-gmail" src="http://blog.fens.me/wp-content/uploads/2014/09/mail-gmail.png" /></a></p>
+<p>我们这样就掌握了，发邮件基本的操作。接下来，继续介绍一些高级的功能。</p>
+<h2 id="3">3. 发邮件的高级使用</h2>
+<p>Nodemailer提供的，发邮件的高级功能包括：</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="n">CC</span><span class="err">和</span><span class="n">BCC</span>
+<span class="o">*</span> <span class="err">发送附件</span>
+<span class="o">*</span> <span class="err">发送</span><span class="n">HTML</span><span class="err">格式内容，并嵌入图片</span>
+<span class="o">*</span> <span class="err">使用安全的</span><span class="n">SSL</span><span class="err">通道</span>
+</pre></div>
+
+
+<p><strong>3.1 CC和BCC</strong></p>
+<p>发邮件时选择收件人，有3个选项，TO,CC,BCC。</p>
+<div class="hlcode"><pre><span class="o">*</span> <span class="n">TO</span><span class="o">:</span> <span class="err">是收件人</span>
+<span class="o">*</span> <span class="n">CC</span><span class="o">:</span> <span class="err">是抄送，用于通知相关的人，收件人可以看到都邮件都抄送给谁了。一般回报工作或跨部门沟通时，都会</span><span class="n">CC</span><span class="err">给收件人的领导一份</span>
+<span class="o">*</span> <span class="n">BCC</span><span class="o">:</span><span class="err">是密送，也是用于通知相关的人，但是收件人是看不到邮件被密送给谁了。</span>
+</pre></div>
+
+
+<p>程序实现，修改email.js文件中的mailOptions 配置参数，发送给to@163.com，抄送给cc@163.com，密送给bcc@126.com。</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="n">mailOptions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">from</span><span class="p">:</span> <span class="s1">&#39;from@163.com&gt;&#39;</span><span class="p">,</span> <span class="c1">// sender address</span>
+    <span class="k">to</span><span class="p">:</span> <span class="s1">&#39;to@163.com&#39;</span><span class="p">,</span> <span class="c1">// list of receivers</span>
+    <span class="nb">cc</span><span class="p">:</span> <span class="s1">&#39;cc@163.com&#39;</span><span class="p">,</span>
+    <span class="nb">bcc</span><span class="p">:</span> <span class="s1">&#39;bcc@126.com&#39;</span><span class="p">,</span>
+    <span class="nb">subject</span><span class="p">:</span> <span class="s1">&#39;Hello ✔&#39;</span><span class="p">,</span> <span class="c1">// Subject line</span>
+    <span class="nx">text</span><span class="p">:</span> <span class="s1">&#39;Hello world ✔&#39;</span><span class="p">,</span> <span class="c1">// plaintext body</span>
+    <span class="nx">html</span><span class="p">:</span> <span class="s1">&#39;&lt;b&gt;Hello world ✔&lt;/b&gt;&#39;</span> <span class="c1">// html body</span>
+<span class="p">};</span>
+</pre></div>
+
+
+<p><strong>3.2 发送附件</strong></p>
+<p>发送附件也是邮件系统的常用功能，Nodemailer支持多种附件策略。接下来，我们测试发送两个文件做为附件。</p>
+<p>文件text0.txt，以字符串，做为文件正文内容。<br />
+文件text1.txt，读取本地文件，做为文件正文内容。</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="n">mailOptions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">from</span><span class="p">:</span> <span class="s1">&#39;bsspirit &lt;bsspirit@gmail.com style=&quot;margin: 0pt; padding: 0pt;&quot;&gt;&#39;</span><span class="p">,</span>
+    <span class="k">to</span><span class="p">:</span> <span class="s1">&#39;xxxxx@163.com&#39;</span><span class="p">,</span>
+    <span class="nb">subject</span><span class="p">:</span> <span class="s1">&#39;Hello ✔&#39;</span><span class="p">,</span>
+    <span class="nx">text</span><span class="p">:</span> <span class="s1">&#39;Hello world ✔&#39;</span><span class="p">,</span>
+    <span class="nx">html</span><span class="p">:</span> <span class="s1">&#39;&lt;b&gt;Hello world ✔&lt;/b&gt;&#39;</span> <span class="c1">// html body</span>
+    <span class="nx">attachments</span><span class="p">:</span> <span class="err">[</span>
+        <span class="p">{</span>
+            <span class="nb">filename</span><span class="p">:</span> <span class="s1">&#39;text0.txt&#39;</span><span class="p">,</span>
+            <span class="nb">content</span><span class="p">:</span> <span class="s1">&#39;hello world!&#39;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nb">filename</span><span class="p">:</span> <span class="s1">&#39;text1.txt&#39;</span><span class="p">,</span>
+            <span class="nb">path</span><span class="p">:</span> <span class="s1">&#39;./attach/text1.txt&#39;</span>
+        <span class="p">}</span>
+    <span class="cp">]</span>
+};
+</pre></div>
+
+
+<p>查看收件箱，2个附件都正确！</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2014/09/mail-163-attach.png"><img alt="mail-163-attach" src="http://blog.fens.me/wp-content/uploads/2014/09/mail-163-attach.png" /></a></p>
+<p><strong>3.3 发HTML格式内容，并嵌入图片</strong></p>
+<p>Nodemailer也为我们提供了在HTML的正文中嵌入图片的功能，程序中只要配置cid，作为图片的唯一引用地址就行了。上传本地图片./img/r-book1.png，设置cid为00000001，然后在html的正文中，img标签src属性指向00000001的cid就行了。</p>
+<p>代码如下：</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="n">mailOptions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">from</span><span class="p">:</span> <span class="s1">&#39;bsspirit &lt;bsspirit@gmail.com style=&quot;margin: 0pt; padding: 0pt;&quot;&gt;&#39;</span><span class="p">,</span>
+    <span class="k">to</span><span class="p">:</span> <span class="s1">&#39;xxxxx@163.com&#39;</span><span class="p">,</span>
+    <span class="nb">subject</span><span class="p">:</span> <span class="s1">&#39;Embedded Image&#39;</span><span class="p">,</span>
+    <span class="nx">html</span><span class="p">:</span> <span class="s1">&#39;&lt;b&gt;Hello world ✔&lt;/b&gt;&lt;br/&gt;Embedded image: &lt;img src=&quot;cid:00000001&quot;/&gt;&#39;</span><span class="p">,</span>
+    <span class="nx">attachments</span><span class="p">:</span> <span class="err">[</span><span class="p">{</span>
+        <span class="nb">filename</span><span class="p">:</span> <span class="s1">&#39;01.png&#39;</span><span class="p">,</span>
+        <span class="nb">path</span><span class="p">:</span> <span class="s1">&#39;./img/r-book1.png&#39;</span><span class="p">,</span>
+        <span class="nx">cid</span><span class="p">:</span> <span class="s1">&#39;00000001&#39;</span>
+    <span class="p">}</span><span class="cp">]</span>
+}
+</pre></div>
+
+
+<p>打开收件箱，查看邮件正文内容，图片被嵌入到了邮件的正文中显示。</p>
+<p><a href="http://blog.fens.me/wp-content/uploads/2014/09/mail-163-imge.png"><img alt="mail-163-imge" src="http://blog.fens.me/wp-content/uploads/2014/09/mail-163-imge.png" /></a></p>
+<p><strong>3.4 使用安全的SSL通道</strong></p>
+<p>为了邮件正文内容的安全性，我们通常都会加密发送，防止邮件在网络传输过程中，明文被路由的中间服务器所截获。大部分的邮件服务商都支持SSL的加密通道。</p>
+<p>Gmail的SSL发邮件配置，我要新建一个Transport变量stransporter，配置端口为465，secureConnection属性设置为true，可以参考以下的代码：</p>
+<div class="hlcode"><pre><span class="nt">var</span> <span class="nt">stransporter</span> <span class="o">=</span> <span class="nt">nodemailer</span><span class="nc">.createTransport</span><span class="o">(</span><span class="p">{</span>
+    <span class="n">service</span><span class="o">:</span> <span class="s1">&#39;Gmail&#39;</span><span class="o">,</span>
+    <span class="n">secureConnection</span><span class="o">:</span> <span class="n">true</span><span class="o">,</span> <span class="o">//</span> <span class="n">use</span> <span class="n">SSL</span>
+    <span class="n">port</span><span class="o">:</span> <span class="m">465</span><span class="o">,</span> <span class="o">//</span> <span class="n">port</span>
+    <span class="n">auth</span><span class="o">:</span> <span class="err">{</span>
+        <span class="n">user</span><span class="o">:</span> <span class="s1">&#39;bsspirit@gmail.com&#39;</span><span class="o">,</span>
+        <span class="n">pass</span><span class="o">:</span> <span class="s1">&#39;xxxxxxxxx&#39;</span>
+    <span class="p">}</span>
+<span class="err">}</span><span class="o">);</span>
+
+<span class="nt">function</span> <span class="nt">ssl</span><span class="o">()</span><span class="p">{</span>
+    <span class="n">var</span> <span class="n">mailOptions</span> <span class="o">=</span> <span class="err">{</span>
+        <span class="n">from</span><span class="o">:</span> <span class="s1">&#39;bsspirit &lt;bsspirit@gmail.com style=&quot;margin: 0pt; padding: 0pt;&quot;&gt;&#39;</span><span class="o">,</span>
+        <span class="n">to</span><span class="o">:</span> <span class="s1">&#39;xxxx@163.com&#39;</span><span class="o">,</span>
+        <span class="n">subject</span><span class="o">:</span> <span class="s1">&#39;SSL Email&#39;</span><span class="o">,</span>
+        <span class="n">html</span><span class="o">:</span> <span class="s1">&#39;Hello world&#39;</span>
+    <span class="p">}</span>
+    <span class="nt">return</span> <span class="nt">mailOptions</span><span class="o">;</span>
+<span class="err">}</span>
+
+<span class="nt">stransporter</span><span class="nc">.sendMail</span><span class="o">(</span><span class="nt">ssl</span><span class="o">(),</span> <span class="nt">function</span><span class="o">(</span><span class="nt">error</span><span class="o">,</span> <span class="nt">info</span><span class="o">)</span><span class="p">{</span>
+    <span class="n">if</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="err">{</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
+    <span class="p">}</span><span class="nt">else</span><span class="p">{</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Message sent: &#39;</span> <span class="o">+</span> <span class="n">info</span><span class="o">.</span><span class="n">response</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="err">}</span><span class="o">);</span>
+</pre></div>
+
+
+<p>运行程序</p>
+<div class="hlcode"><pre><span class="o">~</span> <span class="n">node</span> <span class="n">email</span><span class="p">.</span><span class="n">js</span>
+<span class="n">Message</span> <span class="n">sent</span><span class="o">:</span> <span class="mi">250</span> <span class="mf">2.0.0</span> <span class="n">OK</span> <span class="mi">1409807603</span> <span class="n">zs5sm478150pbb</span><span class="mf">.83</span> <span class="o">-</span> <span class="n">gsmtp</span>
+</pre></div>
+
+
+<p>很简单的几行代码，就能完成功能。</p>
+<p>Nodemailer包给我们提供了一套非常简单的发邮件的API，让我们用几行代码就能完成发邮件的任务，大大简化了邮件协议的学习成本，提高了开发的效率。但对于一个完整的邮件系统来说，收邮件的部分才是最复杂的，发邮件只是给我们练练手。等我找到适合的收邮件的库，再进行详细的介绍。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

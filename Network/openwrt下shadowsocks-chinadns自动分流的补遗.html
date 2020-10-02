@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>openwrt下shadowsocks chinadns自动分流的补遗 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;openwrt下shadowsocks chinadns自动分流的补遗
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:22
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">openwrt下shadowsocks chinadns自动分流的补遗</div>
+
+  <p>对于shadowsocks这款代理软件相信大家都不再陌生，在中国<del>险恶的</del>网络环境中它能很好的保护大家的安全。关于将shadowsocks安装在openwrt路由器上的实例也已经有很多了，我这里不再赘述。经过改装的路由器能够实现对需要保护的地址进行自动分流，并无需再维护黑名单/白名单。</p>
+<p>以下内容都是根据“飞羽博客”中的这篇文章：<a href="http://cokebar.info/archives/664">Shadowsocks + ChnRoute 实现 OpenWRT 路由器自动科学上网</a>  配置的，由衷感谢作者的无私奉献。</p>
+<p>一、ChinaDNS失效问题的解决：</p>
+<p>当DNS遇到<del>未知原因</del>的干扰时，早期的ChinaDNS使用污染列表进行排除。但目前污染源采用了随机污染的手段，将目标导引到随机的外国网站去。（这是一种恐怖主义行为！）</p>
+<p>因此在这种情况下，ChinaDNS采用了三种策略，分别是自建DNS、DNS通过Shadowsocks转发、DNS通过判断来源时间辨别污染包的方式。在上面一个文章中都有详细介绍。</p>
+<p>对于一般用户，自建DNS难度大，且自建的DNS速度更慢，性能上很差，还存在被封的可能性。我个人认为这还不如通过shadowsocks中转。</p>
+<p>对于SS中转DNS请求，这个想法很好，但是性能也堪忧。就算是亚太地区的SS服务器，100毫秒延迟总是有的，一个查询0.1秒来再0.1秒去，再加上SS服务器到DNS的时间（双向），速度也几乎等同于直接连接8.8.8.8了。当然，没有了污染，但是性能遇到了极大的牺牲。<br />
+</p>
+<p>所以我推荐最后一种方式：根据时间进行判断。原理是：本地DNS，如ISP默认DNS，或者223.5.5.5/114.114.114.114之类的，到用户家里是最近的，因此延迟往往在几十甚至几毫秒。而国外的干净DNS延迟必然高于这个数字，因此对于国外的地址查询结果，ChinaDNS会自动丢弃先到的一个包。而对于中国的IP，ChinaDNS则会采纳第一个结果。</p>
+<p>二、DNS的选择</p>
+<p>×我们这里主要讲的是用户体验，也就是一般用户的科学上网，比如游戏、视频，主要强调的是性能，至于安全性，请绕道TOR。</p>
+<p>首先检查一下自己的ISP和中国一些知名的DNS服务器的延迟。</p>
+<p>命令行下ping一下各个DNS服务器，如114.114.114.114或者阿里公共DNS/以及你自己ISP的DNS，选择一个最快的。</p>
+<p>Reply from 114.114.114.114: bytes=32 time=14ms TTL=67</p>
+<p>Reply from 223.5.5.5: bytes=32 time=20ms TTL=52</p>
+<p>看起来都很快，一般都在20毫秒以内，也就是0.02秒，一个查询来回就是0.04秒。这里我选择阿里DNS。</p>
+<p>按照前面文章里的说法配置好了ss和chinadns在openwrt上后，登录openwrt的LUCI界面进行设置。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2015/01/QQ%E6%88%AA%E5%9B%BE20150110201135.png"><img alt="QQ截图20150110201135" src="https://velaciela.ms/wp-content/uploads/2015/01/QQ%E6%88%AA%E5%9B%BE20150110201135.png" /></a></p>
+<p>这里我们填写上游服务器是223.5.5.5（中国）和8.8.8.8（国际），并开启过滤国外DNS返回的IP为中国的结果，这是为了防止CDN出错。延迟默认0.3秒，原因是8.8.8.8离开我们很远。</p>
+<p>Reply from 8.8.8.8: bytes=32 time=294ms TTL=35</p>
+<p>这意味着我们的路由器将会：</p>
+<p>当查询结果为中国地址时，选择最先到达的那个结果（阿里DNS返回的那个，如果你访问一个中国网站时，这样可以加速）</p>
+<p>当查询结果不是中国地址时，选择国际服务器的那个结果，但要求这个查询结果必须至少0.3秒后才有效。(防止污染）</p>
+<p>保存后，按照文章中说的设置路由器的DNS到本地的ChinaDns服务，即127.0.0.1：本地端口。</p>
+<p>接下来登录服务器，我们dig一下youtube，发现仍然是污染的……</p>
+<p>然后强制dig www.youtube.com @127.0.0.1 -p 8964 得到了正确的结果…  说明路由器没有取用这个结果。问题出在哪呢？</p>
+<p>3，ChinaDNS设置生效了但未被DHCP采用</p>
+<p>根据作者的文章：</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2015/01/QQ%E6%88%AA%E5%9B%BE20150110202007.png"><img alt="QQ截图20150110202007" src="https://velaciela.ms/wp-content/uploads/2015/01/QQ%E6%88%AA%E5%9B%BE20150110202007.png" /></a></p>
+<p>将路由器的DNS设置在127.0.0.1#5353(Chinadns) 上以后，禁用了Hosts文件。但实际上并不是这样，原来路由还存在一个缓存文件，必须一样禁用。</p>
+<p>在网上查了半天资料，<a href="http://uradoori.org/2014/11/10/dnsmasq_chinadns-c/">路由大法好！Dnsmasq+ChinaDNS-C 优化解析线路和污染过滤  </a></p>
+<p>这篇文章提到了这个问题，因为dnsmasq的问题，需要禁用 /etc/resolv.conf</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2015/01/22.png"><img alt="22" src="https://velaciela.ms/wp-content/uploads/2015/01/22.png" /></a></p>
+<p>按图中禁止解析配置文件和Hosts文件后，问题解决。</p>
+<p>4，进一步优化性能</p>
+<p>8.8.8.8的延迟太蛋疼，怎么办呢？于是我们可以寻找一些日韩港澳台的DNS服务器，大约100毫秒左右的。</p>
+<p>Reply from 168.126.63.1: bytes=32 time=105ms TTL=49</p>
+<p>比如这个，在ChinaDNS中填写这台服务器，最小延迟时间设置为0.1。虽然延迟只有0.1秒，但也与0.02秒的国内服务器构成明显差别。这样的话，性能和准确都兼顾了。</p>
+<p>5，下一步攻防</p>
+<p>我所理解的关于DNS污染是这样的：<del>敌人</del>如果透过TCP-RST进行封锁，一个是不能有效对付安全连接，一个是会造成一定的系统开销。在极大量的并发请求下（你就算不访问Google，只要使用谷歌浏览器或360急速浏览器，开启时都会请求一次），这样很不经济。</p>
+<p>如果采用封锁IP地址，那人工成本又太高了，虽然已经封锁了很多IP地址，但这样下去没完没了，敌人每天也要更新列表啊。</p>
+<p>而采用DNS污染，DNS污染可以透过DNS服务器层层传播，最终实现分布式阻断，而且不会造成系统开销(因为根本不需要去拦截。）并且能无成本的对付安全连接。这样是最好，最经济的方案，而不会造成别的什么问题。所以在DNS问题上是毫不含糊的。</p>
+<p>DNS攻防战从开始的换用8.8.8.8，到后来的丢弃错误列表，再到现在的随机污染，一步步升级。其中为什么对DNS如此关心，也是因为如果解锁了DNS限制，就算封锁了部分IP，也可以透过如SS这样的工具解决，并且解决DNS可以部署在路由器里，使那些不懂技术（但威胁很高的）用户，拥有了此类特权。</p>
+<p>那么目前采用丢弃较快的错误包的方式能否解决问题呢？由于DNS只认第一个包，如果想要污染，必然要抢答，因此针对国际服务器的DNS返回结果丢弃第一个包，肯定是有效的。而我认为下一步敌人可能采用的方式是直接封锁所有国际DNS服务器，因此下一步部署自己的DNS服务器就将提到议事日程纸上了。而当升级到这个程度时，敌人将封锁所有经过国境的DNS查询，这时候就只能全面代理了…… </p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

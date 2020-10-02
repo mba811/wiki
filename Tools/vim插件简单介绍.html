@@ -1,0 +1,392 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Vim插件简单介绍 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Tools">Tools</a>&nbsp;&#187;&nbsp;Vim插件简单介绍
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 01:04
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Vim插件简单介绍</div>
+
+  <p>Vim作为一个强大的编辑器，再配合强大的插件，就可以称得上为编辑神器了。 </p>
+<p>pathogen为管理插件的插件，类似的还有vundle。在 Pathogen 之前，安装插件就是把插件文件放在.vim目录下，所有的插件都混在一起，不便于管理。 </p>
+<p>通过pathogen，可以将不同的插件放到不同的目录里，比如： </p>
+<div class="hlcode"><pre><span class="err">➜</span>  <span class="o">~</span>  <span class="n">tree</span> <span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span> <span class="o">-</span><span class="n">L</span> <span class="mi">2</span>
+<span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span>
+<span class="err">├──</span> <span class="n">SingleCompile</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">COPYING</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">README</span><span class="p">.</span><span class="n">rst</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">autoload</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">doc</span>
+<span class="err">│</span>   <span class="err">├──</span> <span class="n">mkzip</span><span class="p">.</span><span class="n">sh</span>
+<span class="err">│</span>   <span class="err">└──</span> <span class="n">plugin</span>
+</pre></div>
+
+
+<p>这样，各个插件之间的文件都独立于自己的目录。以后安装插件时只需要将插件clone到bundle下相应的目录即可，重新打开vim用<code>:Helptags</code>生成帮助文档。删除一个插件，只要直接删除这个插件的目录。 </p>
+<p>pathogen的安装十分简单，只需要将pathogen clone到<code>.vim/bundle/vim-pathogen</code>目录，然后在配置文件加下面内容即可： </p>
+<div class="hlcode"><pre><span class="n">runtime</span> <span class="n">bundle</span><span class="o">/</span><span class="n">vim</span><span class="o">-</span><span class="n">pathogen</span><span class="o">/</span><span class="n">autoload</span><span class="o">/</span><span class="n">pathogen</span><span class="p">.</span><span class="n">vim</span>
+<span class="n">execute</span> <span class="n">pathogen</span><span class="err">#</span><span class="n">infect</span><span class="p">()</span>
+</pre></div>
+
+
+<p>或者可以将pathogen放在其他地方，然后在.vimrc加上如下内容： </p>
+<div class="hlcode"><pre><span class="n">source</span> <span class="o">~/</span><span class="n">src</span><span class="o">/</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">vim</span><span class="o">-</span><span class="n">pathogen</span><span class="o">/</span><span class="n">autoload</span><span class="o">/</span><span class="n">pathogen</span><span class="p">.</span><span class="n">vim</span>
+<span class="n">execute</span> <span class="n">pathogen</span><span class="err">#</span><span class="n">infect</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Nerdtree用来浏览文件系统并打开文件或目录。 </p>
+<p>nerdtree提供如下功能及特性： </p>
+<ol>
+<li>以继承树的形式显示文件和目录</li>
+<li>对如下类型的文件进行不同的高亮显：文件、目录、sym-links、快捷方式、只读文件、可执行文件。</li>
+<li>提供许多映射来控制树状结构</li>
+<li>对树状结构内容的过滤（可在运行时切换），如自定义文件过滤器阻止某些文件（比如vim备份文件等）的显示、可选是否显示隐藏文件、可选不显示文件只显示目录</li>
+<li>可以自定义Nerd窗口的位置和大小，自定义结点排序方式</li>
+<li>可以将文件和目录添加到收藏夹，可以用书签标记某些文件或者目录</li>
+</ol>
+<p>具体见下图：<br />
+<img alt="NERDTree" src="http://xuelangzf-github.qiniudn.com/20130611_NERDTree.png" /></p>
+<p>可以在NERDTree栏用?呼出快速帮助文档，或者用<code>:h NERDTree</code>查看详细文档。 </p>
+<p>编码中难免会有许多重复的代码片段，每次键入这些片段明显是不明智的做法，于是就有大牛写了<a href="https://github.com/msanders/snipmate.vim">snipMate</a>插件，不过还有一个更加强大的插件：xptemplate。 </p>
+<p>安装完成后<code>:Helptags</code>生成帮助文档，然后<code>:h xpt</code>查看帮助文档。 </p>
+<p>要想看当前文件类型支持的代码片段，可以在insert模式下键入<code>&lt;C-r&gt;&lt;C-r&gt;&lt;C-\&gt;</code>。insert模式下输入片段的名字，然后<code>&lt;C-\&gt;</code>即可插入代码，然后可以用TAB、Shift Tab前后更改高亮显示的内容。 </p>
+<p>如下图所示： </p>
+<p><img alt="xpt" src="http://xuelangzf-github.qiniudn.com/20130611_xpt.gif" /></p>
+<p>如果输入不完整的代码片段名字，键入<code>&lt;C-\&gt;</code>之后就会给出所有可能的片段名称。另外可以嵌套使用代码片段名字，例如在C文件中输入<code>switch&lt;C-\&gt;</code>，会产生一个switch片段，然后在 </p>
+<div class="hlcode"><pre><span class="k">switch</span> <span class="p">(</span> <span class="n">var</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="n">constant</span> :
+
+                <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>然后两次<code>&lt;Tab&gt;</code>跳到<code>cursor</code>位置，然后<code>if&lt;C-\&gt;</code>插入if片段，如下： </p>
+<div class="hlcode"><pre><span class="k">switch</span> <span class="p">(</span> <span class="n">var</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="n">constant</span> :
+                <span class="k">if</span> <span class="p">(</span> <span class="n">condition</span> <span class="p">)</span> <span class="p">{</span>
+
+                <span class="p">}</span>
+                <span class="k">break</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>xpt的补全配置文件类似<code>ftplugin/javascript/javascript.xpt.vim</code>。另外也可以添加自己的代码片段，可以新建<code>ftplugin/_common/personal.xpt.vim</code>文件，写入自己的配置，<code>personal.xpt.vim</code>优先级最高，可以保证自己的配置不被覆盖。 </p>
+<p>Valloric觉得Vim下的补全插件跟IDE比差太远，补全时间慢，按键繁琐，所以他自己写了一个，他要求补全时间在10ms之内必须出现。于是就有了YouCompleteMe(以下简称YCM)。 </p>
+<p>YCM是一个比较新Vim代码补全插件，默认为程序语言提供基于标识符的补全。它会收集当前文件、tags文件以及其他访问过的文件中的标识符，当输入时，会自动显示匹配的标识符。YCM不需要TAB即可呼出匹配的标识符，可以一边输入一边参考YCM呼出的菜单。YCM的强大之处还在于，它的匹配并不是前缀匹配，而是子字符串匹配，也就是说如果输入<code>abc</code>，那么标识符中的<code>xaybgc</code>也会匹配，而不只是<code>abc...</code>。 </p>
+<p>另外YCM也可以基于<a href="http://clang.llvm.org/">clang</a>为C/C+＋代码提供语义补全。 对C/C++来说youcompleteme现在应该是最好的选择，借助clang的强大功能，补全效率和准确性极高。 </p>
+<p>YCM使用<a href="https://github.com/davidhalter/jedi">Jedi</a>来加强python的语义补全，只需要<code>git submodule update --init --recursive</code>。另外YCM也支持其他许多语言，比如ruby、java等。 </p>
+<p>具体使用可以看下图： </p>
+<p><img alt="YCM" src="http://xuelangzf-github.qiniudn.com/20130611_YCM.gif" /></p>
+<p>YCM需要vim版本至少是7.3.584，可以用<code>:version</code>查看vim版本号，如下： </p>
+<div class="hlcode"><pre><span class="o">:</span><span class="n">version</span>
+<span class="n">VIM</span> <span class="o">-</span> <span class="n">Vi</span> <span class="n">IMproved</span> <span class="mf">7.3</span> <span class="p">(</span><span class="mi">2010</span> <span class="n">Aug</span> <span class="mi">15</span><span class="p">,</span> <span class="n">compiled</span> <span class="n">Apr</span> <span class="mi">19</span> <span class="mi">2013</span> <span class="mo">01</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mi">32</span><span class="p">)</span>
+<span class="n">MacOS</span> <span class="n">X</span> <span class="p">(</span><span class="n">unix</span><span class="p">)</span> <span class="n">version</span>
+<span class="n">Included</span> <span class="n">patches</span><span class="o">:</span> <span class="mi">1</span><span class="o">-</span><span class="mi">806</span>
+</pre></div>
+
+
+<p>另外需要支持python，<code>:echo has('python')</code>的结果是1. </p>
+<p>YCM的安装相对复杂一点，首先用下载插件，用pathogen（或者vundle）进行相应的安装，然后下载clang，放在<code>ycm_temp/llvm_root_dir</code>下： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">~/</span><span class="n">ycm_temp</span><span class="o">/</span><span class="n">llvm_root_dir</span>
+<span class="err">$</span> <span class="n">mv</span> <span class="o">~/</span><span class="n">Download</span><span class="o">/</span><span class="n">clang</span><span class="o">+</span><span class="n">llvm</span><span class="o">/*</span> <span class="o">~/</span><span class="n">ycm_temp</span><span class="o">/</span><span class="n">llvm_root_dir</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="n">ycm_temp</span><span class="o">/</span><span class="n">llvm_root_dir</span> 
+<span class="err">$</span> <span class="n">llvm_root_dir</span>  <span class="n">ls</span>
+<span class="n">bin</span>  <span class="n">docs</span>  <span class="n">include</span>  <span class="n">lib</span>  <span class="n">share</span>
+</pre></div>
+
+
+<p>安装<code>cmake</code>和<code>python-dev</code>，然后编译如下： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">cd</span> <span class="o">~</span>
+<span class="err">$</span> <span class="n">mkdir</span> <span class="n">ycm_build</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="n">ycm_build</span>
+<span class="err">$</span> <span class="n">cmake</span> <span class="o">-</span><span class="n">G</span> <span class="s">&quot;Unix Makefiles&quot;</span> <span class="o">-</span><span class="n">DPATH_TO_LLVM_ROOT</span><span class="o">=~/</span><span class="n">ycm_temp</span><span class="o">/</span><span class="n">llvm_root_dir</span> <span class="p">.</span> <span class="o">~/</span><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">YouCompleteMe</span><span class="o">/</span><span class="n">cpp</span>
+<span class="err">$</span> <span class="n">ycm_core</span>
+</pre></div>
+
+
+<p>详细安装说明在<a href="http://valloric.github.io/YouCompleteMe/">项目主页</a>有说明，可以参考。 </p>
+<p>pydiction是一款强大的python自动补全插件，可以实现下面python代码的自动补全： </p>
+<ul>
+<li>简单python关键词补全</li>
+<li>python 函数补全带括号</li>
+<li>python 模块补全</li>
+<li>python 模块内函数，变量补全</li>
+</ul>
+<p>该插件需要<code>filetype plugin on</code>配置。 输入时TAB即可弹出补全提示，不过需要一个字典文件，比如complete-dict，然后在配置文件中将字典文件路径添加到pydiction_location变量中： </p>
+<div class="hlcode"><pre><span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">pydiction_location</span> <span class="o">=</span> <span class="err">&#39;</span><span class="o">~/</span><span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">pydiction</span><span class="o">/</span><span class="n">complete</span><span class="o">-</span><span class="n">dict</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>输入时： <code>raw&lt;Tab&gt;</code>然后会跳出类似下面的菜单： </p>
+<div class="hlcode"><pre><span class="n">raw_input</span><span class="p">(</span>
+<span class="n">raw_unicode_escape_decode</span><span class="p">(</span>
+<span class="n">raw_unicode_escape_encode</span><span class="p">(</span>
+</pre></div>
+
+
+<p>要想将某个模块加入字典文件，可以用下面命令： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">python</span> <span class="nx">pydiction.py</span> <span class="o">&lt;</span><span class="nx">module</span><span class="o">&gt;</span> <span class="nx">...</span> <span class="err">[</span><span class="na">-v</span><span class="cp">]</span>
+</pre></div>
+
+
+<p>-v选项将结果输出到标准输出而不是complete-dict文件，比如要添加requests、BeautifualSoup </p>
+<div class="hlcode"><pre><span class="n">python</span> <span class="n">pydiction</span><span class="p">.</span><span class="n">py</span> <span class="n">requests</span> <span class="n">bs4</span>
+</pre></div>
+
+
+<p>生成的字典部分如下： </p>
+<div class="hlcode"><pre><span class="gd">---   ---</span>
+.
+.
+.
+</pre></div>
+
+
+<p>syantastic是一款强大的语法检查插件，支持很多语言的语法与编码风格检查，每次保存文件都会引起这个插件的查错操作。实际上这个插件只是个接口，背后的语法检查是交给各个语言自己的检查器，例如JavaScript使用jshint，python使用flake8等。 </p>
+<p>可以在<code>syntax_checkers/language</code>文件中查看syntastic需要的外界语法检查器 </p>
+<div class="hlcode"><pre><span class="err">➜</span>  <span class="o">~</span>  <span class="n">ls</span> <span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">syntastic</span><span class="o">/</span><span class="n">syntax_checkers</span>
+<span class="n">c</span>               <span class="n">docbk</span>           <span class="n">java</span>            <span class="n">objcpp</span>          <span class="n">scala</span>           <span class="n">xhtml</span>
+<span class="n">css</span>             <span class="n">go</span>              <span class="n">lua</span>             <span class="n">python</span>          <span class="n">text</span>            <span class="n">zsh</span>
+<span class="n">cuda</span>            <span class="n">haskell</span>         <span class="n">nasm</span>            <span class="n">ruby</span>            <span class="n">typescript</span>
+<span class="err">➜</span>  <span class="o">~</span>  <span class="n">ls</span> <span class="p">.</span><span class="n">vim</span><span class="o">/</span><span class="n">bundle</span><span class="o">/</span><span class="n">syntastic</span><span class="o">/</span><span class="n">syntax_checkers</span><span class="o">/</span><span class="n">python</span>
+<span class="n">flake8</span><span class="p">.</span><span class="n">vim</span>   <span class="n">pep8</span><span class="p">.</span><span class="n">vim</span>     <span class="n">py3kwarn</span><span class="p">.</span><span class="n">vim</span> <span class="n">pyflakes</span><span class="p">.</span><span class="n">vim</span> <span class="n">pylint</span><span class="p">.</span><span class="n">vim</span>   <span class="n">python</span><span class="p">.</span><span class="n">vim</span>
+</pre></div>
+
+
+<p>外界的语法检测器必须在$PATH中，也可以使用软链接。 </p>
+<p>syntastic特性： </p>
+<ol>
+<li>错误信息被载入location-list，需要<code>:Error</code>命令</li>
+<li>当光标处于有错误的行时，在命令窗口显示错误信息</li>
+<li>在有错误或警告的行显示 signs</li>
+<li>可以在状态栏显示错误信息</li>
+<li>当鼠标放置于有错误的行时，在气泡中显示错误信息</li>
+<li>用语法高亮显示具体出错部分。</li>
+</ol>
+<p>如图所示： </p>
+<p><img alt="syntastic" src="http://xuelangzf-github.qiniudn.com/20130611_syntastic.png" /></p>
+<p>维基语法的作用有三点: </p>
+<ol>
+<li>使条目更规范，通过一定转换，wiki 能输出为拥有约定俗成格式的HTML；</li>
+<li>节约编辑时间，不用写出完整的HTML标签，也不用在可视化编辑器中点来点去；</li>
+<li>充分的可读性，使用维基语法书写的文档，即使未被转为HTML，内容的语义也是一目了然，甚至表格也能清晰地阅读。</li>
+</ol>
+<p>VimWiki官方称之<code>a personal wiki for Vim</code>，一个基于Vim的Wiki 系统，是一个非常不错的用于个人知识管理的利器，并且还支持输出到网页。 </p>
+<p>在Vim的Normal模式下，键入<code>\ww</code>三个键，Vim就会打开wiki首页（index.wiki）。输入模式，在单词上面Enter既可以把此单词变为wiki词条，然后在Normal模式Enter wiki词条，既可以进入相应的词条页面进行编辑。 </p>
+<p>编辑完词条之后进行保存，然后<code>\wh</code>(:Vimwiki2HTML)将当前wiki页转换成Html格式，<code>\whh</code>转换为html格式然后打开页面。vimwiki转换html时支持模板文件，配合强大的模板文件，可以自己创建css，或者是实现语法高亮，vimwiki还支持MathJax数学公式编辑。 </p>
+<p>在vimwiki中使用以下占位符，能对生成的HTML文件做一些特殊的处理。 </p>
+<ol>
+<li>%toc 自动生成的目录</li>
+<li>%title 指定HTML文档的title，建议放到文档最末尾。如果不指定，title 就是文件名</li>
+<li>%nohtml 告诉 vimwiki 不为某条目生成HTML文件。即使你在该条目打开时为它单独执行 :Vimwiki2HTML ，也不会生成。</li>
+</ol>
+<p>vimwiki 有一个<code>g:vimwiki_valid_html_tags</code>值，可以指定允许写在 wiki 中的HTML标签。 </p>
+<p>Vimwiki的优点: </p>
+<ol>
+<li>与Vim紧密结合,可使用Vim的内建的正则表达式规则,高效处理文本</li>
+<li>与Vim紧密结合,可利用Vim内建的多种命令,以及可显示多个分页的特性,同时展示多种窗口,快速查看多份资料.</li>
+<li>由于Vim是文本处理工具,所以任何笔记,只要存为文本数据,便可以用Vim来组织和整理</li>
+<li>内置了特别的语法高亮模式,在观感上与普通见到的wiki没有多大的分别.</li>
+</ol>
+<p>但是vimwiki的语法是自创的，和广泛使用的轻量级标记语言markdown等不兼容，因此可移植性比较差。 </p>
+<p>vim 插件<code>zencoding-vim</code>支持类似<a href="https://code.google.com/p/zen-coding/">Zen Coding</a>的缩写。Zen Coding是一个高效编写HTML, XML, XSL的编辑器插件，支持许多编辑器。 </p>
+<p>如下内容： </p>
+<div class="hlcode"><pre><span class="n">test1</span>
+<span class="n">test2</span>
+<span class="n">test3</span>
+</pre></div>
+
+
+<p><code>V</code> 进入 <code>Vim 可视模式</code>，“行选取”上面三行内容，然后按键 <code>&lt;c-y&gt;,</code>，这时Vim的命令行会提示<code>Tags:</code>，键入<code>ul&gt;li*</code>，然后Enter。 </p>
+<div class="hlcode"><pre><span class="nt">&lt;ul&gt;</span>
+    <span class="nt">&lt;li&gt;</span>test1<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>test2<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>test3<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+</pre></div>
+
+
+<p>zencoding 支持的简写规则，类似于CSS选择器（大写的E代表一个HTML标签）： </p>
+<ol>
+<li>E 代表HTML标签。</li>
+<li>E#id 代表id属性。</li>
+<li>E.class 代表class属性。</li>
+<li>E[attr=foo] 代表某一个特定属性。</li>
+<li>E{foo} 代表标签包含的内容是foo。</li>
+<li>E&gt;N 代表N是E的子元素。</li>
+<li>E+N 代表N是E的同级元素。</li>
+<li>E\^N 代表N是E的上级元素。</li>
+</ol>
+<p>还提供了<code>连写（E*N）</code>和自动编号<code>（E$*N）</code>功能。<code>div[src=span$]#item$.class$$*3</code>展开后为： </p>
+<div class="hlcode"><pre><span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;item1&quot;</span> <span class="na">class=</span><span class="s">&quot;class01&quot;</span> <span class="na">src=</span><span class="s">&quot;span1&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;item2&quot;</span> <span class="na">class=</span><span class="s">&quot;class02&quot;</span> <span class="na">src=</span><span class="s">&quot;span2&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;item3&quot;</span> <span class="na">class=</span><span class="s">&quot;class03&quot;</span> <span class="na">src=</span><span class="s">&quot;span3&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+
+
+<p>另外还有许多强大的功能，如下： </p>
+<p><code>&lt;c-y&gt;d</code>: 插入模式下根据光标位置选中整个标签;<br />
+<code>&lt;c-y&gt;D</code>: 插入模式下根据光标位置选中整个标签内容;<br />
+<code>&lt;c-y&gt;k</code>: 移除标签对;<br />
+<code>&lt;c-y&gt;/</code>: 移动光标到块中, 插入模式中按<code>&lt;c-y&gt;/</code>切换注释;<br />
+<code>&lt;c-y&gt;a</code>: 将光标移至 URL, 按 <code>&lt;c-y&gt;a</code>,则从 URL 地址生成锚; </p>
+<p>查看帮助文档: <code>help zencoding</code></p>
+<p>首先来了解下<a href="http://ctags.sourceforge.net/">ctags</a>，ctags为文件中的各种语言对象生成一个索引文件(或称为标签文件,tags)。标签文件允许这些项目能够被一个文本编辑器或其它工具简捷迅速的定位。一个“标签”是指一个语言对象，它对应着一个有效的索引项 (这个索引项为这个对象而创建)。 </p>
+<p>ctags 能够为多种程序语言文件的语言对象信息生成可读格式的交叉索引列表，并且支持用户用正则表达式自定义语言对象。 </p>
+<p>对于C/C++，其生成的标记文件tags中包括这些对象的列表： </p>
+<ul>
+<li>用#define定义的宏</li>
+<li>枚举型变量的值</li>
+<li>函数的定义、原型和声明</li>
+<li>名字空间（namespace）</li>
+<li>类型定义（typedefs）</li>
+<li>变量（包括定义和声明）</li>
+<li>类（class）、结构（struct）、枚举类型（enum）和联合（union）</li>
+<li>类、结构和联合中成员变量或函数</li>
+</ul>
+<p>要生成tags十分简单： </p>
+<ol>
+<li>c: <code>ctags –R src</code></li>
+<li>
+<p>c++：<code>ctags -R --c++-kinds=+p --fields=+iaS --extra=+q src</code></p>
+<ul>
+<li>—c++-kinds=+p : 为C++文件增加函数原型的标签</li>
+<li>—fields=+iaS : 在标签文件中加入继承信息(i)、类成员的访问控制信息(a)、以及函数的指纹(S)</li>
+<li>—extra=+q : 为标签增加类修饰符。注意，如果没有此选项，将不能对类成员补全</li>
+<li>-R : 递归生成src中所有源文件的tags文件</li>
+</ul>
+</li>
+</ol>
+<p>使用tags文件也很简单，把光标移动到某个元素上，<code>CTRL+]</code>就会跳转到对应的定义，<code>CTRL+o</code>可以回退到原来的地方。如果当前光标下是个局部变量，<code>gd</code>跳到这个局部变量的定义处。 </p>
+<p>tags必须在vim运行的当前目录，才能在vim里面正确跳转，不过也可以使用<code>set tags="/path/tags"</code>即可。 </p>
+<p>而vim下的TagBar插件(Taglist的升级版)则是为了方便浏览源文件的标签，TagBar提供了一个侧边栏列出了当前文件所有的标签。如下图： </p>
+<p><img alt="TagBar" src="http://xuelangzf-github.qiniudn.com/20130611_tags.png" /></p>
+<p>注意：mac自带的ctags程序不是exuberant ctags， 所以使用时会出现问题，可以用<code>homebrew</code>重新安装ctags，然后做一个软链接即可，具体如下： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">ctags</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">ctags</span><span class="o">/</span><span class="mf">5.8</span><span class="o">/</span><span class="n">bin</span>
+<span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">ctags</span> 
+<span class="n">Exuberant</span> <span class="n">Ctags</span> <span class="mf">5.8</span><span class="p">,</span> <span class="n">Copyright</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="mi">1996</span><span class="o">-</span><span class="mi">2009</span> <span class="n">Darren</span> <span class="n">Hiebert</span>
+  <span class="nl">Compiled:</span> <span class="n">Jun</span> <span class="mi">14</span> <span class="mi">2013</span><span class="p">,</span> <span class="mi">11</span><span class="o">:</span><span class="mi">41</span><span class="o">:</span><span class="mi">43</span>
+  <span class="nl">Addresses:</span> <span class="o">&lt;</span><span class="n">dhiebert</span><span class="err">@</span><span class="n">users</span><span class="p">.</span><span class="n">sourceforge</span><span class="p">.</span><span class="n">net</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">http</span><span class="o">:</span><span class="c1">//ctags.sourceforge.net</span>
+  <span class="n">Optional</span> <span class="n">compiled</span> <span class="n">features</span><span class="o">:</span> <span class="o">+</span><span class="n">wildcards</span><span class="p">,</span> <span class="o">+</span><span class="n">regex</span>
+<span class="err">$</span> <span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">bin</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">Cellar</span><span class="o">/</span><span class="n">ctags</span><span class="o">/</span><span class="mf">5.8</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">ctags</span> <span class="p">.</span><span class="o">/</span><span class="n">ctags</span>
+</pre></div>
+
+
+<p><a href="https://github.com/pangloss/vim-javascript">vim-javascript</a><br />
+vim 自带的 javascript 缩进简直没法使用，同时还有 html 里的 javascript 缩进也是一塌糊涂。而强大的插件vim-javascript则解决了上面的问题。 </p>
+<p><a href="https://github.com/fs111/pydoc.vim">pydoc</a><br />
+pydoc将python帮助文档集成到vim中，可以方便地一边写程序一边浏览帮助文档，如下图： </p>
+<p><img alt="pydoc" src="http://xuelangzf-github.qiniudn.com/20130611_pydoc.png" /></p>
+<p><a href="https://github.com/vim-scripts/vim-flake8">vim-flake8</a><br />
+vim的默认配置对python的支持有限，要在编写代码时及时得到变量拼写错误等提示，可安装<a href="https://pypi.python.org/pypi/pyflakes">Pyflakes</a>。 Python 社区著名的<a href="http://www.python.org/dev/peps/pep-0008/">PEP 8</a>，是官方的python代码规范,如果想编写严格遵循<code>PEP 8</code>的代码，可使用pep8。为了方便，有人将两个插件整合到一起，打造出<code>flake8</code>，该工具可通过插件<code>vim-flake8</code>与vim整合。 </p>
+<p>pep8、flake8的安装很简单： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pep8</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pyflakes</span>
+<span class="err">$</span> <span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">flake8</span>
+</pre></div>
+
+
+<p>不过由于syntastic的存在，没有多大必要使用vim-flake8了。 </p>
+<p><a href="https://github.com/xuhdev/SingleCompile">SingleCompile</a><br />
+有时候想编译运行一个简单的源文件，这种情况退出vim在编译运行无疑显得麻烦，而SingleCompile很好地解决了这个问题。SingleCompile有以下特点： </p>
+<ol>
+<li>编译运行源文件时用到了vim的quickfix feature和<a href="http://vimdoc.sourceforge.net/htmldoc/quickfix.html#compiler-select">compiler feature</a>；</li>
+<li>自动选择使用编译器或者解释器；</li>
+<li>支持多种语言；</li>
+<li>可以自定义编译/解释的模板；</li>
+</ol>
+<p>可以设置以下键映射： </p>
+<div class="hlcode"><pre><span class="nx">nmap</span> <span class="o">&lt;</span><span class="nx">F7</span><span class="o">&gt;</span> <span class="p">:</span><span class="nx">SCCompile</span><span class="o">&lt;</span><span class="nx">cr</span><span class="o">&gt;</span>
+<span class="nx">nmap</span> <span class="o">&lt;</span><span class="nx">F5</span><span class="o">&gt;</span> <span class="p">:</span><span class="nx">SCCompileRun</span><span class="o">&lt;</span><span class="nx">cr</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p><a href="https://github.com/vim-scripts/TagHighlight">TagHighlight</a><br />
+给类/结构体/枚举等数据类型添加语法高亮显示, 使 vim 在显示效果上可与 Visual Studio 相媲美。 成功安装该插件后, 打开项目文件, 执行如下命令即可显示高亮效果: <code>:UpdateTypesFile</code>。 </p>
+<p>TagHighlight支持许多种语言：C、C++、Java等。 </p>
+<p>[Powerline][21]<br />
+Powerline插件美化vim状态栏的显示。我的配置如下： </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">21</span><span class="p">]</span><span class="o">:</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/Lokaltog/vim-powerline</span>
+</pre></div>
+
+
+<p>set laststatus=2     " Always show the statusline<br />
+    set t_Co=256         " Explicitly tell Vim that the terminal support 256 colors<br />
+    let g:Powerline_symbols = 'unicode'</p>
+<p>效果图如下： </p>
+<p><img alt="Powerline" src="http://xuelangzf-github.qiniudn.com/20130611_powerline.png" /></p>
+<p>可以列出当前加载的所有插件： </p>
+<blockquote>
+<p>:scriptnames //list all plugins </p>
+</blockquote>
+<p>启动vim时可以禁用所有插件： </p>
+<blockquote>
+<p><code>--noplugin</code> Skip loading plugins. Implied by <code>-u NONE</code>. </p>
+</blockquote>
+<p>也可以禁用指定的某些插件。如果是使用pathogen管理插件，则有两种方法： </p>
+<ol>
+<li>
+<p>修改.vim/bundle中插件目录名字，比如要禁用插件syntastic，可以通过下面命令： </p>
+<p>➜  ~  mv .vim/bundle/syntastic .vim/bundle/syntastic~</p>
+</li>
+<li>
+<p>使用<code>g:pathogen_disabled</code>变量，可以将插件名添加到该变量： </p>
+<p>" To disable a plugin, add it's bundle name to the following list<br />
+ let g:pathogen_disabled = ['syntastic']<br />
+ if v:version &lt; '703584'<br />
+     call add(g:pathogen_disabled, 'YouCompleteMe')<br />
+ endif<br />
+ execute pathogen#infect()</p>
+</li>
+</ol>
+<p>上面命令将禁用syntastic插件，并且当vim版本号低于7.3.584时，禁用YouCompleteMe插件。 </p>
+<p>参考：<br />
+<a href="http://lostjs.com/2012/02/04/use-pathogen-and-git-to-manage-vimfiles/">使用 Pathogen + Git 管理 Vim 插件</a><br />
+<a href="http://www.zfanw.com/blog/zencoding-vim-tutorial-chinese.html">ZenCoding.vim 教程</a><br />
+<a href="http://www.ruanyifeng.com/blog/2013/06/emmet_and_haml.html">HTML代码简写法：Emmet和Haml</a><br />
+<a href="http://ruby-china.org/topics/4054">xptemplate:比snipmate更强的代码片段补全</a><br />
+<a href="http://yunfeizu.github.io/2013/05/16/killer-plugin-of-vim-youcompleteme/">vim中的杀手级插件: YouCompleteMe</a><br />
+<a href="http://xbeta.info/vimwiki.htm">Pkm工具：Vimwiki</a><br />
+<a href="http://wiki.ktmud.com/tips/vim/vimwiki-guide.html">用 vimwiki 搭建你自己的维基世界</a><br />
+<a href="http://stackoverflow.com/questions/48933/how-do-i-list-loaded-plugins-in-vim?rq=1">How do I list loaded plugins in Vim?</a><br />
+<a href="http://stackoverflow.com/questions/4261785/temporarily-disable-some-plugins-using-pathogen-in-vim">Temporarily disable some plugins using pathogen in vim</a><br />
+<a href="http://www.vimer.cn/2009/10/%E5%9C%A8vim%E4%B8%AD%E4%BD%BF%E7%94%A8ctags.html">在Vim中使用ctags</a><br />
+<a href="http://easwy.com/blog/archives/exuberant-ctags-chinese-manual/">Exuberant Ctags中文手册</a><br />
+<a href="http://www.douban.com/group/topic/31808699/">Mac终端Vim如何安装使用ctags</a><br />
+<a href="http://www.cgtk.co.uk/vim-scripts/taghighlight">TagHighlight</a></p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

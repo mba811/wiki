@@ -1,0 +1,312 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Git笔记 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Git">Git</a>&nbsp;&#187;&nbsp;Git笔记
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 21:21
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Git笔记</div>
+
+  <h2 id="1-git-flow">1 git flow</h2>
+<ul>
+<li><a href="http://fann.im/blog/2012/03/12/git-flow-notes/">Git-flow 使用笔记</a></li>
+<li><a href="http://www.juvenxu.com/2010/11/28/a-successful-git-branching-model/">一个成功的Git分支模型</a></li>
+<li><a href="http://ihower.tw/blog/archives/5140">Git flow 開發流程</a></li>
+</ul>
+<h2 id="2-git">2 git 恢复单个文件</h2>
+<p>如果你只是要恢复一个文件(修复未提交文件中的错误),如”hello.rb”, 你就要使用 git checkout</p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">git</span> <span class="n">checkout</span> <span class="o">--</span> <span class="n">hello</span><span class="p">.</span><span class="n">rb</span>
+</pre></div>
+
+
+<h2 id="3-clone">3 clone</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/imatix/zguide.git</span>
+</pre></div>
+
+
+<p>Create a shallow clone with a history truncated to the specified number of revisions. A shallow repository has a number of limitations (you cannot clone or fetch from it, nor push from nor into it), but is adequate if you are only interested in the recent history of a large project with a long history, and would want to send in fixes as patches.</p>
+<h2 id="4-svn">4 svn</h2>
+<p>Git and SVN treat tags differently. Tags are a powerful feature in Git, but just a folder in SVN, much like how branches are.</p>
+<p>So to create tags in SVN from git-svn, you have to create a branch (tag) in git-svn repo. Git tags will not be "dcommitted"</p>
+<p>You can use git svn branch –tag or its shorthand git svn tag to create tags and then dcommit them.</p>
+<p>Related question with detailed answer: <a href="http://stackoverflow.com/questions/2490794/git-svn-create-push-a-new-branch-tag">Git-svn: create &amp; push a new branch/tag?</a></p>
+<p><a href="http://code.google.com/p/support/wiki/ExportingToGit">Exporting a project to a Git repository</a></p>
+<p>–dry-run (-n)</p>
+<div class="hlcode"><pre><span class="cp"># Create SVN branch called &quot;my_topic&quot;</span>
+<span class="n">git</span> <span class="n">svn</span> <span class="n">branch</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;Topic branch&quot;</span> <span class="n">my_topic</span>
+<span class="cp"># Create the Git branch for &quot;my_topic&quot;</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">--</span><span class="n">track</span> <span class="o">-</span><span class="n">b</span> <span class="n">my</span><span class="o">-</span><span class="n">topic</span> <span class="n">remotes</span><span class="o">/</span><span class="n">my_topic</span>
+
+<span class="cp"># Hack hack hack...</span>
+
+<span class="cp"># Make sure you&#39;re committing to the right SVN branch</span>
+<span class="n">git</span> <span class="n">svn</span> <span class="n">dcommit</span> <span class="o">--</span><span class="n">dry</span><span class="o">-</span><span class="n">run</span>
+<span class="cp"># Commit changes to &quot;my_topic&quot; branch in SVN</span>
+<span class="n">git</span> <span class="n">svn</span> <span class="n">dcommit</span>
+</pre></div>
+
+
+<ul>
+<li>
+<p>svn update</p>
+<p>git svn rebase</p>
+</li>
+<li>
+<p>svn commit</p>
+<p>git svn dcommit</p>
+</li>
+<li>
+<p>clone</p>
+<p>git svn clone file:///tmp/test-svn -T trunk -b branches -t tags</p>
+</li>
+</ul>
+<p>其中-T trunk -b branches -t tags 告诉 Git 该 Subversion 仓库遵循了基本的分支和标签命名法则。如果你的主干(译注：trunk，相当于非分布式版本控制里的master分支，代表开发的主线），分支或者标签以不同的方式命名，则应做出相应改变。由于该法则的常见性，可以使用 -s 来代替整条命令，它意味着标准布局（s 是 Standard layout 的首字母），也就是前面选项的内容。下面的命令有相同的效果：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">svn</span> <span class="n">clone</span> <span class="n">file</span><span class="o">:</span><span class="c1">///tmp/test-svn -s</span>
+</pre></div>
+
+
+<h3 id="41-tag">4.1 tag</h3>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">svn</span> <span class="n">tag</span> <span class="n">tag_name</span>
+</pre></div>
+
+
+<p>此时创建的tag是直接在服务器将当前分支拷贝到tags目录，所以在此之前一定要将本地的修改推送到服务器，否则会将打错tag。</p>
+<p>记得<strong>dcommit</strong>！</p>
+<h3 id="42-svn">4.2 创建SVN分支</h3>
+<p>要在 Subversion 中建立一个新分支，需要运行 git svn branch [分支名] ：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">svn</span> <span class="n">branch</span> <span class="n">opera</span>
+</pre></div>
+
+
+<p>这相当于在 Subversion 中的 svn copy trunk branches/opera 命令，并会对 Subversion 服务器进行相关操作。值得注意的是它没有检出和转换到那个分支；如果现在进行提交，将提交到服务器上的 trunk， 而非 opera。</p>
+<p><a href="http://git-scm.com/book/zh/Git-%E4%B8%8E%E5%85%B6%E4%BB%96%E7%B3%BB%E7%BB%9F-Git-%E4%B8%8E-Subversion">Git 与其他系统 - Git 与 Subversion</a></p>
+<h3 id="43-svn">4.3 切换SVN分支</h3>
+<p>Git 通过搜寻提交历史中 Subversion 分支的头部来决定 dcommit 的目的地——而它应该只有一个，那就是当前分支历史中最近一次包含 git-svn-id 的提交。</p>
+<p>如果需要同时在多个分支上提交，可以通过导入 Subversion 上某个其他分支的 commit 来建立以该分支为 dcommit 目的地的本地分支。比如你想拥有一个并行维护的 opera 分支，可以运行</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">branch</span> <span class="n">opera</span> <span class="n">remotes</span><span class="o">/</span><span class="n">opera</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">opera</span>
+<span class="cp"># or</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="n">opera</span> <span class="n">refs</span><span class="o">/</span><span class="n">remotes</span><span class="o">/</span><span class="n">opera</span>
+</pre></div>
+
+
+<p>然后，如果要把 opera 分支并入 trunk （本地的 master 分支），可以使用普通的 git merge。不过最好提供一条描述提交的信息（通过 -m），否则这次合并的记录是 Merge branch opera ，而不是任何有用的东西。 记住，虽然使用了 git merge 来进行这次操作，并且合并过程可能比使用 Subversion 简单一些（因为 Git 会自动找到适合的合并基础），这并不是一次普通的 Git 合并提交。最终它将被推送回 commit 无法包含多个祖先的 Subversion 服务器上；因而在推送之后，它将变成一个包含了所有在其他分支上做出的改变的单一 commit。把一个分支合并到另一个分支以后，你没法像在 Git 中那样轻易的回到那个分支上继续工作。提交时运行的 dcommit 命令擦除了全部有关哪个分支被并入的信息，因而以后的合并基础计算将是不正确的—— dcommit 让 git merge 的结果变得类似于 git merge –squash。不幸的是，我们没有什么好办法来避免该情况—— Subversion 无法储存这个信息，所以在使用它作为服务器的时候你将永远为这个缺陷所困。为了不出现这种问题，在把本地分支（本例中的 opera）并入 trunk 以后应该立即将其删除。</p>
+<h3 id="44-svn">4.4 合并SVN分支</h3>
+<div class="hlcode"><pre><span class="cp"># Create alias for checkout command:</span>
+<span class="n">git</span> <span class="n">config</span> <span class="n">alias</span><span class="p">.</span><span class="n">co</span> <span class="n">checkout</span>
+
+<span class="cp"># Make sure that you local branches are up to date:</span>
+<span class="n">git</span> <span class="n">co</span> <span class="n">master</span>    <span class="err">#</span> <span class="n">checkout</span> <span class="n">branch</span> <span class="n">that</span> <span class="n">tracks</span> <span class="n">subversion</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">trunk</span>
+<span class="n">git</span> <span class="n">svn</span> <span class="n">rebase</span>
+<span class="n">git</span> <span class="n">co</span> <span class="n">local</span><span class="o">/</span><span class="n">foo</span> <span class="err">#</span> <span class="n">checkout</span> <span class="n">branch</span> <span class="n">that</span> <span class="n">tracks</span> <span class="n">subversion</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">branches</span><span class="o">/</span><span class="n">foo</span>
+                 <span class="err">#</span> <span class="n">It</span> <span class="n">assumes</span> <span class="n">that</span>  <span class="n">the</span> <span class="n">branch</span> <span class="n">is</span> <span class="n">created</span> <span class="n">with</span> <span class="n">the</span> <span class="n">command</span><span class="o">:</span>
+                 <span class="err">#</span> <span class="err">`</span><span class="n">git</span> <span class="n">co</span> <span class="o">-</span><span class="n">b</span> <span class="n">local</span><span class="o">/</span><span class="n">foo</span> <span class="n">remotes</span><span class="o">/</span><span class="n">foo</span><span class="err">`</span>
+                 <span class="err">#</span> <span class="n">And</span> <span class="n">the</span> <span class="n">repo</span> <span class="n">was</span> <span class="n">created</span> <span class="n">with</span><span class="o">:</span>
+                 <span class="err">#</span> <span class="err">`</span><span class="n">git</span> <span class="n">svn</span> <span class="n">clone</span> <span class="o">--</span><span class="n">stdlayout</span> <span class="n">SVN_REPO_URL</span><span class="err">`</span>
+<span class="n">git</span> <span class="n">svn</span> <span class="n">rebase</span>
+
+<span class="cp"># Merge branches:</span>
+<span class="cp"># create new local branch based on `master`</span>
+<span class="n">git</span> <span class="n">co</span> <span class="n">master</span>
+<span class="n">git</span> <span class="n">co</span> <span class="o">-</span><span class="n">b</span> <span class="n">merging_branch_foo</span>
+<span class="cp"># merge, resolve conflicts, etc (pure git)</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">local</span><span class="o">/</span><span class="n">foo</span>
+
+<span class="cp"># rebase `merging_branch_foo` to linearize history for subversion</span>
+<span class="n">git</span> <span class="n">rebase</span> <span class="n">master</span> <span class="err">#</span> <span class="n">or</span> <span class="err">`</span><span class="n">rebase</span> <span class="o">-</span><span class="n">i</span><span class="err">`</span>
+
+<span class="cp"># merge `merging_branch_foo` into `master`</span>
+<span class="n">git</span> <span class="n">co</span> <span class="n">master</span>
+<span class="cp"># git merge merging_branch_foo  # --squash to create single commit</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">ff</span> <span class="err">#</span> <span class="n">no</span> <span class="n">fast</span><span class="o">-</span><span class="n">forward</span><span class="p">.</span> <span class="n">This</span> <span class="n">will</span> <span class="n">force</span> <span class="n">git</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span> <span class="n">merge</span> <span class="n">commit</span><span class="p">,</span> <span class="n">which</span> <span class="n">can</span> <span class="n">then</span> <span class="n">be</span> <span class="n">dcommitted</span> <span class="n">to</span> <span class="n">svn</span><span class="p">.</span>
+
+<span class="cp"># commit changes to svn</span>
+<span class="n">git</span> <span class="n">svn</span> <span class="n">dcommit</span>
+
+<span class="cp"># (optionally) delete `merging_branch_foo`</span>
+<span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">D</span> <span class="n">merging_branch_foo</span>
+</pre></div>
+
+
+<p><a href="http://stackoverflow.com/questions/2835791/git-svn-reset-tracking-for-master">git-svn: reset tracking for master</a></p>
+<h3 id="45-svn">4.5 删除远程SVN分支</h3>
+<p>Currently, it is not possible to delete an SVN branch using git-svn. But it is easy to delete the branch using SVN, without even having to check it out. So simply type</p>
+<div class="hlcode"><pre><span class="n">svn</span> <span class="n">rm</span> <span class="err">$</span><span class="n">URL</span><span class="o">/</span><span class="n">branches</span><span class="o">/</span><span class="n">the_branch</span>
+</pre></div>
+
+
+<p>Please note that deleting a Subversion branch does not cause it to be deleted from the git-svn repository. (This is intentional, because deleting a Subversion branch does not cause any information loss, whereas deleting a git branch causes its existence to be forgotten following the next git garbage collection.) So if you want the remote SVN branch to be deleted from your git repository, you have to do it manually:</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">D</span> <span class="o">-</span><span class="n">r</span> <span class="n">the_branch</span>
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="p">.</span><span class="n">git</span><span class="o">/</span><span class="n">svn</span><span class="o">/</span><span class="n">the_branch</span>
+</pre></div>
+
+
+<p>To delete a git branch that corresponds to a Subversion tag, the commands are slightly different:</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">branch</span> <span class="o">-</span><span class="n">D</span> <span class="o">-</span><span class="n">r</span> <span class="n">tags</span><span class="o">/</span><span class="n">the_tag</span>
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="p">.</span><span class="n">git</span><span class="o">/</span><span class="n">svn</span><span class="o">/</span><span class="n">tags</span><span class="o">/</span><span class="n">the_tag</span>
+</pre></div>
+
+
+<p><a href="http://stackoverflow.com/questions/1839606/delete-a-svn-branch-via-git">Delete a svn-Branch via git?</a></p>
+<h3 id="46-git-svn">4.6 Git-Svn 总结</h3>
+<p>git svn 工具集在当前不得不使用 Subversion 服务器或者开发环境要求使用 Subversion 服务器的时候格外有用。不妨把它看成一个跛脚的 Git，然而，你还是有可能在转换过程中碰到一些困惑你和合作者们的迷题。为了避免麻烦，试着遵守如下守则：</p>
+<p>保持一个不包含由 git merge 生成的 commit 的线性提交历史。将在主线分支外进行的开发通通衍合回主线；避免直接合并。</p>
+<p>不要单独建立和使用一个 Git 服务来搞合作。可以为了加速新开发者的克隆进程建立一个，但是不要向它提供任何不包含 git-svn-id 条目的内容。甚至可以添加一个 pre-receive 挂钩来在每一个提交信息中查找 git-svn-id 并拒绝提交那些不包含它的 commit。</p>
+<p>如果遵循这些守则，在 Subversion 上工作还可以接受。然而，如果能迁徙到真正的 Git 服务器，则能为团队带来更多好处。</p>
+<h2 id="5-git-add">5 取消git add</h2>
+<p>To undo <code>git add .</code> ，use <code>git reset</code> 。</p>
+<h2 id="6-git">6 在服务器部署Git</h2>
+<p>可以使用一些Git软件如Gitosis。</p>
+<p>不过也可以直接运行：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">bare</span> <span class="n">my_project</span> <span class="n">my_project</span><span class="p">.</span><span class="n">git</span>
+<span class="cp"># same as cp -Rf my_project/.git my_project.git</span>
+
+<span class="cp"># by ssh</span>
+<span class="n">scp</span> <span class="o">-</span><span class="n">r</span> <span class="n">my_project</span><span class="p">.</span><span class="n">git</span> <span class="n">user</span><span class="err">@</span><span class="n">git</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="o">:/</span><span class="n">opt</span><span class="o">/</span><span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">user</span><span class="err">@</span><span class="n">git</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="o">:/</span><span class="n">opt</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">my_project</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+
+
+<p>如果某个 SSH 用户对 /opt/git/my_project.git 目录有写权限，那他就有推送权限。</p>
+<p><a href="http://git-scm.com/book/zh/%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E7%9A%84-Git-%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E9%83%A8%E7%BD%B2-Git">服务器上的 Git - 在服务器上部署 Git</a></p>
+<h2 id="7-proxy">7 Proxy</h2>
+<h3 id="71-unset-proxy">7.1 unset proxy</h3>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="o">--</span><span class="n">unset</span> <span class="n">core</span><span class="p">.</span><span class="n">gitproxy</span>
+</pre></div>
+
+
+<h3 id="72-git">7.2 git协议的代理</h3>
+<div class="hlcode"><pre><span class="n">export</span> <span class="n">GIT_PROXY_COMMAND</span><span class="o">=</span><span class="s">&quot;~/bin/proxy-wrapper&quot;</span>
+</pre></div>
+
+
+<h2 id="8-submodule">8 submodule</h2>
+<h3 id="81">8.1 添加</h3>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">submodule</span> <span class="n">add</span> <span class="n">git</span><span class="o">:</span><span class="c1">//github.com/chneukirchen/rack.git rack</span>
+</pre></div>
+
+
+<h3 id="82">8.2 删除</h3>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">submodule</span> <span class="n">deinit</span> <span class="n">asubmodule</span>
+<span class="n">git</span> <span class="n">rm</span> <span class="n">asubmodule</span>
+<span class="cp"># Note: asubmodule (no trailing slash)</span>
+<span class="cp"># or, if you want to leave it in your working tree</span>
+<span class="n">git</span> <span class="n">rm</span> <span class="o">--</span><span class="n">cached</span> <span class="n">asubmodule</span>
+</pre></div>
+
+
+<p><a href="http://stackoverflow.com/questions/1260748/how-do-i-remove-a-git-submodule">How do I remove a Git submodule?</a></p>
+<h2 id="9-commit">9 丢失commit</h2>
+<p>在用git-svn或者某些外部程序调用git的时候，有时候会导致git丢失一些log。但是丢失log并不带代表是丢失commit，我们只需要找回以前的commit就行了。</p>
+<p>利用reflog，我们很容易可以找到所有的commit，然后我们就可以将master之类的游标reset到我们想要去到的commit。</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">reflog</span>
+<span class="n">git</span> <span class="n">reset</span> <span class="o">--</span><span class="n">hard</span> <span class="mf">1e35</span><span class="n">a3</span>
+</pre></div>
+
+
+<h2 id="10">10 对比分支之间的区别</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">diff</span> <span class="o">--</span><span class="n">name</span><span class="o">-</span><span class="n">status</span> <span class="n">master</span><span class="p">..</span><span class="n">file_buffer</span>
+</pre></div>
+
+
+<h2 id="11">11 设置个人信息</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="p">[</span><span class="o">--</span><span class="n">global</span><span class="p">]</span> <span class="n">user</span><span class="p">.</span><span class="n">email</span> <span class="s">&quot;me@here.com&quot;</span>
+</pre></div>
+
+
+<h2 id="12-enable-colourful-git-diff">12 Enable Colourful git diff</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">color</span><span class="p">.</span><span class="n">diff</span> <span class="k">auto</span>
+</pre></div>
+
+
+<h2 id="13-git">13 打开git输出颜色</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">color</span><span class="p">.</span><span class="n">ui</span> <span class="nb">true</span>
+</pre></div>
+
+
+<h2 id="14">14 资料</h2>
+<p><a href="http://rogerdudler.github.com/git-guide/index.zh.html">git - 简易指南</a></p>
+<h2 id="15-submodule">15 submodule</h2>
+<h3 id="151-delete">15.1 delete</h3>
+<p>To remove a submodule you need to:</p>
+<ol>
+<li>Delete the relevant section from the <strong>.gitmodules</strong> file.</li>
+<li>Stage the .gitmodules changes <strong>git add .gitmodules</strong></li>
+<li>Delete the relevant section from <strong>.git/config</strong>.</li>
+<li>Run <strong>git rm –cached path_to_submodule</strong> (no trailing slash).</li>
+<li>Run <strong>rm -rf .git/modules/submodule_name</strong></li>
+<li>Commit</li>
+<li>Delete the now untracked submodule files</li>
+<li><strong>rm -rf path_to_submodule</strong></li>
+</ol>
+<p>From: <a href="http://stackoverflow.com/questions/1260748/how-do-i-remove-a-git-submodule">How do I remove a Git submodule?</a></p>
+<h2 id="16-tags">16 删除远程tags</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">tag</span> <span class="o">-</span><span class="n">d</span> <span class="n">v1</span><span class="mf">.0</span>
+<span class="n">git</span> <span class="n">push</span> <span class="o">--</span><span class="n">delete</span> <span class="n">origin</span> <span class="n">v1</span><span class="mf">.0</span>
+</pre></div>
+
+
+<h2 id="17">17 删除远程分支</h2>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nb">push</span> <span class="nx">origin</span> <span class="o">--</span><span class="nb">delete</span> <span class="o">&lt;</span><span class="nx">branchName</span><span class="o">&gt;</span>
+<span class="nx">git</span> <span class="nb">push</span> <span class="nx">origin</span> <span class="p">:</span><span class="o">&lt;</span><span class="nx">branchName</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<h2 id="18-github">18 代理上Github</h2>
+<p>假设我们已经有了socks5代理</p>
+<div class="hlcode"><pre><span class="n">Host</span> <span class="n">github</span><span class="p">.</span><span class="n">com</span>
+    <span class="n">ProxyCommand</span> <span class="n">nc</span> <span class="o">-</span><span class="n">x</span> <span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">8989</span> <span class="o">-</span><span class="n">X</span> <span class="mi">5</span> <span class="o">%</span><span class="n">h</span> <span class="o">%</span><span class="n">p</span>
+</pre></div>
+
+
+<h2 id="19">19 全局忽略</h2>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">config</span> <span class="o">--</span><span class="n">global</span> <span class="n">core</span><span class="p">.</span><span class="n">excludesfile</span> <span class="err">&#39;</span><span class="o">~/</span><span class="p">.</span><span class="n">gitignore</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>然后在<code>~/.gitignore</code>里面添加全局忽略</p>
+<h2 id="20-undo-last-commit">20 undo last commit</h2>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">git</span> <span class="n">commit</span> <span class="p">...</span>              <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="err">$</span> <span class="n">git</span> <span class="n">reset</span> <span class="o">--</span><span class="n">soft</span> <span class="s">&quot;HEAD^&quot;</span>    <span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="err">$</span> <span class="n">edit</span>                        <span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="err">$</span> <span class="n">git</span> <span class="n">add</span> <span class="p">....</span>                <span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="err">$</span> <span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">c</span> <span class="n">ORIG_HEAD</span>     <span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p><a href="http://stackoverflow.com/questions/927358/how-to-undo-the-last-git-commit">How to undo the last Git commit?</a></p>
+<h2 id="21-checkout-one-file-from">21 checkout one file from</h2>
+<div class="hlcode"><pre><span class="cp"># checkout from branch develop</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">develop</span> <span class="o">--</span> <span class="n">VideoEncoder</span><span class="p">.</span><span class="n">cpp</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

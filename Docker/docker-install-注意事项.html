@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Docker-install 注意事项 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Docker">Docker</a>&nbsp;&#187;&nbsp;Docker-install 注意事项
+    <span class="updated">Page Updated&nbsp;
+      2015-05-17 02:45
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Docker-install 注意事项</div>
+
+  <ul>
+<li>
+<p>当安装一个不存在的package时<code>yum -y install docker-io</code>,使用  </p>
+</li>
+<li>
+<p>yum install epel-release</p>
+</li>
+<li>
+<p>当出现以下错误时  </p>
+</li>
+<li>
+<p>Loaded plugins: fastestmirror<br />
+    Loading mirror speeds from cached hostfile<br />
+    Error: Cannot retrieve metalink for repository: epel. Please verify its path and try again</p>
+</li>
+<li>
+<p>运行<code>yum update --disablerepo=epel\*</code></p>
+</li>
+<li>
+<p>这时再运行<code>yum -y install docker-io</code></p>
+</li>
+<li>
+<p>现在，它已经安装好了，让我们来启动 Docker 守护进程<code>service docker install</code></p>
+</li>
+<li>
+<p>如果我们需要开机自启动，如下：<code>chkconfig docker on</code></p>
+</li>
+<li>
+<p>现在我们确认 Docker 是否正常工作，首先我们需要获取最新的 CentOS 镜像<code>docker pull centos-latest</code></p>
+</li>
+<li>
+<p>下一步，我们要确保通过如下命令可以看到镜像：<code>docker images centos</code></p>
+</li>
+<li>
+<p>它将会输出如下的信息：  </p>
+</li>
+<li>
+<p>[root@MyCloudServer ~]# docker images centos<br />
+      REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE<br />
+      centos              latest              ae0c2d0bdc10        6 days ago          224 M</p>
+</li>
+<li>
+<p>运行简单的 bash shell 来测试这个镜像<code>docker run -i -t centos /bin/bash</code></p>
+</li>
+<li>
+<p>如果正常，你会获得一个简单的 bash 提示，输入 exit 退出。</p>
+</li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

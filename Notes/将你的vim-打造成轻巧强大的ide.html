@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>将你的Vim 打造成轻巧强大的IDE - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;将你的Vim 打造成轻巧强大的IDE
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 01:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">将你的Vim 打造成轻巧强大的IDE</div>
+
+  <p>From: <a href="http://yuez.me/jiang-ni-de-vim-da-zao-cheng-qing-qiao-qiang-da-de-ide/">http://yuez.me/jiang-ni-de-vim-da-zao-cheng-qing-qiao-qiang-da-de-ide/</a></p>
+<p>Vim和Emacs一个称为神之编辑器一个被称为编辑器之神，固然很是夸张，但也足以说明这两 款软件的优秀和在程序员界的地位。但是它们都已漫长的学习曲线让人望而生畏，阻止了大 多数人进入。作为一名几乎完全使用Vim写各种代码、文档的人，我想把我自己平时使用的 插件和配置整理下来，方便自己的总结和归纳，如果能有幸帮助到一些想学习Vim但是又不知 道如何入门的人来说，那就再荣幸不过了。 </p>
+<p>在下面的内容中，我会介绍我使用的插件、Vim的配置，最后如果你觉得这些配置手动太麻烦 的话，我推荐你看我的另一篇文章（<a href="http://yuez.me/cong-ling-da-jian-he-pei-zhi-osxkai-fa-huan-jing/">从零搭建和配置OSX开发环境</a>）， 在那篇文章的末尾，我给出了一个<strong>自动化配置和管理Vim的方法</strong>。 </p>
+<p>先贴一张我的Vim的截图： </p>
+<h2 id="_1">你看的到的插件</h2>
+<p>从上面那种截图中肉眼能看到的插件说起，把整个界面按照左窗口、主窗口、右窗口和下窗 口命名，依次介绍出现在这个窗口中的主要插件。 </p>
+<h4 id="_2">主窗口</h4>
+<p>作为一款主要用于书写代码的文本编辑器，一个足够舒服、靓丽的配色当然是首要考虑的。 我使用的配色主题是<code>molokai</code>（[官方地址][2]），在 你安装好了这个插件之后，你需要下面几行配置应用它： </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">:</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/tomasr/molokai</span>
+
+
+<span class="s">&quot; Switch syntax highlighting on, when the terminal has colors</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">t_Co</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">||</span> <span class="n">has</span><span class="p">(</span><span class="s">&quot;gui_running&quot;</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">exists</span><span class="p">(</span><span class="s">&quot;syntax_on&quot;</span><span class="p">)</span>
+  <span class="n">syntax</span> <span class="n">on</span>
+<span class="n">endif</span>
+
+<span class="s">&quot; Javascript syntax hightlight</span>
+<span class="n">syntax</span> <span class="n">enable</span>
+
+<span class="s">&quot; Set syntax highlighting for specific file types</span>
+<span class="n">autocmd</span> <span class="n">BufRead</span><span class="p">,</span><span class="n">BufNewFile</span> <span class="n">Appraisals</span> <span class="n">set</span> <span class="n">filetype</span><span class="o">=</span><span class="n">ruby</span>
+<span class="n">autocmd</span> <span class="n">BufRead</span><span class="p">,</span><span class="n">BufNewFile</span> <span class="o">*</span><span class="p">.</span><span class="n">md</span> <span class="n">set</span> <span class="n">filetype</span><span class="o">=</span><span class="n">markdown</span>
+<span class="n">autocmd</span> <span class="n">Syntax</span> <span class="n">javascript</span> <span class="n">set</span> <span class="n">syntax</span><span class="o">=</span><span class="n">jquery</span>
+
+<span class="s">&quot; Color scheme</span>
+<span class="n">colorscheme</span> <span class="n">molokai</span>
+<span class="n">highlight</span> <span class="n">NonText</span> <span class="n">guibg</span><span class="o">=</span><span class="err">#</span><span class="mo">060606</span>
+<span class="n">highlight</span> <span class="n">Folded</span>  <span class="n">guibg</span><span class="o">=</span><span class="err">#</span><span class="mi">0</span><span class="n">A0A0A</span> <span class="n">guifg</span><span class="o">=</span><span class="err">#</span><span class="mi">9090</span><span class="n">D0</span>
+</pre></div>
+
+
+<p>另外一个推荐的vim主题是<code>solarized</code>(<a href="https://github.com/altercation/vim-colors-solarized">官方地址</a>)。 </p>
+<p>在选定了一个适合自己的主题之后，就需要一些配置去解决排版的问题，比如字符编码和缩 进等问题。 </p>
+<div class="hlcode"><pre><span class="s">&quot; Backspace deletes like most programs in insert mode</span>
+<span class="n">set</span> <span class="n">backspace</span><span class="o">=</span><span class="mi">2</span>
+<span class="s">&quot; Show the cursor position all the time</span>
+<span class="n">set</span> <span class="n">ruler</span>
+<span class="s">&quot; Display incomplete commands</span>
+<span class="n">set</span> <span class="n">showcmd</span>
+<span class="s">&quot; Set fileencodings</span>
+<span class="n">set</span> <span class="n">fileencodings</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="n">bg18030</span><span class="p">,</span><span class="n">gbk</span><span class="p">,</span><span class="n">big5</span>
+
+<span class="n">filetype</span> <span class="n">plugin</span> <span class="n">indent</span> <span class="n">on</span>
+
+<span class="s">&quot; Softtabs, 2 spaces</span>
+<span class="n">set</span> <span class="n">tabstop</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">set</span> <span class="n">shiftwidth</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">set</span> <span class="n">shiftround</span>
+<span class="n">set</span> <span class="n">expandtab</span>
+
+<span class="s">&quot; Display extra whitespace</span>
+<span class="n">set</span> <span class="n">list</span> <span class="n">listchars</span><span class="o">=</span><span class="n">tab</span><span class="o">:</span><span class="err">»·</span><span class="p">,</span><span class="n">trail</span><span class="o">:</span><span class="err">·</span>
+
+<span class="s">&quot; Make it obvious where 80 characters is</span>
+<span class="n">set</span> <span class="n">textwidth</span><span class="o">=</span><span class="mi">80</span>
+<span class="n">set</span> <span class="n">colorcolumn</span><span class="o">=+</span><span class="mi">1</span>
+
+<span class="s">&quot; Numbers</span>
+<span class="n">set</span> <span class="n">number</span>
+<span class="n">set</span> <span class="n">numberwidth</span><span class="o">=</span><span class="mi">5</span>
+
+<span class="n">set</span> <span class="n">matchpairs</span><span class="o">+=&lt;:&gt;</span>
+<span class="n">set</span> <span class="n">hlsearch</span>
+</pre></div>
+
+
+<p>在第68行，水平和垂直方向分别有一条高亮条，这是用来表示我当 前光标所处于的行和列 用的。实现它，只需要几行简单的配置就可以了： </p>
+<div class="hlcode"><pre><span class="s">&quot; Highlight current line</span>
+<span class="n">au</span> <span class="n">WinLeave</span> <span class="o">*</span> <span class="n">set</span> <span class="n">nocursorline</span> <span class="n">nocursorcolumn</span>
+<span class="n">au</span> <span class="n">WinEnter</span> <span class="o">*</span> <span class="n">set</span> <span class="n">cursorline</span> <span class="n">cursorcolumn</span>
+<span class="n">set</span> <span class="n">cursorline</span> <span class="n">cursorcolumn</span>
+</pre></div>
+
+
+<h5 id="_3">关于代码补全</h5>
+<p>有些人可能已经发现了，在我的主窗口中没有演示代码补全的功能，我需要对此做一个说明。 我本人不喜欢过于强大的代码补全，所以默认的对于我来说已经完全足够了，如果你需要使 用更强大的代码补全，我推荐你使用<code>YouCompleteMe</code>（<a href="https://github.com/Valloric/YouCompleteMe">官方地址</a>）。 </p>
+<h4 id="_4">左窗口</h4>
+<p>左窗口是一个用于浏览目录结构的插件<code>nerdtree</code>（[官方地址][5]）。 同样一些简单的配置之后，它便能为你提供一个方便够用的功能。 </p>
+<div class="hlcode"><pre>   <span class="cp">[</span><span class="mi">5</span><span class="cp">]</span>: https://github.com/scrooloose/nerdtree
+
+
+&quot; NERD tree
+let NERDChristmasTree=0
+let NERDTreeWinSize=35
+let NERDTreeChDirMode=2
+let NERDTreeIgnore=<span class="cp">[</span><span class="s1">&#39;\~$&#39;</span><span class="p">,</span> <span class="s1">&#39;\.pyc$&#39;</span><span class="p">,</span> <span class="s1">&#39;\.swp$&#39;</span><span class="cp">]</span>
+let NERDTreeShowBookmarks=1
+let NERDTreeWinPos=&quot;left&quot;
+&quot; Automatically open a NERDTree if no files where specified
+autocmd vimenter * if !argc() | NERDTree | endif
+&quot; Close vim if the only window left open is a NERDTree
+autocmd bufenter * if (winnr(&quot;$&quot;) == 1 <span class="err">&amp;&amp;</span> exists(&quot;b:NERDTreeType&quot;) <span class="err">&amp;&amp;</span> b:NERDTreeType == &quot;primary&quot;) | q | endif
+&quot; Open a NERDTree
+nmap <span class="nt">&lt;F5&gt;</span> :NERDTreeToggle<span class="nt">&lt;cr&gt;</span>
+</pre></div>
+
+
+<h4 id="_5">右窗口</h4>
+<p>在我的截图中，右窗口陈列出了我当前打开的rb文件中申明的类、变量及方法等等。这是一 款名叫<code>tagbar</code>的插件，它为我们提供了一个简单的方式去浏览当前文件的结构，并且支持 在各个标签之间快捷的跳转。同理，安装之后，需要一些配置： </p>
+<div class="hlcode"><pre><span class="s2">&quot; Tagbar</span>
+<span class="s2">let g:tagbar_width=35</span>
+<span class="s2">let g:tagbar_autofocus=1</span>
+<span class="s2">nmap &lt;F6&gt; :TagbarToggle&lt;CR&gt;</span>
+</pre></div>
+
+
+<p>如果你发现默认的<code>Tagbar</code>不能支持你的语言，比如Css, Clojure, Markdown等等，你可以 参照<a href="https://github.com/majutsushi/tagbar/wiki">这篇文章</a>为它提供额外的支持。 </p>
+<h4 id="_6">下窗口</h4>
+<p>下窗口包含了两个部分：一个是用于全局搜索的窗口和一个状态条。 </p>
+<p>全局搜索是一个基于文件名的搜索功能，可以快速定位一个文件。这是<code>ctrlp</code>这个插件提 供的功能。下面是<code>ctrlp</code>的一些配置： </p>
+<div class="hlcode"><pre><span class="s">&quot; ctrap</span>
+<span class="n">set</span> <span class="n">wildignore</span><span class="o">+=</span><span class="err">*/</span><span class="n">tmp</span><span class="o">/*</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">so</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">swp</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">zip</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">png</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">jpg</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">jpeg</span><span class="p">,</span><span class="o">*</span><span class="p">.</span><span class="n">gif</span> <span class="s">&quot; MacOSX/Linux</span>
+<span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">ctrlp_custom_ignore</span> <span class="o">=</span> <span class="err">&#39;\</span><span class="n">v</span><span class="p">[</span><span class="err">\</span><span class="o">/</span><span class="p">]</span><span class="err">\</span><span class="p">.(</span><span class="n">git</span><span class="o">|</span><span class="n">hg</span><span class="o">|</span><span class="n">svn</span><span class="p">)</span><span class="err">$&#39;</span>
+</pre></div>
+
+
+<p><code>ctrlp</code>默认会使用<code>grep</code>进行搜索，效率低且慢。所以，我使用了<code>ag</code>去替换默认的搜索 功能。ag是一款轻量级的搜索工具，速度非常快。为了集成ag，需要添加下列配置： </p>
+<div class="hlcode"><pre><span class="k">if</span> <span class="n">executable</span><span class="p">(</span><span class="err">&#39;</span><span class="n">ag</span><span class="err">&#39;</span><span class="p">)</span>
+  <span class="s">&quot; Use Ag over Grep</span>
+  <span class="n">set</span> <span class="n">grepprg</span><span class="o">=</span><span class="n">ag</span><span class="err">\</span> <span class="o">--</span><span class="n">nogroup</span><span class="err">\</span> <span class="o">--</span><span class="n">nocolor</span>
+  <span class="s">&quot; Use ag in CtrlP for listing files.</span>
+  <span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">ctrlp_user_command</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">ag</span> <span class="o">%</span><span class="n">s</span> <span class="o">-</span><span class="n">l</span> <span class="o">--</span><span class="n">nocolor</span> <span class="o">-</span><span class="n">g</span> <span class="s">&quot;&quot;</span><span class="err">&#39;</span>
+  <span class="s">&quot; Ag is fast enough that CtrlP doesn&#39;t need to cache</span>
+  <span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">ctrlp_use_caching</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">endif</span>
+</pre></div>
+
+
+<p>下面状态条中会依次显示：当前模式、Git分支、文件路径、文件是否保存以及当前所载行和 列的信息。这是通过<code>vim-powerline</code>来实现的。其中显示Git信息需要配合<code>vim-fugitive</code> 插件一些使用。 </p>
+<div class="hlcode"><pre><span class="n">set</span> <span class="n">laststatus</span><span class="o">=</span><span class="mi">2</span> <span class="s">&quot; Always display the status line</span>
+<span class="n">set</span> <span class="n">statusline</span><span class="o">+=%</span><span class="p">{</span><span class="n">fugitive</span><span class="err">#</span><span class="n">statusline</span><span class="p">()}</span> <span class="s">&quot;  Git Hotness</span>
+</pre></div>
+
+
+<h4 id="_7">小结</h4>
+<p>通过以上的配置，你就可以拥有一些如第一张图所示的那样，看起来还不错的编辑器。当然， Vim之所以如此倍受推崇，只是依靠这些还是远远不够的。接下来，我要介绍一些看不见的插 件来实实在在的提升Vim体验。 </p>
+<h2 id="_8">看不见的实用插件</h2>
+<h4 id="_9">现代化的插件管理</h4>
+<p>在我的另一篇文章中（<a href="http://yuez.me/cong-ling-da-jian-he-pei-zhi-osxkai-fa-huan-jing/">从零搭建和配置OSX开发环境</a>） ，我已经详细介绍过<code>Vundle</code>这个管理Vim插件的一个软件，这里不做过多介绍。 </p>
+<h4 id="vim">在Vim中执行你想要运行的命令</h4>
+<p><code>vim-run-interactive</code>让你可以在Vim中执行几乎任何你想要在命令行中执行的命令。举例 来说，假设你有条<code>git update</code>的自定义命令，你可以通过<code>:RunInInteractiveShell git update</code>来执行它，而不需要退出Vim。添加一条配置，可以简化这个步骤： </p>
+<div class="hlcode"><pre><span class="s2">&quot; Run commands that require an interactive shell</span>
+<span class="s2">nnoremap &lt;Leader&gt;r :RunInInteractiveShell&lt;space&gt;</span>
+</pre></div>
+
+
+<p>如此一来，你可以通过<code>&lt;Leader&gt; + r + 命令</code>键来激活执行命令。如果你不知道什么是<code>Leader</code> 键，你可以去百度或者Google一下。 </p>
+<h4 id="vim_1">Vim的语法检查</h4>
+<p>Vim中有个很强大的语法检查插件，它支持几乎所有常用的语言的语法检测[<code>syntastic</code>(<a href="https://github.com/scrooloose/syntastic">https://github.com/scrooloose/syntastic</a>)]。 附上一张来自官方的截图： </p>
+<p>为了让它更好的工作，同样需要一些配置： </p>
+<div class="hlcode"><pre><span class="s">&quot; configure syntastic syntax checking to check on open as well as save</span>
+<span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">syntastic_check_on_open</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">syntastic_html_tidy_ignore_errors</span><span class="o">=</span><span class="p">[</span><span class="s">&quot; proprietary attribute </span><span class="se">\&quot;</span><span class="s">ng-&quot;</span><span class="p">]</span>
+<span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">syntastic_always_populate_loc_list</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">syntastic_auto_loc_list</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">let</span> <span class="n">g</span><span class="o">:</span><span class="n">syntastic_check_on_wq</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">set</span> <span class="n">statusline</span><span class="o">+=%</span><span class="err">#</span><span class="n">warningmsg</span><span class="err">#</span>
+<span class="n">set</span> <span class="n">statusline</span><span class="o">+=%</span><span class="p">{</span><span class="n">SyntasticStatuslineFlag</span><span class="p">()}</span>
+<span class="n">set</span> <span class="n">statusline</span><span class="o">+=%*</span>
+</pre></div>
+
+
+<h4 id="rails">Rails集成开发套件</h4>
+<p>我是一名Ruby的爱好者，所以Vim中少不了针对Ruby的一系列插件。我作为一名Web开发者， Rails这个大名鼎鼎的框架自然也是有所涉猎。所以在我的Vim中有着针对它们开发的一套插 件。 </p>
+<p>插件列表： </p>
+<ul>
+<li><strong>[ruby-vim][9]</strong>：在快速的在module, class, method中跳跃。</li>
+<li><strong><a href="https://github.com/tpope/vim-bundler">vim-bundler</a></strong>：在Vim中集成<code>Bundler</code>。</li>
+<li><strong><a href="https://github.com/tpope/vim-endwise">vim-endwise</a></strong>：自动补全<code>end</code>关键字。</li>
+<li><strong><a href="https://github.com/tpope/vim-rails">vim-rails</a></strong>：它的功能很多，可以说是用 Vim开发Rails不可缺少的一个插件。更详细的信息，可以前往它的官方网站获取。</li>
+<li>
+<p><strong><a href="https://github.com/thoughtbot/vim-rspec">vim-rspec</a></strong>：在Vim中执行Rspec测试。</p>
+<p>[9]: https://github.com/vim-ruby/vim-ruby</p>
+<p>" Cucumber navigation commands<br />
+autocmd User Rails Rnavcommand step features/step_definitions -glob=<strong>/* -suffix=_steps.rb<br />
+autocmd User Rails Rnavcommand config config -glob=</strong>/* -suffix=.rb -default=routes</p>
+<p>" RSpec.vim mappings<br />
+map <Leader>t :call RunCurrentSpecFile()<CR><br />
+map <Leader>s :call RunNearestSpec()<CR><br />
+map <Leader>l :call RunLastSpec()<CR><br />
+map <Leader>a :call RunAllSpecs()<CR></p>
+</li>
+</ul>
+<h4 id="_10">更多好用的工具</h4>
+<p>还有很多好用的插件，如果每个都一一说明，那么篇幅再长一倍怕也是不够。所以，我这里 就把一些好用的插件列出来，有兴趣的可以自己看看。 </p>
+<ul>
+<li><a href="https://github.com/danro/rename.vim">rename.vim</a>：在Vim中为文件重命名。</li>
+<li><a href="https://github.com/kchmck/vim-coffee-script">vim-coffee-script</a>：在Vim中舒心 的编写、编译Coffeescript。</li>
+<li><a href="https://github.com/pbrisbin/vim-mkdir">vim-mkdir</a>：当你在Vim中新建文件的时候， 自动帮你创建不存在的目录。</li>
+<li><a href="https://github.com/tpope/vim-surround">vim-surround</a>：快速的删除、修改和添加 括号、引号、XML标签等等。</li>
+<li><a href="https://github.com/tmhedberg/matchit">matchit</a>：用<code>%</code>去在两个对应的字符间跳转。</li>
+<li><a href="https://github.com/vim-scripts/tComment">tComment</a>：快速注释、反注释代码。</li>
+<li><a href="https://github.com/mattn/emmet-vim">emmet-vim</a>：<code>Emmet</code>的Vim版。</li>
+<li><a href="https://github.com/godlygeek/tabular">tabular</a>：快速对齐。</li>
+<li><a href="https://github.com/msanders/snipmate.vim">snipmate.vim</a>：快速的代码片段。</li>
+<li><a href="https://github.com/Lokaltog/vim-easymotion">vim-easymotion</a>：在文件中快速定位。</li>
+<li><a href="https://github.com/suan/vim-instant-markdown">vim-instant-markdown</a>：Vim中对 Markdown文档的实时预览。</li>
+</ul>
+<h2 id="_11">备注</h2>
+<p>有更多的一些插件我没有都列出来，它们一般用于特定语法的开发，不一定适合所有人。你 可以参考<a href="http://yuez.me/cong-ling-da-jian-he-pei-zhi-osxkai-fa-huan-jing/">从零搭建和配置OSX开发环境</a> 这篇文章，自动管理、配置你的Vim环境。 </p>
+<p>在上文中，我有一些遗漏的或者错误的地方，希望朋友发现后可以在下方留言指正。如果你 有一些更好的插件、配置，也恳请你在下方留言。谢谢。 </p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

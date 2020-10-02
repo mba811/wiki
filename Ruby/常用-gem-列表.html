@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>常用 Gem 列表 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Ruby">Ruby</a>&nbsp;&#187;&nbsp;常用 Gem 列表
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 11:53
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">常用 Gem 列表</div>
+
+  <p>以下 Gem 可以在 <a href="http://rubygems.org/">rubygems.org</a> 找到。</p>
+<p>实用的 RubyGems 排名站点 <a href="https://www.ruby-toolbox.com/">www.ruby-toolbox.com</a></p>
+<h4 id="twitter-bootstrap-rails"><a href="https://github.com/seyhunak/twitter-bootstrap-rails">twitter-bootstrap-rails</a></h4>
+<p><a href="http://twitter.github.com/bootstrap/">http://twitter.github.com/bootstrap/</a><br />
+<a href="https://rubygems.org/gems/twitter-bootstrap-rails">https://rubygems.org/gems/twitter-bootstrap-rails</a><br />
+<a href="https://github.com/seyhunak/twitter-bootstrap-rails">https://github.com/seyhunak/twitter-bootstrap-rails</a></p>
+<p>来自 Twitter 的 Bootstrap，是一套完成的前台 CSS 框架。<br />
+以简洁，优雅著称于世。<br />
+被无数攻城狮所青睐，<br />
+又让无数程序猿审美疲劳。</p>
+<p>twitter-bootstrap-rails Gem 封装了 Boostrap CSS 等代码，<a href="https://github.com/twbs/bootstrap-sass">SCSS版本</a></p>
+<h4 id="devise"><a href="https://github.com/plataformatec/devise">Devise</a></h4>
+<p>用于快速构建用户功能，如：注册，登陆，个人设置，找回密码...</p>
+<h4 id="omniauth"><a href="https://github.com/intridea/omniauth">OmniAuth</a></h4>
+<p>如果你需要在项目中实现三方平台（如: Twitter, Facebook, 新浪微博, 腾讯 QQ）账号登陆的支持，那你需要用上它。</p>
+<p><em>RailsCast: <a href="http://asciicasts.com/episodes/235-omniauth-part-1">Part1</a> <a href="http://railscasts.com/episodes/236-omniauth-part-2">Part2</a></em></p>
+<h4 id="will_paginate-kaminari"><a href="https://github.com/mislav/will_paginate">will_paginate</a> 和 <a href="https://github.com/amatsuda/kaminari">Kaminari</a></h4>
+<p>分页控件，几乎所有 Rails App 都在用, 其中 will_paginate 比较老, 应用案例较多, kaminari 更新, 性能和兼容性更好</p>
+<h4 id="paperclip-carrierwave"><a href="https://github.com/thoughtbot/paperclip">Paperclip</a> 和 <a href="https://github.com/jnicklas/carrierwave">Carrierwave</a></h4>
+<p>这两个都是上传组件， Paperclip 是老牌产品了，也是几乎绝大多数项目都有在用它，它可以帮你处理上传图片，裁减，定义不同的图片尺寸，几乎很完美。而 Carrierwave 是后起之秀，功能和 Paperclip 差不多，但它还可以管理除图片之外的东西，而且灵活性更高（ ruby-china 就是用它）。<br />
+对比: Paperclip 官方只支持 ActiveRecord 但相对稳定, 而 Carrierwave 比较灵活支持更多的 orm, 比如 mongoid</p>
+<h4 id="wicegrid"><a href="https://github.com/leikind/wice_grid">WiceGrid</a></h4>
+<p>表格控件，针对 ActiveRecord，超级强大，支持任意字段排序，过滤，具体看它的 <a href="http://wicegrid.herokuapp.com/">Demo</a>.</p>
+<h4 id="sunspot-thinking-sphinx"><a href="https://github.com/sunspot/sunspot">Sunspot</a>, <a href="https://github.com/pat/thinking-sphinx">thinking-sphinx</a></h4>
+<p>全文搜索</p>
+<h4 id="settingslogic-railssettings"><a href="https://github.com/binarylogic/settingslogic">Settingslogic</a> 和 <a href="https://github.com/Squeegy/rails-settings">RailsSettings</a></h4>
+<p>项目经常会有一些配置信息，Settinglogic 可以帮你将写在 YAML 里面的配置信息很方便的调用。而 RailsSettings 也是类似的功能，只不过它是将配置信息存放在数据库里面，以便可以随时在线上修改。同时也带来性能的问题，你可以用改进版 rails-settings-cached，他会将配置缓存下来。</p>
+<h4 id="cancan"><a href="https://github.com/ryanb/cancan">CanCan</a></h4>
+<p>一些应用中会用到为不同用户设定不同功能的权限，你可以试试 Cancan 这个 gem 他可以帮你制定一套完善的方案，<a href="http://railscasts.com/episodes/192-authorization-with-cancan">Railscasts</a> 上有使用介绍，在Rails 4上请使用<a href="https://github.com/CanCanCommunity/cancancan">cancancan</a>。</p>
+<h4 id="redis-objects"><a href="https://github.com/nateware/redis-objects">redis-objects</a></h4>
+<p>它是一个基于 <a href="http://redis.io/">Redis</a> 存储的数据存储插件，用于帮助我们存放一些需要快速存储的数据，如 页面访问量，赞数量，或者一些列表数据，如 Followers，数据将会存入 Redis 中，而它用起来很简单，它可以和 Rails ActiveSupport (简单来说，也就是 Model 里面）结合，使这些数据存取像一个普通字段一般。</p>
+<h4 id="nokogiri"><a href="http://nokogiri.org/">Nokogiri</a></h4>
+<p>采集数据是我们需要解析复杂的 HTML 结构，从中获得需要的数据，Nokogiri 可以帮助我们完美的处理不同网页上面不同的 HTML 结构，并且有很好的编码处理能力，用它你不用担心页面是 GB2312 还是 GBK 还是 UTF-8，它都很很好的处理，解析结构可以用类似 jQuery 的 CSS Selector 的方式查找，很是方便。曾经用过 Ruby 的好几个类似插件，最终发现 Nokogiri 才是最好的。</p>
+<h4 id="formtastic-simple_form"><a href="https://github.com/justinfrench/formtastic">Formtastic</a> 和 <a href="https://github.com/plataformatec/simple_form">simple_form</a></h4>
+<p>Rails 为我们带来和一改传统的表单构件方式，但是经过实际的使用，我们渐渐发觉这样依然还是不够“敏捷”，我们需要更加简便并具有更细致规范的表单，所以有了 Formtastic ，它用起来比 Rails 默认的 form 更加简洁，但是却具有更多的功能，你可以为每个字段设定 help-text 放到文本框下面，并可以走 I18n 的方式设置语言，具体参见<a href="http://railscasts.com/episodes/184-formtastic-part-1">Railscasts</a> 上面对于 Formtastic 的介绍。而 simple_form 和 Formtastic 功能类似，但它的写法还要简单一些。</p>
+<h4 id="whenever"><a href="https://github.com/javan/whenever">Whenever</a></h4>
+<p>Linux 里面有 Cron 可以帮助我们定期执行一些任务，但是 Cron 手动写起来很是麻烦，尤其是前面时间周期的定义， Whenever 可以帮助我们用更人性化的方式编写 Cron 任务，具体参见 <a href="http://railscasts.com/episodes/164-cron-in-ruby">Railscasts</a> 上面关于 Whenever 的介绍。</p>
+<h4 id="sidekiq-resque-delayed_job"><a href="https://github.com/mperham/sidekiq">Sidekiq</a>, <a href="https://github.com/resque/resque">Resque</a> 和 <a href="https://github.com/collectiveidea/delayed_job">Delayed_job</a></h4>
+<p>有时候一些任务的执行会很慢，而这些任务我们并不要求需要马上返回结果 (比如：发送邮件，生成图片缩略图)，那我们可以选择将这些任务放到后台执行，以便于页面不会长时间等待执行。</p>
+<h4 id="cells"><a href="https://github.com/apotonick/cells">Cells</a></h4>
+<p>在设计 Views 的时候，我们会将一些很多页面都需要用到的局部功能抽象成 <a href="http://rails.rubyonrails.org/classes/ActionView/Partials.html">Partials</a> 但是我们会发现这样动作比较麻烦，因为数据依然还需要在不同的 Controller 里面载入。而 Cells 可以帮助我们搞定这个问题，它可以将一个局部功能，从数据调用到 View 生成，全部做成一个独立的组件，使用的时候一行代码就搞定，无需其他的调用，同时还可以在 Cell 里面设定缓存，将缓存颗粒化。而且于 Partials 相比，它的效率好很多。</p>
+<h4 id="daemon-spawn"><a href="https://github.com/alexvollmer/daemon-spawn">daemon-spawn</a></h4>
+<p>将一些事情作为 daemon 来启动，可以类似 Debian 的 service foo start 比如 用来管理 Resque 的启动和重启，会变得很简单。</p>
+<h3 id="grape"><a href="https://github.com/intridea/grape">Grape</a></h3>
+<p>随着 Mobile App 的增多，很多时候我们在做用 Rails 做 API Base 项目时，rails 自带的 C 和 V 层显得过于繁杂，grape 可以帮助我们快速的构建和 Rails 完美融合的 API 接口。</p>
+<h4 id="clientsidevalidations"><a href="https://github.com/bcardarella/client_side_validations">ClientSideValidations</a></h4>
+<p>现在越来越多网站为了改善用户体验，使用 JavaScript 来进行客户端验证。对于程序员来说，也因此增加多一份工作。而往往客户端的验证逻辑跟服务端的验证逻辑几乎一样，如果要另外再写一次验证代码，实在不够 DRY，client_side_validations 正是为解决此问题要出现。client_side_validations 会读取服务端的验证逻辑并生成对应的客户端验证逻辑（依赖 jQuery），让你几乎不用增加任何前端代码就可实现客户验证。</p>
+<h4 id="by_star"><a href="https://github.com/radar/by_star">by_star</a></h4>
+<p>这是一个辅助 ActiveRecord 的组件，让你可以简单的实现按某年，某月，某日，或者星期几，来查询数据，用起来非常简单，省下麻烦的条件组合，此外，它还可以查询上一篇，下一篇类似的功能。</p>
+<h4 id="rolify"><a href="https://github.com/EppO/rolify">rolify</a></h4>
+<p>Very simple Roles library without any authorization enforcement supporting scope on resource object.</p>
+<h3 id="faraday"><a href="https://github.com/lostisland/faraday">Faraday</a></h3>
+<p>HTTP Client 支持多种方式</p>
+<h3 id="pry"><a href="http://pry.github.com/">pry</a></h3>
+<p>简单强大的调试工具, 轻量级的工具. 直接在终端调试方便又直接</p>
+<h3 id="seed-fu"><a href="https://github.com/mbleigh/seed-fu">Seed Fu</a></h3>
+<p>强大的 seed</p>
+<h3 id="rails_best_practices"><a href="https://github.com/railsbp/rails_best_practices">rails_best_practices</a></h3>
+<p>编写代码总有方圆，费心费力写文档，还不如用这个工具来控制代码质量。</p>
+<h3 id="lazy_high_charts"><a href="https://github.com/xiaods/lazy_high_charts">lazy_high_charts</a></h3>
+<p>当前绘图 JS 库中 Highcharts 非常优秀，rubyist 使用这个 gem 来管理和编写需要的图。</p>
+<h4 id="better-errors"><a href="https://github.com/charliesome/better_errors">Better Errors</a></h4>
+<p>它用一个更好的，更有用的错误页替换标准的 Rails 错误页面，对 Rack middleware 也同样有效。·<a href="http://railscasts.com/episodes/402-better-errors-railspanel">Railscasts</a> 也有相应的介绍。</p>
+<h4 id="god"><a href="http://godrb.com/">god</a></h4>
+<p>Ruby 进程监控工具</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Shell 常用资源 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Resources">Resources</a>&nbsp;&#187;&nbsp;Shell 常用资源
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 07:14
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Shell 常用资源</div>
+
+  <h2 id="_1">常用指令</h2>
+<h3 id="_2">文本内容搜索</h3>
+<div class="hlcode"><pre><span class="n">grep</span> <span class="n">aaa</span> <span class="o">*</span>
+</pre></div>
+
+
+<h3 id="_3">文件夹操作</h3>
+<div class="hlcode"><pre><span class="err">查看文件夹大小</span>   <span class="n">du</span> <span class="o">-</span><span class="n">h</span> <span class="o">--</span><span class="n">max</span><span class="o">-</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ys</span>
+<span class="err">查看驱动器空间</span>   <span class="n">df</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+
+
+<h3 id="_4">压缩命令</h3>
+<div class="hlcode"><pre><span class="n">tar</span> <span class="n">zxvf</span> <span class="n">aaa</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span>
+<span class="n">tar</span> <span class="n">zcvf</span> <span class="n">aaa</span><span class="p">.</span><span class="n">tar</span><span class="p">.</span><span class="n">gz</span> <span class="n">aaa</span>
+</pre></div>
+
+
+<h3 id="_5">登陆到其他用户</h3>
+<div class="hlcode"><pre><span class="n">login</span>
+</pre></div>
+
+
+<h3 id="_6">查看端口的占用</h3>
+<div class="hlcode"><pre><span class="n">lsof</span> <span class="o">-</span><span class="n">i</span><span class="o">:</span><span class="mi">8087</span>  <span class="err">查看</span><span class="mi">8087</span><span class="err">端口的使用</span>
+</pre></div>
+
+
+<h3 id="_7">批量杀死进程</h3>
+<div class="hlcode"><pre><span class="n">ps</span> <span class="o">-</span><span class="n">aux</span><span class="o">|</span><span class="n">grep</span> <span class="n">name</span><span class="o">|</span><span class="n">grep</span> <span class="o">-</span><span class="n">v</span> <span class="n">grep</span><span class="o">|</span><span class="n">cut</span> <span class="o">-</span><span class="n">c</span> <span class="mi">9</span><span class="o">-</span><span class="mi">15</span><span class="o">|</span><span class="n">xargs</span> <span class="n">kill</span> <span class="o">-</span><span class="mi">9</span>
+</pre></div>
+
+
+<h3 id="_8">查看当前时间</h3>
+<div class="hlcode"><pre><span class="n">date</span>       <span class="err">时间</span>
+<span class="n">date</span> <span class="o">+%</span><span class="n">s</span>   <span class="err">时间戳</span>
+<span class="n">date</span> <span class="o">-</span><span class="n">d</span> <span class="s">&quot;2010-07-20 10:25:30&quot;</span> <span class="o">+%</span><span class="n">s</span>  <span class="err">指定时间时间戳</span>
+<span class="n">date</span> <span class="o">-</span><span class="n">d</span> <span class="s">&quot;@1279592730&quot;</span>    <span class="err">时间戳转时间</span>
+<span class="n">date</span> <span class="o">-</span><span class="n">d</span> <span class="s">&quot;1970-01-01 14781 days&quot;</span> <span class="s">&quot;+%Y/%m/%d %H:%M:%S&quot;</span>
+</pre></div>
+
+
+<h3 id="_9">查看进程内存使用情况</h3>
+<div class="hlcode"><pre><span class="n">top</span> <span class="o">-</span><span class="n">d</span> <span class="mi">1</span> <span class="o">-</span><span class="n">p</span> <span class="n">pid</span> <span class="p">[,</span><span class="n">pid</span> <span class="p">...]</span>
+<span class="n">pmap</span> <span class="n">pid</span> 
+<span class="n">ps</span> <span class="n">aux</span><span class="o">|</span><span class="n">grep</span> <span class="n">process_name</span>
+<span class="err">查看</span><span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">process_id</span><span class="o">/</span><span class="err">文件夹下的</span><span class="n">status</span><span class="err">文件</span>
+</pre></div>
+
+
+<h3 id="linux">查看Linux内核版本或发布版本</h3>
+<div class="hlcode"><pre><span class="n">lsb_release</span> <span class="o">-</span><span class="n">a</span>
+<span class="n">uname</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+
+
+<h3 id="http">一句话实现一个HTTP服务，把当前文件夹作为根目录</h3>
+<div class="hlcode"><pre><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">SimpleHTTPServer</span>
+</pre></div>
+
+
+<h3 id="_10">查看本地网络服务活动状态</h3>
+<div class="hlcode"><pre><span class="n">lsof</span> <span class="o">-</span><span class="n">i</span>
+</pre></div>
+
+
+<h3 id="ip">查看自己的外网ip</h3>
+<div class="hlcode"><pre><span class="n">curl</span> <span class="n">ifconfig</span><span class="p">.</span><span class="n">me</span>
+</pre></div>
+
+
+<h3 id="_11">下载整个网站</h3>
+<div class="hlcode"><pre><span class="n">wget</span> <span class="o">--</span><span class="n">random</span><span class="o">-</span><span class="n">wait</span> <span class="o">-</span><span class="n">r</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">e</span> <span class="n">robots</span><span class="o">=</span><span class="n">off</span> <span class="o">-</span><span class="n">U</span> <span class="n">mozilla</span> <span class="n">http</span><span class="o">:</span><span class="c1">//www.example.com</span>
+</pre></div>
+
+
+<h3 id="_12">后台运行一段不中止的程序，并可随时查看它的状态</h3>
+<div class="hlcode"><pre><span class="n">screen</span> <span class="o">-</span><span class="n">d</span> <span class="o">-</span><span class="n">m</span> <span class="o">-</span><span class="n">S</span> <span class="n">some_</span> <span class="n">name</span> <span class="n">ping</span> <span class="n">my_router</span>
+</pre></div>
+
+
+<h3 id="_13">查看进程执行的时间</h3>
+<div class="hlcode"><pre><span class="n">ps</span> <span class="o">-</span><span class="n">A</span> <span class="o">-</span><span class="n">opid</span><span class="p">,</span><span class="n">stime</span><span class="p">,</span><span class="n">etime</span><span class="p">,</span><span class="n">args</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">python</span>
+</pre></div>
+
+
+<h3 id="_14">创建守护进程</h3>
+<div class="hlcode"><pre><span class="n">nohup</span> <span class="n">python</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">a</span><span class="p">.</span><span class="n">py</span> <span class="o">&amp;</span>
+</pre></div>
+
+
+<h3 id="_15">查看当前文件夹下文件（文件夹）大小</h3>
+<div class="hlcode"><pre><span class="n">du</span> <span class="o">-</span><span class="n">h</span> <span class="o">--</span><span class="n">max</span><span class="o">-</span><span class="n">depth</span><span class="o">=</span><span class="mi">1</span> <span class="p">.</span>
+</pre></div>
+
+
+<h3 id="_16">查看所有磁盘大小</h3>
+<div class="hlcode"><pre><span class="n">df</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+
+
+<h3 id="_17">诊断网络</h3>
+<div class="hlcode"><pre><span class="n">mtr</span> 
+<span class="n">ping</span>
+<span class="n">traceroute</span>
+<span class="n">dig</span>
+</pre></div>
+
+
+<h3 id="_18">列出本机监听的端口号</h3>
+<div class="hlcode"><pre><span class="n">netstat</span> <span class="err">–</span><span class="n">tlnp</span>
+<span class="n">netstat</span> <span class="o">-</span><span class="n">anop</span>
+</pre></div>
+
+
+<h3 id="_19">在远程机器上运行一段脚本</h3>
+<div class="hlcode"><pre><span class="n">ssh</span> <span class="n">user</span><span class="err">@</span><span class="n">server</span> <span class="n">bash</span> <span class="o">&lt;</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">script</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+
+
+<h3 id="_20">端口扫描</h3>
+<div class="hlcode"><pre><span class="n">nc</span> <span class="o">-</span><span class="n">z</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">n</span> <span class="mf">127.0.0.1</span> <span class="mi">20</span><span class="o">-</span><span class="mi">100</span>
+</pre></div>
+
+
+<h3 id="30google20">负载测试，30秒内向Google发起20个并发连接</h3>
+<div class="hlcode"><pre><span class="n">siege</span> <span class="o">-</span><span class="n">c20</span> <span class="n">www</span><span class="p">.</span><span class="n">google</span><span class="p">.</span><span class="n">co</span><span class="p">.</span><span class="n">uk</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="n">t30s</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

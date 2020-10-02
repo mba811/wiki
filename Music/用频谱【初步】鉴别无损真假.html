@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>用频谱【初步】鉴别无损真假 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Music">Music</a>&nbsp;&#187;&nbsp;用频谱【初步】鉴别无损真假
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:05
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">用频谱【初步】鉴别无损真假</div>
+
+  <p>Foobar应该是使用的较多的一款播放器，在它的视图–&gt;可视化菜单里面有几个可视化选项，其中比较有用的是声谱、频谱两个视图。</p>
+<p>如果打开声谱视图，应该是类似于下面的图案。这个视图的横轴是时间，纵轴是频率，颜色的深浅表示的是能量（或响度等）。<br />
+<img alt="" src="http://farm4.static.flickr.com/3245/2966077303_3b2667d534.jpg" /></p>
+<p>对于频谱视图，横轴是频率，纵轴是声压。<br />
+<img alt="" src="http://farm4.static.flickr.com/3238/2966924158_b8bbc0f642.jpg" /></p>
+<p>Foobar的视图是动态的，因为这些视图都在随歌曲的播放而变化。如果你是使用Tau Analyzer分析一张CD，那么最后可以得到一张静态的频谱分析图，如下图。<br />
+<img alt="" src="http://image-7.verycd.com/resize/2646e30de587a531b2e07b6def32e5b4266633(450x375" />/thumb.jpg)</p>
+<p>现在来聊聊为什么要使用频谱、声谱。对于广大音乐爱好者（非专业人士），这两个谱是<strong>初步</strong>判断一个无损是否为真无损的好办法（之所以要说“<strong>初步</strong>”的原因，feicun会在以后的文章中讲到的）。</p>
+<p>下面以声谱为例，解释一下如何使用它判断无损的真假。首先来看一个CBR192位 mp3的声谱截图：<br />
+<img alt="" src="http://farm4.static.flickr.com/3031/2966060429_e3d3460069.jpg" /><br />
+从这个截图可以看出，在声谱的最上面，即高频部分，有一条段很明显的图像缺失，也就是说这首歌曲的高频部分被截掉了（mp3的压缩原理就是去掉一些人耳不容易觉察的声音细节）。既然被截掉了这么一大截，那么音质怎么能好呢。</p>
+<p>下面的截图是VBR V2的mp3声谱，仔细看的话，可以看到在距离顶部大约1毫米的地方还是有一段图像缺失，这说明这首歌也是有损的，只不过没有CBR192位缺失的多，也可以说音质比192位的mp3音质好。<br />
+<img alt="" src="http://farm4.static.flickr.com/3027/2966060433_fef443ec27.jpg" /></p>
+<p>最后的截图是一个真正FLAC无损的截图。看看这饱满的图形，毕竟是无损，声音细节真的没有损失。<br />
+<img alt="" src="http://farm4.static.flickr.com/3141/2966060431_94de7ac3f4.jpg" /></p>
+<p>看完这三幅图，大家应该就差不多明白了：对于一个无损，看看它的声谱或者频谱就可以<strong>初步</strong>判断它的真假。如果是mp3转成的无损，那么在高频部分肯定会损失。真正的无损应该是图形饱满的。</p>
+<p>最后再次强调一下，这只是<strong>初步</strong>判断无损真假的方法，你可以依靠频谱图提出怀疑，但是它绝不是你下结论的依据！</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

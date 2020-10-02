@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>利用 GoAgentX + Shadowsocks 优化网络的解决方案 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;利用 GoAgentX + Shadowsocks 优化网络的解决方案
+    <span class="updated">Page Updated&nbsp;
+      2015-05-18 18:30
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">利用 GoAgentX + Shadowsocks 优化网络的解决方案</div>
+
+  <p>前些天的「<a href="http://www.waerfa.com/how-to-use-gmail-after-she-is-blocked">Gmail 失联</a>」事件让许多没有认真考虑使用网络优化方案的中国用户开始走了心，原本使用免费 VPN 的法子在有些屏蔽技术面前也束手无措，为了不影响自己的基本网络生活和工作学习，作为网民，你不得不要学会这些网络优化技能，今天我们就来推荐另外一种有别于 VPN 的网络优化工具：<a href="http://shadowsocks.org/en/index.html">Shadowsocks</a>，之前我们曾介绍过他的<a href="http://www.waerfa.com/shadowsocks-for-mac">官方 Mac 客户端</a>的使用办法，这次我们来讲讲如何将他部署在 GoAgentX 上使用。</p>
+<h2 id="_1">小白先做功课</h2>
+<p><strong>Shadowsocks 是什么技术？</strong></p>
+<blockquote>
+<p><strong>Shadowsocks </strong>实质上也是一种 SOCKS5 代理服务，类似于 SSH 代理。与 VPN 的全局代理不同，<strong>Shadowsocks </strong>仅针对浏览器代理，不能代理应用软件，比如 Youtube、Twitter 客户端软件。</p>
+</blockquote>
+<p><strong>她和 VPN 有何区别？</strong></p>
+<blockquote>
+<p>Shadowsocks 本质上就是 SOCKS5 代理，可以做到根据网址判断自动开启，也可以全局代理；而 VPN 无法直接根据网址来判断，一般可以用 IP 路由判断，即国内 IP 不走 VPN，国外 IP 走 VPN。</p>
+</blockquote>
+<h2 id="shadowsocks">哪里能获得 Shadowsocks 账号？</h2>
+<p>有许多人利用 Shadowsocks 的开源架构方案「<a href="https://github.com/shadowsocks/shadowsocks">教程</a>」在自己的 VPS 主机上部署 Shadowsocks 网优，这种方式也只适合个人使用或小圈子共享，有许多人在网络社区里共享，传播这类 SS 账号，你可以碰碰运气，不过稳定性就大打折扣了，对方会随时关门大吉，你就得跟游击队似的折腾搬家了，小编在这里推荐一家商用的 SS 服务商吧：「<a href="https://portal.shadowsocks.com/aff.php?aff=193">戳这里</a>」，价格还算公道，不限流量，比一般小 VPN 服务商速度快，连接稳定，价格又比 Astrill 这类 VPN 便宜许多，支持一台设备的普通版账号年付 99 RMB， 支持 5 台设备的高级版账号年付 399 RMB，而且比普通版多 5 个 VIP 节点，价格是 399 RMB 年付。「<a href="https://portal.shadowsocks.com/aff.php?aff=193">购买地址</a>」</p>
+<h2 id="goagentx">在 GoAgentX 的部署步骤</h2>
+<blockquote>
+<p>GoAgentX 是一个在 Mac OS X 下使用代理服务的图形界面控制软件，方便一般用户在 Mac OS X 上配置和使用 GoAgent、West-Chamber-Season-3「西厢」、SSH、Stunnel 及 Shadowsocks。</p>
+</blockquote>
+<p>大家知不知道，Shadowsocks 是一种局部代理结构，需要配合特定的客户端才能发挥效应，比如安装 Autoproxy 的火狐浏览器或者官方推荐的 ShadowsocksX Mac 客户端，后者是支持全局代理的，即你可以让 Tweetbot 这类客户端 bypass GFW，这次我们推荐另一种流行的全局代理工具：GoAgentX，操作同样简单，来看步骤：</p>
+<ul>
+<li>
+<p>安装 GoAgentX 客户端「<a href="https://github.com/ohdarling/GoAgentX/archive/master.zip">下载地址</a>」</p>
+</li>
+<li>
+<p>在 Menubar 上单击软件图标，弹出主窗口，在「服务」栏左边栏点击「+」添加「连接」</p>
+</li>
+<li>
+<p>「服务类型」选择「shadowsocks」，名称自定义：</p>
+</li>
+</ul>
+<p><img alt="" src="http://7q5cfr.com1.z0.glb.clouddn.com/Cfakepathworkss.png" /></p>
+<ul>
+<li>最后就是关键的参数填写环节，「本地端口」留空，填入 SS 服务器地址，端口，服务密码，加密方式选择「aes-256-cfb」即可：</li>
+</ul>
+<p><img alt="" src="http://7q5cfr.com1.z0.glb.clouddn.com/Cfakepathworkss2.png" /></p>
+<ul>
+<li>配置完毕，启动即可。</li>
+</ul>
+<h2 id="_2">使用问题</h2>
+<p>如果你在 GoAgentX 启动 SS 后遇到这种提示信息“Error: server recv:Connection reset by peer”，请忽略，不会影响你的正常使用。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

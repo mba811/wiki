@@ -1,0 +1,405 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac 开发配置手册 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac 开发配置手册
+    <span class="updated">Page Updated&nbsp;
+      2015-05-14 04:05
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac 开发配置手册</div>
+
+  <p><img alt="QQ截图20141112093734.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415756645208581.jpg" title="1415756645208581.jpg" /></p>
+<p>手册内容为「如何让一部全新的 MacBook 快速完成开发环境配置」，主要面向 Web 开发者。其中的指导，在 Mavericks 和 Yosemite 上有效，其他版本系统并未尝试。</p>
+<p>如果你是一名老手，本手册让你减少配置开发环境的烦恼。 </p>
+<p>如果你是一名新手，那么恭喜你，你将会认识一个全新的世界。 </p>
+<p>手册内容主要意译自：<a href="https://github.com/sb2nov/mac-setup">Sourabh Bajaj</a> 的 Mac OS X Setup Guide，少部分内容由译者(<a href="https://github.com/Aaaaaashu/Mac-dev-setup">Github地址</a>)添加和修改。 </p>
+<p>注：译者(<a href="https://github.com/Aaaaaashu/Mac-dev-setup">Github地址</a>)更推荐各位阅读 <a href="https://github.com/sb2nov/mac-setup">Sourabh Bajaj</a> 的英文手册，将系统语言设置为 English，避免相关术语在记忆、理解和查找时产生混淆。 </p>
+<p><strong>系统设置</strong></p>
+<p>在任何的操作系统中，首先你需要做一件事就是更新系统，点击窗口左上角的 ? &gt; 关于本机 &gt; 软件更新 。此外，如果这是一部新的电脑，你还需要到系统设置进行一些适当调整。如何调整，取决于个人喜好。 </p>
+<p><strong>触控板</strong></p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415757897693840.jpg" title="1415757897693840.jpg" />系统设置 &gt; 触控板</p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415757809542928.jpg" title="1415757809542928.jpg" />光标与点击 </p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415757936340012.jpg" title="1415757936340012.jpg" />轻拍来点按</p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415757984105779.jpg" title="1415757984105779.jpg" />辅助点按</p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415757998738227.jpg" title="1415757998738227.jpg" />查找</p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758009171386.jpg" title="1415758009171386.jpg" />三指拖移</p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758035286575.jpg" title="1415758035286575.jpg" />滚动缩放 </p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758084320758.jpg" title="1415758084320758.jpg" />默认全选 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758073345327.jpg" title="1415758073345327.jpg" />更多手势 </p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758102714715.jpg" title="1415758102714715.jpg" />默认全选 </p>
+<p><strong>Dock</strong>  </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758154119212.jpg" title="1415758154119212.jpg" />置于屏幕上的位置：左边 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758158124216.jpg" title="1415758158124216.jpg" />设置 Dock 图标更小（大小随个人喜好）</p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758162267780.jpg" title="1415758162267780.jpg" />自动显示和隐藏 Dock </p>
+<p><strong>Finder</strong></p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758179687638.jpg" title="1415758179687638.jpg" />Finder &gt; 显示 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758194385049.jpg" title="1415758194385049.jpg" />显示标签页 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758197646633.jpg" title="1415758197646633.jpg" />显示路径栏 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758201581111.jpg" title="1415758201581111.jpg" />显示状态栏 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758204146083.jpg" title="1415758204146083.jpg" />自定工具栏 &gt; 去除所有按钮，仅剩搜索栏 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758234704481.jpg" title="1415758234704481.jpg" />Finder &gt; 偏好设置 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758249406984.jpg" title="1415758249406984.jpg" />通用 </p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758257107870.jpg" title="1415758257107870.jpg" />开启新 Finder 窗口时打开：HOME「用户名」目录 </p>
+<p><img alt="404.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758272253576.jpg" title="1415758272253576.jpg" />边栏 </p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758280919353.jpg" title="1415758280919353.jpg" />添加 HOME「用户名」目录 和 创建代码文件目录 </p>
+<p><img alt="QQ截图20141112100515.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758283753420.jpg" title="1415758283753420.jpg" />将共享的(shared) 和 标记(tags) 目录去掉 </p>
+<p><strong>菜单栏</strong></p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758325177568.jpg" title="1415758325177568.jpg" />去掉蓝牙等无需经常使用的图标 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758328787616.jpg" title="1415758328787616.jpg" />将电池显示设置为百分比 </p>
+<p><strong>Spotlight</strong></p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758322576368.jpg" title="1415758322576368.jpg" />去掉字体和书签与历史记录等不需要的内容 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758317617740.jpg" title="1415758317617740.jpg" />设置合适的快捷键 </p>
+<p><strong>互联网帐户</strong></p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415758313136414.jpg" title="1415758313136414.jpg" />添加 iCloud 用户，同步日历，联系人和 Find my mac 等等. </p>
+<p><strong>XCode</strong></p>
+<p>从 App store 或苹果开发者网站安装 <a href="https://developer.apple.com/xcode/">Xcode</a> 。 </p>
+<p>紧接着，安装 Xcode command line tools，运行： </p>
+<div class="hlcode"><pre><span class="n">xcode</span><span class="o">-</span><span class="n">select</span> <span class="o">--</span><span class="n">install</span>
+</pre></div>
+
+
+<p>运行命令后，按照指引，你将完成 Xcode command line tools 安装。 </p>
+<p>译注: </p>
+<p>如果你不是一名 iOS 或 OS X 开发者，可以跳过安装 XCode 的过程，直接安装 Xcode command line tools 。安装完成后，你将可以直接在 terminal 中使用主要的命令，比如：make, GCC, clang, perl, svn, git, size, strip, strings, libtool, cpp等等。 </p>
+<p>如果你想了解 Xcode command line tools 包含多少可用的命令，可以到 /Library/Developer/CommandLineTools/ 查看。以下为其中的命令列表： </p>
+<p><img alt="" src="http://cn.cocos2d-x.org/uploads/20141112/1415762728440995.jpg" title="1415762728440995.jpg" /></p>
+<p><img alt="" src="http://cn.cocos2d-x.org/uploads/20141112/1415762729319767.jpg" title="1415762729319767.jpg" /></p>
+<p><img alt="" src="http://cn.cocos2d-x.org/uploads/20141112/1415762730464941.jpg" title="1415762730464941.jpg" /></p>
+<p><strong>Homebrew</strong></p>
+<p>包管理工具可以让你安装和更新程序变得更方便，目前在 OS X 系统中最受欢迎的包管理工具是 Homebrew. </p>
+<p><strong>安装</strong></p>
+<p>在安装 Homebrew 之前，需要将 Xcode Command Line Tools 安装完成，这样你就可以使用基于 Xcode Command Line Tools 编译的 Homebrew。 </p>
+<p>在 terminal 中复制以下命令（不包括 $），跟随指引，将完成 Hombrew 安装。 </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s">&quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;</span>
+</pre></div>
+
+
+<p>紧接着，我们需要做一件事让通过 Hombrew 安装的程序的启动链接 (在 /usr/local/bin中）可以直接运行，无需将完整路径写出。通过以下命令将 /usr/local/bin 添加至 $PATH 环境变量中: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">echo</span> <span class="err">&#39;</span><span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s">&quot;/usr/local/bin:$PATH&quot;</span><span class="err">&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">~/</span><span class="p">.</span><span class="n">bash_profile</span>
+</pre></div>
+
+
+<p>Cmd+T 打开一个新的 terminal 标签页，运行以下命令，确保 brew 运行正常。 </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">doctor</span>
+</pre></div>
+
+
+<p>译注：安装完成后，Homwbrew 会将本地 /usr/local 初始化为 git 的工作树，并将目录所有者变更为当前所操作的用户，将来 brew 的相关操作不需要 sudo 。 </p>
+<p><strong>Homebrew 基本使用</strong></p>
+<p>安装一个包，可以简单的运行： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">brew</span> <span class="nb">install</span> <span class="o">&lt;</span><span class="nx">package_name</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>更新 Homebrew 在服务器端上的包目录： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">update</span>
+</pre></div>
+
+
+<p>查看你的包是否需要更新： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">outdated</span>
+</pre></div>
+
+
+<p>更新包： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">brew</span> <span class="nx">upgrade</span> <span class="o">&lt;</span><span class="nx">package_name</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p>Homebrew 将会把老版本的包缓存下来，以便当你想回滚至旧版本时使用。但这是比较少使用的情况，当你想清理旧版本的包缓存时，可以运行： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">cleanup</span>
+</pre></div>
+
+
+<p>查看你安装过的包列表（包括版本号）： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">list</span> <span class="o">--</span><span class="n">versions</span>
+</pre></div>
+
+
+<p><strong>Homebrew Cask</strong></p>
+<p>你已经感受到了使用 Homebrew 安装命令行程序的便利。那么接下来，我们将通过 Homebrew Cask 优雅、简单、快速的安装和管理 OS X 图形界面程序，比如 Google Chrome 和 Dropbox。 </p>
+<p><strong>安装</strong></p>
+<p>安装 Homebrew-cask 是如此的简单直接，运行以下命令即可完成： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">tap</span> <span class="n">caskroom</span><span class="o">/</span><span class="n">cask</span>  <span class="c1">// 添加 Github 上的 caskroom/cask 库</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">brew</span><span class="o">-</span><span class="n">cask</span>  <span class="c1">// 安装 brew-cask</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">google</span><span class="o">-</span><span class="n">chrome</span> <span class="c1">// 安装 Google 浏览器</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">update</span> <span class="o">&amp;&amp;</span> <span class="n">brew</span> <span class="n">upgrade</span> <span class="n">brew</span><span class="o">-</span><span class="n">cask</span> <span class="o">&amp;&amp;</span> <span class="n">brew</span> <span class="n">cleanup</span> <span class="c1">// 更新</span>
+</pre></div>
+
+
+<p><strong>搜索</strong></p>
+<p>如果你想查看 cask 上是否存在你需要的 app，可以到 caskroom.io 进行搜索。 </p>
+<p><strong>文件预览插件</strong></p>
+<p>有些 插件 可以让 Mac 上的文件预览更有效，比如语法高亮、markdown 渲染、json 预览等等。 </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">qlcolorcode</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">qlstephen</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">qlmarkdown</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">quicklook</span><span class="o">-</span><span class="n">json</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">qlprettypatch</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">quicklook</span><span class="o">-</span><span class="n">csv</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">betterzipql</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">webp</span><span class="o">-</span><span class="n">quicklook</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">suspicious</span><span class="o">-</span><span class="n">package</span>
+</pre></div>
+
+
+<p>OS X 图形界面程序 </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">alfred</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">appcleaner</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">cheatsheet</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">dropbox</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">google</span><span class="o">-</span><span class="n">chrome</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">onepassword</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">sublime</span><span class="o">-</span><span class="n">text</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">cask</span> <span class="n">install</span> <span class="n">totalfinder</span>
+</pre></div>
+
+
+<p>... </p>
+<p>译注：如果你经常使用 Alfred 启动程序，那么你会想 Alfred 可以搜索 brew cask 安装的程序，实现这些仅需运行： </p>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">cask</span> <span class="n">alfred</span> <span class="n">link</span>
+</pre></div>
+
+
+<p>此外你还可以通过 brew cask 安装 <a href="https://github.com/jimbojsb/launchrocket">launchrocket</a>，来管理通过 brew 安装的 service </p>
+<p><img alt="launchrocket.png" src="http://cn.cocos2d-x.org/uploads/20141112/1415759314358655.png" title="1415759314358655.png" /></p>
+<p><strong>iTerm2</strong></p>
+<p>作为一名开发者，我们常常花上很多时间在终端 上，如同武士的剑，一出手便知高低。所以让我们安装 Mac 上最强大的终端 <a href="http://iterm2.com/">iTerm2</a> 吧！写码除虫，居家必备。 </p>
+<p>在 Finder 中，将 iTerm 拖拽进入 Application 文件夹中。然后，你可以在 Launchpad 中启动 iTerm。 </p>
+<p><strong>颜色和字体设置</strong></p>
+<p>在 Keys -&gt; Hotkey 中设置 command + option + i 快速显示和隐藏 iTerm </p>
+<p>在 Profiles -&gt; Default -&gt; Check silence bell </p>
+<p>下载 <a href="https://github.com/altercation/solarized/tree/master/iterm2-colors-solarized">Solarized dark iterm colors</a>，在 Profiles -&gt; Default -&gt; Colors -&gt; Load Presets 将其导入，作为默认颜色。 </p>
+<p>在 Profiles -&gt; Text 改变游标（cursor）文字和颜色，随个人喜好。 </p>
+<p>更多设置，可参考 <a href="http://imwuyu.me/talk-about/cool-iterm2.html/">打造好用的终端</a>. </p>
+<p><img alt="iterm2-theme.png" src="http://cn.cocos2d-x.org/uploads/20141112/1415759500801325.png" title="1415759500801325.png" /></p>
+<p><strong>Zsh</strong></p>
+<p>我们将安装 zsh ，其拓展功能和主题将由 oh-my-zsh 提供。其中Env.sh 文件用于维护别名（aliases），输出（exports）和路径改变（path changes）等等，以免影响 ~/.zshrc。 </p>
+<p><strong>Zsh</strong></p>
+<p>使用 Homebrew 完成 zsh 和 zsh completions 的安装 </p>
+<div class="hlcode"><pre>    <span class="n">brew</span> <span class="n">install</span> <span class="n">zsh</span> <span class="n">zsh</span><span class="o">-</span><span class="n">completions</span>
+</pre></div>
+
+
+<p>安装 oh-my-zsh 让 zsh 获得拓展功能和主题 </p>
+<div class="hlcode"><pre>    <span class="n">curl</span> <span class="o">-</span><span class="n">L</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh</span>
+</pre></div>
+
+
+<p>用文本编辑器或 vi 打开 .zshrc 进行以下编辑: </p>
+<div class="hlcode"><pre>    <span class="n">ZSH_THEME</span><span class="o">=</span><span class="n">pygmalion</span>
+    <span class="n">alias</span> <span class="n">zshconfig</span><span class="o">=</span><span class="s">&quot;vi ~/.zshrc&quot;</span>
+    <span class="n">alias</span> <span class="n">envconfig</span><span class="o">=</span><span class="s">&quot;vi ~/Projects/config/env.sh&quot;</span>
+    <span class="n">plugins</span><span class="o">=</span><span class="p">(</span><span class="n">git</span> <span class="n">colored</span><span class="o">-</span><span class="n">man</span> <span class="n">colorize</span> <span class="n">github</span> <span class="n">jira</span> <span class="n">vagrant</span> <span class="n">virtualenv</span> <span class="n">pip</span> <span class="n">python</span> <span class="n">brew</span> <span class="n">osx</span> <span class="n">zsh</span><span class="o">-</span><span class="n">syntax</span><span class="o">-</span><span class="n">highlighting</span><span class="p">)</span>
+</pre></div>
+
+
+<p>用文本编辑器或 vi 打开 ~/Projects/config/env.sh 进行以下编辑: </p>
+<div class="hlcode"><pre>    <span class="err">#</span><span class="o">!/</span><span class="n">bin</span><span class="o">/</span><span class="n">zsh</span>
+    <span class="err">#</span> <span class="n">PATH</span>
+    <span class="n">export</span> <span class="n">PATH</span><span class="o">=</span><span class="s">&quot;/usr/local/share/python:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin&quot;</span>
+    <span class="n">export</span> <span class="n">EDITOR</span><span class="o">=</span><span class="err">&#39;</span><span class="n">vi</span> <span class="o">-</span><span class="n">w</span><span class="err">&#39;</span>
+    <span class="err">#</span> <span class="n">export</span> <span class="n">PYTHONPATH</span><span class="o">=</span><span class="err">$</span><span class="n">PYTHONPATH</span>
+    <span class="err">#</span> <span class="n">export</span> <span class="n">MANPATH</span><span class="o">=</span><span class="s">&quot;/usr/local/man:$MANPATH&quot;</span>
+    <span class="err">#</span> <span class="n">Virtual</span> <span class="n">Environment</span>
+    <span class="n">export</span> <span class="n">WORKON_HOME</span><span class="o">=</span><span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="p">.</span><span class="n">virtualenvs</span>
+    <span class="n">export</span> <span class="n">PROJECT_HOME</span><span class="o">=</span><span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="n">Projects</span>
+    <span class="n">source</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">virtualenvwrapper</span><span class="p">.</span><span class="n">sh</span>
+    <span class="err">#</span> <span class="n">Owner</span>
+    <span class="n">export</span> <span class="n">USER_NAME</span><span class="o">=</span><span class="s">&quot;YOUR NAME&quot;</span>
+    <span class="n">eval</span> <span class="s">&quot;$(rbenv init -)&quot;</span>
+    <span class="err">#</span> <span class="n">FileSearch</span>
+    <span class="n">function</span> <span class="n">f</span><span class="p">()</span> <span class="p">{</span> <span class="n">find</span> <span class="p">.</span> <span class="o">-</span><span class="n">iname</span> <span class="s">&quot;*$1*&quot;</span> <span class="err">$</span><span class="p">{</span><span class="err">@</span><span class="o">:</span><span class="mi">2</span><span class="p">}</span> <span class="p">}</span>
+    <span class="n">function</span> <span class="n">r</span><span class="p">()</span> <span class="p">{</span> <span class="n">grep</span> <span class="s">&quot;$1&quot;</span> <span class="err">$</span><span class="p">{</span><span class="err">@</span><span class="o">:</span><span class="mi">2</span><span class="p">}</span> <span class="o">-</span><span class="n">R</span> <span class="p">.</span> <span class="p">}</span>
+    <span class="err">#</span><span class="n">mkdir</span> <span class="n">and</span> <span class="n">cd</span>
+    <span class="n">function</span> <span class="n">mkcd</span><span class="p">()</span> <span class="p">{</span> <span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="s">&quot;$@&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">cd</span> <span class="s">&quot;$_&quot;</span><span class="p">;</span> <span class="p">}</span>
+    <span class="err">#</span> <span class="n">Aliases</span>
+    <span class="n">alias</span> <span class="n">cppcompile</span><span class="o">=</span><span class="err">&#39;</span><span class="n">c</span><span class="o">++</span> <span class="o">-</span><span class="n">std</span><span class="o">=</span><span class="n">c</span><span class="o">++</span><span class="mi">11</span> <span class="o">-</span><span class="n">stdlib</span><span class="o">=</span><span class="n">libc</span><span class="o">++</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>译注：如果是新增环境变量或者是修改环境变量的值，都需要 source 一下才能立即生效。如果是删除一个环境变量，必须输入 exit 以 logout 当前 shell ，然后再重新打开一个新的 shell 并 login 才能生效。</p>
+<p><strong>Git和Github</strong></p>
+<p>作为一名开发者怎么可能没有 [Git][45] 呢? 我们马上就来安装： </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">45</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//git-scm.com/</span>
+</pre></div>
+
+
+<p>$ brew install git</p>
+<p>好的，现在我们来测试一下 git 是否安装完好： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">git</span> <span class="o">--</span><span class="n">version</span>
+</pre></div>
+
+
+<p>运行 $ which git 将会输出 /usr/local/bin/git. </p>
+<p>接着，我们将定义你的 Git 帐号（与你在 [GitHub][46] 使用的用户名和邮箱一致） </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">46</span><span class="p">]</span><span class="o">:</span> <span class="n">https</span><span class="o">:</span><span class="c1">//github.com/</span>
+</pre></div>
+
+
+<p>$ git config --global user.name "Your Name Here"<br />
+    $ git config --global user.email "your_email@youremail.com"</p>
+<p>这些配置信息将会添加进 ~/.gitconfig 文件中. </p>
+<p>我们将推荐使用 HTTPS 方法（另一个是 SSH），将你的代码推送到 Github 上的仓库。如果你不想每次都输入用户名和密码的话，可以按照此 [描述][47] 说的那样，运行： </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">47</span><span class="p">]</span><span class="o">:</span> <span class="n">https</span><span class="o">:</span><span class="c1">//help.github.com/articles/set-up-git/</span>
+</pre></div>
+
+
+<p>$ git config --global credential.helper osxkeychain</p>
+<p>此外，如果你打算使用 SSH方式，可以参考此 <a href="https://help.github.com/articles/generating-ssh-keys/">链接</a>. </p>
+<p><strong>Git Ignore</strong></p>
+<p>创建一个新文件 ~/.gitignore ，并将以下内容添加进去，这样全部 git 仓库将会忽略以下内容所提及的文件。 </p>
+<div class="hlcode"><pre><span class="cp"># Folder view configuration files</span>
+<span class="p">.</span><span class="n">DS_Store</span>
+<span class="n">Desktop</span><span class="p">.</span><span class="n">ini</span>
+<span class="cp"># Thumbnail cache files</span>
+<span class="p">.</span><span class="n">_</span><span class="o">*</span>
+<span class="n">Thumbs</span><span class="p">.</span><span class="n">db</span>
+<span class="cp"># Files that might appear on external disks</span>
+<span class="p">.</span><span class="n">Spotlight</span><span class="o">-</span><span class="n">V100</span>
+<span class="p">.</span><span class="n">Trashes</span>
+<span class="cp"># Compiled Python files</span>
+<span class="o">*</span><span class="p">.</span><span class="n">pyc</span>
+<span class="cp"># Compiled C++ files</span>
+<span class="o">*</span><span class="p">.</span><span class="n">out</span>
+<span class="cp"># Application specific files</span>
+<span class="n">venv</span>
+<span class="n">node_modules</span>
+<span class="p">.</span><span class="n">sass</span><span class="o">-</span><span class="n">cache</span>
+</pre></div>
+
+
+<p><strong>MySQL</strong></p>
+<p><strong>安装</strong></p>
+<p>我们将使用 Homebrew 安装 <a href="http://www.mysql.com/">MySQL</a>，同时也会安装 MySQL 的相关文件。 </p>
+<p>安装 MySQL: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">brew</span> <span class="n">update</span> <span class="err">#</span> <span class="err">这是一个好习惯</span>
+<span class="err">$</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">mysql</span>
+</pre></div>
+
+
+<p>在使用 MySQL 前，我们需要做一些设置： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">unset</span> <span class="n">TMPDIR</span>
+<span class="err">$</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span>
+<span class="err">$</span> <span class="n">mysql_install_db</span> <span class="o">--</span><span class="n">verbose</span> <span class="o">--</span><span class="n">user</span><span class="o">=</span><span class="err">`</span><span class="n">whoami</span><span class="err">`</span> <span class="o">--</span><span class="n">basedir</span><span class="o">=</span><span class="s">&quot;$(brew --prefix mysql)&quot;</span> <span class="o">--</span><span class="n">datadir</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">mysql</span> <span class="o">--</span><span class="n">tmpdir</span><span class="o">=/</span><span class="n">tmp</span>
+</pre></div>
+
+
+<p><strong>使用</strong></p>
+<p>启动 MySQL 服务，运行 mysql.server </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysql</span><span class="p">.</span><span class="n">server</span> <span class="n">start</span>
+</pre></div>
+
+
+<p>关闭 MySQL，运行： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysql</span><span class="p">.</span><span class="n">server</span> <span class="n">stop</span>
+</pre></div>
+
+
+<p>你可以了解更多 mysql.server 的命令，运行： </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysql</span><span class="p">.</span><span class="n">server</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+
+
+<p>登录 MySQL, 运行: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysql</span> <span class="o">-</span><span class="n">uroot</span>
+</pre></div>
+
+
+<p>Note: 默认情况下，MySQL 用户 root 没有密码，这对本地开发没有关系，但如果你希望修改密码，你可以运行: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">mysqladmin</span> <span class="o">-</span><span class="n">u</span> <span class="n">root</span> <span class="n">password</span> <span class="err">&#39;</span><span class="n">new</span><span class="o">-</span><span class="n">password</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>译注：当你在设置密码时出现问题，可以参考 <a href="https://ruby-china.org/topics/1901">lgn21st</a> 的方式。此外，如果你觉得敲那么多命令是一件很麻烦的事情，那么你也可以参考 <a href="http://elf8848.iteye.com/blog/1914209">Mac OS安装 MySQL</a>（使用二进制PGK包安装）。 </p>
+<p><strong>Node.js</strong></p>
+<p>使用 Homebrew 安装 [Node.js][52]: </p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">52</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//nodejs.org/</span>
+</pre></div>
+
+
+<p>$ brew update<br />
+    $ brew install node</p>
+<p>一般 Node modules 通常被安装在每个项目的本地文件夹 node_modules， 但有几个包推荐你安装在全局： </p>
+<p>[CoffeeScript][53]、 <a href="http://lesscss.org/">Less</a>、 <a href="http://gruntjs.com/">Grunt</a> 或<a href="http://gulpjs.com/">Gulp</a></p>
+<div class="hlcode"><pre>   <span class="p">[</span><span class="mi">53</span><span class="p">]</span><span class="o">:</span> <span class="n">http</span><span class="o">:</span><span class="c1">//coffeescript.org/</span>
+</pre></div>
+
+
+<p>$ npm install -g coffee-script<br />
+    $ npm install -g less<br />
+    $ npm install -g grunt-cli<br />
+    $ npm install -g gulp</p>
+<p><strong>Npm 使用</strong></p>
+<p>安装包: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">npm</span> <span class="nb">install</span> <span class="o">&lt;</span><span class="nx">package</span><span class="o">&gt;</span>     <span class="err">#</span> <span class="nx">安装在本地项目中</span>
+<span class="err">$</span> <span class="nx">npm</span> <span class="nb">install</span> <span class="na">-g</span> <span class="o">&lt;</span><span class="nx">package</span><span class="o">&gt;</span>  <span class="err">#</span> <span class="nx">安装在全局</span>
+</pre></div>
+
+
+<p>安装包，并且将其保存你项目中的 package.json 文件: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">npm</span> <span class="nb">install</span> <span class="o">&lt;</span><span class="nx">package</span><span class="o">&gt;</span> <span class="o">--</span><span class="nb">save</span>
+</pre></div>
+
+
+<p>查看 npm 安装的内容: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">npm</span> <span class="n">list</span>     <span class="err">#</span> <span class="err">本地</span>
+<span class="err">$</span> <span class="n">npm</span> <span class="n">list</span> <span class="o">-</span><span class="n">g</span>  <span class="err">#</span> <span class="err">全局</span>
+</pre></div>
+
+
+<p>查看过期的包（本地或全局）: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="n">npm</span> <span class="n">outdated</span> <span class="p">[</span><span class="o">-</span><span class="n">g</span><span class="p">]</span>
+</pre></div>
+
+
+<p>更新全部或特别指定一个包: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">npm</span> <span class="nx">update</span> <span class="err">[</span><span class="o">&lt;</span><span class="nx">package</span><span class="o">&gt;</span><span class="cp">]</span>
+</pre></div>
+
+
+<p>卸载包: </p>
+<div class="hlcode"><pre><span class="err">$</span> <span class="nx">npm</span> <span class="nx">uninstall</span> <span class="o">&lt;</span><span class="nx">package</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<p><strong>Apps</strong></p>
+<p>这里推荐的 apps 在开发者圈子内普遍评价不错，能便利的处理日常的开发和使用的任务。以下推荐分为四类： </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415761104722987.jpg" title="1415761104722987.jpg" />开发者工具 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415761111978984.jpg" title="1415761111978984.jpg" />生产力工具 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415761115799989.jpg" title="1415761115799989.jpg" />办公工具 </p>
+<p><img alt="QQ截图20141112100438.jpg" src="http://cn.cocos2d-x.org/uploads/20141112/1415761118919768.jpg" title="1415761118919768.jpg" />其他 </p>
+<p><strong>Developer Tools：</strong><a href="https://www.google.com/intl/en/chrome/browser/">Google Chrome</a>、<a href="https://www.jetbrains.com/webstorm/">Webstorm</a>、<a href="http://bohemiancoding.com/sketch/">Sketch</a>、<a href="http://kapeli.com/dash">Dash</a>、<a href="http://www.sequelpro.com/">Sequel Pro</a>、<a href="https://www.parallels.com/hk/">Parallels</a>以及<a href="https://mac.github.com/">Github</a>。 </p>
+<p><strong>Productivity：</strong><a href="https://agilebits.com/onepassword">1Password</a>（跨平台的密码管理工具）、<a href="http://www.alfredapp.com/">Alfred 2</a>（搜索工具，强烈建议更新至 power pack，可以参考 借助 <a href="http://www.zhihu.com/question/20656680">Alfred 2 的 Workflows 功能可以做哪些好玩的事情</a>？）、<a href="http://www.freemacsoft.net/appcleaner/">AppCleaner</a>（应用程序卸载工具）、<a href="https://www.dropbox.com/">Dropbox</a>（文件同步工具）、<a href="http://reederapp.com/">Reeder</a>（RSS 阅读工具）、<a href="https://getpocket.com/">Pocket</a>（稍后阅读工具）、<a href="http://spectacleapp.com/">Spectacle</a>（让窗口成比例的显示，在写代码调试的时候很方便）、<a href="http://wakaba.c3.cx/s/apps/unarchiver.html">Unarchiver</a>（支持多种格式的压缩/解压缩工具，包括 windows下的格式）、<a href="https://www.omnigroup.com/omnifocus">OminiFocus</a>（时间管理工具）、<a href="http://25.io/mou/">Mou</a>（Markdown 编辑器，国人出品）</p>
+<p><strong>Office Apps</strong>:<a href="http://www.apple.com/mac/keynote/">Keynote</a>、<a href="http://www.apple.com/mac/numbers/">Numbers</a>、<a href="http://www.apple.com/mac/pages/">Pages</a>、<a href="http://www.microsoft.com/mac/buy">Microsoft Office</a>。 </p>
+<p><strong>Others</strong>：<a href="http://www.grandtotal.biz/CheatSheet/">CheatSheet</a>（长按 command ，将能查看当前程序的快捷键）、<a href="https://tapbots.com/software/tweetbot/mac/">Tweetbot</a>（最好的 twitter 客户端，优雅，精致）。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

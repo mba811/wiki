@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>SAE Python如何搭建本地开发环境 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Notes">Notes</a>&nbsp;&#187;&nbsp;SAE Python如何搭建本地开发环境
+    <span class="updated">Page Updated&nbsp;
+      2015-05-07 09:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">SAE Python如何搭建本地开发环境</div>
+
+  <p><img alt="" src="http://www.liaoxuefeng.com/files/attachments/001384355952121dfbb2df4427a4056adb22c087eab8d2e000/l" /></p>
+<p><a href="http://www.liaoxuefeng.com/user/001383729881018b677b2776c24451e9b5f30a03ea5d73c000">廖雪峰</a> / <a href="http://www.liaoxuefeng.com/category/0013738748415562fee26e070fa4664ad926c8e30146c67000">编程</a> / 2011-3-1 17:30 / 阅读: 15</p>
+<p>SAE是Sina推出的AppEngine，目前支持Python运行环境。和所有PAAS一样，服务器环境和本地开发环境总是有区别，如果在开发和部署阶段不断修改代码，会非常繁琐。本文讲述如何在本地和服务器共享同一代码版本，可以在本地调试，服务器直接部署。</p>
+<p>首先，因为Python本身的动态特性和强大而简介的语法，我们实现这一目标非常容易（在此对Java开发人员表示遗憾）。假定我们确定用web.py框架，mysql数据库，memcache缓存，这3个组件SAE都支持，但和本地环境均有差异。</p>
+<p>首先我们看web.py在本地和SAE是如何运行的：</p>
+<div class="hlcode"><pre><span class="cp"># 本地</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="p">.</span><span class="n">application</span><span class="p">((</span><span class="err">&#39;</span><span class="o">/</span><span class="p">(.</span><span class="o">*</span><span class="p">)</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">PageHandler</span><span class="err">&#39;</span><span class="p">),</span> <span class="n">globals</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="o">:</span>
+    <span class="n">app</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
+
+<span class="cp"># SAE</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="p">.</span><span class="n">application</span><span class="p">((</span><span class="err">&#39;</span><span class="o">/</span><span class="p">(.</span><span class="o">*</span><span class="p">)</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">PageHandler</span><span class="err">&#39;</span><span class="p">),</span> <span class="n">globals</span><span class="p">()).</span><span class="n">wsgifunc</span><span class="p">()</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">sae</span><span class="p">.</span><span class="n">create_wsgi_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</pre></div>
+
+
+<p>将两者合并，我们得到一个既可以直接在本地运行，又可以直接在SAE运行的代码：</p>
+<div class="hlcode"><pre><span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="p">.</span><span class="n">application</span><span class="p">((</span><span class="err">&#39;</span><span class="o">/</span><span class="p">(.</span><span class="o">*</span><span class="p">)</span><span class="err">&#39;</span><span class="p">,</span> <span class="err">&#39;</span><span class="n">PageHandler</span><span class="err">&#39;</span><span class="p">),</span> <span class="n">globals</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="o">:</span>
+    <span class="n">app</span><span class="p">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nl">else:</span>
+    <span class="n">import</span> <span class="n">sae</span>
+    <span class="n">application</span> <span class="o">=</span> <span class="n">sae</span><span class="p">.</span><span class="n">create_wsgi_app</span><span class="p">(</span><span class="n">app</span><span class="p">.</span><span class="n">wsgifunc</span><span class="p">())</span>
+</pre></div>
+
+
+<p>假定文件名是app.py，则我们可以直接运行app.py就可以本地运行，而SAE要求启动文件是index.wsgi，可以创建一个硬链接至index.wsgi就可以了（在此对Windows开发人员表示遗憾，必须复制一份文件）</p>
+<p>MySQL一般在本地运行开发环境，而SAE的MySQL环境参数和本地不一致，但我们可以借助SAE的MySQL常量实现动态加载配置：</p>
+<div class="hlcode"><pre><span class="n">def</span> <span class="n">_create_db</span><span class="p">()</span><span class="o">:</span>
+    <span class="err">#</span> <span class="err">本地环境</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">localhost</span><span class="err">&#39;</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">weather</span><span class="err">&#39;</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">weather</span><span class="err">&#39;</span>
+    <span class="n">pw</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">weather</span><span class="err">&#39;</span>
+    <span class="nl">try:</span>
+        <span class="n">import</span> <span class="n">sae</span><span class="p">.</span><span class="k">const</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">sae</span><span class="p">.</span><span class="k">const</span><span class="p">.</span><span class="n">MYSQL_DB</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">sae</span><span class="p">.</span><span class="k">const</span><span class="p">.</span><span class="n">MYSQL_USER</span>
+        <span class="n">pw</span> <span class="o">=</span> <span class="n">sae</span><span class="p">.</span><span class="k">const</span><span class="p">.</span><span class="n">MYSQL_PASS</span>
+        <span class="n">host</span> <span class="o">=</span> <span class="n">sae</span><span class="p">.</span><span class="k">const</span><span class="p">.</span><span class="n">MYSQL_HOST</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="kt">int</span><span class="p">(</span><span class="n">sae</span><span class="p">.</span><span class="k">const</span><span class="p">.</span><span class="n">MYSQL_PORT</span><span class="p">)</span>
+    <span class="n">except</span> <span class="n">ImportError</span><span class="o">:</span>
+        <span class="n">pass</span>
+    <span class="k">return</span> <span class="n">web</span><span class="p">.</span><span class="n">database</span><span class="p">(</span><span class="n">dbn</span><span class="o">=</span><span class="err">&#39;</span><span class="n">mysql</span><span class="err">&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">pw</span><span class="o">=</span><span class="n">pw</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">_create_db</span><span class="p">()</span>
+</pre></div>
+
+
+<p>随后引用db变量就可以完成数据库操作。</p>
+<p>SAE的memcached用的pylibmc，但是本地开发推荐用memcache（一个纯Python客户端），由于所有的memcached的客户端接口都是完全一样的（Python的动态特性保证了接口一致，Java不行，必须预定义接口，各个客户端去实现），本地和远程可共享以下代码：</p>
+<div class="hlcode"><pre><span class="n">def</span> <span class="n">_create_memcache_client</span><span class="p">()</span><span class="o">:</span>
+    <span class="nl">try:</span>
+        <span class="n">import</span> <span class="n">pylibmc</span>
+        <span class="k">return</span> <span class="n">pylibmc</span><span class="p">.</span><span class="n">Client</span><span class="p">()</span>
+    <span class="n">except</span> <span class="n">ImportError</span><span class="o">:</span>
+        <span class="n">import</span> <span class="n">memcache</span>
+        <span class="k">return</span> <span class="n">memcache</span><span class="p">.</span><span class="n">Client</span><span class="p">([</span><span class="err">&#39;</span><span class="mf">127.0.0.1</span><span class="o">:</span><span class="mi">11211</span><span class="err">&#39;</span><span class="p">])</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">_create_memcache_client</span><span class="p">()</span>
+</pre></div>
+
+
+<p>充分利用Python的动态特性，以及模块的动态导入特性，我们就可以写出一份代码，本地和远程同时运行<br />
+。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

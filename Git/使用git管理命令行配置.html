@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用Git管理命令行配置 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Git">Git</a>&nbsp;&#187;&nbsp;使用Git管理命令行配置
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 19:51
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用Git管理命令行配置</div>
+
+  <p>对于命令行重度依赖的开发者来说管理命令行的这些配置文件是比较头痛的问题，每次重新安装或服务器部署的时候都要拷贝文件重新配置，现在可以借助git来管理这些配置文件，通过写一个shell或则ruby的脚本即可实现，下面介绍具体实现：</p>
+<h2 id="githubdotfilespull">在GitHub上创建dotfiles的项目并把代码pull到本地</h2>
+<h2 id="gitconfigvimrcpsqlrcsymlink">把你本地的.gitconfig/.vimrc/.psqlrc等配置文件拷贝到工程目录下，并且重命名成＊.symlink</h2>
+<h2 id="link-fiesrbruby">创建一个link-fies.rb文件（目前我用ruby来实现）</h2>
+<table class="hlcodetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="hlcode"><pre><span class="c1">#!/usr/bin/env ruby</span>
+<span class="n">safe_mode</span> <span class="o">=</span> <span class="no">ARGV</span><span class="o">.</span><span class="n">include?</span> <span class="s1">&#39;--safe&#39;</span>
+
+<span class="n">linkables</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*{.symlink}&#39;</span><span class="p">)</span>
+<span class="n">linkables</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">linkable</span><span class="o">|</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">linkable</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.symlink&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span>
+    <span class="k">unless</span> <span class="n">safe_mode</span> <span class="ow">and</span> <span class="no">File</span><span class="o">.</span><span class="n">exists?</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">/.</span><span class="si">#{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="sx">%x(ln -s -i -v $PWD/</span><span class="si">#{</span><span class="n">linkable</span><span class="si">}</span><span class="sx"> ~/.</span><span class="si">#{</span><span class="n">file</span><span class="si">}</span><span class="sx">)</span>
+    <span class="nb">puts</span> <span class="s2">&quot;.</span><span class="si">#{</span><span class="n">file</span><span class="si">}</span><span class="s2"> linked&quot;</span> <span class="k">if</span> <span class="n">safe_mode</span>
+   <span class="k">end</span>
+<span class="k">end</span>
+<span class="c1"># copy .vim folder into $HOME/</span>
+<span class="sx">%x(cp -r $PWD/.vim $HOME/)</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="githubalias-homebash_profile">为了方便同步脚本到 GitHub,我创建了两个alias 放在$HOME/.bash_profile</h2>
+<div class="hlcode"><pre><span class="n">alias</span> <span class="n">pull</span><span class="o">-</span><span class="n">dotfiles</span><span class="o">=</span><span class="err">&#39;</span><span class="n">pushd</span> <span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="n">Documents</span><span class="o">/</span><span class="n">dotfiles</span> <span class="o">&amp;&amp;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span> <span class="o">&amp;&amp;</span> <span class="p">.</span><span class="o">/</span><span class="n">link</span><span class="o">-</span><span class="n">files</span><span class="p">.</span><span class="n">rb</span> <span class="o">--</span><span class="n">safe</span><span class="p">;</span> <span class="n">popd</span><span class="err">&#39;</span>
+<span class="n">alias</span> <span class="n">push</span><span class="o">-</span><span class="n">dotfiles</span><span class="o">=</span><span class="err">&#39;</span><span class="n">pushd</span> <span class="err">$</span><span class="n">HOME</span><span class="o">/</span><span class="n">Documents</span><span class="o">/</span><span class="n">dotfiles</span> <span class="o">&amp;&amp;</span> <span class="n">git</span> <span class="n">add</span> <span class="o">-</span><span class="n">A</span> <span class="o">&amp;&amp;</span> <span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;Update dot files.&quot;</span> <span class="o">&amp;&amp;</span> <span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span><span class="p">;</span> <span class="n">popd</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<blockquote>
+<p>别忘了 $source ~/.bash_profile</p>
+</blockquote>
+<h2 id="_1">具体的用法:</h2>
+<div class="hlcode"><pre><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">link</span><span class="o">-</span><span class="n">files</span> <span class="o">--</span><span class="n">safe</span>
+</pre></div>
+
+
+<blockquote>
+<p>要看详细的代码和配置可以看我在GitHub上的代码<a href="https://github.com/tim-tang/dotfiles"><strong>dotfiles</strong></a></p>
+</blockquote>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

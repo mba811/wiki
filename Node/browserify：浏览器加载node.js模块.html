@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Browserify：浏览器加载Node.js模块 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Node">Node</a>&nbsp;&#187;&nbsp;Browserify：浏览器加载Node.js模块
+    <span class="updated">Page Updated&nbsp;
+      2015-02-25 22:36
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Browserify：浏览器加载Node.js模块</div>
+
+  <p>随着JavaScript程序逐渐模块化，在ECMAScript 6推出官方的模块处理方案之前，有两种方案在实践中广泛采用：一种是AMD模块规范，针对模块的异步加载，主要用于浏览器端；另一种是CommonJS规范，针对模块的同步加载，主要用于服务器端，即node.js环境。</p>
+<p>Browserify是一个node.js模块，主要用于改写现有的CommonJS模块，使得浏览器端也可以使用这些模块。使用下面的命令，在全局环境下安装Browserify。</p>
+<div class="hlcode"><pre><span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="n">browserify</span>
+</pre></div>
+
+
+<h2 id="_1">实例：简单应用</h2>
+<p>先看一个例子。假定有一个很简单的CommonJS模块文件foo.js。</p>
+<div class="hlcode"><pre><span class="c1">// foo.js</span>
+
+<span class="k">module</span><span class="p">.</span><span class="n">exports</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">console</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+
+
+<p>然后，还有一个main.js文件，用来加载foo模块。</p>
+<div class="hlcode"><pre><span class="c1">// main.js</span>
+
+<span class="k">var</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s">&quot;./foo&quot;</span><span class="p">);</span>
+<span class="n">foo</span><span class="p">(</span><span class="s">&quot;Hi&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<p>使用Browserify，将main.js转化为浏览器可以加载的脚本compiled.js。</p>
+<div class="hlcode"><pre><span class="n">browserify</span> <span class="n">main</span><span class="p">.</span><span class="n">js</span> <span class="o">&gt;</span> <span class="n">compiled</span><span class="p">.</span><span class="n">js</span>
+
+<span class="cp"># 或者</span>
+
+<span class="n">browserify</span> <span class="n">main</span> <span class="o">&gt;</span> <span class="n">compiled</span><span class="p">.</span><span class="n">js</span>
+
+<span class="cp"># 或者</span>
+
+<span class="n">browserify</span> <span class="n">main</span><span class="p">.</span><span class="n">js</span> <span class="o">-</span><span class="n">o</span> <span class="n">compiled</span><span class="p">.</span><span class="n">js</span>
+</pre></div>
+
+
+<p>之所以转化后的文件叫做compiled.js，是因为该文件不仅包括了main.js，还包括了它所依赖的foo.js。两者打包在一起，保证浏览器加载时的依赖关系。</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;compiled.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>使用上面的命令，在浏览器中运行compiled.js，控制台会显示Hi。</p>
+<h2 id="backbone">实例：backbone的应用</h2>
+<p>我们再看一个在服务器端的backbone模块转为客户端backbone模块的例子。</p>
+<p>先安装backbone和它所依赖的jQuery模块。</p>
+<div class="hlcode"><pre><span class="n">npm</span> <span class="n">install</span> <span class="n">backbone</span> <span class="n">jquery</span>
+</pre></div>
+
+
+<p>然后，新建一个main.js文件。</p>
+<div class="hlcode"><pre><span class="c1">// main.js</span>
+
+<span class="kd">var</span> <span class="n">Backbone</span> <span class="o">=</span> <span class="k">require</span><span class="err">(&#39;</span><span class="n">backbone</span><span class="s1">&#39;);</span>
+<span class="s1">var $ = Backbone.$ = require(&#39;</span><span class="nx">jquery</span><span class="p">/</span><span class="nx">dist</span><span class="p">/</span><span class="nx">jquery</span><span class="s1">&#39;)(window);</span>
+
+<span class="s1">var AppView = Backbone.View.extend({</span>
+<span class="s1">  render: function(){</span>
+<span class="s1">    $(&#39;</span><span class="nx">main</span><span class="s1">&#39;).append(&#39;</span><span class="o">&lt;</span><span class="nx">h1</span><span class="o">&gt;</span><span class="nx">Browserify</span> <span class="nx">is</span> <span class="nx">a</span> <span class="nx">great</span> <span class="nx">tool.</span><span class="o">&lt;/</span><span class="nx">h1</span><span class="o">&gt;</span><span class="s1">&#39;);</span>
+<span class="s1">  }</span>
+<span class="s1">});</span>
+
+<span class="s1">var appView = new AppView();</span>
+<span class="s1">appView.render();</span>
+</pre></div>
+
+
+<p>接着，使用browserify将main.js转为app.js。</p>
+<div class="hlcode"><pre><span class="n">browserify</span> <span class="n">main</span><span class="p">.</span><span class="n">js</span> <span class="o">-</span><span class="n">o</span> <span class="n">app</span><span class="p">.</span><span class="n">js</span>
+</pre></div>
+
+
+<p>app.js就可以直接插入HTML网页了。</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>注意，只要插入app.js一个文件就可以了，完全不需要再加载backbone.js和jQuery了。</p>
+<h2 id="_2">生成模块</h2>
+<p>有时，我们只是希望将node.js的模块，移植到浏览器，使得浏览器端可以调用。这时，可以采用browserify的-r参数（--require的简写）。</p>
+<div class="hlcode"><pre><span class="n">browserify</span> <span class="o">-</span><span class="n">r</span> <span class="n">through</span> <span class="o">-</span><span class="n">r</span> <span class="p">.</span><span class="o">/</span><span class="n">my</span><span class="o">-</span><span class="n">file</span><span class="p">.</span><span class="n">js</span><span class="o">:</span><span class="n">my</span><span class="o">-</span><span class="n">module</span> <span class="o">&gt;</span> <span class="n">bundle</span><span class="p">.</span><span class="n">js</span>
+</pre></div>
+
+
+<p>上面代码将through和my-file.js（后面的冒号表示指定模块名为my-module）都做成了模块，可以在其他script标签中调用。</p>
+<div class="hlcode"><pre><span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;bundle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span>
+  var through = require(&#39;through&#39;);
+  var myModule = require(&#39;my-module&#39;);
+  /* ... */
+<span class="nt">&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>可以看到，-r参数的另一个作用，就是为浏览器端提供require方法。</p>
+<h2 id="_3">脚本文件的实时生成</h2>
+<p>Browserify还可以实时生成脚本文件。</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="nx">browserify</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;browserify&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">);</span>
+
+<span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="s1">&#39;/bundle.js&#39;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/javascript&#39;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">browserify</span><span class="p">(</span><span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">&#39;/main.js&#39;</span><span class="p">).</span><span class="nx">bundle</span><span class="p">();</span>
+        <span class="nx">b</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">);</span>
+        <span class="nx">b</span><span class="p">.</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="nx">res</span><span class="p">.</span><span class="nx">writeHead</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="s1">&#39;not found&#39;</span><span class="p">)</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<h2 id="browserify-middleware">browserify-middleware模块</h2>
+<p>上面是将服务器端模块直接转为客户端脚本，然后在网页中调用这个转化后的脚本文件。还有一种思路是，在运行时动态转换模块，这就需要用到<a href="https://github.com/ForbesLindesay/browserify-middleware">browserify-middleware模块</a>。</p>
+<p>比如，网页中需要加载app.js，它是从main.js转化过来的。</p>
+<div class="hlcode"><pre><span class="c">&lt;!-- index.html --&gt;</span>
+
+<span class="nt">&lt;script</span> <span class="na">src=</span><span class="s">&quot;app.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+
+<p>你可以在服务器端静态生成一个app.js文件，也可以让它动态生成。这就需要用browserify-middleware模块，服务器端脚本要像下面这样写。</p>
+<div class="hlcode"><pre><span class="kd">var</span> <span class="nx">browserify</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;browserify-middleware&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/app.js&#39;</span><span class="p">,</span> <span class="nx">browserify</span><span class="p">(</span><span class="s1">&#39;./client/main.js&#39;</span><span class="p">));</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">){</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<h2 id="_4">参考链接</h2>
+<ul>
+<li>Jack Franklin, <a href="http://javascriptplayground.com/blog/2013/09/browserify/">Dependency Management with Browserify</a></li>
+<li>Seth Vincent, <a href="http://learnjs.io/blog/2013/12/22/express-and-browserify/">Using Browserify with Express</a></li>
+<li>Patrick Mulder, <a href="http://thinkingonthinking.com/unix-in-the-browser/">Browserify - Unix in the browser</a></li>
+<li>Patrick Catanzariti, <a href="http://www.sitepoint.com/getting-started-browserify/">Getting Started with Browserify</a></li>
+</ul>
+<h2 id="_5">功能链接</h2>
+<ul>
+<li><a href="https://github.com/ruanyf/jstutorial/issues">论坛</a></li>
+<li><a href="https://raw.github.com/ruanyf/jstutorial/gh-pages/tool/browserify.md">Markdown源码</a></li>
+<li><a href="https://github.com/ruanyf/jstutorial/commits/gh-pages/tool/browserify.md">修订历史</a></li>
+</ul>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

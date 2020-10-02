@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>Mac OSX下PostgreSQL安装配置 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Mac">Mac</a>&nbsp;&#187;&nbsp;Mac OSX下PostgreSQL安装配置
+    <span class="updated">Page Updated&nbsp;
+      2015-06-03 19:48
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">Mac OSX下PostgreSQL安装配置</div>
+
+  <p>prequistion: 已经安装Homebrew：</p>
+<h2 id="installing-postgresql-by-home-brew">Installing postgreSQL by home brew:</h2>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">postgresql</span>
+</pre></div>
+
+
+<h2 id="for-my-old-mac-book-pro-i-will-use-following-command">For my old mac book pro, I will use following command:</h2>
+<div class="hlcode"><pre><span class="n">brew</span> <span class="n">install</span> <span class="n">postgresql</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">python</span> <span class="o">--</span><span class="n">without</span><span class="o">-</span><span class="n">ossp</span><span class="o">-</span><span class="n">uuid</span>
+</pre></div>
+
+
+<h2 id="after-installing-finished-then-create-database-folder">After installing finished then create database folder:</h2>
+<div class="hlcode"><pre><span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span>
+<span class="n">sudo</span> <span class="n">mkdir</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="n">yourusername</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span>
+</pre></div>
+
+
+<h2 id="and-initialize-database">And initialize database:</h2>
+<div class="hlcode"><pre><span class="n">initdb</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span>
+</pre></div>
+
+
+<h2 id="add-alias-startup-to-script-to-bash_profile">Add alias startup to script to .bash_profile</h2>
+<div class="hlcode"><pre><span class="n">alias</span> <span class="n">ptstart</span><span class="o">=</span><span class="err">&#39;</span><span class="n">postgres</span> <span class="o">-</span><span class="n">D</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">postgres</span> <span class="o">&amp;</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<h2 id="if-you-guys-happened-to-meet-the-psql-can-not-connect-to-server-erroryou-can-use-following-command">If you guys happened to meet the PSQL can not connect to server error.You can use following command:</h2>
+<div class="hlcode"><pre><span class="n">curl</span> <span class="n">http</span><span class="o">:</span><span class="c1">//nextmarvel.net/blog/downloads/fixBrewLionPostgres.sh | sh</span>
+</pre></div>
+
+
+<h2 id="reconfiguration-psqlrc-and-put-it-to-the-psqlrc">Reconfiguration .psqlrc and put it to the <code>~/.psqlrc</code></h2>
+<div class="hlcode"><pre><span class="o">\</span><span class="nx">pset</span> <span class="kt">null</span> <span class="o">&lt;</span><span class="kt">NULL</span><span class="o">&gt;</span>
+<span class="o">\</span><span class="nb">set</span> <span class="nx">HISTFILE</span> <span class="err">~</span><span class="p">/</span><span class="nx">.psql_history</span><span class="o">-</span> <span class="p">:</span><span class="nb">HOST</span> <span class="o">-</span> <span class="p">:</span><span class="nx">DBNAME</span>
+<span class="o">\</span><span class="nb">set</span> <span class="nx">HISTSIZE</span> <span class="mi">2000</span>
+<span class="o">\</span><span class="nb">set</span> <span class="nx">FETCH_COUNT</span> <span class="mi">1000</span>
+<span class="o">\</span><span class="nx">timing</span>
+<span class="o">\</span><span class="nb">set</span> <span class="nx">PROMPT1</span> <span class="s1">&#39;(%n@%M:%&gt;) [%/] &gt; &#39;</span>
+<span class="o">\</span><span class="nb">set</span> <span class="nx">PROMPT2</span> <span class="s1">&#39;&#39;</span>
+<span class="o">\</span><span class="nb">encoding</span> <span class="nx">unicode</span>
+<span class="o">\</span><span class="nx">pset</span> <span class="nx">border</span> <span class="mi">2</span>
+<span class="o">\</span><span class="nx">pset</span> <span class="nb">format</span> <span class="nx">wrapped</span>
+<span class="o">\</span><span class="nx">pset</span> <span class="nx">pager</span> <span class="nx">off</span>
+</pre></div>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

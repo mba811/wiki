@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>ffmpeg 快速参考卡片 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Resources">Resources</a>&nbsp;&#187;&nbsp;ffmpeg 快速参考卡片
+    <span class="updated">Page Updated&nbsp;
+      2015-05-26 02:25
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">ffmpeg 快速参考卡片</div>
+
+  <p>ffmpeg功能强大，选项复杂，大多数情况下根本顾不过来。对于一般运用来讲，情况并不很多，这里整理一部分常见的任务，以供使用时参考:</p>
+<p>查看文件信息：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span>
+</pre></div>
+
+
+<p>将图片转换为视频：（-r 是帧率，-s 是宽和高）</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">f</span> <span class="n">image2</span> <span class="o">-</span><span class="n">i</span> <span class="n">foo</span><span class="o">-%</span><span class="mo">03</span><span class="n">d</span><span class="p">.</span><span class="n">jpeg</span> <span class="o">-</span><span class="n">r</span> <span class="mi">12</span> <span class="o">-</span><span class="n">s</span> <span class="n">WxH</span> <span class="n">foo</span><span class="p">.</span><span class="n">avi</span>
+</pre></div>
+
+
+<p>将图片转换为视频：（-r 是帧率，-s 是宽和高）【这个用的是glob，不是文件序列】</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">f</span> <span class="n">image2</span> <span class="o">-</span><span class="n">pattern_type</span> <span class="n">glob</span> <span class="o">-</span><span class="n">i</span> <span class="err">&#39;</span><span class="n">foo</span><span class="o">-*</span><span class="p">.</span><span class="n">jpeg</span><span class="err">&#39;</span> <span class="o">-</span><span class="n">r</span> <span class="mi">12</span> <span class="o">-</span><span class="n">s</span> <span class="n">WxH</span> <span class="n">foo</span><span class="p">.</span><span class="n">avi</span>
+</pre></div>
+
+
+<p>将视频导出为图像：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span> <span class="n">image</span><span class="o">%</span><span class="n">d</span><span class="p">.</span><span class="n">jpg</span>
+</pre></div>
+
+
+<p>将视频转换为使用各种设备的文件可参见http://www.rodrigopolo.com/ffmpeg/cheats.php 的参数列表。</p>
+<p>转换格式一般的选项是这样的：</p>
+<div class="hlcode"><pre><span class="n">ffmpeg</span> <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span> <span class="o">-</span><span class="n">b</span> <span class="err">比特率</span> <span class="o">-</span><span class="n">s</span> <span class="err">宽</span><span class="n">x</span><span class="err">高</span> <span class="o">-</span><span class="n">vcodec</span> <span class="err">视频编码器</span> <span class="o">-</span><span class="n">ar</span> <span class="err">音频采样率</span> <span class="o">-</span><span class="n">acodec</span> <span class="err">音频编码器</span> <span class="n">OUTPUT</span>
+</pre></div>
+
+
+<p>这里简单的列一下常用的编解码器和选项：</p>
+<p>-acodec 音频编码器 copy 直接拷贝 mp2 视频里偶尔用，MP2 libmp3lame MP3 pcm_u8 或者 pcm_u16 8或者16位的wav vorbis ogg</p>
+<p>-ab 音频编码率</p>
+<div class="hlcode"><pre><span class="mi">128</span><span class="n">k</span><span class="p">,</span> <span class="mi">192</span><span class="n">k</span> <span class="err">什么的啦！</span>
+</pre></div>
+
+
+<p>-aq 音频质量</p>
+<div class="hlcode"><pre><span class="err">和</span><span class="n">VBR</span><span class="err">联用，是</span><span class="o">-</span><span class="n">q</span><span class="o">:</span><span class="n">a</span><span class="err">的别名。从</span><span class="mi">0</span><span class="err">开始，与编码器相关，数值代表的意思参见编码器说明。</span>
+</pre></div>
+
+
+<p>-ar 音频采样率</p>
+<div class="hlcode"><pre><span class="err">单位</span><span class="n">Hz</span>
+</pre></div>
+
+
+<p>-ac 声道数</p>
+<div class="hlcode"><pre><span class="err">设置音频通道的数目。输出流默认将设置为输入音频信道的数目。</span>
+</pre></div>
+
+
+<p>-vcodec 视频编码器 copy 直接拷贝 flv flv的啦 mpeg2 mpg文件mpeg2编码 mpeg4 mpg文件mpeg4编码，能用这个别用上面那个 msmpeg4v2 默认.avi后缀</p>
+<p>-codecs 看看你机器上现有的视频编码器</p>
+<p>其他的不写了，如果需要的话，参见手册。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

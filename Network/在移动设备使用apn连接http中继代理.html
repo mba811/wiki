@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>在移动设备使用apn连接http中继代理 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Network">Network</a>&nbsp;&#187;&nbsp;在移动设备使用apn连接http中继代理
+    <span class="updated">Page Updated&nbsp;
+      2015-02-01 01:18
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">在移动设备使用apn连接http中继代理</div>
+
+  <p>之前几篇文章已经简要描述了利用HTTP转发代理，将各类代理资源（VPN、SHADOWSOCKS等）转化为统一的HTTP代理，并分发给内网和外网的设备。</p>
+<p>在实际运用中，在外网的计算机比较容易利用HTTP代理资源，而在移动设备上相对困难。如果你的移动程序不支持HTTP代理，或者是手机不支持在3G下使用Pac文件，就要用到Apn代理了。</p>
+<p><strong>Apn代理</strong>   Apn代理其实就是一个在3G接入点之前的HTTP代理，信号在连接3G后，通过这个代理联结外网。</p>
+<p>工作拓扑： 手机—HTTP代理—–3G网络—目标网站 通常运营商都是默认为空（不通过代理），但是我们可以指定一个。当你在自己的网络中运行好了转发代理后，设置好动态域名，我们就可以利用Apn，让手机先连回自己家，再去各个网站。</p>
+<p><strong>安卓手机：</strong> 安卓手机设置Apn代理比较简单，通常在3G设置下就可以设置了。</p>
+<p><a href="https://velaciela.ms/wp-content/uploads/2014/12/Screenshot_2014-12-12-15-13-49_%E8%AE%BE%E7%BD%AE.png"><img alt="Screenshot_2014-12-12-15-13-49_设置" src="https://velaciela.ms/wp-content/uploads/2014/12/Screenshot_2014-12-12-15-13-49_%E8%AE%BE%E7%BD%AE-168x300.png" /></a> </p>
+<p>这里我们申请的动态域名是 example.test.net,  端口是8964（……） ，只要在Apn的设置中填写好了之后保存（注意选择你当前运营商的3G），就可以使用了。</p>
+<p><strong>苹果手机</strong> 苹果手机相对比较复杂，原则上不允许直接更改3G设置。要更改苹果的3G设置，需要使用移动配置文件。读取移动配置文件还需要从网络位置读取，你可能还需要一个HTTP服务器。</p>
+<p>修改苹果手机的Apn，需要下载<strong>苹果配置实用工具</strong>软件，下载成功后新建配置文件，在最后一个“Apn”配置（其他配置均不填）中，按照运营商要求填入3G接入点和HTTP代理服务器地址和端口，保存为mobileconfig文件。</p>
+<p>注意各个运营商3G接入点的名称均不同，需要查询。中国电信4G的配置可能不太一样，也许不能使用。 如果你配置错误，将不能上网。</p>
+<p>配置正确后，将文件保存为“test.mobileconfig” ，之后去网上寻找一个地方挂载，当然你可以在内网起一个HTTP服务器，或者直接作为附件上传到网盘，接下来从iPhone里访问这个网址，iPhone会警告你是否安装配置文件，选择是，安装后即可使用。</p>
+<p>要取消这个配置，必须删除配置文件，IPhone的设置中选择删除配置文件，删除你安装的Apn。</p>
+<p><strong>安全性问题</strong> 对于Apn文件，最大的问题是服务器是否做了分流。如果服务器没做分流，你在3G下的全部流量将全部经过翻墙，可能会导致一些问题。如果你按照我之前的文章作了分流，那么你在3G下的全部流量将发送到你家中的电脑，国内部分从家中宽带访问，国外部分翻墙。</p>
+<p>另外一个问题是，由于在Apn状态下全部3G流量经过了服务器，<strong>因此购买外面的Apn代理要特别谨慎</strong>。由于3G状态下的流量敏感性较高（如支付），使用不靠谱的Apn存在支付被盗的风险。虽然支付宝和微信声称自己很安全，但额外的注意总是没有坏处。</p>
+<p><strong>分享热点</strong> 一个设置了Apn的手机分享的热点不含Apn信息，也就是说，通过你的热点上网仍然不能翻墙。</p>
+<p><strong>应用程序</strong> 很多应用程序忽视系统代理，不通过系统代理访问。你需要在程序中指定设置。另外部分程序使用SPDY协议，不能使用HTTP代理翻墙。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>

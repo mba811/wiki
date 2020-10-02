@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="Stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="Stylesheet" type="text/css" href="/static/css/tango.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="Atom feed">
+    <title>使用Git和GitHub上管理您的点文件 - Wiki · Tsong khapa</title>
+    <meta name="keywords" content="simiki, wiki, python, simple"/>
+    <meta name="description" content="Tanky Woo's personal wiki, powered by vim and markdown. Focus on Python, C/C++, Linux, Ops-Dev, Gentoo, and so on."/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+
+  <body>
+    <div id="container">
+      
+<div id="header">
+  <div class="post-nav"><a href="/">Home</a>&nbsp;&#187;&nbsp;<a href="/#Git">Git</a>&nbsp;&#187;&nbsp;使用Git和GitHub上管理您的点文件
+    <span class="updated">Page Updated&nbsp;
+      2015-01-30 12:19
+    </span></div>
+</div>
+<div class="clearfix"></div>
+
+<div class="page_title">使用Git和GitHub上管理您的点文件</div>
+
+  <p><a href="http://blog.smalleycreative.com/wp-content/uploads/2012/01/octocat1.png"><img alt="" src="http://blog.smalleycreative.com/wp-content/uploads/2012/01/octocat1.png" /></a></p>
+<p>如果您使用OS X或Linux在桌面/服务器，你可能会在您已经点文件中配置了大量的自己的设置，配置或主题的一个点。对于不知情，点文件都是以点开始的，或句号字符在你的家目录中的文件。这表明对操作系统，它们是隐藏文件，用于设置像工具配置设置<code>VIM</code>，或外壳，例如<code>bash中</code>和<code>zsh</code>仅举几。</p>
+<p>本教程不会进入配置点文件的细节。相反，我的目标是为您提供一个光介绍的Git版本控制，让你保持你的点文件在一个集中的存储库<a href="http://www.github.com/">github.com</a></p>
+<h2 id="_1">有什么意义？</h2>
+<p>如果你不相信这是值得你花时间把你的点文件到Git版本控制，可以这样考虑：</p>
+<p><strong>通过存储您的点文件的Git仓库，你就可以使用他们在任何OS X或Linux计算机与互联网接入。</strong></p>
+<p>这意味着，除了争取恢复到已知能正常工作的设置，你应该错误地配置文件的能力，你也可以在你自己定制的环境中工作。在几乎任何工作站或服务器，你是一个简单<code>git clone</code>远离你自定义的熟悉。更多关于<code>git clone</code>后......现在，我们将开始一个例子。</p>
+<h2 id="vimrc">一个基本的.VIMRC</h2>
+<p>以下是文件的，我们将管理与类型的例子<code>git</code>。其实，这是我自己的删节版<code>.vimrc</code>。完整版可以认为我的<a href="https://github.com/michaeljsmalley/dotfiles/blob/master/vimrc">公开Github上</a>：</p>
+<div class="hlcode"><pre><span class="n">set</span> <span class="n">nocompatible</span>          <span class="s">&quot; get rid of Vi compatibility mode. SET FIRST!</span>
+    <span class="n">filetype</span> <span class="n">plugin</span> <span class="n">indent</span> <span class="n">on</span> <span class="s">&quot; filetype detection[ON] plugin[ON] indent[ON]</span>
+    <span class="n">set</span> <span class="n">t_Co</span><span class="o">=</span><span class="mi">256</span>              <span class="s">&quot; enable 256-color mode.</span>
+    <span class="n">syntax</span> <span class="n">enable</span>             <span class="s">&quot; enable syntax highlighting (previously syntax on).</span>
+    <span class="n">colorscheme</span> <span class="n">desert</span>        <span class="s">&quot; set colorscheme</span>
+    <span class="n">set</span> <span class="n">number</span>                <span class="s">&quot; show line numbers</span>
+    <span class="n">set</span> <span class="n">laststatus</span><span class="o">=</span><span class="mi">2</span>          <span class="s">&quot; last window always has a statusline</span>
+    <span class="n">filetype</span> <span class="n">indent</span> <span class="n">on</span>        <span class="s">&quot; activates indenting for files</span>
+    <span class="n">set</span> <span class="n">nohlsearch</span>            <span class="s">&quot; Don&#39;t continue to highlight searched phrases.</span>
+    <span class="n">set</span> <span class="n">incsearch</span>             <span class="s">&quot; But do highlight as you type your search.</span>
+    <span class="n">set</span> <span class="n">ignorecase</span>            <span class="s">&quot; Make searches case-insensitive.</span>
+    <span class="n">set</span> <span class="n">ruler</span>                 <span class="s">&quot; Always show info along bottom.</span>
+    <span class="n">set</span> <span class="n">autoindent</span>            <span class="s">&quot; auto-indent</span>
+    <span class="n">set</span> <span class="n">tabstop</span><span class="o">=</span><span class="mi">4</span>             <span class="s">&quot; tab spacing</span>
+    <span class="n">set</span> <span class="n">softtabstop</span><span class="o">=</span><span class="mi">4</span>         <span class="s">&quot; unify</span>
+    <span class="n">set</span> <span class="n">shiftwidth</span><span class="o">=</span><span class="mi">4</span>          <span class="s">&quot; indent/outdent by 4 columns</span>
+    <span class="n">set</span> <span class="n">shiftround</span>            <span class="s">&quot; always indent/outdent to the nearest tabstop</span>
+    <span class="n">set</span> <span class="n">expandtab</span>             <span class="s">&quot; use spaces instead of tabs</span>
+    <span class="n">set</span> <span class="n">smarttab</span>              <span class="s">&quot; use tabs at the start of a line, spaces elsewhere</span>
+    <span class="n">set</span> <span class="n">nowrap</span>                <span class="s">&quot; don&#39;t wrap text</span>
+</pre></div>
+
+
+<p>如果你没有自己<code>.vimrc</code>在你的home目录，欢迎您使用我的。这是故意最小的，因为它的工作原理独立的（你不需要做任何事情比把它放到你的home目录为它工作等）。这就是说，我们要在这里做的事情有点不同，所以要注意（如果你没有的话）。</p>
+<h2 id="_2">组织，机构，组织</h2>
+<p>典型的位置点文件上的OS X或Linux的机器会在用户的主目录，如<code>/home/smalleycreative/dotfiles/vimrc</code>。我们不是典型的，虽然，我们是什么？我们正在努力成为狡猾。</p>
+<p>首先，我们将投入所有的点文件到一个文件夹，名为<code>点文件</code>，像这样：<code>/家庭/ smalleycreative /点文件/ vimrc里</code>。然后，我们将简单地从我们的主目录符号链接到他们。像节目<code>的vim</code>和<code>bash的</code>符号链接，这些都是透明的。至于这些节目而言，我们点文件仍然会出现在我们的家目录的顶级存在，即使他们将在被藏<code>~/dotfiles</code>目录。</p>
+<p>如果你对你的OS X或Linux工作站，现在，你可以开始通过创建<code>~/dotfiles</code>中运行以下命令你的home目录目录：</p>
+<div class="hlcode"><pre><span class="n">mkdir</span> <span class="o">~/</span><span class="n">dotfiles</span>
+</pre></div>
+
+
+<p>请将您<code>.vimrc</code>中<code>~/dotfiles</code>（和/或要管理使用Git的任何其他点文件）。为简单起见，我把从文件名 ​​点（<code>.vimrc</code>变得<code>vimrc</code>）。我只是在前面加上了点，当我创建我的符号链接<code>vimrc</code>在我的主目录。重要的是要记住的是，我们还没有使用Git的所有呢。我们正准备通过组织我们点文件到一个文件夹中。例如，复制现有<code>的.vimrc</code>，运行以下命令：</p>
+<div class="hlcode"><pre><span class="n">mv</span> <span class="o">~/</span><span class="p">.</span><span class="n">vimrc</span> <span class="o">~/</span><span class="n">dotfiles</span><span class="o">/</span><span class="n">vimrc</span>
+</pre></div>
+
+
+<p>一旦我们有一堆点文件的这个目录中，目录列表可能会看很多像这样的：</p>
+<div class="hlcode"><pre><span class="n">ls</span> <span class="o">~/</span><span class="n">dotfiles</span>
+<span class="n">vimrc</span>
+<span class="n">zshrc</span>
+<span class="n">bashrc</span>
+</pre></div>
+
+
+<h2 id="_3">安装脚本</h2>
+<p>既然我们要便携性（用我们的文件在任何机器上使用互联网的能力），我们将需要一个安装脚本。这个脚本去我们的<code>~/dotfiles</code>目录。这里是我的（完整版可以认为我的<a href="https://github.com/michaeljsmalley/dotfiles/blob/master/makesymlinks.sh">公共Github上</a>）：</p>
+<table class="hlcodetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="hlcode"><pre><span class="c">#!/bin/bash</span>
+<span class="c">############################</span>
+<span class="c"># .make.sh</span>
+<span class="c"># This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles</span>
+<span class="c">############################</span>
+
+<span class="c">########## Variables</span>
+
+<span class="nv">dir</span><span class="o">=</span>~/dotfiles                    <span class="c"># dotfiles directory</span>
+<span class="nv">olddir</span><span class="o">=</span>~/dotfiles_old             <span class="c"># old dotfiles backup directory</span>
+<span class="nv">files</span><span class="o">=</span><span class="s2">&quot;bashrc vimrc vim zshrc oh-my-zsh&quot;</span>    <span class="c"># list of files/folders to symlink in homedir</span>
+
+<span class="c">##########</span>
+
+<span class="c"># create dotfiles_old in homedir</span>
+<span class="nb">echo</span> <span class="s2">&quot;Creating $olddir for backup of any existing dotfiles in ~&quot;</span>
+mkdir -p <span class="nv">$olddir</span>
+<span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
+
+<span class="c"># change to the dotfiles directory</span>
+<span class="nb">echo</span> <span class="s2">&quot;Changing to the $dir directory&quot;</span>
+<span class="nb">cd</span> <span class="nv">$dir</span>
+<span class="nb">echo</span> <span class="s2">&quot;...done&quot;</span>
+
+<span class="c"># move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks </span>
+<span class="k">for </span>file in <span class="nv">$files</span>; <span class="k">do</span>
+<span class="k">    </span><span class="nb">echo</span> <span class="s2">&quot;Moving any existing dotfiles from ~ to $olddir&quot;</span>
+    mv ~/.<span class="nv">$file</span> ~/dotfiles_old/
+    <span class="nb">echo</span> <span class="s2">&quot;Creating symlink to $file in home directory.&quot;</span>
+    ln -s <span class="nv">$dir</span>/<span class="nv">$file</span> ~/.<span class="nv">$file</span>
+<span class="k">done</span>
+</pre></div>
+</td></tr></table>
+
+<p>在上面的脚本中的注释部分解释。首先，该脚本清除可能存在于我们的主目录的任何旧符号链接，并将它们放入一个文件夹，名为<code>dotfiles_old</code>。然后，它通过在我们的任何文件遍历<code>~/dotfiles</code>目录，并从我们的主目录，将这些文件创建符号链接。它处理这些命名符号链接，并在前面加上一个点，以他们的文件名 ​​。</p>
+<p>如果我们已经有了这个脚本在我们的点文件目录中，我们有我们的点文件在那里，我们已经准备好开始使用Git来管理这些文件。</p>
+<h2 id="gittinggithubgit">GITTING入门GITHUB的（GIT吗？）</h2>
+<p>在继续之前，我们将要创建一个<a href="http://www.github.com/">GitHub的</a>账户。GitHub上使我们能够建立一个免费的公共Git仓库，从任何计算机访问Internet访问。他们也有一个非常良好的书面<a href="http://blog.smalleycreative.com/tutorials/using-git-and-github-to-manage-your-dotfiles/help.github.com">帮助部分</a>。你会得到很好的建议来阅读，并按照有关特定操作系统的说明：</p>
+<ul>
+<li><a href="http://help.github.com/mac-set-up-git/">GitHub的入门指南OS X</a></li>
+<li><a href="http://help.github.com/linux-set-up-git/">GitHub的新手指南为Linux</a></li>
+</ul>
+<p>严重 - 阅读或者至少掠过该文档。一旦你设置你的帐户，你是舒适的基础，回到这里，我们将继续要求获得存储在GitHub.com你的公共Git仓库你点文件的步骤。</p>
+<h2 id="git">创建我们本地的GIT回购</h2>
+<p>在我们的工作站，我们要初始化一个新的Git回购。为了使我们的<code>~/dotfiles</code>目录的Git回购，我们简单地改变它，并运行<code>git init</code>命令：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~/</span><span class="n">dotfiles</span>
+<span class="n">git</span> <span class="n">init</span>
+</pre></div>
+
+
+<p>然后，我们开始使用跟踪，我们希望我们的回购协议的一部分的任何文件<code>git的增加</code>对他们的命令：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">add</span> <span class="n">makesymlinks</span><span class="p">.</span><span class="n">sh</span>
+<span class="n">git</span> <span class="n">add</span> <span class="n">vimrc</span>
+</pre></div>
+
+
+<p>最后，一​​旦我们很高兴与我们的文件的状态，我们可以承诺他们。</p>
+<blockquote>
+<p>想想提交的项目-code，文件，一切的快照 - 在特定时间点。更准确的说，在你第一次提交，以后每次提交，是你改变只是一个快照。对于代码文件，这意味着只需要代码，改变了线路的快照。对于一切如音乐或图片文件，这样可以节省文件的新副本。</p>
+</blockquote>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">&#39;</span><span class="n">My</span> <span class="n">first</span> <span class="n">Git</span> <span class="n">commit</span> <span class="n">of</span> <span class="n">my</span> <span class="n">dotfiles</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>有什么重要的是要认识到的是，这是提交本地-我们还没有上传_任何东西_到GitHub上。事实上，我们不能这样做，直到我们告诉我们的本地资源库_，其中_公共库GitHub的实际驻留。要做到这一点，我们使用<code>git的远程添加原产地</code>，像这样：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">origin</span> <span class="n">git</span><span class="err">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">:</span><span class="n">mygithubusername</span><span class="o">/</span><span class="n">dotfiles</span><span class="p">.</span><span class="n">git</span>
+</pre></div>
+
+
+<p>最后，我们可以<strong>推动</strong>我们改变GitHub上：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+
+<h2 id="git_1">跟踪更新我们的GIT回购</h2>
+<p>如果我们决定更新我们<code>的vimrc</code>，我们将希望确保这些变化得到跟踪上GitHub.com，究竟什么是过程？首先，添加文件：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">add</span> <span class="n">vimrc</span>
+</pre></div>
+
+
+<p>然后，在本地提交，并编写提交信息：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="err">&#39;</span><span class="n">Changed</span> <span class="n">vim</span> <span class="n">colorscheme</span><span class="o">!</span><span class="err">&#39;</span>
+</pre></div>
+
+
+<p>然后，推到GitHub上：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+
+<h2 id="_4">克隆我们的点文件到另一台机器</h2>
+<p>最后，我们要走到一个地步，我们希望用我们的定制点文件在另一台服务器或工作站上。也就是说，毕竟使用Git来管理我们的点文件的主要优点之一。要做到这一点，它的简单，只要运行我们的主目录下面的命令：</p>
+<div class="hlcode"><pre><span class="nx">git</span> <span class="nx">clone</span> <span class="nx">git</span><span class="p">:</span><span class="c1">//github.com/&lt;mygithubusername&gt;/dotfiles.git</span>
+</pre></div>
+
+
+<p>一旦库已克隆到我们的主目录，只需更改为<code>点文件</code>的目录，使<code>makesymlinks.sh</code>脚本可执行文件，并运行该脚本，如下所示：</p>
+<div class="hlcode"><pre><span class="n">cd</span> <span class="o">~/</span><span class="n">dotfiles</span>
+<span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">makesymlinks</span><span class="p">.</span><span class="n">sh</span>
+<span class="p">.</span><span class="o">/</span><span class="n">makesymlinks</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+
+
+<p><em>警告：如果你正在运行的Debian Linux的，这将极有可能安装<code>zsh</code>您的系统上，如果尚未安装。这是我加入到我的脚本来自动东西尽可能的功能。如果由于某种原因，你不希望<code>zsh</code>在您的计算机上安装（例如，你是别人的服务器上），删除<code>install_zsh</code>从线<code>makesymlinks.sh</code>。这将导致它来建立你所有的点文件，而不试图安装<code>zsh</code>。</em></p>
+<p>就是这样！如果设置不生效向右走，我们只能注销，并在（这将重新源我们点文件），然后重新登录。</p>
+<h2 id="git_2">更新本地的GIT回购</h2>
+<p>解释这一点的最好方法是使用一个场景。说我们已经创建了工作站（机器A）上的存储库，我们已经把我们的改变GitHub上，那么我们已经克隆了这些改变到我们的服务器（计算机B）。然后，我们回去到我们的工作站（计算机A），让更多的变化，并把它们推到GitHub上。我们如何获得这些变化到我们的服务器（计算机B）？要做到这一点，我们使用<code>的git拉</code>命令：</p>
+<div class="hlcode"><pre><span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+
+<p>运行此命令后，机器B将电流被推到GitHub上，从机A.它毫不夸张的任何变化<strong>拉</strong>任何更新，从GitHub的回购。</p>
+<h2 id="_5">版本说明</h2>
+<p>无论你是想缠斗一个大集合的自定义点文件，或者你刚刚起步，你是不知道从哪里开始，我希望这是一个内容丰富的介绍，通过Git的功率管理您的配置设置。</p>
+    </div>
+    <div id="footer">
+      <span>
+        <p>Copyright © 2020 Tsong khapa.
+        Powered by <a href="http://simiki.org/" target="_blank">Simiki</a>.</p>
+        <p>Site Generated 2020-10-02 22:54:23</p>
+      </span>
+    </div>
+
+    
+    
+  </body>
+</html>
